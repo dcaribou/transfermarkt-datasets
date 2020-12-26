@@ -1,5 +1,4 @@
 .pytest_cache
 .vscode
-data/**
 pred/**
 viz/incubator-superset

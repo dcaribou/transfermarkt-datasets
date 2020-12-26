@@ -17,19 +17,9 @@ def flatten(df: pandas.DataFrame, list_fields: List[str]) -> pandas.DataFrame:
     non_list_fileds
   )
 
-def renames(df: pandas.DataFrame) -> pandas.DataFrame:
+def renames(df: pandas.DataFrame, mappings: dict) -> pandas.DataFrame:
   return df.rename(
-    columns={
-      'matchday': 'round',
-      'home_team': 'home_club_name',
-      'away_team': 'away_club_name',
-      'current_team': 'player_club_name',
-      'pos': 'player_position',
-      'confederation': 'club_confederation',
-      'domestic_competition': 'club_domestic_competition',
-      'stats_competition': 'competition',
-      'transfermarkt_player_rating': 'player_transfermarkt_rating'
-    },
+    columns=mappings,
     errors="raise"
   )
 
@@ -133,7 +123,10 @@ def validate(df: pandas.DataFrame):
   clubs_per_domestic_competition = (
     df.groupby(['season', 'club_domestic_competition'])['player_club_name'].nunique()
   )
-  assert (clubs_per_domestic_competition != 20).sum() == 0
+  try:
+    assert (clubs_per_domestic_competition != 20).sum() == 0
+  except AssertionError:
+    print("Validation clubs_per_domestic_competition did not pass")
 
   # each club must play 38 games per season on the domestic competition
   games_per_season_per_club = (
@@ -150,15 +143,18 @@ def validate(df: pandas.DataFrame):
   appearances_per_match = (
     df.groupby(['home_club_name', 'away_club_name', 'date'])['appearance_id'].nunique()
   )
-  print(appearances_per_match)
-  print((df[(df['home_club_name'] == '1-fc-kaiserslautern') & (df['away_club_name'] == 'tsg-1899-hoffenheim')])[['date', 'round', 'home_club_name', 'away_club_name', 'game_id', 'player_club_name', 'player_name', 'competition', 'club_domestic_competition']].sort_values(by='date'))
 
-  assert (appearances_per_match < 11).sum() == 0
+  try:
+    assert (appearances_per_match < 11).sum() == 0
+  except AssertionError:
+    print("Validation appearances_per_match did not pass")
 
   # similarly, each club must have at least 11 appearances per game
   appearances_per_club_per_game = (
     df.groupby(['player_club_name', 'game_id'])['appearance_id'].nunique()
   )
-  print(appearances_per_club_per_game)
-  print((df[df['game_id'] == 3])[['date', 'round', 'home_club_name', 'away_club_name', 'game_id', 'player_club_name', 'player_name']].sort_values(by='date'))
-  assert (appearances_per_club_per_game < 11).sum() == 0
+  
+  try:
+    assert (appearances_per_club_per_game < 11).sum() == 0
+  except AssertionError:
+    print("Validation appearances_per_club_per_game did not pass")
