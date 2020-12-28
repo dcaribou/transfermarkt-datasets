@@ -1,0 +1,5 @@
+stages:
+  fetch_appearances:
+    cmd: data/fetch_appearances.sh data/site_map_ES1.json data/appearances.json --force
+    outs:
+    - data/appearances.json
