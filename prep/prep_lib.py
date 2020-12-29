@@ -67,7 +67,7 @@ def add_new_columns(df: pandas.DataFrame) -> pandas.DataFrame:
   return df_new
 
 # - improved columns:
-#  - yellow_cards / red_cards (no need for second_yellows)
+#  - yellow_cards / red_cards (no need for second_yellow_cards)
 #  - club name formatting: fc-watford -> FC Watford
 #  - player name formatting: adam-masina -> Adam Masina
 #  - position: use longer names instead of the chryptic 'LB', etc (use 'filter by position' in https://www.transfermarkt.co.uk/diogo-jota/leistungsdatendetails/spieler/340950/saison/2020/verein/0/liga/0/wettbewerb/GB1/pos/0/trainer_id/0/plus/1)
@@ -79,8 +79,8 @@ def improve_columns(df: pandas.DataFrame) -> pandas.DataFrame:
   df['date'] = pandas.to_datetime(df['date'])
 
   # reshape cards columns
-  df['yellow_cards'] = (df['yellow_cards'] != '0').astype('int32') + (df['second_yellows'] != '0').astype('int32')
-  del df['second_yellows']
+  df['yellow_cards'] = (df['yellow_cards'] != '0').astype('int32') + (df['second_yellow_cards'] != '0').astype('int32')
+  del df['second_yellow_cards']
 
   df['red_cards'] = (df['red_cards'] != '0').astype('int32')
 
@@ -88,7 +88,7 @@ def improve_columns(df: pandas.DataFrame) -> pandas.DataFrame:
 
 def filter_appearances(df: pandas.DataFrame) -> pandas.DataFrame:
   # get rid of 2017 season data as we only have it partially
-  df = df[df['season'] == 2018]
+  df = df[df['season'] == 2020]
 
   domestic_competitions = [
     'ES1', 'GB1', 'DFB'

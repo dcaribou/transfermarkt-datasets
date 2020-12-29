@@ -1,4 +1,4 @@
 [core]
-    remote = myremote
-['remote "myremote"']
-    url = /tmp/dvc-storage
+    remote = s3
+['remote "s3"']
+    url = s3://player-scores/dvc
