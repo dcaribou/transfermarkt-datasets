@@ -2,7 +2,7 @@ import pandas
 import numpy
 import json
 from typing import List
-from datetime import date,datetime
+from datetime import date,datetime, timedelta
 
 def flatten(df: pandas.DataFrame, list_fields: List[str]) -> pandas.DataFrame:
 
@@ -66,11 +66,6 @@ def add_new_columns(df: pandas.DataFrame) -> pandas.DataFrame:
 
   return df_new
 
-# - improved columns:
-#  - yellow_cards / red_cards (no need for second_yellow_cards)
-#  - club name formatting: fc-watford -> FC Watford
-#  - player name formatting: adam-masina -> Adam Masina
-#  - position: use longer names instead of the chryptic 'LB', etc (use 'filter by position' in https://www.transfermarkt.co.uk/diogo-jota/leistungsdatendetails/spieler/340950/saison/2020/verein/0/liga/0/wettbewerb/GB1/pos/0/trainer_id/0/plus/1)
 def improve_columns(df: pandas.DataFrame) -> pandas.DataFrame:
   # recasts
   df['goals'] = df['goals'].astype('int32')
@@ -102,59 +97,82 @@ def assert_unique_on_column(df: pandas.DataFrame, columns):
   counts = df.groupby(columns).size().reset_index(name='counts')
   assert len(counts[counts['counts'] > 1]) == 0
 
-def validate(df: pandas.DataFrame):
-  assert len(df) > 0
+def validate(df: pandas.DataFrame, validations):
+  def assert_df_not_empty(df: pandas.DataFrame):
+    assert len(df) > 0
   # -----------------------------
   # consistency
   # -----------------------------
-  assert_unique_on_column(df, ['player_id', 'date'])
-  assert len(df[df['minutes_played'] > 90]) == 0
-  assert len(df[~df['goals'].between(0, 5)]) == 0
-  assert len(df[~df['assists'].between(0, 4)]) == 0
-  assert len(df[~df['own_goals'].between(0, 3)]) == 0
-  assert len(df[~df['yellow_cards'].between(0,2)]) == 0
-  assert len(df[~df['red_cards'].between(0,1)]) == 0
-
+  def assert_minutes_played_gt_90(df: pandas.DataFrame):
+    assert len(df[df['minutes_played'] > 90]) == 0
+  def assert_goals_in_range(df: pandas.DataFrame):
+    assert len(df[df['goals'] > 90]) == 0
+  def assert_assists_in_range(df: pandas.DataFrame):
+    assert len(df[~df['assists'].between(0, 4)]) == 0
+  def assert_own_goals_in_range(df: pandas.DataFrame):
+    assert len(df[~df['own_goals'].between(0, 3)]) == 0
+  def assert_yellow_cards_range(df: pandas.DataFrame):
+    assert len(df[~df['yellow_cards'].between(0,2)]) == 0
+  def assert_red_cards_range(df: pandas.DataFrame):
+    assert len(df[~df['red_cards'].between(0,1)]) == 0
+  def assert_unique_on_player_and_date(df: pandas.DataFrame):
+    assert_unique_on_column(df, ['player_id', 'date'])
   # -----------------------------
   # completeness
   # -----------------------------
-
-  # number of teams per domestic competition must be exactly 20
-  clubs_per_domestic_competition = (
-    df.groupby(['season', 'club_domestic_competition'])['player_club_name'].nunique()
-  )
-  try:
+  def assert_clubs_per_domestic_competition(df: pandas.DataFrame):
+    clubs_per_domestic_competition = (
+      df.groupby(['season', 'club_domestic_competition'])['player_club_name'].nunique()
+    )
     assert (clubs_per_domestic_competition != 20).sum() == 0
-  except AssertionError:
-    print("Validation clubs_per_domestic_competition did not pass")
 
-  # each club must play 38 games per season on the domestic competition
-  games_per_season_per_club = (
-    df[df['competition'] == df['club_domestic_competition']]
-    .groupby(['season', 'competition', 'player_club_name'])['date']
-    .nunique()
-  )
-  try:
+  def assert_games_per_season_per_club(df: pandas.DataFrame):
+    games_per_season_per_club = (
+      df[df['competition'] == df['club_domestic_competition']]
+      .groupby(['season', 'competition', 'player_club_name'])['date']
+      .nunique()
+    )
     assert (games_per_season_per_club != 38).sum() == 0
-  except AssertionError:
-    print("Validation games_per_season_per_club did not pass")
 
-  # on each match, both clubs should have at least 11 appearances
-  appearances_per_match = (
-    df.groupby(['home_club_name', 'away_club_name', 'date'])['appearance_id'].nunique()
-  )
-
-  try:
+  def assert_appearances_per_match(df: pandas.DataFrame):
+    appearances_per_match = (
+      df.groupby(['home_club_name', 'away_club_name', 'date'])['appearance_id'].nunique()
+    )
     assert (appearances_per_match < 11).sum() == 0
-  except AssertionError:
-    print("Validation appearances_per_match did not pass")
 
-  # similarly, each club must have at least 11 appearances per game
-  appearances_per_club_per_game = (
-    df.groupby(['player_club_name', 'game_id'])['appearance_id'].nunique()
-  )
-  
-  try:
+  def assert_appearances_per_club_per_game(df: pandas.DataFrame):
+    # similarly, each club must have at least 11 appearances per game
+    appearances_per_club_per_game = (
+      df.groupby(['player_club_name', 'game_id'])['appearance_id'].nunique()
+    )
     assert (appearances_per_club_per_game < 11).sum() == 0
-  except AssertionError:
-    print("Validation appearances_per_club_per_game did not pass")
+
+  def assert_appearances_freshness_is_less_than_one_week(df: pandas.DataFrame):
+    max_appearance_per_club = (
+      df.groupby(['player_club_name'])['date'].max()
+    )
+    stale_clubs = (max_appearance_per_club < (datetime.utcnow() - timedelta(days=7))).sum()
+    # if more than 5 clubs are stale, fail validation
+    assert stale_clubs < 5, stale_clubs
+
+  validations_base = {
+    'assert_df_not_empty': assert_df_not_empty,
+    'assert_minutes_played_gt_90': assert_minutes_played_gt_90,
+    'assert_goals_in_range': assert_goals_in_range,
+    'assert_assists_in_range': assert_assists_in_range,
+    'assert_own_goals_in_range': assert_own_goals_in_range,
+    'assert_yellow_cards_range': assert_yellow_cards_range,
+    'assert_red_cards_range': assert_red_cards_range,
+    'assert_unique_on_player_and_date': assert_unique_on_player_and_date,
+    'assert_clubs_per_domestic_competition': assert_clubs_per_domestic_competition,
+    'assert_games_per_season_per_club': assert_games_per_season_per_club,
+    'assert_appearances_per_match': assert_appearances_per_match,
+    'assert_appearances_per_club_per_game': assert_appearances_per_club_per_game,
+    'assert_appearances_freshness_is_less_than_one_week': assert_appearances_freshness_is_less_than_one_week
+  }
+
+  for validation in validations:
+    try:
+      validations_base[validation](df)
+    except AssertionError as error:
+      print(f"Validation {validation} did not pass: {error}")

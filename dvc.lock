@@ -1,6 +1,17 @@
 fetch_appearances:
-  cmd: data/fetch_appearances.sh data/site_map_ES1.json data/appearances.json --force
+  cmd: data/fetch_appearances.sh data/site_map_ES1.json data/appearances.json
   outs:
   - path: data/appearances.json
-    md5: 9a4fa9337d342a83dd90ac93dcd4ee74
-    size: 1884971
+    md5: ec2ef8cf585e300c7480f29692f53349
+    size: 1956638
+data_prep:
+  cmd: papermill prep/prep.ipynb tmp_prep.ipynb --cwd prep -p raw_file data/appearances.json
+    -p prep_file data/prep_appearances.csv
+  deps:
+  - path: data/appearances.json
+    md5: ec2ef8cf585e300c7480f29692f53349
+    size: 1956638
+  outs:
+  - path: data/prep_appearances.csv
+    md5: 8f6f6430a5153cfa520b1aeefa2ebcb2
+    size: 617215

@@ -1,5 +1,12 @@
 stages:
   fetch_appearances:
-    cmd: data/fetch_appearances.sh data/site_map_ES1.json data/appearances.json --force
+    cmd: data/fetch_appearances.sh data/site_map_ES1.json data/appearances.json
     outs:
     - data/appearances.json
+  data_prep:
+    cmd: papermill prep/prep.ipynb tmp_prep.ipynb --cwd prep -p raw_file data/appearances.json
+      -p prep_file data/prep_appearances.csv
+    deps:
+    - data/appearances.json
+    outs:
+    - data/prep_appearances.csv
