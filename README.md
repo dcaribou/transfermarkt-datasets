@@ -2,7 +2,7 @@
 Use data from the [trasfermarkt-scraper](https://github.com/dcaribou/transfermarkt-scraper) to compute player's scores and forecast performance.
 
 ## [data](data)
-All project data assets are generated inside this folder. This is a [DVC](https://dvc.org/) repository, therfore all files for the currrent version of the project can be pulled from a their remote storage with
+All project data assets are generated inside this folder. This is a [DVC](https://dvc.org/) repository, therfore all files for the currrent version of the project can be pulled from their remote storage with
 ```bash
 dvc pull
 ```

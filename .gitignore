@@ -3,3 +3,4 @@
 .env
 pred/**
 viz/incubator-superset
+tmp_*
