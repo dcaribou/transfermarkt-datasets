@@ -9,6 +9,6 @@ output_file=$PWD/$output_file
 
 docker run \
   -v "$(pwd)"/$site_map_file:/app/site_map.json \
-  -ti dcaribou/transfermarkt-scraper:latest \
+  dcaribou/transfermarkt-scraper:latest \
   scrapy crawl partial -a site_map_file=site_map.json \
   > $output_file
