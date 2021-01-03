@@ -17,5 +17,7 @@ jobs:
     - name: Run data pipeline
       run: |
         ls
+        ls /home/runner/work/player-scores/player-scores/data
+        ls /home/runner/work/player-scores/player-scores
         echo "$PWD"
         dvc repro
