@@ -23,4 +23,5 @@ jobs:
         conda list
     - name: Run data pipeline
       run: |
+        conda activate player-scores
         dvc repro
