@@ -14,10 +14,12 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - uses: iterative/setup-dvc@v1
+    - uses: conda-incubator/setup-miniconda@v2
+      with:
+        environment-file: environment.yml
+    - run: |
+        conda info
+        conda list
     - name: Run data pipeline
       run: |
-        ls
-        ls /home/runner/work/player-scores/player-scores/data
-        ls /home/runner/work/player-scores/player-scores
-        echo "$PWD"
         dvc repro
