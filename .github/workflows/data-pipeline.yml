@@ -13,7 +13,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - uses: iterative/setup-dvc@v1
+    # - uses: iterative/setup-dvc@v1
     - uses: conda-incubator/setup-miniconda@v2
       with:
         environment-file: environment.yml
@@ -23,5 +23,5 @@ jobs:
         conda list
     - name: Run data pipeline
       run: |
-        conda activate player-scores
+        # conda activate player-scores
         dvc repro

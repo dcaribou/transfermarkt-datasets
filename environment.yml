@@ -8,3 +8,4 @@ dependencies:
   - papermill
   - pandas
   - kaggle
+  - dvc
