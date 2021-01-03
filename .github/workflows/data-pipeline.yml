@@ -1,0 +1,19 @@
+name: Player Scores Data Pipeline
+
+on:
+  push:
+    branches: [ data-pipeline ]
+  schedule:
+    - cron: '0 4 * * TUE'
+
+jobs:
+  data-pipeline:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - uses: iterative/setup-dvc@v1
+    - name: Run data pipeline
+      run: |
+        dvc repro
