@@ -20,12 +20,17 @@ jobs:
       with:
         environment-file: environment.yml
         activate-environment: player-scores
-    - name: Run data pipeline
+    - name: Run pipeline
       env:
         KAGGLE_USERNAME: ${{ secrets.KAGGLE_KEY }}
         KAGGLE_KEY: ${{ secrets.KAGGLE_KEY }}
       run: |
         python -m ipykernel install --user --name player-scores
         dvc repro
+    - name: Update kaggle dataset
+      env:
+        KAGGLE_USERNAME: ${{ secrets.KAGGLE_KEY }}
+        KAGGLE_KEY: ${{ secrets.KAGGLE_KEY }} 
+      run: |  
         python data/prep/dataset-metadata.py
         kaggle datasets version -p data/prep -m 'Automated update from CI ($GITHUB_RUN_ID)' -d
