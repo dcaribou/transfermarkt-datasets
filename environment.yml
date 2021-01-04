@@ -1,0 +1,12 @@
+name: player-scores
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.8
+  - notebook
+  - papermill
+  - pandas
+  - kaggle
+  - dvc
+  - frictionless

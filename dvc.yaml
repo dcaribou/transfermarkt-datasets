@@ -5,8 +5,8 @@ stages:
     - data/raw/appearances.json
   data_prep:
     cmd: papermill prep/prep.ipynb tmp_prep.ipynb --cwd prep -p raw_file data/raw/appearances.json
-      -p prep_file data/prep/prep_appearances.csv
+      -p prep_file data/prep/appearances.csv
     deps:
     - data/raw/appearances.json
     outs:
-    - data/prep/prep_appearances.csv
+    - data/prep/appearances.csv
