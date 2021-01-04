@@ -12,15 +12,15 @@ package.keywords = [
 ]
 package.id = "davidcariboo/player-scores"
 package.description = """
-# Football Players' Stats
+## Football Players' Stats
 A collection of football (soccer) players' statistics scraped from the Transfermark website.
 
 
 The source of this dataset is the Transfermarkt players' [detailed performance page](https://www.transfermarkt.co.uk/diogo-jota/leistungsdatendetails/spieler/340950/saison/2020/verein/0/liga/0/wettbewerb/GB1/pos/0/trainer_id/0/plus/1).
+The scraper code is published as an independent github project [here](https://github.com/dcaribou/transfermarkt-scraper).
 
 
-The data pipeline is for this dataset is maintained at [player-scores](https://github.com/dcaribou/player-scores) Github project,
-including periodic scraping and updating of this data source.
+The data pipeline code for creating and keeping this dataset up to date is maintained at [player-scores](https://github.com/dcaribou/player-scores) Github project.
 """
 package.get_resource("appearances").name = "Appearances"
 
