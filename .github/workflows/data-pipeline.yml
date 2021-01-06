@@ -28,4 +28,4 @@ jobs:
         KAGGLE_KEY: ${{ secrets.KAGGLE_KEY }}
       run: |
         python data/prep/dataset-metadata.py
-        kaggle datasets version -p data/prep -m 'Automated update from CI ($GITHUB_RUN_ID)' -d
+        kaggle datasets version -p data/prep -m "Automated update from github actions" -d

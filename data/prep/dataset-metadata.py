@@ -22,6 +22,8 @@ The main resource within this dataset is the `appearances.csv` file, which conta
 * Source data at [Transfermark website](https://www.transfermarkt.co.uk/)
 * Data pipeline code for creating and keeping this dataset up to date is maintained at [player-scores](https://github.com/dcaribou/player-scores) github project
 * Scraper code is published as an independent project [here](https://github.com/dcaribou/transfermarkt-scraper)
+
+> Currently, this dataset contains data from `ES1 ` (Spanish first league) current season only, but there are more leagues, competitions and historical data to come. Checkout roadmap at [player-scores](https://github.com/dcaribou/player-scores)
 """
 package.get_resource("appearances").name = "Appearances"
 
