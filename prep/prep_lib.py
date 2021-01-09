@@ -69,15 +69,15 @@ def add_new_columns(df: pandas.DataFrame) -> pandas.DataFrame:
 def improve_columns(df: pandas.DataFrame) -> pandas.DataFrame:
   # recasts
   df['goals'] = df['goals'].astype('int32')
-  df['assists'] = df['goals'].astype('int32')
-  df['own_goals'] = df['goals'].astype('int32')
+  df['assists'] = df['assists'].astype('int32')
+  df['own_goals'] = df['own_goals'].astype('int32')
   df['date'] = pandas.to_datetime(df['date'])
 
   # reshape cards columns
-  df['yellow_cards'] = (df['yellow_cards'] != '0').astype('int32') + (df['second_yellow_cards'] != '0').astype('int32')
+  df['yellow_cards'] = (df['yellow_cards'] != 0).astype('int32') + (df['second_yellow_cards'] != 0).astype('int32')
   del df['second_yellow_cards']
 
-  df['red_cards'] = (df['red_cards'] != '0').astype('int32')
+  df['red_cards'] = (df['red_cards'] != 0).astype('int32')
 
   return df
 
@@ -117,6 +117,14 @@ def validate(df: pandas.DataFrame, validations):
     assert len(df[~df['red_cards'].between(0,1)]) == 0
   def assert_unique_on_player_and_date(df: pandas.DataFrame):
     assert_unique_on_column(df, ['player_id', 'date'])
+  def assert_goals_ne_assists(df: pandas.DataFrame):
+    assert (df['goals'] != df['assists']).sum() > 0
+  def assert_goals_ne_own_goals(df: pandas.DataFrame):
+    assert (df['goals'] != df['own_goals']).sum() > 0
+  def assert_yellow_cards_not_constant(df: pandas.DataFrame):
+    assert df['yellow_cards'].nunique() != 1
+  def assert_red_cards_not_constant(df: pandas.DataFrame):
+    assert df['red_cards'].nunique() != 1
   # -----------------------------
   # completeness
   # -----------------------------
@@ -168,7 +176,11 @@ def validate(df: pandas.DataFrame, validations):
     'assert_games_per_season_per_club': assert_games_per_season_per_club,
     'assert_appearances_per_match': assert_appearances_per_match,
     'assert_appearances_per_club_per_game': assert_appearances_per_club_per_game,
-    'assert_appearances_freshness_is_less_than_one_week': assert_appearances_freshness_is_less_than_one_week
+    'assert_appearances_freshness_is_less_than_one_week': assert_appearances_freshness_is_less_than_one_week,
+    'assert_goals_ne_own_goals': assert_goals_ne_own_goals,
+    'assert_goals_ne_assists': assert_goals_ne_assists,
+    'assert_yellow_cards_not_constant': assert_yellow_cards_not_constant,
+    'assert_red_cards_not_constant': assert_red_cards_not_constant,
   }
 
   for validation in validations:
