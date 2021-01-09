@@ -2,7 +2,7 @@ import pandas
 import numpy
 import json
 from typing import List
-from datetime import date,datetime, timedelta
+from datetime import datetime, timedelta
 
 def flatten(df: pandas.DataFrame, list_fields: List[str]) -> pandas.DataFrame:
 
@@ -98,6 +98,8 @@ def assert_unique_on_column(df: pandas.DataFrame, columns):
   assert len(counts[counts['counts'] > 1]) == 0
 
 def validate(df: pandas.DataFrame, validations):
+  failed_validations = 0
+
   def assert_df_not_empty(df: pandas.DataFrame):
     assert len(df) > 0
   # -----------------------------
@@ -187,4 +189,7 @@ def validate(df: pandas.DataFrame, validations):
     try:
       validations_base[validation](df)
     except AssertionError as error:
+      failed_validations+=1
       print(f"Validation {validation} did not pass: {error}")
+
+  return failed_validations

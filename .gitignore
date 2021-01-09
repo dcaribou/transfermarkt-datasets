@@ -2,4 +2,3 @@
 .vscode
 .env
 pred/**
-tmp_*
