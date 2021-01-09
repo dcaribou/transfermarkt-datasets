@@ -12,3 +12,6 @@ All project data assets are generated inside this folder. This is a [DVC](https:
 
 ## [prep](prep)
 Transform scraped data into a cleaned and validated dataset that can be published, and used as the base of further analysis.
+
+## [viz](viz)
+Some custom visualizations built on top of appearances data are referenced here for demonstrative purposes.
