@@ -1,8 +1,8 @@
-name: Player Scores Data Pipeline
+name: Player Scores Data Pipeline (On Push)
 
 on:
-  schedule:
-    - cron: '0 4 * * TUE'
+  push:
+    branches: [master]
 
 jobs:
   data-pipeline:
@@ -18,14 +18,13 @@ jobs:
       with:
         environment-file: environment.yml
         activate-environment: player-scores
-    - name: Run pipeline
-      run: |
-        python -m ipykernel install --user --name player-scores
-        dvc repro
     - name: Update kaggle dataset
       env:
         KAGGLE_USERNAME: ${{ secrets.KAGGLE_USERNAME }}
         KAGGLE_KEY: ${{ secrets.KAGGLE_KEY }}
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       run: |
+        dvc pull
         python data/prep/dataset-metadata.py
-        kaggle datasets version -p data/prep -m "Automated update from github actions" -d
+        kaggle datasets version -p data/prep -m "${{ github.event.head_commit.message }}" -d
