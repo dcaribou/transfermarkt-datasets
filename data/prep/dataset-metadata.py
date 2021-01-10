@@ -17,9 +17,10 @@ package.description = """
 Football (soccer) datasets containing historical match aggregates are widely available. However, structured, publicly available datasets on a **player level** for those games, such as the one contained in [Transfermarkt's player detailed performance page](https://www.transfermarkt.co.uk/diogo-jota/leistungsdatendetails/spieler/340950/saison/2020/verein/0/liga/0/wettbewerb/GB1/pos/0/trainer_id/0/plus/1), are more difficult to find. This dataset aims to present that data in an accessible, standard format.
 
 ### Content
-The main resource within this dataset is the `appearances.csv` file, which contains **one row per player appearance** (one row per player per game played). Among other contextual data, on each appearance you will find a `date` and a `player_name`, as well as `goals` and `assists` metrics for that appearance. The contents of this file are automatically updated every week with the latest data from Transfermarkt website.
+The main resource within this dataset is the `appearances.csv` file, which contains **one row per player appearance** (one row per player per game played). Among other contextual data, on each appearance you will find a `date` and a `player_name`, as well as `goals` and `assists` metrics for that appearance. The contents of this file are automatically updated every week with the latest data from Transfermarkt website.<br/>
+:information_source: Have a look at the version history for a record of the updates an improvements on this dataset.
 
-### Acknowledgement
+### Acknowledgements
 * Source data at [Transfermark website](https://www.transfermarkt.co.uk/)
 * Data pipeline code for creating and keeping this dataset up to date is maintained at [player-scores](https://github.com/dcaribou/player-scores) github project
 * Scraper code is published as an independent project [here](https://github.com/dcaribou/transfermarkt-scraper)
