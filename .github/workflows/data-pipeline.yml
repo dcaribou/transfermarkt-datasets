@@ -16,7 +16,8 @@ jobs:
         shell: bash -l {0}
 
     steps:
-    - run: echo "${{ github.event.head_commit.message or 'Automatic update from github actions'}}"
+    - run: |
+        echo "${{ github.event.head_commit.message == null ? 'Automatic update from github actions' : github.event.head_commit.message}}"
     # - uses: actions/checkout@v2
     # - uses: conda-incubator/setup-miniconda@v2
     #   with:
