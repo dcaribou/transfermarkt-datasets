@@ -11,6 +11,7 @@ package.keywords = [
   "soccer", "games", "matches"
 ]
 package.id = "davidcariboo/player-scores"
+package.image = "https://unsplash.com/photos/iOITF7T87kU"
 package.description = """
 ### Context
 Football (soccer) datasets containing historical match aggregates are widely available. However, structured, publicly available datasets on a **player level** for those games, such as the one contained in [Transfermarkt's player detailed performance page](https://www.transfermarkt.co.uk/diogo-jota/leistungsdatendetails/spieler/340950/saison/2020/verein/0/liga/0/wettbewerb/GB1/pos/0/trainer_id/0/plus/1), are more difficult to find. This dataset aims to present that data in an accessible, standard format.

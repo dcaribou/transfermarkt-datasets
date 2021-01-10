@@ -1,0 +1,28 @@
+name: Player Scores Data Pipeline (On Push)
+
+on:
+  push:
+    branches: [build-on-push]
+
+jobs:
+  data-pipeline:
+
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash -l {0}
+
+    steps:
+    - uses: actions/checkout@v2
+    - uses: conda-incubator/setup-miniconda@v2
+      with:
+        environment-file: environment.yml
+        activate-environment: player-scores
+    - name: Update kaggle dataset
+      env:
+        KAGGLE_USERNAME: ${{ secrets.KAGGLE_USERNAME }}
+        KAGGLE_KEY: ${{ secrets.KAGGLE_KEY }}
+      run: |
+        dvc pull
+        python data/prep/dataset-metadata.py
+        kaggle datasets version -p data/prep -m "${{ github.event.head_commit.message }}" -d
