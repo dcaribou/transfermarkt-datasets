@@ -1,4 +1,4 @@
-set -x
+set -xe
 
 # relative paths
 site_map_file=$1
@@ -12,3 +12,6 @@ docker run \
   dcaribou/transfermarkt-scraper:latest \
   scrapy crawl partial -a site_map_file=site_map.json \
   > $output_file
+
+aws s3 rm s3://player-scores/snapshots/$(date +"%Y-%m-%d")
+aws s3 cp $output_file s3://player-scores/snapshots/$(date +"%Y-%m-%d")/appearances.json
