@@ -21,6 +21,9 @@ jobs:
         environment-file: environment.yml
         activate-environment: player-scores
     - name: Run pipeline
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       run: |
         python -m ipykernel install --user --name player-scores
         dvc repro
