@@ -7,6 +7,9 @@ This is an ongoing project, that aims to achieve this goal incrementally by
 2. Training a machine learning model that uses historical data to forecast player's performance on their next game
 3. Create a line-up analysis tool by displaying forecasts on a dashboard
 
+## [infra](infra)
+Defines all the necessary infrastructure for the project in the AWS cloud.
+
 ## [data](data)
 All project data assets are kept inside this folder. This is a [DVC](https://dvc.org/) repository, therefore all files from the current revision can be pulled from remote storage with `dvc pull`.
 
