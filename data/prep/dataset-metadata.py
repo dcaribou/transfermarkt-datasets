@@ -4,6 +4,8 @@ Generate datapackage.json for Kaggle Dataset
 
 from frictionless import describe_package
 
+# full spec at https://specs.frictionlessdata.io//data-package/
+
 package = describe_package(source="appearances.csv", basepath="data/prep")
 package.title = "Football players' statistics from Transfermarkt website"
 package.keywords = [
@@ -11,7 +13,10 @@ package.keywords = [
   "soccer", "games", "matches"
 ]
 package.id = "davidcariboo/player-scores"
-package.image = "https://unsplash.com/photos/iOITF7T87kU"
+package.image = "https://images.unsplash.com/photo-1590669233095-90608d89c79c?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=2980&q=80"
+package.licenses = [
+  "CC0: Public Domain"
+]
 package.description = """
 ### Context
 Football (soccer) datasets containing historical match aggregates are widely available. However, structured, publicly available datasets on a **player level** for those games, such as the one contained in [Transfermarkt's player detailed performance page](https://www.transfermarkt.co.uk/diogo-jota/leistungsdatendetails/spieler/340950/saison/2020/verein/0/liga/0/wettbewerb/GB1/pos/0/trainer_id/0/plus/1), are more difficult to find. This dataset aims to present that data in an accessible, standard format.
@@ -27,6 +32,8 @@ The main resource within this dataset is the `appearances.csv` file, which conta
 
 > Currently, this dataset contains data from `ES1 ` (Spanish first league) current season only, but there are more leagues, competitions and historical data to come. Checkout roadmap at [player-scores](https://github.com/dcaribou/player-scores)
 """
-package.get_resource("appearances").name = "Appearances"
+appearances = package.get_resource("appearances")
+appearances.name = "Appearances"
+appearances.description = "One row per player and game (appearance)"
 
 package.to_json("data/prep/dataset-metadata.json")
