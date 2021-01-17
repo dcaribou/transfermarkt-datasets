@@ -38,7 +38,7 @@ data "aws_iam_policy_document" "user_access" {
     ]
 
     resources = [
-      "${aws_s3_bucket.bucket.arn}/snapshots/*",
+      "${aws_s3_bucket.bucket.arn}/*",
     ]
   } 
   
