@@ -1,17 +1,17 @@
 fetch_appearances:
-  cmd: data/fetch_appearances.sh data/site_map_ES1.json data/raw/appearances.json
+  cmd: data/fetch_appearances.sh data/site_map__european_top_leagues.json data/raw/appearances.json
   outs:
   - path: data/raw/appearances.json
-    md5: c61e745222fd12e8634677a13b086cad
-    size: 2186575
+    md5: db4799a2aa14770c893ba8c2aef33a6b
+    size: 28229400
 data_prep:
   cmd: papermill prep/prep.ipynb - --cwd prep -p raw_file data/raw/appearances.json
     -p prep_file data/prep/appearances.csv
   deps:
   - path: data/raw/appearances.json
-    md5: c61e745222fd12e8634677a13b086cad
-    size: 2186575
+    md5: db4799a2aa14770c893ba8c2aef33a6b
+    size: 28229400
   outs:
   - path: data/prep/appearances.csv
-    md5: b4e05b68464c4ba29c76add3bf6b2b3d
-    size: 685469
+    md5: 6da15f658cd632844e760e4665260b14
+    size: 9164528

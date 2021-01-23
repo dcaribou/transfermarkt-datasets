@@ -64,6 +64,15 @@ def add_new_columns(df: pandas.DataFrame) -> pandas.DataFrame:
 
   df_new['season'] = infer_season(df_new['date'])
 
+  # there is something off with game ID 27231, as some appearances have more than 90 minutes played
+  # for example https://www.transfermarkt.co.uk/tomas-ribeiro/leistungsdaten/spieler/433358/plus/1?saison=2020
+  # fix those apperances by rounding to 90 minutes played if the number is higher
+  df_new['minutes_played'] = numpy.where(
+    (df_new['game_id'] == 27231) & (df_new['minutes_played'] > 90),
+    90,
+    df_new['minutes_played']
+  )
+
   return df_new
 
 def improve_columns(df: pandas.DataFrame) -> pandas.DataFrame:
@@ -86,7 +95,7 @@ def filter_appearances(df: pandas.DataFrame) -> pandas.DataFrame:
   df = df[df['season'] == 2020]
 
   domestic_competitions = [
-    'ES1', 'GB1', 'DFB'
+    'ES1', 'GB1', 'L1', 'IT1', 'FR1', 'GR1', 'PO1', 'BE1', 'UKR1', 'BE1', 'RU1', 'DK1', 'SC1', 'TR1', 'NL1'
   ]
   # filer appearances on a different league
   condition = numpy.bitwise_not(((df['club_domestic_competition'].isin(domestic_competitions)) & (df['club_domestic_competition'] != df['competition'])))
@@ -106,7 +115,8 @@ def validate(df: pandas.DataFrame, validations):
   # consistency
   # -----------------------------
   def assert_minutes_played_gt_90(df: pandas.DataFrame):
-    assert len(df[df['minutes_played'] > 90]) == 0
+    appearances_w_mp_gt_90 = len(df[df['minutes_played'] > 90])
+    assert appearances_w_mp_gt_90 == 0, appearances_w_mp_gt_90
   def assert_goals_in_range(df: pandas.DataFrame):
     assert len(df[df['goals'] > 90]) == 0
   def assert_assists_in_range(df: pandas.DataFrame):
@@ -134,7 +144,10 @@ def validate(df: pandas.DataFrame, validations):
     clubs_per_domestic_competition = (
       df.groupby(['season', 'club_domestic_competition'])['player_club_name'].nunique()
     )
-    assert (clubs_per_domestic_competition != 20).sum() == 0
+    # the number of clubs of the scotish league is 12
+    # the number of clubs of the turkish league is 21
+    n = (numpy.bitwise_not(clubs_per_domestic_competition.between(12, 21))).sum()
+    assert n == 0, n
 
   def assert_games_per_season_per_club(df: pandas.DataFrame):
     games_per_season_per_club = (
@@ -161,9 +174,10 @@ def validate(df: pandas.DataFrame, validations):
     max_appearance_per_club = (
       df.groupby(['player_club_name'])['date'].max()
     )
+    total_clubs = len(max_appearance_per_club)
     stale_clubs = (max_appearance_per_club < (datetime.utcnow() - timedelta(days=7))).sum()
     # if more than 5 clubs are stale, fail validation
-    assert stale_clubs < 5, stale_clubs
+    assert stale_clubs/total_clubs < 0.4, f"{stale_clubs}/{total_clubs}"
 
   validations_base = {
     'assert_df_not_empty': assert_df_not_empty,

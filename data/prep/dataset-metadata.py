@@ -25,12 +25,32 @@ Football (soccer) datasets containing historical match aggregates are widely ava
 The main resource within this dataset is the `appearances.csv` file, which contains **one row per player appearance** (one row per player per game played). Among other contextual data, on each appearance you will find a `date` and a `player_name`, as well as `goals` and `assists` metrics for that appearance. The contents of this file are automatically updated every week with the latest data from Transfermarkt website.<br/>
 :information_source: Have a look at the version history for a record of the updates an improvements on this dataset.
 
+| Region  | League Code | Country     | Availablilty       | First Season |
+|---------|-------------|-------------|--------------------|--------------|
+| Europe  | ES1         | Spain       | :white_check_mark: | current      |
+| Europe  | GB1         | England     | :white_check_mark: | current      |
+| Europe  | L1          | Germany     | :white_check_mark: | current      |
+| Europe  | NL1         | Netherlands | :white_check_mark: | current      |
+| Europe  | DK1         | Denmark     | :white_check_mark: | current      |
+| Europe  | TR1         | Turkey      | :white_check_mark: | current      |
+| Europe  | GR1         | Greece      | :white_check_mark: | current      |
+| Europe  | IT1         | Italy       | :white_check_mark: | current      |
+| Europe  | BE1         | Belgium     | :white_check_mark: | current      |
+| Europe  | PO1         | Portugal    | :white_check_mark: | current      |
+| Europe  | FR1         | France      | :white_check_mark: | current      |
+| Europe  | RU1         | Russia      | :white_check_mark: | current      |
+| Europe  | UKR1        | Ukraine     | :white_check_mark: | current      |
+| Europe  | SC1         | Scotland    | :white_check_mark: | current      |
+| America | All         | All         | :x:                | -            |
+| Asia    | All         | All         | :x:                | -            |
+| Africa  | All         | All         | :x:                | -            |
+
+
 ### Acknowledgements
 * Source data at [Transfermark website](https://www.transfermarkt.co.uk/)
 * Data pipeline code for creating and keeping this dataset up to date is maintained at [player-scores](https://github.com/dcaribou/player-scores) github project
 * Scraper code is published as an independent project [here](https://github.com/dcaribou/transfermarkt-scraper)
 
-> Currently, this dataset contains data from `ES1 ` (Spanish first league) current season only, but there are more leagues, competitions and historical data to come. Checkout roadmap at [player-scores](https://github.com/dcaribou/player-scores)
 """
 appearances = package.get_resource("appearances")
 appearances.name = "Appearances"
