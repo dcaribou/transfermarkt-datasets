@@ -15,4 +15,7 @@ module "base" {
   source = "./base"
   bucket_name = "player-scores"
   user_name = "player-scores"
+  tags = {
+    "project" = "player-scores"
+  }
 }

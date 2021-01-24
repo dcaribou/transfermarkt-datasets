@@ -7,3 +7,8 @@ variable "user_name" {
   type = string
   description = "The name of the user for the project"
 }
+
+variable "tags" {
+  type = map
+  description = "Project tags"
+}
