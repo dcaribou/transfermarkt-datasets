@@ -88,6 +88,43 @@ def improve_columns(df: pandas.DataFrame) -> pandas.DataFrame:
 
   df['red_cards'] = (df['red_cards'] != 0).astype('int32')
 
+  # player position long name
+  df['player_position'] = numpy.select(
+    [
+        df['player_position'] == 'RW', 
+        df['player_position'] == 'RB',
+        df['player_position'] == 'SW',
+        df['player_position'] == 'LM',
+        df['player_position'] == 'GK',
+        df['player_position'] == 'LB',
+        df['player_position'] == 'DM',
+        df['player_position'] == 'CB',
+        df['player_position'] == 'CF',
+        df['player_position'] == 'LW',
+        df['player_position'] == 'SS',
+        df['player_position'] == 'CM',
+        df['player_position'] == 'AM',
+        df['player_position'] == 'RM',
+    ], 
+    [
+        'Right Winger', 
+        'Right-Back',
+        'Sweeper',
+        'Left Midfield',
+        'Goalkeeper',
+        'Left-Back',
+        'Defensive Midfield',
+        'Center-Back',
+        'Center Forward',
+        'Left Winger',
+        'Second Striker',
+        'Center Midfiled',
+        'Attacking Midfield',
+        'Right Midfield',
+    ], 
+    default=numpy.NaN
+)
+
   return df
 
 def filter_appearances(df: pandas.DataFrame) -> pandas.DataFrame:
