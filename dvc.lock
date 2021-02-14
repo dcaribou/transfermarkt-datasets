@@ -1,17 +1,23 @@
-fetch_appearances:
-  cmd: data/fetch_appearances.sh data/site_map__european_top_leagues.json data/raw/appearances.json
-  outs:
-  - path: data/raw/appearances.json
-    md5: 47fd22a3e00d5f4efbe4ba4bfd14c1c6
-    size: 29681666
 data_prep:
-  cmd: papermill prep/prep.ipynb - --cwd prep -p raw_file data/raw/appearances.json
-    -p prep_file data/prep/appearances.csv
+  cmd: (cd prep && python prep.py data/raw/appearances.json data/prep/appearances.csv)
   deps:
   - path: data/raw/appearances.json
-    md5: 47fd22a3e00d5f4efbe4ba4bfd14c1c6
-    size: 29681666
+    md5: b8ee0638a403d0bf347d859139bb6c56
+    size: 50929658
   outs:
   - path: data/prep/appearances.csv
-    md5: 9023fcfb608ccb517b07e4a1713e2dfc
-    size: 9736594
+    md5: fa63d7a65f32c10a1be5d73483c057fe
+    size: 10117661
+fetch_raw:
+  cmd: data/fetch_raw.sh data/leagues.json data/raw/clubs.json data/raw/players.json
+    data/raw/appearances.json
+  outs:
+  - path: data/raw/appearances.json
+    md5: 664d7abb61487e9356311001dc4d8eec
+    size: 53929989
+  - path: data/raw/clubs.json
+    md5: 51e3a3a3a03e8615ce3f451befd974a9
+    size: 38822
+  - path: data/raw/players.json
+    md5: 2a19fe00f1120fe1c13bd550b439f12f
+    size: 1092863

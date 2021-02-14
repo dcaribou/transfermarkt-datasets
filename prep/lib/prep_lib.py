@@ -53,40 +53,78 @@ def infer_season(series: pandas.Series) -> pandas.Series:
 
 def add_new_columns(df: pandas.DataFrame) -> pandas.DataFrame:
 
+  def get_href_part(href, part):
+    href_parts = href.split('/')
+    return href_parts[part]
+
+  df['for_club_id'] = df['for'].apply(lambda x: get_href_part(x['href'], 4)).astype('int32')
+  df['for_club_name'] = df['for'].apply(lambda x: get_href_part(x['href'], 1))
+
+  df['opponent_club_id'] = df['opponent'].apply(lambda x: get_href_part(x['href'], 4)).astype(int)
+  df['opponent_club_name'] = df['opponent'].apply(lambda x: get_href_part(x['href'], 1))
+
+  df['home_club_name'] = numpy.where(
+    df['venue'] == 'H',
+    df['for_club_name'],
+    df['opponent_club_name']
+  )
+  df['home_club_id'] = numpy.where(
+    df['venue'] == 'H',
+    df['for_club_id'],
+    df['opponent_club_id']
+  )
+
+  df['away_club_name'] = numpy.where(
+    df['venue'] == 'H',
+    df['opponent_club_name'],
+    df['for_club_name']
+  )
+  df['away_club_id'] = numpy.where(
+    df['venue'] == 'H',
+    df['opponent_club_id'],
+    df['for_club_id']
+  )
+
+  df['player_id'] = df['parent'].apply(lambda x: get_href_part(x['href'], 4)).astype('int32')
+  df['player_name'] = df['parent'].apply(lambda x: get_href_part(x['href'], 1))
+
   df_new = create_surrogate_key('game_id', ['home_club_name', 'date'], df)
-  df_new = create_surrogate_key('player_id', ['player_name', 'player_club_name'], df_new)
   df_new = create_surrogate_key('appearance_id', ['player_id', 'date'], df_new)
-  df_new = create_surrogate_key('home_club_id', ['home_club_name'], df_new)
-  df_new = create_surrogate_key('away_club_id', ['away_club_name'], df_new)
 
   df_new[['home_club_goals', 'away_club_goals']] = parse_aggregate(df_new['result'])
   del df_new['result']
 
   df_new['season'] = infer_season(df_new['date'])
 
-  # there is something off with game ID 27231, as some appearances have more than 90 minutes played
-  # for example https://www.transfermarkt.co.uk/tomas-ribeiro/leistungsdaten/spieler/433358/plus/1?saison=2020
-  # fix those apperances by rounding to 90 minutes played if the number is higher
-  df_new['minutes_played'] = numpy.where(
-    (df_new['game_id'] == 27231) & (df_new['minutes_played'] > 90),
-    90,
-    df_new['minutes_played']
-  )
-
   return df_new
 
 def improve_columns(df: pandas.DataFrame) -> pandas.DataFrame:
+
+  def cast_metric(metric):
+    if len(metric) == 0:
+      return 0
+    else:
+      return int(metric)
+
+  def cast_minutes_played(minutes_played):
+    if len(minutes_played) > 0:
+      numeric = minutes_played[:-1]
+      return int(numeric)
+    else:
+      return 0
+
   # recasts
-  df['goals'] = df['goals'].astype('int32')
-  df['assists'] = df['assists'].astype('int32')
-  df['own_goals'] = df['own_goals'].astype('int32')
+  df['goals'] = df['goals'].apply(cast_metric)
+  df['assists'] = df['assists'].apply(cast_metric)
+  # df['own_goals'] = df['own_goals'].apply(cast_metric)
   df['date'] = pandas.to_datetime(df['date'])
+  df['minutes_played'] = df['minutes_played'].apply(cast_minutes_played)
 
   # reshape cards columns
-  df['yellow_cards'] = (df['yellow_cards'] != 0).astype('int32') + (df['second_yellow_cards'] != 0).astype('int32')
+  df['yellow_cards'] = (df['yellow_cards'].str.len() > 0).astype('int32') + (df['second_yellow_cards'].str.len() > 0).astype('int32')
   del df['second_yellow_cards']
 
-  df['red_cards'] = (df['red_cards'] != 0).astype('int32')
+  df['red_cards'] = (df['red_cards'].str.len() > 0).astype('int32')
 
   # player position long name
   df['player_position'] = numpy.select(
@@ -134,9 +172,20 @@ def filter_appearances(df: pandas.DataFrame) -> pandas.DataFrame:
   domestic_competitions = [
     'ES1', 'GB1', 'L1', 'IT1', 'FR1', 'GR1', 'PO1', 'BE1', 'UKR1', 'BE1', 'RU1', 'DK1', 'SC1', 'TR1', 'NL1'
   ]
-  # filer appearances on a different league
-  condition = numpy.bitwise_not(((df['club_domestic_competition'].isin(domestic_competitions)) & (df['club_domestic_competition'] != df['competition'])))
-  df = df[condition]
+  df = df[df['competition'].isin(domestic_competitions)]
+
+  del df['type']
+  del df['href']
+  del df['parent']
+  del df['venue']
+  del df['for']
+  del df['for_club_id']
+  del df['opponent']
+  del df['opponent_club_id']
+  del df['opponent_club_name']
+
+  df = df.drop_duplicates()
+
   return df
 
 def assert_unique_on_column(df: pandas.DataFrame, columns):
@@ -151,8 +200,8 @@ def validate(df: pandas.DataFrame, validations):
   # -----------------------------
   # consistency
   # -----------------------------
-  def assert_minutes_played_gt_90(df: pandas.DataFrame):
-    appearances_w_mp_gt_90 = len(df[df['minutes_played'] > 90])
+  def assert_minutes_played_gt_120(df: pandas.DataFrame):
+    appearances_w_mp_gt_90 = len(df[df['minutes_played'] > 120])
     assert appearances_w_mp_gt_90 == 0, appearances_w_mp_gt_90
   def assert_goals_in_range(df: pandas.DataFrame):
     assert len(df[df['goals'] > 90]) == 0
@@ -177,9 +226,9 @@ def validate(df: pandas.DataFrame, validations):
   # -----------------------------
   # completeness
   # -----------------------------
-  def assert_clubs_per_domestic_competition(df: pandas.DataFrame):
+  def assert_clubs_per_competition(df: pandas.DataFrame):
     clubs_per_domestic_competition = (
-      df.groupby(['season', 'club_domestic_competition'])['player_club_name'].nunique()
+      df.groupby(['season', 'competition'])['player_club_name'].nunique()
     )
     # the number of clubs of the scotish league is 12
     # the number of clubs of the turkish league is 21
@@ -188,9 +237,7 @@ def validate(df: pandas.DataFrame, validations):
 
   def assert_games_per_season_per_club(df: pandas.DataFrame):
     games_per_season_per_club = (
-      df[df['competition'] == df['club_domestic_competition']]
-      .groupby(['season', 'competition', 'player_club_name'])['date']
-      .nunique()
+      df.groupby(['season', 'competition', 'player_club_name'])['date'].nunique()
     )
     assert (games_per_season_per_club != 38).sum() == 0
 
@@ -201,11 +248,15 @@ def validate(df: pandas.DataFrame, validations):
     assert (appearances_per_match < 11).sum() == 0
 
   def assert_appearances_per_club_per_game(df: pandas.DataFrame):
+    # allow inconsitencies for recent game match
+    df_new = df[df['date'] < (datetime.now() - timedelta(days=2))]
     # similarly, each club must have at least 11 appearances per game
     appearances_per_club_per_game = (
-      df.groupby(['player_club_name', 'game_id'])['appearance_id'].nunique()
+      df_new.groupby(['player_club_name', 'game_id'])['appearance_id'].nunique()
     )
-    assert (appearances_per_club_per_game < 11).sum() == 0
+    faulty_games = (appearances_per_club_per_game < 11).sum()
+    total_games = df_new['game_id'].nunique()
+    assert faulty_games == 0, f"{faulty_games}/{total_games}"
 
   def assert_appearances_freshness_is_less_than_one_week(df: pandas.DataFrame):
     max_appearance_per_club = (
@@ -218,14 +269,14 @@ def validate(df: pandas.DataFrame, validations):
 
   validations_base = {
     'assert_df_not_empty': assert_df_not_empty,
-    'assert_minutes_played_gt_90': assert_minutes_played_gt_90,
+    'assert_minutes_played_gt_120': assert_minutes_played_gt_120,
     'assert_goals_in_range': assert_goals_in_range,
     'assert_assists_in_range': assert_assists_in_range,
     'assert_own_goals_in_range': assert_own_goals_in_range,
     'assert_yellow_cards_range': assert_yellow_cards_range,
     'assert_red_cards_range': assert_red_cards_range,
     'assert_unique_on_player_and_date': assert_unique_on_player_and_date,
-    'assert_clubs_per_domestic_competition': assert_clubs_per_domestic_competition,
+    'assert_clubs_per_competition': assert_clubs_per_competition,
     'assert_games_per_season_per_club': assert_games_per_season_per_club,
     'assert_appearances_per_match': assert_appearances_per_match,
     'assert_appearances_per_club_per_game': assert_appearances_per_club_per_game,
