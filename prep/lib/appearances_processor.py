@@ -140,7 +140,7 @@ class AppearancesProcessor(BaseProcessor):
     domestic_competitions = [
       'ES1', 'GB1', 'L1', 'IT1', 'FR1', 'GR1', 'PO1', 'BE1', 'UKR1', 'BE1', 'RU1', 'DK1', 'SC1', 'TR1', 'NL1'
     ]
-    # df = df[df['competition'].isin(domestic_competitions)]
+    df = df[df['competition'].isin(domestic_competitions)]
 
     del df['type']
     del df['href']

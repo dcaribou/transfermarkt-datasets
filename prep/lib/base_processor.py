@@ -149,7 +149,7 @@ class BaseProcessor:
       )
       # the number of clubs of the scotish league is 12
       # the number of clubs of the turkish league is 21
-      failed_validations = numpy.bitwise_not(clubs_per_domestic_competition.between(12, 21))
+      failed_validations = clubs_per_domestic_competition[numpy.bitwise_not(clubs_per_domestic_competition.between(12, 21))]
       assert failed_validations.sum() == 0, failed_validations
 
     def assert_games_per_season_per_club(df: pandas.DataFrame):
