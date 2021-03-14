@@ -55,5 +55,28 @@ The main resource within this dataset is the `appearances.csv` file, which conta
 appearances = package.get_resource("appearances")
 appearances.name = "Appearances"
 appearances.description = "One row per player and game (appearance)"
+appearances.columns = [
+  'competition',
+  'round',
+  'date',
+  'player_position',
+  'goals',
+  'assists',
+  'yellow_cards',
+  'red_cards',
+  'minutes_played',
+  'player_club_name',
+  'home_club_name',
+  'home_club_id',
+  'away_club_name',
+  'away_club_id',
+  'player_id',
+  'player_name',
+  'game_id',
+  'appearance_id',
+  'home_club_goals',
+  'away_club_goals',
+  'season'
+ ]
 
 package.to_json("data/prep/dataset-metadata.json")
