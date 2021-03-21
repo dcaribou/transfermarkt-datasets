@@ -1,6 +1,6 @@
 stages:
   fetch_raw:
-    cmd: data/fetch_raw.sh data/leagues.json data/raw/clubs.json data/raw/players.json data/raw/appearances.json
+    cmd: data/fetch_raw.sh data/raw/leagues.json data/raw/clubs.json data/raw/players.json data/raw/appearances.json
     outs:
     - data/raw/clubs.json
     - data/raw/players.json

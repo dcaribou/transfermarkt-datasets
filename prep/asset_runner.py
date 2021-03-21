@@ -4,6 +4,7 @@ import json
 
 from assets.base import BaseProcessor
 from assets.clubs import ClubsProcessor
+from assets.leagues import LeaguesProcessor
 from assets.appearances import AppearancesProcessor
 
 import logging
@@ -25,6 +26,11 @@ class AssetRunner:
         'processor': AppearancesProcessor(
           raw_file_path=self.data_folder_path + '/appearances.json',
           prep_file_path=self.prep_folder_path + '/appearances.csv'
+        )},
+        {'name': 'leagues',
+        'processor': LeaguesProcessor(
+          raw_file_path=self.data_folder_path + '/leagues.json',
+          prep_file_path=self.prep_folder_path + '/leagues.csv'
         )}
       ]
       self.datapackage = None

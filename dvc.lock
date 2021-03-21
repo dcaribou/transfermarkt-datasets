@@ -12,8 +12,8 @@ data_prep:
     md5: 1b741110eccbeafe4574a87438dd4751
     size: 7048230
   - path: data/prep/clubs.csv
-    md5: 289b6d404ce5ff0e0f5bfbe7e141387d
-    size: 5624
+    md5: 66e3480c08733a601b233cc87fbfd46c
+    size: 6594
 fetch_raw:
   cmd: data/fetch_raw.sh data/leagues.json data/raw/clubs.json data/raw/players.json
     data/raw/appearances.json
