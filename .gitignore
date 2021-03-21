@@ -43,3 +43,5 @@ terraform.rc
 
 # Ignore PyCharm
 .idea
+
+.ipynb_checkpoints

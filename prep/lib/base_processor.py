@@ -1,3 +1,6 @@
+from frictionless import resource
+from frictionless import Detector
+from frictionless.resource import Resource
 from numpy.lib.function_base import select
 import pandas
 import numpy
@@ -26,8 +29,23 @@ class BaseProcessor:
       )
 
       self.prep_df = None
+      self.validations = None
       
       self.checkpoints = {}
+
+  def get_columns(self):
+    pass
+
+  def output_summary(self):
+    return str(self.prep_df.describe())
+
+  def validation_summary(self):
+    if len(self.validations) == 0:
+      return(f"All {len(self.get_validations())} validations passed!")
+    else:
+      from tabulate import tabulate # https://github.com/astanin/python-tabulate
+      table = [[elem['validation'], len(elem['error_asset'])] for elem in self.validations]
+    return tabulate(table, headers=['Validation', '# Errors'])
 
   def set_checkpoint(self, name, df):
     self.checkpoints[name] = df
@@ -42,6 +60,16 @@ class BaseProcessor:
       index=False
     )
 
+  def get_resource(self, name):
+    detector = Detector(schema_sync=True)
+    resource = Resource(
+      title=name,
+      path=self.prep_file_path,
+      trusted=True,
+      detector=detector
+    )
+    resource.schema = self.resource_schema()
+    return resource
 
   def flatten(df: pandas.DataFrame, list_fields: List[str]) -> pandas.DataFrame:
     """Flatten a dataframe on a 'list' type colum
@@ -84,7 +112,7 @@ class BaseProcessor:
     parsed = series.str.split(":", expand=True)
     cols = ['home_club_goals', 'away_club_goals']
     parsed.columns = cols
-    parsed[cols] = parsed[cols].apply(pandas.to_numeric, errors='coerce')
+    parsed[cols] = parsed[cols].astype('int32',errors='ignore')
     return parsed
 
   @classmethod
@@ -104,19 +132,25 @@ class BaseProcessor:
 
   def validate(self):
     validations = self.get_validations()
-    failed_validations = 0
+    failed_validations = []
 
     df = self.prep_df
 
     def assert_df_not_empty(df: pandas.DataFrame):
       assert len(df) > 0
-      
-    def assert_unique_on_column(df: pandas.DataFrame, columns):
-      counts = df.groupby(columns).size().reset_index(name='counts')
-      assert len(counts[counts['counts'] > 1]) == 0, counts[counts['counts'] > 1]
+
+    # -----------------------------
+    # schema
+    # -----------------------------
+    def assert_expected_columns(df: pandas.DataFrame):
+      pass;
+
     # -----------------------------
     # consistency
     # -----------------------------
+    def assert_unique_on_column(df: pandas.DataFrame, columns):
+      counts = df.groupby(columns).size().reset_index(name='counts')
+      assert len(counts[counts['counts'] > 1]) == 0, counts[counts['counts'] > 1]
     def assert_minutes_played_gt_120(df: pandas.DataFrame):
       appearances_w_mp_gt_90 = len(df[df['minutes_played'] > 120])
       assert appearances_w_mp_gt_90 == 0, appearances_w_mp_gt_90
@@ -140,6 +174,7 @@ class BaseProcessor:
       assert df['yellow_cards'].nunique() != 1
     def assert_red_cards_not_constant(df: pandas.DataFrame):
       assert df['red_cards'].nunique() != 1
+
     # -----------------------------
     # completeness
     # -----------------------------
@@ -156,7 +191,8 @@ class BaseProcessor:
       games_per_season_per_club = (
         df.groupby(['season', 'competition', 'player_club_id'])['date'].nunique()
       )
-      assert (games_per_season_per_club != 38).sum() == 0
+      failed_validations = games_per_season_per_club[games_per_season_per_club != 38]
+      assert failed_validations.sum() == 0, failed_validations
 
     def assert_appearances_per_match(df: pandas.DataFrame):
       appearances_per_match = (
@@ -209,12 +245,13 @@ class BaseProcessor:
       try:
         validations_base[validation](df)
       except AssertionError as error:
-        failed_validations+=1
         error_asset = error.args[0]
-        count = len(error_asset)
-        print(f"--> Validation {validation} did not pass: {count}")
-        print(error_asset)
+        failed_validations.append({
+          'validation': validation,
+          'error_asset': error_asset
+        })
 
+    self.validations = failed_validations
     return failed_validations
 
 

@@ -1,3 +1,7 @@
+from frictionless.field import Field
+from frictionless.resource import Resource
+from frictionless.schema import Schema
+
 import numpy
 import pandas
 
@@ -26,3 +30,14 @@ class ClubsProcessor(BaseProcessor):
     return [
       'assert_df_not_empty'
     ]
+
+  def resource_schema(self):
+    self.schema = Schema()
+
+    self.schema.add_field(Field(name='club_id', type='integer'))
+    self.schema.add_field(Field(name='name', type='string'))
+    self.schema.add_field(Field(name='domestic_competition', type='string'))
+
+    self.schema.primary_key = ['club_id']
+
+    return self.schema
