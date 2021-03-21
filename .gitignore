@@ -45,3 +45,4 @@ terraform.rc
 .idea
 
 .ipynb_checkpoints
+.virtual_documents
