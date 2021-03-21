@@ -2,20 +2,21 @@ from frictionless.package import Package
 from frictionless import describe
 from frictionless.resource import Resource
 from frictionless.validate import validate_package
+import json
 
 import pandas as pd
 import numpy as np
 
-from lib.base_processor import BaseProcessor
-from lib.clubs_processor import ClubsProcessor
-from lib.appearances_processor import AppearancesProcessor
+from assets.base import BaseProcessor
+from assets.clubs import ClubsProcessor
+from assets.appearances import AppearancesProcessor
 
 import logging
 logging.basicConfig(format='%(message)s', level=logging.INFO)
 
 import pathlib
 
-class Processor:
+class AssetRunner:
   def __init__(self, data_folder_path='data') -> None:
       self.data_folder_path = data_folder_path
       self.raw_folder_path = data_folder_path + '/raw'
@@ -134,4 +135,29 @@ class Processor:
 
     self.validation_report = validate_package(package, trusted=True)
 
+    def pretty_print_json(dict_variable):
+      json_string = json.dumps(dict_variable, indent=4, sort_keys=True)
+      return json_string
+
+    logging.info("--> Datapackage validation report")
+    logging.info(self.summarize_validation_report())
+
+    with open("datapackage_validation.json", 'w+') as file:
+      file.write(
+        pretty_print_json(self.validation_report)
+      )
+
     self.datapackage = package
+
+  def summarize_validation_report(self):
+    errors = self.validation_report['stats']['errors']
+    if errors == 0:
+      return "All validations have passed!"
+    else:
+      return f">={errors} rows did not pass validations!"
+
+  def replace_prep_files(self):
+    target_path = pathlib.Path(self.data_folder_path)
+    source_path = pathlib.Path(self.prep_folder_path)
+
+    source_path.replace(target_path)

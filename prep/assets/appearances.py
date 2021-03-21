@@ -3,7 +3,7 @@ import pandas
 from frictionless.schema import Schema
 from frictionless.field import Field
 
-from .base_processor import BaseProcessor
+from .base import BaseProcessor
 
 class AppearancesProcessor(BaseProcessor):
 
@@ -206,5 +206,9 @@ class AppearancesProcessor(BaseProcessor):
     # self.schema.add_field(Field(name='own_goals', type='integer'))
     # self.schema.add_field(Field(name='domestic_competition', type='string'))
     self.schema.primary_key = ['appearance_id']
+    
+    self.schema.foreign_keys = [
+      {"fields": "home_club_id", "reference": {"resource": "clubs", "fields": "club_id"}}
+    ]
 
     return self.schema

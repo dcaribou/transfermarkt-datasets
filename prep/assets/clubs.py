@@ -1,11 +1,9 @@
 from frictionless.field import Field
-from frictionless.resource import Resource
 from frictionless.schema import Schema
 
-import numpy
 import pandas
 
-from .base_processor import BaseProcessor
+from .base import BaseProcessor
 
 class ClubsProcessor(BaseProcessor):
 
