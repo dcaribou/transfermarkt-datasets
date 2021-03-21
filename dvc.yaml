@@ -6,8 +6,10 @@ stages:
     - data/raw/players.json
     - data/raw/appearances.json
   data_prep:
-    cmd: (cd prep && python prep.py data/raw/appearances.json data/prep/appearances.csv)
+    cmd: (cd prep && python prep.py ../data/raw && mv stage/* ../data/prep)
     deps:
     - data/raw/appearances.json
+    - data/raw/clubs.json
     outs:
     - data/prep/appearances.csv
+    - data/prep/clubs.csv
