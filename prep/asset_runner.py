@@ -142,6 +142,7 @@ class AssetRunner:
       )
 
     self.datapackage = package
+    package.to_json(self.prep_folder_path + '/dataset-metadata.json')
 
   def summarize_validation_report(self):
     errors = self.validation_report['stats']['errors']
