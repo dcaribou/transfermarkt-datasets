@@ -13,11 +13,11 @@ All project data assets are kept inside this folder. This is a [DVC](https://dvc
 ## [prep](prep)
 Transform scraped data into a cleaned and validated dataset that can be published as a [data package](https://specs.frictionlessdata.io/), and used as the base of further analysis in this project.
 
-Checkout the [Kaggle Dataset](https://www.kaggle.com/davidcariboo/player-scores) for a reference pepared files.
+Checkout [our Kaggle Dataset](https://www.kaggle.com/davidcariboo/player-scores) for a reference of prepared files produced in this step.
 
 ## [viz](viz) 🚧
-Some [custom visualizations]((https://public.tableau.com/views/Dashboard_16101859073170/OffensivePerformance?:language=es&:display_count=y&publish=yes&:origin=viz_share_link)) built on top of appearances data are referenced here for demonstrative purposes.
+Some [custom visualizations](https://public.tableau.com/views/Dashboard_16101859073170/OffensivePerformance?:language=es&:display_count=y&publish=yes&:origin=viz_share_link) built on top of appearances for demonstrative purposes.
 
 ## [infra](infra)
-Defines all the necessary infrastructure for the project in the AWS cloud.
+Define all the necessary infrastructure for the project in the AWS cloud.
 

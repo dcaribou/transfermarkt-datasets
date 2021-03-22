@@ -29,4 +29,4 @@ jobs:
         cd prep
         python prep.py --datapackage-metadata \
           && cp stage/dataset-metadata.json ../data/prep \
-          && kaggle datasets version -p data/prep -m "${{ github.event.head_commit.message }}" -d
+          && kaggle datasets version -p ../data/prep -m "${{ github.event.head_commit.message }}" -d
