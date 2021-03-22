@@ -5,8 +5,8 @@ channels:
 dependencies:
   - python=3.8
   - notebook
-  - papermill
   - pandas
   - kaggle
-  - dvc
+  - boto3
+  - dvc[s3]
   - frictionless

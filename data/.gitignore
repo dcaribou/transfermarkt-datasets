@@ -1,3 +1,4 @@
-/raw/appearances.json
-/prep/appearances.csv
+/raw/*.json
+/prep/*.csv
 prep/dataset-metadata.json
+!/raw/leagues.json

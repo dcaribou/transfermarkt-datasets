@@ -1,12 +1,17 @@
 stages:
-  fetch_appearances:
-    cmd: data/fetch_appearances.sh data/site_map__european_top_leagues.json data/raw/appearances.json
+  fetch_raw:
+    cmd: data/fetch_raw.sh data/raw/leagues.json data/raw/clubs.json data/raw/players.json data/raw/appearances.json
     outs:
+    - data/raw/clubs.json
+    - data/raw/players.json
     - data/raw/appearances.json
   data_prep:
-    cmd: papermill prep/prep.ipynb - --cwd prep -p raw_file data/raw/appearances.json
-      -p prep_file data/prep/appearances.csv
+    cmd: (cd prep && python prep.py --raw-files-location ../data/raw && cp stage/* ../data/prep)
     deps:
     - data/raw/appearances.json
+    - data/raw/clubs.json
+    - data/raw/leagues.json
     outs:
     - data/prep/appearances.csv
+    - data/prep/clubs.csv
+    - data/prep/leagues.csv

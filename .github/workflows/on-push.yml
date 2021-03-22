@@ -26,5 +26,7 @@ jobs:
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       run: |
         dvc pull
-        python data/prep/dataset-metadata.py
-        kaggle datasets version -p data/prep -m "${{ github.event.head_commit.message }}" -d
+        cd prep
+        python prep.py --datapackage-metadata \
+          && cp stage/dataset-metadata.json ../data/prep \
+          && kaggle datasets version -p data/prep -m "${{ github.event.head_commit.message }}" -d
