@@ -7,5 +7,6 @@ dependencies:
   - notebook
   - pandas
   - kaggle
+  - boto3
   - dvc[s3]
   - frictionless
