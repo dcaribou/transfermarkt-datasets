@@ -1,6 +1,6 @@
 set -xe
 
-scraper_version=main
+scraper_version=v0.1.0
 
 leagues_file=$PWD/$1
 
