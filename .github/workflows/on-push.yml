@@ -2,7 +2,7 @@ name: Player Scores Data Pipeline (On Push)
 
 on:
   push:
-    branches: [fix-build]
+    branches: [master]
 
 jobs:
   data-pipeline:
