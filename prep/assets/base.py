@@ -60,13 +60,14 @@ class BaseProcessor:
       index=False
     )
 
-  def get_resource(self, name):
+  def get_resource(self, name, basepath):
     detector = Detector(schema_sync=True)
     resource = Resource(
       title=name,
-      path=self.prep_file_path,
+      path=self.prep_file_path.split('/')[-1],
       trusted=True,
-      detector=detector
+      detector=detector,
+      basepath=basepath
     )
     resource.schema = self.resource_schema()
     return resource

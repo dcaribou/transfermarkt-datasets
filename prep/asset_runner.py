@@ -75,7 +75,7 @@ class AssetRunner:
     logging.info("")
     asset_processor.export()
 
-  def generate_datapackage(self):
+  def generate_datapackage(self, basepath=None):
     """
     Generate datapackage.json for Kaggle Dataset
     """
@@ -83,7 +83,9 @@ class AssetRunner:
 
     # full spec at https://specs.frictionlessdata.io//data-package/
 
-    package = Package(trusted=True)
+    base_path = basepath or self.prep_folder_path
+
+    package = Package(trusted=True, basepath=base_path)
 
     package.title = "Football players' statistics from Transfermarkt website"
     package.keywords = [
@@ -131,7 +133,7 @@ class AssetRunner:
 
     """
     for asset in self.assets:
-      package.add_resource(asset['processor'].get_resource(asset['name']))
+      package.add_resource(asset['processor'].get_resource(asset['name'], base_path))
 
     self.validation_report = validate_package(package, trusted=True)
 

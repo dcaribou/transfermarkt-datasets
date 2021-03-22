@@ -2,7 +2,7 @@ set -xe
 
 scraper_version=main
 
-leagues_file=$1
+leagues_file=$PWD/$1
 
 # output paths defined as absolute paths are easier to deal with
 clubs_file=$PWD/$2
@@ -11,7 +11,7 @@ appearances_file=$PWD/$4
 
 # fetch clubs
 docker run \
-  -v "$(pwd)"/data/.:/app/parents \
+  -v $leagues_file:/app/parents/leagues.json \
   dcaribou/transfermarkt-scraper:$scraper_version \
   scrapy crawl clubs -a parents=parents/leagues.json \
   > $clubs_file
