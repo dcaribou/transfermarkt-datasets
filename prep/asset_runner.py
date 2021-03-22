@@ -103,6 +103,8 @@ class AssetRunner:
 
     ### Content
     The main resource within this dataset is the `appearances.csv` file, which contains **one row per player appearance** (one row per player per game played). Among other contextual data, on each appearance you will find a `date` and a `player_name`, as well as `goals` and `assists` metrics for that appearance. The contents of this file are automatically updated every week with the latest data from Transfermarkt website.<br/>
+    The `appearances.csv` resource might contain references to other entities, such as `clubs` and `leagues`, which are also included as part of this dataset.<br/>
+    
     :information_source: Have a look at the version history for a record of the updates an improvements on this dataset.
 
     | Region  | League Code | Country     | Availablilty       | First Season |

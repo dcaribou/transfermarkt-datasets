@@ -7,6 +7,9 @@ data_prep:
   - path: data/raw/clubs.json
     md5: 0f0f16c782e39d6ef8d708b38a9df7b0
     size: 38812
+  - path: data/raw/leagues.json
+    md5: 78ce56a97b1756568f64e5a29337ed3c
+    size: 1922
   outs:
   - path: data/prep/appearances.csv
     md5: 2b3bdbed8ba1a93ec69a76da87f2231b
@@ -14,6 +17,9 @@ data_prep:
   - path: data/prep/clubs.csv
     md5: ee8268947ab8d67cf4f9dca1674892ed
     size: 6584
+  - path: data/prep/leagues.csv
+    md5: b0b7855b8c39ed197af824de29df37b7
+    size: 355
 fetch_raw:
   cmd: data/fetch_raw.sh data/raw/leagues.json data/raw/clubs.json data/raw/players.json
     data/raw/appearances.json

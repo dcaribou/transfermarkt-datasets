@@ -10,6 +10,8 @@ stages:
     deps:
     - data/raw/appearances.json
     - data/raw/clubs.json
+    - data/raw/leagues.json
     outs:
     - data/prep/appearances.csv
     - data/prep/clubs.csv
+    - data/prep/leagues.csv
