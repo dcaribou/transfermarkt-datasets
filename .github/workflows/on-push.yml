@@ -24,6 +24,7 @@ jobs:
         KAGGLE_KEY: ${{ secrets.KAGGLE_KEY }}
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        AWS_EC2_METADATA_DISABLED: true # https://github.com/aws/aws-cli/issues/5262
       run: |
         dvc pull
         cd prep

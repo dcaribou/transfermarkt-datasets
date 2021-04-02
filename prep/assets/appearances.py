@@ -7,6 +7,9 @@ from .base import BaseProcessor
 
 class AppearancesProcessor(BaseProcessor):
 
+  name = 'appearances'
+  description = "All appearances for all players in `clubs`. One row per appearance."
+
   def process(self):
 
     # 1 - ADD
@@ -169,8 +172,6 @@ class AppearancesProcessor(BaseProcessor):
       'assert_red_cards_range',
       'assert_unique_on_player_and_date',
       'assert_clubs_per_competition',
-      # it should pass for historical seasons with 20 clubs
-      'assert_games_per_season_per_club',
       'assert_appearances_per_match',
       # 'assert_appearances_per_club_per_game', # TODO
       # 'assert_appearances_freshness_is_less_than_one_week', # TODO
