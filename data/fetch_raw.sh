@@ -31,8 +31,6 @@ docker run \
   > $appearances_file
 
 # save snapshot
-aws s3 rm s3://player-scores/snapshots/$(date +"%Y-%m-%d")
-
-# aws s3 cp $clubs_file s3://player-scores/snapshots/$(date +"%Y-%m-%d")/clubs.json
-# aws s3 cp $players_file s3://player-scores/snapshots/$(date +"%Y-%m-%d")/players.json
-# aws s3 cp $appearances_file s3://player-scores/snapshots/$(date +"%Y-%m-%d")/appearances.json
+aws s3 cp $clubs_file s3://player-scores/snapshots/assets/clubs.json
+aws s3 cp $players_file s3://player-scores/snapshots/assets/players.json
+aws s3 cp $appearances_file s3://player-scores/snapshots/assets/appearances.json
