@@ -2,7 +2,7 @@ name: Player Scores Data Pipeline (On Push)
 
 on:
   push:
-    branches: [master]
+    branches: [fix-scheduled-run]
 
 jobs:
   data-pipeline:
@@ -25,8 +25,4 @@ jobs:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       run: |
-        dvc pull
-        cd prep
-        python prep.py --datapackage-metadata \
-          && cp stage/dataset-metadata.json ../data/prep \
-          && kaggle datasets version -p ../data/prep -m "${{ github.event.head_commit.message }}" -d
+        dvc repro
