@@ -30,8 +30,8 @@ docker run \
   scrapy crawl appearances -a parents=parents/players.json \
   > $appearances_file
 
-# # save snapshot
-# aws s3 rm s3://player-scores/snapshots/$(date +"%Y-%m-%d")
+# save snapshot
+aws s3 rm s3://player-scores/snapshots/$(date +"%Y-%m-%d")
 
 # aws s3 cp $clubs_file s3://player-scores/snapshots/$(date +"%Y-%m-%d")/clubs.json
 # aws s3 cp $players_file s3://player-scores/snapshots/$(date +"%Y-%m-%d")/players.json
