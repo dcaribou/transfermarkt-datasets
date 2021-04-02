@@ -9,6 +9,9 @@ from typing import List
 from datetime import datetime, timedelta
 
 class BaseProcessor:
+  name = None
+  description = None
+
   def __init__(self, raw_file_path, prep_file_path=None) -> None:
 
       self.raw_file_path = raw_file_path
@@ -60,13 +63,14 @@ class BaseProcessor:
       index=False
     )
 
-  def get_resource(self, name, basepath):
+  def get_resource(self, basepath):
     detector = Detector(schema_sync=True)
     resource = Resource(
-      title=name,
+      title=self.name,
       path=self.prep_file_path.split('/')[-1],
       trusted=True,
       detector=detector,
+      description=self.description,
       basepath=basepath
     )
     resource.schema = self.resource_schema()
@@ -188,13 +192,6 @@ class BaseProcessor:
       failed_validations = clubs_per_domestic_competition[numpy.bitwise_not(clubs_per_domestic_competition.between(12, 21))]
       assert failed_validations.sum() == 0, failed_validations
 
-    def assert_games_per_season_per_club(df: pandas.DataFrame):
-      games_per_season_per_club = (
-        df.groupby(['season', 'competition', 'player_club_id'])['date'].nunique()
-      )
-      failed_validations = games_per_season_per_club[games_per_season_per_club != 38]
-      assert failed_validations.sum() == 0, failed_validations
-
     def assert_appearances_per_match(df: pandas.DataFrame):
       appearances_per_match = (
         df.groupby(['home_club_id', 'away_club_id', 'date'])['appearance_id'].nunique()
@@ -232,7 +229,6 @@ class BaseProcessor:
       'assert_red_cards_range': assert_red_cards_range,
       'assert_unique_on_player_and_date': assert_unique_on_player_and_date,
       'assert_clubs_per_competition': assert_clubs_per_competition,
-      'assert_games_per_season_per_club': assert_games_per_season_per_club,
       'assert_appearances_per_match': assert_appearances_per_match,
       'assert_appearances_per_club_per_game': assert_appearances_per_club_per_game,
       'assert_appearances_freshness_is_less_than_one_week': assert_appearances_freshness_is_less_than_one_week,

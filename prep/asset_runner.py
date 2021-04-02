@@ -98,44 +98,44 @@ class AssetRunner:
       "CC0": "Public Domain"
     }]
     package.description = """
-    ### Context
-    Football (soccer) datasets containing historical match aggregates are widely available. However, structured, publicly available datasets on a **player level** for those games, such as the one contained in [Transfermarkt's player detailed performance page](https://www.transfermarkt.co.uk/diogo-jota/leistungsdatendetails/spieler/340950/saison/2020/verein/0/liga/0/wettbewerb/GB1/pos/0/trainer_id/0/plus/1), are more difficult to find. This dataset aims to present that data in an accessible, standard format.
+### Context
+Football (soccer) datasets containing historical match aggregates are widely available. However, structured, publicly available datasets on a **player level** for those games, such as the one contained in [Transfermarkt's player detailed performance page](https://www.transfermarkt.co.uk/diogo-jota/leistungsdatendetails/spieler/340950/saison/2020/verein/0/liga/0/wettbewerb/GB1/pos/0/trainer_id/0/plus/1), are more difficult to find. This dataset aims to present that data in an accessible, standard format.
 
-    ### Content
-    The main resource within this dataset is the `appearances.csv` file, which contains **one row per player appearance** (one row per player per game played). Among other contextual data, on each appearance you will find a `date` and a `player_name`, as well as `goals` and `assists` metrics for that appearance. The contents of this file are automatically updated every week with the latest data from Transfermarkt website.<br/>
-    The `appearances.csv` resource might contain references to other entities, such as `clubs` and `leagues`, which are also included as part of this dataset.<br/>
-    
-    :information_source: Have a look at the version history (or the [player-scores](https://github.com/dcaribou/player-scores) commit log) for a record of the changes on this dataset.
+### Content
+The main resource within this dataset is the `appearances.csv` file, which contains **one row per player appearance** (one row per player per game played). Among other contextual data, on each appearance you will find a `date` and a `player_name`, as well as `goals` and `assists` metrics for that appearance. The contents of this file are automatically updated every week with the latest data from Transfermarkt website.<br/>
+The `appearances.csv` resource might contain references to other entities, such as `clubs` and `leagues`, which are also included as part of this dataset.<br/>
 
-    | Region  | League Code | Country     | Availablilty       | First Season |
-    |---------|-------------|-------------|--------------------|--------------|
-    | Europe  | ES1         | Spain       | :white_check_mark: | current      |
-    | Europe  | GB1         | England     | :white_check_mark: | current      |
-    | Europe  | L1          | Germany     | :white_check_mark: | current      |
-    | Europe  | NL1         | Netherlands | :white_check_mark: | current      |
-    | Europe  | DK1         | Denmark     | :white_check_mark: | current      |
-    | Europe  | TR1         | Turkey      | :white_check_mark: | current      |
-    | Europe  | GR1         | Greece      | :white_check_mark: | current      |
-    | Europe  | IT1         | Italy       | :white_check_mark: | current      |
-    | Europe  | BE1         | Belgium     | :white_check_mark: | current      |
-    | Europe  | PO1         | Portugal    | :white_check_mark: | current      |
-    | Europe  | FR1         | France      | :white_check_mark: | current      |
-    | Europe  | RU1         | Russia      | :white_check_mark: | current      |
-    | Europe  | UKR1        | Ukraine     | :white_check_mark: | current      |
-    | Europe  | SC1         | Scotland    | :white_check_mark: | current      |
-    | America | All         | All         | :x:                | -            |
-    | Asia    | All         | All         | :x:                | -            |
-    | Africa  | All         | All         | :x:                | -            |
+:information_source: Have a look at the version history (or the [player-scores](https://github.com/dcaribou/player-scores) commit log) for a record of the changes on this dataset.
+
+| Region  | League Code | Country     | Availablilty       | First Season |
+|---------|-------------|-------------|--------------------|--------------|
+| Europe  | ES1         | Spain       | :white_check_mark: | current      |
+| Europe  | GB1         | England     | :white_check_mark: | current      |
+| Europe  | L1          | Germany     | :white_check_mark: | current      |
+| Europe  | NL1         | Netherlands | :white_check_mark: | current      |
+| Europe  | DK1         | Denmark     | :white_check_mark: | current      |
+| Europe  | TR1         | Turkey      | :white_check_mark: | current      |
+| Europe  | GR1         | Greece      | :white_check_mark: | current      |
+| Europe  | IT1         | Italy       | :white_check_mark: | current      |
+| Europe  | BE1         | Belgium     | :white_check_mark: | current      |
+| Europe  | PO1         | Portugal    | :white_check_mark: | current      |
+| Europe  | FR1         | France      | :white_check_mark: | current      |
+| Europe  | RU1         | Russia      | :white_check_mark: | current      |
+| Europe  | UKR1        | Ukraine     | :white_check_mark: | current      |
+| Europe  | SC1         | Scotland    | :white_check_mark: | current      |
+| America | All         | All         | :x:                | -            |
+| Asia    | All         | All         | :x:                | -            |
+| Africa  | All         | All         | :x:                | -            |
 
 
-    ### Acknowledgements
-    * Source data at [Transfermark website](https://www.transfermarkt.co.uk/)
-    * Data pipeline code for creating and keeping this dataset up to date is maintained at [player-scores](https://github.com/dcaribou/player-scores) github project
-    * Scraper code is published as an independent project [here](https://github.com/dcaribou/transfermarkt-scraper)
+### Acknowledgements
+* Source data at [Transfermark website](https://www.transfermarkt.co.uk/)
+* Data pipeline code for creating and keeping this dataset up to date is maintained at [player-scores](https://github.com/dcaribou/player-scores) github project
+* Scraper code is published as an independent project [here](https://github.com/dcaribou/transfermarkt-scraper)
 
     """
     for asset in self.assets:
-      package.add_resource(asset['processor'].get_resource(asset['name'], base_path))
+      package.add_resource(asset['processor'].get_resource(base_path))
 
     self.validation_report = validate_package(package, trusted=True)
 
