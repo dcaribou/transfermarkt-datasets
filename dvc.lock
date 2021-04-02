@@ -25,11 +25,11 @@ fetch_raw:
     data/raw/appearances.json
   outs:
   - path: data/raw/appearances.json
-    md5: fbc30020afacc5bbb8633fe8901e0dbf
-    size: 67092725
+    md5: 5c023fedd0537d0cff39591fee5ebe42
+    size: 5412709
   - path: data/raw/clubs.json
-    md5: 421a91a7ff85006982b8bb0e213622d3
-    size: 38721
+    md5: 271ba43291e6754acdaff947a715943d
+    size: 2877
   - path: data/raw/players.json
-    md5: 394f24be72a1f9e7f7ce4cf2e70c947e
-    size: 1072678
+    md5: 9b36d3c97167010e913ebf8fd2b6b805
+    size: 84068
