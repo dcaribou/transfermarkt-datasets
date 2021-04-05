@@ -2,8 +2,38 @@ import numpy
 import pandas
 from frictionless.schema import Schema
 from frictionless.field import Field
+from datetime import datetime
+from typing import List
 
 from .base import BaseProcessor
+
+def parse_aggregate(series: pandas.Series) -> pandas.DataFrame:
+  parsed = series.str.split(":", expand=True)
+  cols = ['home_club_goals', 'away_club_goals']
+  parsed.columns = cols
+  parsed[cols] = parsed[cols].astype('int32',errors='ignore')
+  return parsed
+
+def infer_season(series: pandas.Series) -> pandas.Series:
+  def infer_season(date: datetime):
+    year = date.year
+    month = date.month
+    if month >= 8 and month <= 12:
+      return year
+    if month >= 1 and month <8:
+      return year - 1
+
+  return series.apply(infer_season)
+
+def create_surrogate_key(name: str, columns: List[str], df: pandas.DataFrame) -> pandas.DataFrame:
+    games_df = df.drop_duplicates(subset=columns).sort_values(
+      by=columns
+    )[columns]
+    games_df[name] = games_df.index.values + 1
+    return df.merge(
+      games_df,
+      on=columns
+    )
 
 class AppearancesProcessor(BaseProcessor):
 
@@ -40,13 +70,13 @@ class AppearancesProcessor(BaseProcessor):
     df['player_name'] = df['parent'].apply(lambda x: get_href_part(x['href'], 1))
     df['player_club_id'] = df['for_club_id']
 
-    df_new = self.create_surrogate_key('game_id', ['home_club_id', 'date'], df)
-    df_new = self.create_surrogate_key('appearance_id', ['player_id', 'date'], df_new)
+    df_new = create_surrogate_key('game_id', ['home_club_id', 'date'], df)
+    df_new = create_surrogate_key('appearance_id', ['player_id', 'date'], df_new)
 
-    df_new[['home_club_goals', 'away_club_goals']] = self.parse_aggregate(df_new['result'])
+    df_new[['home_club_goals', 'away_club_goals']] = parse_aggregate(df_new['result'])
     del df_new['result']
 
-    df_new['season'] = self.infer_season(df_new['date'])
+    df_new['season'] = infer_season(df_new['date'])
 
     self.set_checkpoint('add', df_new)
 
@@ -59,9 +89,9 @@ class AppearancesProcessor(BaseProcessor):
       'competition_code': 'competition'
     }
 
-    df = self.renames(
-      self.get_checkpoint('add'), 
-      mappings
+    df = self.get_checkpoint('add').rename(
+      columns=mappings,
+      errors="raise"
     )
 
     self.set_checkpoint('renames', df)

@@ -1,11 +1,9 @@
-from frictionless import resource
 from frictionless import Detector
 from frictionless.resource import Resource
 from numpy.lib.function_base import select
 import pandas
 import numpy
 import json
-from typing import List
 from datetime import datetime, timedelta
 
 class BaseProcessor:
@@ -76,61 +74,6 @@ class BaseProcessor:
     resource.schema = self.resource_schema()
     return resource
 
-  def flatten(df: pandas.DataFrame, list_fields: List[str]) -> pandas.DataFrame:
-    """Flatten a dataframe on a 'list' type colum
-    Parameters:
-      df -> A pandas dataframe
-      list_fields -> A list of fields of type 'list'
-    """
-    
-    non_list_fileds = [column for column in df.columns if column not in list_fields]
-
-    df_as_json_lists_string = df.to_json(orient='records')
-    df_as_json_lists = json.loads(df_as_json_lists_string)
-
-    return pandas.json_normalize(
-      df_as_json_lists,
-      list_fields,
-      non_list_fileds
-    )
-
-  @classmethod
-  def renames(cls, df: pandas.DataFrame, mappings: dict) -> pandas.DataFrame:
-    return df.rename(
-      columns=mappings,
-      errors="raise"
-    )
-
-  @classmethod
-  def create_surrogate_key(cls, name: str, columns: List[str], df: pandas.DataFrame) -> pandas.DataFrame:
-    games_df = df.drop_duplicates(subset=columns).sort_values(
-      by=columns
-    )[columns]
-    games_df[name] = games_df.index.values + 1
-    return df.merge(
-      games_df,
-      on=columns
-    )
-
-  @classmethod
-  def parse_aggregate(cls, series: pandas.Series) -> pandas.DataFrame:
-    parsed = series.str.split(":", expand=True)
-    cols = ['home_club_goals', 'away_club_goals']
-    parsed.columns = cols
-    parsed[cols] = parsed[cols].astype('int32',errors='ignore')
-    return parsed
-
-  @classmethod
-  def infer_season(cls, series: pandas.Series) -> pandas.Series:
-    def infer_season(date: datetime):
-      year = date.year
-      month = date.month
-      if month >= 8 and month <= 12:
-        return year
-      if month >= 1 and month <8:
-        return year - 1
-
-    return series.apply(infer_season)
 
   def get_validations(self):
     pass
