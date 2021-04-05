@@ -25,12 +25,10 @@ jobs:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       run: |
-        python -m ipykernel install --user --name player-scores
         dvc repro
     - name: Update kaggle dataset
       env:
         KAGGLE_USERNAME: ${{ secrets.KAGGLE_USERNAME }}
         KAGGLE_KEY: ${{ secrets.KAGGLE_KEY }}
       run: |
-        python data/prep/dataset-metadata.py
         kaggle datasets version -p data/prep -m 'Automatic update from github actions' -d
