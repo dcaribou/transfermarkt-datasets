@@ -2,20 +2,20 @@ data_prep:
   cmd: (cd prep && python prep.py --raw-files-location ../data/raw && cp stage/* ../data/prep)
   deps:
   - path: data/raw/appearances.json
-    md5: fbc30020afacc5bbb8633fe8901e0dbf
-    size: 67092725
+    md5: ff9cc591c7c7f19070c765c96cc77bc4
+    size: 67219287
   - path: data/raw/clubs.json
-    md5: 421a91a7ff85006982b8bb0e213622d3
+    md5: 80643dea40e591c30faeec77e05d527a
     size: 38721
   - path: data/raw/leagues.json
     md5: 78ce56a97b1756568f64e5a29337ed3c
     size: 1922
   outs:
   - path: data/prep/appearances.csv
-    md5: af830347fb3e5729016444b238b3b147
-    size: 9038705
+    md5: eb3b1507df2225969678bbcab936a1ea
+    size: 9040458
   - path: data/prep/clubs.csv
-    md5: 084be1efe06d5aadefc0b3b40bb44257
+    md5: aa99e5ae0b6e8b3ab88580fd69d0f3ab
     size: 6493
   - path: data/prep/leagues.csv
     md5: b0b7855b8c39ed197af824de29df37b7

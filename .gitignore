@@ -46,3 +46,5 @@ terraform.rc
 
 .ipynb_checkpoints
 .virtual_documents
+
+.scrapy
