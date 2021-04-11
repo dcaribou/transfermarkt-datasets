@@ -27,7 +27,7 @@ class AssetRunner:
           class_ = getattr(module, class_name + 'Processor')
           instance = class_(
             self.data_folder_path + '/' + file_name + '.json',
-            self.prep_folder_path + '/' + '.csv'
+            self.prep_folder_path + '/' + file_name + '.csv'
           )
           self.assets.append(
             {'name': file_name, 'processor': instance}
