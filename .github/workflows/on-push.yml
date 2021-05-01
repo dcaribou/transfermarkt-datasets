@@ -20,8 +20,11 @@ jobs:
         activate-environment: player-scores
     - name: Update kaggle dataset
       env:
+        # Kaggle API auth
         KAGGLE_USERNAME: ${{ secrets.KAGGLE_USERNAME }}
         KAGGLE_KEY: ${{ secrets.KAGGLE_KEY }}
+        # data.world API auth
+        DW_AUTH_TOKEN: ${{ secrets.DW_AUTH_TOKEN }}
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         AWS_EC2_METADATA_DISABLED: true # https://github.com/aws/aws-cli/issues/5262

@@ -29,7 +29,10 @@ jobs:
         dvc repro
     - name: Update kaggle dataset
       env:
+        # Kaggle API auth
         KAGGLE_USERNAME: ${{ secrets.KAGGLE_USERNAME }}
         KAGGLE_KEY: ${{ secrets.KAGGLE_KEY }}
+        # data.world API auth
+        DW_AUTH_TOKEN: ${{ secrets.DW_AUTH_TOKEN }}
       run: |
         sync.sh 'Automatic update from github actions'
