@@ -32,6 +32,3 @@ docker run \
   dcaribou/transfermarkt-scraper:$scraper_version \
   scrapy crawl appearances -a parents=parents/players.json \
   > $appearances_file
-
-# snapshot scrapy cache
-aws s3 cp --recursive .scrapy/* s3://player-scores/scrapy-httpcache/

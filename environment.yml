@@ -6,7 +6,7 @@ dependencies:
   - python=3.8
   - notebook
   - pandas
-  - kaggle
+  - kaggle==1.5.12
   - boto3
   - dvc[s3]
   - frictionless

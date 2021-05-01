@@ -28,6 +28,5 @@ jobs:
       run: |
         dvc pull
         cd prep
-        python prep.py --datapackage-metadata \
-          && cp stage/dataset-metadata.json ../data/prep \
-          && kaggle datasets version -p ../data/prep -m "${{ github.event.head_commit.message }}" -d
+        python prep.py --datapackage-metadata && cp stage/dataset-metadata.json ../data/prep
+        sync.sh "${{ github.event.head_commit.message }}"
