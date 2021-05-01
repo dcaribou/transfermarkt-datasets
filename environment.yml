@@ -10,3 +10,5 @@ dependencies:
   - boto3
   - dvc[s3]
   - frictionless
+  - pip:
+      - datadotworld==1.7.0
