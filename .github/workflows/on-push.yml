@@ -31,8 +31,6 @@ jobs:
       run: |
         dvc pull
 
-        cd prep
-        python prep.py --datapackage-metadata && cp stage/dataset-metadata.json ../data/prep
-        cd ..
+        (cd prep && python prep.py --datapackage-metadata && cp stage/dataset-metadata.json ../data/prep)
         
-        sync.sh "${{ github.event.head_commit.message }}"
+        bash sync.sh "${{ github.event.head_commit.message }}"
