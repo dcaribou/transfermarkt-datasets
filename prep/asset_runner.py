@@ -77,6 +77,13 @@ class AssetRunner:
     logging.info("")
     asset_processor.export()
 
+  def get_asset_df(self, name: str):
+    for asset_runner in self.assets:
+      if asset_runner['name'] == name:
+        return asset_runner['processor'].prep_df
+
+    raise Exception(f"Asset {name} not found")
+
   def generate_datapackage(self, basepath=None):
     """
     Generate datapackage.json for Kaggle Dataset

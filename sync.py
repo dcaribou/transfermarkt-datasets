@@ -15,6 +15,9 @@ import requests
 
 def save_to_s3(folder, relative_to):
   """
+  Upload folders contents to S3, keeping the folder structure under the relative_to prefix
+  :param folder: path to the folder to be uploaded
+  :param relative_to: S3 prefix to be upload the folder contents into
   """
 
   import pathlib
@@ -95,7 +98,7 @@ def publish_to_dataworld(folder):
   del metadata['licenses']
   del metadata['resources']
 
-  # https://github.com/datadotworld/data.world-py/blob/master/datadotworld/client/api.py#L163
+  # https://apidocs.data.world/toolkit/api/api-endpoints/datasets/patchdataset
   response = requests.patch(
     url='https://api.data.world/v0/datasets/dcereijo/player-scores',
     headers={
