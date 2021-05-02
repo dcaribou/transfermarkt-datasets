@@ -33,4 +33,4 @@ jobs:
 
         (cd prep && python prep.py --datapackage-metadata && cp stage/dataset-metadata.json ../data/prep)
         
-        bash sync.sh "${{ github.event.head_commit.message }}"
+        python sync.py "${{ github.event.head_commit.message }}"

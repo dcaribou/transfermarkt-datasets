@@ -35,4 +35,4 @@ jobs:
         # data.world API auth
         DW_AUTH_TOKEN: ${{ secrets.DW_AUTH_TOKEN }}
       run: |
-        bash sync.sh 'Automatic update from github actions'
+        python sync.py 'Automatic update from github actions'
