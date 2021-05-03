@@ -11,7 +11,9 @@ stages:
     - data/raw/appearances.json
     - data/raw/clubs.json
     - data/raw/leagues.json
+    - data/raw/players.json
     outs:
     - data/prep/appearances.csv
     - data/prep/clubs.csv
     - data/prep/leagues.csv
+    - data/prep/players.csv
