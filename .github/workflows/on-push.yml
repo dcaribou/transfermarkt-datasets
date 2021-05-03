@@ -18,7 +18,7 @@ jobs:
       with:
         environment-file: environment.yml
         activate-environment: player-scores
-    - name: Update kaggle dataset
+    - name: sync datasets
       env:
         # Kaggle API auth
         KAGGLE_USERNAME: ${{ secrets.KAGGLE_USERNAME }}
