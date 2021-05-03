@@ -5,9 +5,6 @@ import json
 import importlib
 
 from assets.base import BaseProcessor
-from assets.clubs import ClubsProcessor
-from assets.leagues import LeaguesProcessor
-from assets.appearances import AppearancesProcessor
 
 import logging
 logging.basicConfig(format='%(message)s', level=logging.INFO)
