@@ -22,9 +22,3 @@ else:
   # generate prepared data assets in 'stage' folder
   runner.process_assets()
   runner.generate_datapackage()
-
-# if all validations passed, move assets to data/prep
-if runner.validation_report['stats']['errors'] == 0:
-  sys.exit(0)
-else:
-  sys.exit(1)

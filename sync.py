@@ -13,23 +13,28 @@ import boto3
 import os
 import requests
 
-def save_to_s3(folder, relative_to):
+def save_to_s3(path, relative_to):
   """
-  Upload folders contents to S3, keeping the folder structure under the relative_to prefix
-  :param folder: path to the folder to be uploaded
+  Upload path contents to S3, keeping the folder structure under the relative_to prefix
+  :param path: path to the file or folder to be uploaded
   :param relative_to: S3 prefix to be upload the folder contents into
   """
 
   import pathlib
-  print(f"+ {folder} to S3 prefix {relative_to}")
+  print(f"+ {path} to S3 prefix {relative_to}")
 
   s3_client = boto3.client('s3')
 
-  for elem in pathlib.Path('.').glob(f"{folder}/**/*"):
-    if elem.is_dir():
-      continue
+  if pathlib.Path(path).is_dir():
+    files = [elem for elem in pathlib.Path('.').glob(f"{path}/**/*") if not elem.is_dir()]
+  elif pathlib.Path(path).exists():
+    files = [pathlib.Path(path)]
+  else:
+    files = []
+
+  for elem in files:
     path = str(elem)
-    key = str(elem.relative_to(folder))
+    key = path
     print(path)
     s3_client.upload_file(
       path,
@@ -124,6 +129,7 @@ prep_location = 'data/prep'
 print("--> Save to S3")
 save_to_s3('.scrapy', 'scrapy-httpcache')
 save_to_s3(prep_location, 'snapshots')
+save_to_s3('prep/datapackage_validation.json', 'snapshots')
 print("")
 
 print("--> Publish to Kaggle")
