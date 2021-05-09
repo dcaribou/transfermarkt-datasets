@@ -21,9 +21,22 @@ def save_to_s3(path, relative_to):
   """
 
   import pathlib
+  import botocore
+  import boto3.s3.transfer as s3transfer
+
   print(f"+ {path} to S3 prefix {relative_to}")
 
-  s3_client = boto3.client('s3')
+  botocore_config = botocore.config.Config(max_pool_connections=50)
+  s3_client = boto3.client('s3', config=botocore_config)
+
+  transfer_config = s3transfer.TransferConfig(
+      use_threads=True,
+      max_concurrency=50
+  )
+
+  bucket_name = 'player-scores'
+
+  s3t = s3transfer.create_transfer_manager(s3_client, transfer_config)
 
   if pathlib.Path(path).is_dir():
     files = [elem for elem in pathlib.Path('.').glob(f"{path}/**/*") if not elem.is_dir()]
@@ -35,12 +48,15 @@ def save_to_s3(path, relative_to):
   for elem in files:
     path = str(elem)
     key = path
-    print(path)
-    s3_client.upload_file(
+    s3t.upload(
       path,
-      'player-scores',
+      bucket_name,
       relative_to + '/' + key
     )
+
+  s3t.shutdown()  # wait for all the upload tasks to finish
+
+  
 
 def publish_to_kaggle(folder, message):
   """Push the contents of the folder to Kaggle datasets
