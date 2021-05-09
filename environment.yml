@@ -7,7 +7,7 @@ dependencies:
   - pandas
   - kaggle==1.5.12
   - boto3
-  - dvc[s3]
+  - dvc[s3]==2.1.0
   - pip==21.0.1
   - pip:
       - frictionless==4.1.0
