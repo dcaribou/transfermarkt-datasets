@@ -8,7 +8,7 @@ from .base import BaseProcessor
 class LeaguesProcessor(BaseProcessor):
 
   name = "leagues"
-  description = "All leagues in scope. One row per league"
+  description = "Leagues in Europe confederation. One row per league."
 
   def process(self):
     

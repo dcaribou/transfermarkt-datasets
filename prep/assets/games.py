@@ -10,7 +10,7 @@ from .base import BaseProcessor
 class GamesProcessor(BaseProcessor):
 
   name = 'games'
-  description = "All games in leagues in scope. One row per game."
+  description = "Games in `leagues`. One row per game."
 
   def process(self):
 

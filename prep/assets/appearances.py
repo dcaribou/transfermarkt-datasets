@@ -9,7 +9,7 @@ from .base import BaseProcessor
 class AppearancesProcessor(BaseProcessor):
 
   name = 'appearances'
-  description = "All appearances for all players in `clubs`. One row per appearance."
+  description = "Appearances for `players`. One row per appearance."
 
   def process(self):
 

@@ -86,6 +86,7 @@ def publish_to_dataworld(folder):
       {
         'name': resource['title'],
         'description': resource['description'],
+        'labels': ['clean data'],
         'source': {
           'url': presigned_url
         }
@@ -97,6 +98,8 @@ def publish_to_dataworld(folder):
   metadata['files'] = dw_files
   metadata['tags'] = metadata['keywords']
   metadata['license'] = metadata['licenses'][0]['CC0']
+
+  metadata['visibility'] = 'OPEN'
 
   del metadata['keywords']
   del metadata['image']
