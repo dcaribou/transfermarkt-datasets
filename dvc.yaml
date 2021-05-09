@@ -1,10 +1,24 @@
 stages:
-  fetch_raw:
-    cmd: data/fetch_raw.sh data/raw/leagues.json data/raw/clubs.json data/raw/players.json data/raw/appearances.json
+  fetch_clubs:
+    cmd: data/fetch_raw.sh data/raw/leagues.json data/raw/clubs.json
     outs:
-    - data/raw/clubs.json
-    - data/raw/players.json
-    - data/raw/appearances.json
+      - data/raw/clubs.json
+  fetch_games:
+    cmd: data/fetch_raw.sh data/raw/leagues.json data/raw/games.json
+    outs:
+      - data/raw/games.json
+  fetch_players:
+    cmd: data/fetch_raw.sh data/raw/clubs.json data/raw/players.json
+    deps:
+      - data/raw/clubs.json
+    outs:
+      - data/raw/players.json
+  fetch_appearances:
+    cmd: data/fetch_raw.sh data/raw/players.json data/raw/appearances.json
+    deps:
+      - data/raw/players.json
+    outs:
+      - data/raw/appearances.json
   data_prep:
     cmd: (cd prep && python prep.py --raw-files-location ../data/raw && cp stage/* ../data/prep)
     deps:
@@ -12,8 +26,10 @@ stages:
     - data/raw/clubs.json
     - data/raw/leagues.json
     - data/raw/players.json
+    - data/raw/games.json
     outs:
     - data/prep/appearances.csv
     - data/prep/clubs.csv
     - data/prep/leagues.csv
     - data/prep/players.csv
+    - data/prep/games.csv

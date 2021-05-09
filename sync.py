@@ -77,7 +77,7 @@ def publish_to_dataworld(folder):
       'get_object',
       Params={
         'Bucket': 'player-scores',
-        'Key': 'snapshots/prep/' + resource['path']
+        'Key': 'snapshots/data/prep/' + resource['path']
       },
       ExpiresIn=50
     )

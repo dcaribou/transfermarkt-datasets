@@ -24,6 +24,7 @@ class PlayersProcessor(BaseProcessor):
     prep_df['player_id'] = href_parts[4]
     prep_df['name'] = href_parts[1]
     prep_df['club_id'] = parent_href_parts[4]
+    prep_df['position'] = json_normalized['position']
     prep_df['url'] = 'https://www.transfermarkt.co.uk' + json_normalized['href']
 
     self.set_checkpoint('prep', prep_df)
@@ -38,6 +39,7 @@ class PlayersProcessor(BaseProcessor):
     self.schema.add_field(Field(name='player_id', type='integer'))
     self.schema.add_field(Field(name='name', type='string'))
     self.schema.add_field(Field(name='club_id', type='integer'))
+    self.schema.add_field(Field(name='position', type='string'))
     self.schema.add_field(Field(
       name='url',
       type='string',
