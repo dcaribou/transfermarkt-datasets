@@ -1,8 +1,8 @@
 schema: '2.0'
 stages:
   data_prep:
-    cmd: (cd prep && python prep.py --raw-files-location ../data/raw && cp stage/*
-      ../data/prep)
+    cmd: (mkdir -p data/prep && cd prep && python prep.py --raw-files-location ../data/raw
+      && cp stage/* ../data/prep)
     deps:
     - path: data/raw/appearances.json
       md5: d0952fdf2090fb20f4705d7faaca1a04
