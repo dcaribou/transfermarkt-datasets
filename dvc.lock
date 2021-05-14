@@ -33,8 +33,8 @@ stages:
       md5: b0b7855b8c39ed197af824de29df37b7
       size: 355
     - path: data/prep/players.csv
-      md5: 832b85b0d0619d5b08d65e5d693afe36
-      size: 792397
+      md5: 685469e7133b5c34861122a9ec45a1f5
+      size: 792345
   fetch_games:
     cmd: data/fetch_raw.sh data/raw/leagues.json data/raw/games.json
     outs:

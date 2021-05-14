@@ -22,7 +22,7 @@ class ClubsProcessor(BaseProcessor):
     league_href_parts = json_normalized['parent.href'].str.split('/', 5, True)
 
     clubs['club_id'] = club_href_parts[4]
-    clubs['name'] = club_href_parts[1]
+    clubs['name'] = self.url_unquote(club_href_parts[1])
     clubs['domestic_competition'] = json_normalized['parent.href'].str.split('/', 5, True)[4]
     clubs['league_id'] = league_href_parts[4]
 

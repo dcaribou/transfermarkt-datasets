@@ -34,6 +34,10 @@ class BaseProcessor:
       
       self.checkpoints = {}
 
+  def url_unquote(self, url_series):
+    from urllib.parse import unquote
+    return url_series.apply(unquote)
+
   def get_columns(self):
     pass
 
