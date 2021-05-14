@@ -86,6 +86,7 @@ class AssetRunner:
     Generate datapackage.json for Kaggle Dataset
     """
     from frictionless import describe_package
+    from checks import checks
 
     # full spec at https://specs.frictionlessdata.io/data-package/
 
@@ -110,7 +111,7 @@ class AssetRunner:
     for asset in self.assets:
       package.add_resource(asset['processor'].get_resource(base_path))
 
-    self.validation_report = validate_package(package, trusted=True)
+    self.validation_report = validate_package(package, trusted=True, checks=checks)
 
     def pretty_print_json(dict_variable):
       json_string = json.dumps(dict_variable, indent=4, sort_keys=True)

@@ -22,7 +22,7 @@ class PlayersProcessor(BaseProcessor):
     parent_href_parts = json_normalized['parent.href'].str.split('/', 5, True)
 
     prep_df['player_id'] = href_parts[4]
-    prep_df['name'] = href_parts[1]
+    prep_df['name'] = self.url_unquote(href_parts[1])
     prep_df['club_id'] = parent_href_parts[4]
     prep_df['position'] = json_normalized['position']
     prep_df['url'] = 'https://www.transfermarkt.co.uk' + json_normalized['href']
