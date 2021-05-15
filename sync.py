@@ -118,7 +118,6 @@ def publish_to_dataworld(folder):
   metadata['visibility'] = 'OPEN'
 
   del metadata['keywords']
-  del metadata['image']
   del metadata['licenses']
   del metadata['resources']
 
