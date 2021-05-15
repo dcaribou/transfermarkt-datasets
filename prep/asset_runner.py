@@ -88,19 +88,17 @@ class AssetRunner:
     from frictionless import describe_package
     from checks import checks
 
-    # full spec at https://specs.frictionlessdata.io/data-package/
-
     base_path = basepath or self.prep_folder_path
 
     package = Package(trusted=True, basepath=base_path)
 
+    # full spec at https://specs.frictionlessdata.io/data-package/
     package.title = "Football Statistics from Transfermarkt"
     package.keywords = [
       "football", "players", "stats", "statistics", "data",
       "soccer", "games", "matches"
     ]
     package.id = "davidcariboo/player-scores"
-    package.image = "https://images.unsplash.com/photo-1590669233095-90608d89c79c?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=2980&q=80"
     package.licenses = [{
       "CC0": "Public Domain"
     }]
@@ -113,16 +111,12 @@ class AssetRunner:
 
     self.validation_report = validate_package(package, trusted=True, checks=checks)
 
-    def pretty_print_json(dict_variable):
-      json_string = json.dumps(dict_variable, indent=4, sort_keys=True)
-      return json_string
-
     logging.info("--> Datapackage validation report")
     logging.info(self.summarize_validation_report())
 
     with open("datapackage_validation.json", 'w+') as file:
       file.write(
-        pretty_print_json(self.validation_report)
+        json.dumps(self.validation_report, indent=4, sort_keys=True)
       )
 
     self.datapackage = package

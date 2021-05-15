@@ -20,7 +20,7 @@ stages:
     outs:
       - data/raw/appearances.json
   data_prep:
-    cmd: (mkdir -p data/prep && cd prep && python prep.py --raw-files-location ../data/raw && cp stage/* ../data/prep)
+    cmd: (mkdir -p data/prep && cd prep && python prep.py --ignore-checks --raw-files-location ../data/raw && cp stage/* ../data/prep)
     deps:
     - data/raw/appearances.json
     - data/raw/clubs.json
