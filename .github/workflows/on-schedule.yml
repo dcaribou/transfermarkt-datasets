@@ -34,5 +34,8 @@ jobs:
         KAGGLE_KEY: ${{ secrets.KAGGLE_KEY }}
         # data.world API auth
         DW_AUTH_TOKEN: ${{ secrets.DW_AUTH_TOKEN }}
+        # AWS
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       run: |
         python sync.py 'Automatic update from github actions'
