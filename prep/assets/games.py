@@ -39,10 +39,12 @@ class GamesProcessor(BaseProcessor):
     self.set_checkpoint('json_normalized', json_normalized)
 
     href_parts = json_normalized['href'].str.split('/', 5, True)
+    parent_href_parts = json_normalized['parent.href'].str.split('/', 5, True)
     home_club_href_parts = json_normalized['home_club.href'].str.split('/', 5, True)
     away_club_href_parts = json_normalized['away_club.href'].str.split('/', 5, True)
 
     prep_df['game_id'] = href_parts[4]
+    prep_df['league_code'] = parent_href_parts[4]
     prep_df['season'] = infer_season(json_normalized['date'])
     prep_df['round'] = json_normalized['matchday']
     prep_df['date'] = json_normalized['date']
@@ -62,6 +64,7 @@ class GamesProcessor(BaseProcessor):
     self.schema = Schema()
 
     self.schema.add_field(Field(name='game_id', type='integer'))
+    self.schema.add_field(Field(name='league_code', type='string'))
     self.schema.add_field(Field(name='season', type='integer'))
     self.schema.add_field(Field(name='round', type='string'))
     self.schema.add_field(Field(name='date', type='date'))
@@ -70,9 +73,9 @@ class GamesProcessor(BaseProcessor):
     self.schema.add_field(Field(name='home_club_goals', type='integer'))
     self.schema.add_field(Field(name='away_club_goals', type='integer'))
     self.schema.add_field(Field(
-      name='url',
-      type='string',
-      format='uri'
+        name='url',
+        type='string',
+        format='uri'
       )
     )
 

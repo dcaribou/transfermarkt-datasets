@@ -1,5 +1,6 @@
 from frictionless.field import Field
 from frictionless.schema import Schema
+from inflection import titleize
 
 import pandas
 
@@ -23,6 +24,7 @@ class ClubsProcessor(BaseProcessor):
 
     clubs['club_id'] = club_href_parts[4]
     clubs['name'] = self.url_unquote(club_href_parts[1])
+    clubs['pretty_name'] = clubs['name'].apply(lambda x: titleize(x))
     clubs['domestic_competition'] = json_normalized['parent.href'].str.split('/', 5, True)[4]
     clubs['league_id'] = league_href_parts[4]
 
@@ -39,6 +41,7 @@ class ClubsProcessor(BaseProcessor):
 
     self.schema.add_field(Field(name='club_id', type='integer'))
     self.schema.add_field(Field(name='name', type='string'))
+    self.schema.add_field(Field(name='pretty_name', type='string'))
     self.schema.add_field(Field(name='domestic_competition', type='string'))
     self.schema.add_field(Field(name='league_id', type='string'))
 

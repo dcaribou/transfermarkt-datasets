@@ -143,10 +143,12 @@ args = parser.parse_args()
 message = args.message
 
 prep_location = 'data/prep'
+raw_location = 'data/raw'
 
 print("--> Save to S3")
 save_to_s3('.scrapy', 'scrapy-httpcache')
 save_to_s3(prep_location, 'snapshots')
+save_to_s3(raw_location, 'snapshots')
 save_to_s3('prep/datapackage_validation.json', 'snapshots')
 print("")
 
