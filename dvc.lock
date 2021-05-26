@@ -24,17 +24,17 @@ stages:
       md5: 6ded57a3832a28e2683185883b04234a
       size: 13242052
     - path: data/prep/clubs.csv
-      md5: 939757fc2819ee4acd4da0a0b8214931
-      size: 6493
+      md5: f160f3f335ae3bfc2056ab352f1a3535
+      size: 9956
     - path: data/prep/games.csv
-      md5: e73da6b30e48b1211d626007f7d619ad
-      size: 540089
+      md5: b372f4c4f505e1ffd605edb9429c041b
+      size: 555783
     - path: data/prep/leagues.csv
       md5: b0b7855b8c39ed197af824de29df37b7
       size: 355
     - path: data/prep/players.csv
-      md5: 8875b9158b2b0c38131fe375f6a5995f
-      size: 794643
+      md5: 8484ba11458832929ccfdb6d9f927653
+      size: 1132270
   fetch_games:
     cmd: data/fetch_raw.sh data/raw/leagues.json data/raw/games.json
     outs:

@@ -38,6 +38,9 @@ class BaseProcessor:
     from urllib.parse import unquote
     return url_series.apply(unquote)
 
+  def url_prepend(self, partial_url_series):
+    return 'https://www.transfermarkt.co.uk' + partial_url_series
+
   def get_columns(self):
     pass
 
