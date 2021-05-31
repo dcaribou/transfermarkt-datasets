@@ -1,5 +1,5 @@
 """
-Upload datasets to S3 storage and data hubs websites.
+Upload datasets to S3 storage and data hub websites.
 Publication to the following sites are supported:
 
 - S3: store scrapy cache and prepared files in s3://player-scores 
@@ -144,11 +144,12 @@ message = args.message
 
 prep_location = 'data/prep'
 raw_location = 'data/raw'
+season = 2020
 
 print("--> Save to S3")
 save_to_s3('.scrapy', 'scrapy-httpcache')
-save_to_s3(prep_location, 'snapshots')
-save_to_s3(raw_location, 'snapshots')
+save_to_s3(prep_location, f"snapshots")
+save_to_s3(raw_location, f"snapshots/{season}")
 save_to_s3('prep/datapackage_validation.json', 'snapshots')
 print("")
 
