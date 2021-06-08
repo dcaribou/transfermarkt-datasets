@@ -11,7 +11,7 @@ crawler=$(basename $2 .json)
 
 # fetch clubs
 docker run \
-  -ti \
+  -i \
   --pull always \
   -v $parents_file_path:/app/parents/$parents_file_name \
   -v $PWD/.scrapy:/app/.scrapy \
