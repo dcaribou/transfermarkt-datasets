@@ -13,3 +13,4 @@ dependencies:
   - pip:
       - frictionless==4.1.0
       - pycountry==20.7.3
+      - docker==5.0.0

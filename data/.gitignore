@@ -1,4 +1,3 @@
-/raw/*.json
-/prep/*.csv
-prep/dataset-metadata.json
 !/raw/leagues.json
+/raw
+/prep
