@@ -1,4 +1,10 @@
-"""Acquire raw data from transfermark website using a dockerized version of transfermark-scraper
+"""Acquire raw data from transfermark website using a dockerized version of transfermark-scraper.
+
+Usage:
+ > python acquire.py --asset [clubs, player, games, etc] [--scrapy-cache .scrapy]
+
+The environment variable SCRAPY_CACHE can be used to tell the script to run do the acquiring on
+a local scrapy cache.
 """
 import sys
 import os
@@ -29,6 +35,9 @@ SCRAPY_CACHE = arguments.scrapy_cache
 DRY_RUN = os.environ.get('DRY_RUN')
 
 class Asset():
+  """A wrapper for the asset to be acquired.
+  It contains some useful methods for manipulating the assets, such as path and parents rendering.
+  """
   asset_parents = {
       'leagues' : None,
       'games': 'leagues',
@@ -45,6 +54,8 @@ class Asset():
     self.path = pathlib.Path(f"data/raw/{season}/{name}.json")
 
   def parent(self):
+    """Get the parent of this asset as a new Asset"""
+
     return Asset(
       self.asset_parents[self.name],
       self.season
@@ -58,10 +69,16 @@ class Asset():
 
   @classmethod
   def all(self, season):
+    """Get an ordered list of assets to be acquired.
+    Asset acquisition have dependecies between each other. This list returns the right order for asset
+    acquisition steps to run.
+    """
     return [Asset(name, season) for name in self.asset_parents if name != 'leagues']
 
 
 def acquire_asset(asset, scrapy_cache):
+  """Orchestrate asset acquisition steps on a Docker server and collect the results as strings"""
+  
   import docker
   import pathlib
   
@@ -110,11 +127,10 @@ if SCRAPY_CACHE is not None:
 
 for asset in assets:
   print(f"--> Acquiring {asset.name}")
-  if DRY_RUN != "1":
-    acquired_data = acquire_asset(
-      asset,
-      SCRAPY_CACHE
-    )
+  acquired_data = acquire_asset(
+    asset,
+    SCRAPY_CACHE
+  )
 
-    with open(asset.file_full_path(), mode='w+') as asset_file:
-      asset_file.write(acquired_data)
+  with open(asset.file_full_path(), mode='w+') as asset_file:
+    asset_file.write(acquired_data)
