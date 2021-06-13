@@ -11,12 +11,12 @@ logging.basicConfig(format='%(message)s', level=logging.INFO)
 
 import pathlib
 class AssetRunner:
-  def __init__(self, data_folder_path='data/raw') -> None:
-      self.data_folder_path = data_folder_path
+  def __init__(self, data_folder_path='data/raw', season=2020) -> None:
+      self.data_folder_path = f"{data_folder_path}/{season}"
       self.prep_folder_path = 'stage'
 
       self.assets = []
-      for file in pathlib.Path(data_folder_path).glob('*.json'):
+      for file in pathlib.Path(self.data_folder_path).glob('*.json'):
         file_name = file.name.split('.')[0]
         class_name = file_name.capitalize()
         try:
