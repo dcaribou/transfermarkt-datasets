@@ -13,6 +13,19 @@ import boto3
 import os
 import requests
 
+def zip_cache():
+  import zipfile
+
+  path = '.scrapy'
+  zipf = zipfile.ZipFile('scrapy-httpcache.zip', 'w', zipfile.ZIP_DEFLATED)
+
+  for root, dirs, files in os.walk(path):
+        for file in files:
+            zipf.write(os.path.join(root, file), 
+                       os.path.relpath(os.path.join(root, file), 
+                                       os.path.join(path, '..')))
+
+
 def save_to_s3(path, relative_to):
   """
   Upload path contents to S3, keeping the folder structure under the relative_to prefix
@@ -146,8 +159,12 @@ prep_location = 'data/prep'
 raw_location = 'data/raw'
 season = 2020
 
+print("--> Zip scrapy cache")
+zip_cache()
+print("")
+
 print("--> Save to S3")
-save_to_s3('.scrapy', 'scrapy-httpcache')
+save_to_s3('scrapy-httpcache.zip', f"scrapy-httpcache/{season}")
 save_to_s3(prep_location, f"snapshots")
 save_to_s3(raw_location, f"snapshots/{season}")
 save_to_s3('prep/datapackage_validation.json', 'snapshots')
