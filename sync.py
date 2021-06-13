@@ -9,6 +9,7 @@ Publication to the following sites are supported:
 """
 
 import argparse
+import pathlib
 import boto3
 import os
 import requests
@@ -159,12 +160,14 @@ prep_location = 'data/prep'
 raw_location = 'data/raw'
 season = 2020
 
-print("--> Zip scrapy cache")
-zip_cache()
-print("")
+scrapy_cache_location = pathlib.Path('.scrapy')
+if scrapy_cache_location.exists() and scrapy_cache_location.is_dir():
+  print("--> Zip scrapy cache")
+  zip_cache()
+  save_to_s3('scrapy-httpcache.zip', f"scrapy-httpcache/{season}")
+  print("")
 
-print("--> Save to S3")
-save_to_s3('scrapy-httpcache.zip', f"scrapy-httpcache/{season}")
+print("--> Save assets to S3")
 save_to_s3(prep_location, f"snapshots")
 save_to_s3(raw_location, f"snapshots/{season}")
 save_to_s3('prep/datapackage_validation.json', 'snapshots')
