@@ -3,8 +3,8 @@
 Usage:
  > python acquire.py --asset [clubs, player, games, etc] [--scrapy-cache .scrapy]
 
-The environment variable SCRAPY_CACHE can be used to tell the script to run do the acquiring on
-a local scrapy cache.
+The environment variable SCRAPY_CACHE can be used as well to tell the script to run do the acquiring on
+a local scrapy cache. The command line argument '--scrapy-cache' takes precedence.
 """
 import sys
 import os
@@ -24,15 +24,22 @@ parser.add_argument(
   help="Scrapy cache location. If set, this cache will be used during the acquiring process",
   default=os.environ.get('SCRAPY_CACHE')
 )
+parser.add_argument(
+  '--season',
+  help="Season to be acquired. This is passed to the scraper as the SEASON argument",
+  default=2020
+)
 
 arguments = parser.parse_args()
 
-SEASON = 2020
+SEASON = arguments.season
 IMAGE = 'dcaribou/transfermarkt-scraper'
 IMAGE_TAG = 'main'
 ASSET_NAME = arguments.asset
 SCRAPY_CACHE = arguments.scrapy_cache
 DRY_RUN = os.environ.get('DRY_RUN')
+# identify this scraping jobs accordinly by setting a nice user agent
+USER_AGENT = 'player-scores/1.0 (https://github.com/dcaribou/player-scores)'
 
 class Asset():
   """A wrapper for the asset to be acquired.
@@ -98,18 +105,20 @@ def acquire_asset(asset, scrapy_cache):
     tag=IMAGE_TAG
   )
 
+  command = f"""
+    scrapy crawl {asset.name} \
+      -a parents=parents/{parent_asset.file_name()} \
+      -s SEASON={asset.season} \
+      -s USER_AGENT='{USER_AGENT}'"""
+
   acquired_data = docker_client.containers.run(
     image=f"{IMAGE}:{IMAGE_TAG}",
-    command=f"""
-      scrapy crawl {asset.name} \
-        -a parents=parents/{parent_asset.file_name()} \
-        -s SEASON={asset.season} \
-    """,
-    volumes=volumes
+    command=command,
+    volumes=volumes,
+    tty=True
   )
 
   acquired_data_decoded = acquired_data.decode("utf-8")
-  # [json.loads(line) for line in acquired_data_decoded.splitlines()] # this will raise an exception if acquired data is not in the form of json lines
   return acquired_data_decoded
 
 if ASSET_NAME == 'all':
