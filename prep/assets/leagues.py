@@ -10,22 +10,22 @@ class LeaguesProcessor(BaseProcessor):
   name = "leagues"
   description = "Leagues in Europe confederation. One row per league."
 
-  def process(self):
+  def process_segment(self, segment):
     
-    asset = pandas.DataFrame()
+    prep_df = pandas.DataFrame()
 
-    json_normalized = pandas.json_normalize(self.raw_df.to_dict(orient='records'))
+    json_normalized = pandas.json_normalize(segment.to_dict(orient='records'))
 
     self.set_checkpoint('json_normalized', json_normalized)
 
     league_href_parts = json_normalized['href'].str.split('/', 5, True)
     confederation_href_parts = json_normalized['parent.href'].str.split('/', 5, True)
 
-    asset['league_id'] = league_href_parts[4]
-    asset['name'] = league_href_parts[1]
-    asset['confederation'] = confederation_href_parts[2]
+    prep_df['league_id'] = league_href_parts[4]
+    prep_df['name'] = league_href_parts[1]
+    prep_df['confederation'] = confederation_href_parts[2]
 
-    self.prep_df = asset
+    return prep_df
 
   def get_validations(self):
     return [

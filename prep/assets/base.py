@@ -3,37 +3,49 @@ from frictionless.resource import Resource
 from numpy.lib.function_base import select
 import pandas
 import numpy
-import json
 from datetime import datetime, timedelta
 
 class BaseProcessor:
   name = None
   description = None
 
-  def __init__(self, raw_file_path, prep_file_path=None) -> None:
+  def __init__(self, raw_files_path, seasons, name, prep_file_path) -> None:
 
-      self.raw_file_path = raw_file_path
-      if prep_file_path:
-        self.prep_file_path = prep_file_path
-      else:
-        self.prep_file_path = (
-          raw_file_path
-            .replace('raw', 'prep')
-            .replace('.json', '.csv')
-          )
+      self.raw_files_path = raw_files_path
+      self.seasons = seasons
+      self.prep_file_path = prep_file_path
 
-      self.raw_df = pandas.read_json(
-        raw_file_path,
-        lines=True,
-        convert_dates=True,
-        orient={'index', 'date'}
-      )
+      self.raw_dfs = []
+
+      for season in seasons:
+        df = pandas.read_json(
+          f"{raw_files_path}/{season}/{name}.json",
+          lines=True,
+          convert_dates=True,
+          orient={'index', 'date'}
+        )
+        self.raw_dfs.append(df)
 
       self.prep_df = None
       self.validations = None
       
       self.checkpoints = {}
 
+  
+  def process_segment(self, segment):
+    """Process one segment of the asset. A segment is equivalent to one file.
+    Segment processors are defined per asset on the corresponding asset processor.
+
+    :param segment: A pandas dataframe with the contents of the raw file
+
+    :returns: A pandas dataframe with parsed, cleaned asset fields
+    """
+    pass
+
+  def process(self):
+    self.prep_dfs = [self.process_segment(prep_df) for prep_df in self.raw_dfs]
+    self.prep_df = pandas.concat(self.prep_dfs, axis=0).drop_duplicates()
+  
   def url_unquote(self, url_series):
     from urllib.parse import unquote
     return url_series.apply(unquote)
