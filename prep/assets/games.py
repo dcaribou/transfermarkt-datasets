@@ -12,7 +12,7 @@ class GamesProcessor(BaseProcessor):
   name = 'games'
   description = "Games in `leagues`. One row per game."
 
-  def process(self):
+  def process_segment(self, segment):
 
     def parse_aggregate(series: pandas.Series) -> pandas.DataFrame:
       parsed = series.str.split(":", expand=True)
@@ -34,7 +34,7 @@ class GamesProcessor(BaseProcessor):
     
     prep_df = pandas.DataFrame()
 
-    json_normalized = pandas.json_normalize(self.raw_df.to_dict(orient='records'))
+    json_normalized = pandas.json_normalize(segment.to_dict(orient='records'))
 
     self.set_checkpoint('json_normalized', json_normalized)
 
@@ -55,7 +55,7 @@ class GamesProcessor(BaseProcessor):
 
 
     self.set_checkpoint('prep', prep_df)
-    self.prep_df = prep_df
+    return prep_df
 
   def get_validations(self):
       return []

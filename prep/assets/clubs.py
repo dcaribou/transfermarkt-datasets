@@ -11,25 +11,25 @@ class ClubsProcessor(BaseProcessor):
   name = 'clubs'
   description = "Clubs in `leagues`. One row per club."
 
-  def process(self):
+  def process_segment(self, segment):
     
-    clubs = pandas.DataFrame()
+    prep_df = pandas.DataFrame()
 
-    json_normalized = pandas.json_normalize(self.raw_df.to_dict(orient='records'))
+    json_normalized = pandas.json_normalize(segment.to_dict(orient='records'))
 
     self.set_checkpoint('json_normalized', json_normalized)
 
     club_href_parts = json_normalized['href'].str.split('/', 5, True)
     league_href_parts = json_normalized['parent.href'].str.split('/', 5, True)
 
-    clubs['club_id'] = club_href_parts[4]
-    clubs['name'] = self.url_unquote(club_href_parts[1])
-    clubs['pretty_name'] = clubs['name'].apply(lambda x: titleize(x))
-    clubs['domestic_competition'] = json_normalized['parent.href'].str.split('/', 5, True)[4]
-    clubs['league_id'] = league_href_parts[4]
+    prep_df['club_id'] = club_href_parts[4]
+    prep_df['name'] = self.url_unquote(club_href_parts[1])
+    prep_df['pretty_name'] = prep_df['name'].apply(lambda x: titleize(x))
+    prep_df['domestic_competition'] = json_normalized['parent.href'].str.split('/', 5, True)[4]
+    prep_df['league_id'] = league_href_parts[4]
 
-    self.set_checkpoint('prep', clubs)
-    self.prep_df = clubs
+    self.set_checkpoint('prep', prep_df)
+    return prep_df
 
   def get_validations(self):
     return [

@@ -10,35 +10,59 @@ import logging
 logging.basicConfig(format='%(message)s', level=logging.INFO)
 
 import pathlib
+
+def get_seasons(data_folder_path):
+  path = pathlib.Path(data_folder_path)
+  seasons = [
+    int(str(season_path).split('/')[-1])
+    for season_path in path.glob('*') if season_path.is_dir()
+  ]
+  return seasons
+
+def get_assets(data_folder_path):
+  path = pathlib.Path(data_folder_path)
+  asset_keys = {}
+  for asset_path in path.glob('**/*.json'):
+    asset_name = (str(asset_path).split('/')[-1]).split('.')[0]
+    asset_keys[asset_name] = 'found'
+
+  return list(asset_keys.keys())
 class AssetRunner:
-  def __init__(self, data_folder_path='data/raw', season=2020) -> None:
-      self.data_folder_path = f"{data_folder_path}/{season}"
+  def __init__(self, data_folder_path='data/raw') -> None:
+      self.data_folder_path = f"{data_folder_path}"
       self.prep_folder_path = 'stage'
 
+      seasons = get_seasons(self.data_folder_path)
+      assets = get_assets(self.data_folder_path)
+
       self.assets = []
-      for file in pathlib.Path(self.data_folder_path).glob('*.json'):
-        file_name = file.name.split('.')[0]
-        class_name = file_name.capitalize()
+      for asset in assets:
+        class_name = asset.capitalize()
         try:
-          module = importlib.import_module(f'assets.{file_name}')
+          module = importlib.import_module(f'assets.{asset}')
           class_ = getattr(module, class_name + 'Processor')
           instance = class_(
-            self.data_folder_path + '/' + file_name + '.json',
-            self.prep_folder_path + '/' + file_name + '.csv'
+            self.data_folder_path,
+            seasons,
+            asset,
+            self.prep_folder_path + '/' + asset + '.csv'
           )
           self.assets.append(
-            {'name': file_name, 'processor': instance}
+            {'name': asset, 'processor': instance, 'seasons': seasons}
           )
         except ModuleNotFoundError:
-          logging.warning(f"Found raw asset '{file_name}' without asset processor")
+          logging.warning(f"Found raw asset '{asset}' without asset processor")
 
       self.datapackage = None
       self.validation_report = None
 
   def prettify_asset_processors(self):
-      from tabulate import tabulate # https://github.com/astanin/python-tabulate
-      table = [[elem['name'], elem['processor'].raw_file_path] for elem in self.assets]
-      return tabulate(table, headers=['Name', 'File'])
+    from tabulate import tabulate # https://github.com/astanin/python-tabulate
+    table = [
+      [elem['name'], elem['processor'].raw_files_path, str(elem['seasons'])] 
+      for elem in self.assets
+    ]
+    return tabulate(table, headers=['Name', 'Path', 'Seasons'])
 
   def process_assets(self):
     logging.info(
