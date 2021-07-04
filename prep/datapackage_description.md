@@ -14,4 +14,6 @@ The source code that maintains this dataset [is available in Github](https://git
 ### What is the status?
 This dataset is a work in progress. The best way to find out the status of the missing pieces is to check the `Issues` section on [player-scores](https://github.com/dcaribou/player-scores/issues). Some **current limitations** that you should probably be aware of are
 * Only a subset of all European domestic leagues are covered ([issue here](https://github.com/dcaribou/player-scores/issues/27))
-* The first and last season in the dataset is the current season, i. e. 2020-2021 ([issue here](https://github.com/dcaribou/player-scores/issues/12))
+* The first season in the dataset is 2019-2020 ([issue here](https://github.com/dcaribou/player-scores/issues/12))
+
+> Bugfixes and enhancements contributing to this dataset are most welcome. If you want to contribute, the best way to start is by opening a new issue or picking an existing one from the [`Issues`](https://github.com/dcaribou/player-scores/issues) section in Github.
