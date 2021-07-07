@@ -58,7 +58,10 @@ class Asset():
 
     self.name = name
     self.season = season
-    self.path = pathlib.Path(f"data/raw/{season}/{name}.json")
+    if name == 'leagues':
+      self.path = pathlib.Path(f"data/raw/leagues.json")
+    else:
+      self.path = pathlib.Path(f"data/raw/{season}/{name}.json")
 
   def parent(self):
     """Get the parent of this asset as a new Asset"""
