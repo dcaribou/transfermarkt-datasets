@@ -17,6 +17,8 @@ def get_seasons(data_folder_path):
     int(str(season_path).split('/')[-1])
     for season_path in path.glob('*') if season_path.is_dir()
   ]
+  
+  seasons.sort()
   return seasons
 
 def get_assets(data_folder_path):

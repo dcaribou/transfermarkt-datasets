@@ -17,14 +17,23 @@ class BaseProcessor:
 
       self.raw_dfs = []
 
-      for season in seasons:
+      if name == 'leagues':
         df = pandas.read_json(
-          f"{raw_files_path}/{season}/{name}.json",
+          f"{raw_files_path}/leagues.json",
           lines=True,
           convert_dates=True,
           orient={'index', 'date'}
         )
         self.raw_dfs.append(df)
+      else:
+        for season in seasons:
+          df = pandas.read_json(
+            f"{raw_files_path}/{season}/{name}.json",
+            lines=True,
+            convert_dates=True,
+            orient={'index', 'date'}
+          )
+          self.raw_dfs.append(df)
 
       self.prep_df = None
       self.validations = None
