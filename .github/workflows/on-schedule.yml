@@ -39,4 +39,4 @@ jobs:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       run: |
-        python sync.py 'Automatic update from github actions'
+        python sync.py --message 'Automatic update from github actions'
