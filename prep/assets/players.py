@@ -3,6 +3,7 @@ from frictionless.schema import Schema
 from inflection import titleize
 
 import pandas
+import numpy
 
 from .base import BaseProcessor
 
@@ -44,9 +45,10 @@ class PlayersProcessor(BaseProcessor):
     prep_df['foot'] = json_normalized['foot'].str.capitalize()
     prep_df['height_in_cm'] = (
       (json_normalized['height']
+        .replace('N/A', numpy.nan)
         .str.split('m', 2, True)[0]
         .str.replace(',','.')
-        .astype(float) * 100
+        .astype(dtype=float) * 100
       ).fillna(0).astype(int)
     )
 

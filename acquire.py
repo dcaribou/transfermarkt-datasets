@@ -8,6 +8,7 @@ a local scrapy cache. The command line argument '--scrapy-cache' takes precedenc
 """
 import sys
 import os
+import pathlib
 
 import argparse
 import json
@@ -136,6 +137,10 @@ else:
 
 if SCRAPY_CACHE is not None:
   print(f"Scrapy cache in {SCRAPY_CACHE} will be used")
+
+season_path = pathlib.Path(f"data/raw/{SEASON}")
+if not season_path.exists():
+  season_path.mkdir()
 
 for asset in assets:
   print(f"--> Acquiring {asset.name}")
