@@ -34,6 +34,7 @@ parser.add_argument(
   '--cat',
   default=False,
   action='store_const',
+  help="Pipe acquired data to the stdout instead of saving to a file",
   const=True
 )
 
