@@ -30,6 +30,13 @@ parser.add_argument(
   help="Season to be acquired. This is passed to the scraper as the SEASON argument",
   default=2020
 )
+parser.add_argument(
+  '--cat',
+  default=False,
+  action='store_const',
+  help="Pipe acquired data to the stdout instead of saving to a file",
+  const=True
+)
 
 arguments = parser.parse_args()
 
@@ -41,6 +48,7 @@ SCRAPY_CACHE = arguments.scrapy_cache
 DRY_RUN = os.environ.get('DRY_RUN')
 # identify this scraping jobs accordinly by setting a nice user agent
 USER_AGENT = 'player-scores/1.0 (https://github.com/dcaribou/player-scores)'
+CAT = arguments.cat
 
 class Asset():
   """A wrapper for the asset to be acquired.
@@ -149,5 +157,8 @@ for asset in assets:
     SCRAPY_CACHE
   )
 
-  with open(asset.file_full_path(), mode='w+') as asset_file:
-    asset_file.write(acquired_data)
+  if CAT:
+    print(acquired_data)
+  else:
+    with open(asset.file_full_path(), mode='w+') as asset_file:
+      asset_file.write(acquired_data)

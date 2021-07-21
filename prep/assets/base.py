@@ -33,7 +33,8 @@ class BaseProcessor:
             convert_dates=True,
             orient={'index', 'date'}
           )
-          self.raw_dfs.append(df)
+          if len(df) > 0:
+            self.raw_dfs.append(df)
 
       self.prep_df = None
       self.validations = None
