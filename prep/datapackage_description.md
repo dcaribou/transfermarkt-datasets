@@ -5,6 +5,7 @@ Though football (soccer) datasets for match aggregates are widely available, str
 The dataset is composed of multiple CSV files with information on leagues, games, clubs, players and appearances that is **automatically updated once a week**. Each file contains the attributes of the entity and the IDs that can be used to join them together.
 
 For example, the `appearances.csv` file contains **one row per player appearance**, i.e. one row per player per game played. For each appearance you will find attributes such as `goals`, `assists` or `yellow_cards` and IDs referencing other entities within the dataset, such as `player_id` and `game_id`.
+> **Idea:** Chekout the mate data.world project [Football Statistics from Transfermarkt](https://data.world/dcereijo/player-scores-demo) for examples of how to use the resources in this dataset to create different types of analysis.
 
 ### How did we build it?
 The source code that maintains this dataset [is available in Github](https://github.com/dcaribou/player-scores). On a high level, the project uses [transfermarkt-scraper](https://github.com/dcaribou/transfermarkt-scraper) to pull the data from [Transfermark website](https://www.transfermarkt.co.uk/) and a set of Python scripts to curate it and publish it here.
