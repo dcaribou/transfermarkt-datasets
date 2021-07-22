@@ -42,7 +42,11 @@ class PlayersProcessor(BaseProcessor):
         .str.capitalize()
     )
     prep_df['sub_position'] = json_normalized['position'].str.split(' - ', 3, True)[1]
-    prep_df['foot'] = json_normalized['foot'].str.capitalize()
+    prep_df['foot'] = (
+      json_normalized['foot']
+        .replace('N/A', numpy.nan)
+        .str.capitalize()
+    )
     prep_df['height_in_cm'] = (
       (json_normalized['height']
         .replace('N/A', numpy.nan)
