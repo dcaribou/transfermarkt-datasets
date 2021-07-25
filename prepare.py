@@ -13,7 +13,7 @@ def check_validation_results():
   """Check the validation run report and decide if it passes or if it fails
   Returns True if it passes and False if it fails
   """
-  with open('datapackage_validation.json') as report_file:
+  with open('prep/datapackage_validation.json') as report_file:
     report = json.load(report_file)
 
   tasks = report['tasks']

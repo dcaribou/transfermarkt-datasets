@@ -9,7 +9,7 @@ dvc pull
 python acquire.py --asset all --season 2021
 
 # build prepared assets
-python prepare.py --raw-files-location ../data/raw
+python prepare.py --raw-files-location data/raw
 prep_status=$?
 cp prep/stage/* data/prep
 

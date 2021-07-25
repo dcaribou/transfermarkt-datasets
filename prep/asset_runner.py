@@ -140,7 +140,7 @@ class AssetRunner:
     logging.info("--> Datapackage validation report")
     logging.info(self.summarize_validation_report())
 
-    with open("datapackage_validation.json", 'w+') as file:
+    with open("prep/datapackage_validation.json", 'w+') as file:
       file.write(
         json.dumps(self.validation_report, indent=4, sort_keys=True)
       )
