@@ -31,6 +31,6 @@ jobs:
       run: |
         dvc pull
 
-        python prepare.py && cp prep/stage/* data/prep
+        python 2_prepare.py && cp prep/stage/* data/prep
         
-        python sync.py --message "${{ github.event.head_commit.message }}" --season 2021
+        python 3_sync.py --message "${{ github.event.head_commit.message }}" --season 2021
