@@ -33,3 +33,9 @@ jobs:
         add: 'data/*.dvc'
         message: ':wrench: Github Actions: Updated dataset files'
         default_author: github_actions
+    - name: sync cache
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      run: |
+        python sync.py --cache-only --season 2021
