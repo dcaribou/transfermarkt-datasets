@@ -19,7 +19,7 @@ class BaseProcessor:
 
       if name == 'leagues':
         df = pandas.read_json(
-          f"{raw_files_path}/leagues.json",
+          f"data/leagues.json",
           lines=True,
           convert_dates=True,
           orient={'index', 'date'}

@@ -1,6 +1,11 @@
+"""Bulid prepared datasets in data/prep using raw data in data/raw.
+
+Usage:
+ > python prep.py [--raw-files-location <path to raw files folder>] [--datapackage-metadata] [--ignore-checks]
+"""
 import json
 import pandas as pd
-from asset_runner import AssetRunner
+from prep.asset_runner import AssetRunner
 import sys
 import argparse
 

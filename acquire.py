@@ -68,7 +68,7 @@ class Asset():
     self.name = name
     self.season = season
     if name == 'leagues':
-      self.path = pathlib.Path(f"data/raw/leagues.json")
+      self.path = pathlib.Path(f"data/leagues.json")
     else:
       self.path = pathlib.Path(f"data/raw/{season}/{name}.json")
 

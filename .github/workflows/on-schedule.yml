@@ -28,15 +28,8 @@ jobs:
         AWS_EC2_METADATA_DISABLED: true # https://github.com/aws/aws-cli/issues/5262
       run: |
         bash run_pipeline.sh
-    - name: sync datasets
-      env:
-        # Kaggle API auth
-        KAGGLE_USERNAME: ${{ secrets.KAGGLE_USERNAME }}
-        KAGGLE_KEY: ${{ secrets.KAGGLE_KEY }}
-        # data.world API auth
-        DW_AUTH_TOKEN: ${{ secrets.DW_AUTH_TOKEN }}
-        # AWS
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      run: |
-        python sync.py --message 'Automatic update from github actions'
+    - uses: EndBug/add-and-commit@v7
+      with:
+        add: 'data/*.dvc'
+        message: ':wrench: Github Actions: Updated dataset files'
+        default_author: github_actions
