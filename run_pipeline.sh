@@ -6,10 +6,10 @@ dvc pull
 
 # acquire current season
 # this will update the raw data partitions for the current seaon with the latest data
-python acquire.py --asset all --season 2021
+python 1_acquire.py --asset all --season 2021
 
 # build prepared assets
-python prepare.py --raw-files-location data/raw
+python 2_prepare.py --raw-files-location data/raw
 prep_status=$?
 cp prep/stage/* data/prep
 

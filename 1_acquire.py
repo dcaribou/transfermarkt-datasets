@@ -1,7 +1,7 @@
 """Acquire raw data from transfermark website using a dockerized version of transfermark-scraper.
 
 Usage:
- > python acquire.py --asset [clubs, player, games, etc] [--scrapy-cache .scrapy] --season <the season to be acquired>
+ > python 1_acquire.py --asset [clubs, player, games, etc] [--scrapy-cache .scrapy] --season <the season to be acquired>
 
 The environment variable SCRAPY_CACHE can be used as well to tell the script to run do the acquiring on
 a local scrapy cache. The command line argument '--scrapy-cache' takes precedence.
