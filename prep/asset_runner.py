@@ -4,7 +4,7 @@ import json
 
 import importlib
 
-from assets.base import BaseProcessor
+from prep.assets.base import BaseProcessor
 
 import logging
 logging.basicConfig(format='%(message)s', level=logging.INFO)
@@ -32,7 +32,7 @@ def get_assets(data_folder_path):
 class AssetRunner:
   def __init__(self, data_folder_path='data/raw') -> None:
       self.data_folder_path = f"{data_folder_path}"
-      self.prep_folder_path = 'stage'
+      self.prep_folder_path = 'prep/stage'
 
       seasons = get_seasons(self.data_folder_path)
       assets = get_assets(self.data_folder_path)
@@ -41,7 +41,7 @@ class AssetRunner:
       for asset in assets:
         class_name = asset.capitalize()
         try:
-          module = importlib.import_module(f'assets.{asset}')
+          module = importlib.import_module(f'prep.assets.{asset}')
           class_ = getattr(module, class_name + 'Processor')
           instance = class_(
             self.data_folder_path,
@@ -112,7 +112,7 @@ class AssetRunner:
     Generate datapackage.json for Kaggle Dataset
     """
     from frictionless import describe_package
-    from checks import checks
+    from prep.checks import checks
 
     base_path = basepath or self.prep_folder_path
 
@@ -129,7 +129,7 @@ class AssetRunner:
       "CC0": "Public Domain"
     }]
 
-    with open('datapackage_description.md') as datapackage_description_file:
+    with open('prep/datapackage_description.md') as datapackage_description_file:
       package.description = datapackage_description_file.read()
     
     for asset in self.assets:
@@ -140,7 +140,7 @@ class AssetRunner:
     logging.info("--> Datapackage validation report")
     logging.info(self.summarize_validation_report())
 
-    with open("datapackage_validation.json", 'w+') as file:
+    with open("prep/datapackage_validation.json", 'w+') as file:
       file.write(
         json.dumps(self.validation_report, indent=4, sort_keys=True)
       )

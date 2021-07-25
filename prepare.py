@@ -1,6 +1,11 @@
+"""Bulid prepared datasets in data/prep using raw data in data/raw.
+
+Usage:
+ > python prep.py [--raw-files-location <path to raw files folder>] [--datapackage-metadata] [--ignore-checks]
+"""
 import json
 import pandas as pd
-from asset_runner import AssetRunner
+from prep.asset_runner import AssetRunner
 import sys
 import argparse
 
@@ -8,7 +13,7 @@ def check_validation_results():
   """Check the validation run report and decide if it passes or if it fails
   Returns True if it passes and False if it fails
   """
-  with open('datapackage_validation.json') as report_file:
+  with open('prep/datapackage_validation.json') as report_file:
     report = json.load(report_file)
 
   tasks = report['tasks']
