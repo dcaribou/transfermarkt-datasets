@@ -38,7 +38,7 @@ def check_validation_results():
       return True
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--raw-files-location', required=False, default='../data/raw')
+parser.add_argument('--raw-files-location', required=False, default='data/raw')
 parser.add_argument('--datapackage-metadata', action='store_const', const=True, required=False, default=False)
 parser.add_argument('--ignore-checks', help='Ignore validation checks report', action='store_const', const=True, required=False, default=False)
 
