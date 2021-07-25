@@ -152,11 +152,13 @@ def publish_to_dataworld(folder):
 parser = argparse.ArgumentParser()
 parser.add_argument('--message', help='Dataset version notes', required=False, default="Dataset sync")
 parser.add_argument('--season', help='Season to be synchronized. It applies to S3 stored objects only', required=False, default=2020)
+parser.add_argument('--cache-only', help='Backup Scrapy cache to S3 only', action='store_const', const=True, default=False)
 
 args = parser.parse_args()
 
 message = args.message
 season = args.season
+cache_only = args.cache_only
 
 prep_location = 'data/prep'
 raw_location = 'data/raw'
@@ -168,15 +170,16 @@ if scrapy_cache_location.exists() and scrapy_cache_location.is_dir():
   save_to_s3('scrapy-httpcache.zip', f"scrapy-httpcache/{season}")
   print("")
 
-print("--> Save assets to S3")
-save_to_s3(prep_location, f"snapshots")
-save_to_s3(f"{raw_location}/{season}", f"snapshots")
-save_to_s3('prep/datapackage_validation.json', 'snapshots')
-print("")
+if not cache_only:
+  print("--> Save assets to S3")
+  save_to_s3(prep_location, f"snapshots")
+  save_to_s3(f"{raw_location}/{season}", f"snapshots")
+  save_to_s3('prep/datapackage_validation.json', 'snapshots')
+  print("")
 
-print("--> Publish to Kaggle")
-publish_to_kaggle(prep_location, message)
-print("")
+  print("--> Publish to Kaggle")
+  publish_to_kaggle(prep_location, message)
+  print("")
 
-print("--> Publish to data.world")
-publish_to_dataworld(prep_location)
+  print("--> Publish to data.world")
+  publish_to_dataworld(prep_location)
