@@ -29,7 +29,6 @@ class ClubsProcessor(BaseProcessor):
     prep_df['domestic_competition'] = json_normalized['parent.href'].str.split('/', 5, True)[4]
     prep_df['league_id'] = league_href_parts[4]
     prep_df['total_market_value'] = pandas.to_numeric(json_normalized['total_market_value'])
-    prep_df['market_value_currency'] = "GBP"
     prep_df['squad_size'] = json_normalized['squad_size'].astype('int32')
     prep_df['average_age'] = pandas.to_numeric(json_normalized['average_age'])
     prep_df['foreigners_number'] = json_normalized['foreigners_number'].fillna(0).astype('int32')
@@ -74,8 +73,12 @@ class ClubsProcessor(BaseProcessor):
     self.schema.add_field(Field(name='pretty_name', type='string'))
     self.schema.add_field(Field(name='domestic_competition', type='string'))
     self.schema.add_field(Field(name='league_id', type='string'))
-    self.schema.add_field(Field(name='total_market_value', type='number'))
-    self.schema.add_field(Field(name='market_value_currency', type='string'))
+    self.schema.add_field(Field(
+        name='total_market_value',
+        type='number',
+        description="Aggregated players' Transfermarkt market value in millions of pounds"
+      )
+    )
     self.schema.add_field(Field(name='squad_size', type='integer'))
     self.schema.add_field(Field(name='average_age', type='number'))
     self.schema.add_field(Field(name='foreigners_number', type='integer'))
