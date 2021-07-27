@@ -4,6 +4,11 @@ on:
   schedule:
     - cron: '0 4 * * TUE'
   workflow_dispatch:
+    inputs:
+      message:
+        required: false
+        default: ':wrench: Github Actions: Manually updated dataset files'
+        description: Commit message for the 'add-and-commit' step
 
 jobs:
   data-pipeline:
@@ -17,6 +22,10 @@ jobs:
     - run: |
         echo "${{ github.event.head_commit.message }}"
     - uses: actions/checkout@v2
+      # a different (personal access) github token need to be setup here so that a 'add-and-commit' step below triggers the 'on-push' workflow
+      # checkout https://github.community/t/push-from-action-does-not-trigger-subsequent-action/16854
+      with:
+        github_token: ${{ secrets.PA_GITHUB_TOKEN}}
     - uses: conda-incubator/setup-miniconda@v2
       with:
         environment-file: environment.yml
