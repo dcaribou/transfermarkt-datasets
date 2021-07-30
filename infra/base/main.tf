@@ -15,7 +15,7 @@ data "aws_iam_policy_document" "user_access_base" {
   for_each = toset(var.authorized_users)
 
   statement {
-    sid = "bucket-level"
+    sid = "bucket-level-${sha256(each.key)}"
     principals {
       type = "AWS"
       identifiers = [each.key]
@@ -31,7 +31,7 @@ data "aws_iam_policy_document" "user_access_base" {
   }
 
   statement {
-    sid = "read-dvc"
+    sid = "read-dvc-${sha256(each.key)}"
     principals {
       type = "AWS"
       identifiers = [aws_iam_user.user.arn]
@@ -49,6 +49,8 @@ data "aws_iam_policy_document" "user_access_base" {
 }
 
 data "aws_iam_policy_document" "user_access_process" {
+  override_policy_documents = [for s in data.aws_iam_policy_document.user_access_base : s.json]
+
   statement {
     sid = "write-dvc"
     principals {
@@ -79,21 +81,12 @@ data "aws_iam_policy_document" "user_access_process" {
       "${aws_s3_bucket.bucket.arn}/snapshots/*",
     ]
   }
-}
 
-# attach policy to the bucket
-resource "aws_s3_bucket_policy" "bucket_policy_base" {
-  for_each = toset([for s in data.aws_iam_policy_document.user_access_base : s.json])
-
-  bucket = aws_s3_bucket.bucket.id
-  policy = each.key
 }
 
 resource "aws_s3_bucket_policy" "bucket_policy_process" {
   bucket = aws_s3_bucket.bucket.id
   policy = data.aws_iam_policy_document.user_access_process.json
-
-  depends_on = [aws_s3_bucket_policy.bucket_policy_base]
 }
 
 output "process_user_arn" {
