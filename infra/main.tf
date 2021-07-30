@@ -14,7 +14,6 @@ provider "aws" {
 # add your AWS IAM user ARN to this list to gain access to DVC remote storage
 locals {
   authorized_users = [
-    "arn:aws:iam::272181418418:user/player-scores"
   ]
 }
 module "base" {
