@@ -8,13 +8,13 @@ For example, the `appearances.csv` file contains **one row per player appearance
 > **Idea:** Chekout the mate data.world project [Football Statistics from Transfermarkt](https://data.world/dcereijo/player-scores-demo) for examples of how to use the resources in this dataset to create different types of analysis.
 
 ### How did we build it?
-The source code that maintains this dataset [is available in Github](https://github.com/dcaribou/player-scores). On a high level, the project uses [transfermarkt-scraper](https://github.com/dcaribou/transfermarkt-scraper) to pull the data from [Transfermark website](https://www.transfermarkt.co.uk/) and a set of Python scripts to curate it and publish it here.
+The source code that maintains this dataset [is available in Github](https://github.com/dcaribou/transfermarkt-datasets). On a high level, the project uses [transfermarkt-scraper](https://github.com/dcaribou/transfermarkt-scraper) to pull the data from [Transfermark website](https://www.transfermarkt.co.uk/) and a set of Python scripts to curate it and publish it here.
 
-> **Idea:** Watch the [`player-scores` Github repository](https://github.com/dcaribou/player-scores) for updates on bugfixes and improvements on this dataset
+> **Idea:** Watch the [`transfermarkt-datasets` Github repository](https://github.com/dcaribou/transfermarkt-datasets) for updates on bugfixes and improvements on this dataset
 
 ### What is the status?
-This dataset is a work in progress. The best way to find out the status of the missing pieces is to check the `Issues` section on [player-scores](https://github.com/dcaribou/player-scores/issues). Some **current limitations** that you should probably be aware of are
-* Only a subset of all European domestic leagues are covered ([issue here](https://github.com/dcaribou/player-scores/issues/27))
-* The first season in the dataset is 2017-2018 ([issue here](https://github.com/dcaribou/player-scores/issues/12))
+This dataset is a work in progress. The best way to find out the status of the missing pieces is to check the `Issues` section on [transfermarkt-datasets](https://github.com/dcaribou/transfermarkt-datasets/issues). Some **current limitations** that you should probably be aware of are
+* Only a subset of all European domestic leagues are covered ([issue here](https://github.com/dcaribou/transfermarkt-datasets/issues/27))
+* The first season in the dataset is 2017-2018 ([issue here](https://github.com/dcaribou/transfermarkt-datasets/issues/12))
 
-> Bugfixes and enhancements contributing to this dataset are most welcome. If you want to contribute, the best way to start is by opening a new issue or picking an existing one from the [`Issues`](https://github.com/dcaribou/player-scores/issues) section in Github.
+> Bugfixes and enhancements contributing to this dataset are most welcome. If you want to contribute, the best way to start is by opening a new issue or picking an existing one from the [`Issues`](https://github.com/dcaribou/transfermarkt-datasets/issues) section in Github.
