@@ -10,11 +10,19 @@ All project data assets are kept inside the `data` folder. This is a [DVC](https
 
 > :information_source: Read access to the [DVC remote storage](https://dvc.org/doc/command-reference/remote#description) for this project is required to successfully run `dvc pull`. Contributors should feel free to grant themselves access by adding their AWS IAM user ARN to [this whitelist](https://github.com/dcaribou/transfermarkt-datasets/blob/f5bda59b3a4fccf71fcef5a165591d441ab75e2d/infra/main.tf#L16). Have a look at [this PR](https://github.com/dcaribou/transfermarkt-datasets/pull/47/files) for an example.
 
+`raw` data within this folder can be updated by running the [trasfermarkt-scraper](https://github.com/dcaribou/transfermarkt-scraper) with the `1_acquire.py` script.
+```console
+$ python 1_acquire.py --asset all --season 2021
+```
+
 ### [prep](prep)
-Scripts for transforming scraped data into a cleaned, validated [data package](https://specs.frictionlessdata.io/) that can be used as the basis of further analysis in this project. For reference, checkout prepared datasets are published at
-* [Kaggle Datasets](https://www.kaggle.com/davidcariboo/player-scores)
-* [data.world Datasets](https://data.world/dcereijo/player-scores)
+Scripts for transforming scraped `raw` data into a cleaned, validated [data package](https://specs.frictionlessdata.io/) that can be used as the basis of further analysis in this project. You may run these scripts to produce the prepared dataset within `data/prep` using `2_prepare.py`.
+```console
+$ python 2_prepare.py [--raw-files-location data/raw]
+```
+For reference on the types of assets produced by this script checkout published datasets linked above.
+> :information_source: The preparation step uses `raw` data as input, hence raw files need to be available locally in order to run this step. You may pull raw assets by running `dvc pull` as mentioned earlier or by acquiring new and updated raw assets via `1_acquire.py` 
 
 ### [infra](infra)
-Define all the necessary infrastructure for the project in the cloud.
+Define all the necessary infrastructure for the project in the cloud with Terraform.
 
