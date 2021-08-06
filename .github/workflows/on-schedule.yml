@@ -1,4 +1,4 @@
-name: Player Scores Data Pipeline
+name: Tansfermarkt Datasets Data Pipeline
 
 on:
   schedule:

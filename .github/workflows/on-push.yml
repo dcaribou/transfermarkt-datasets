@@ -1,4 +1,4 @@
-name: Player Scores Data Pipeline (On Push)
+name: Tansfermarkt Datasets Data Pipeline (On Push)
 
 on:
   push:
