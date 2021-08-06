@@ -17,7 +17,7 @@ jobs:
     - uses: conda-incubator/setup-miniconda@v2
       with:
         environment-file: environment.yml
-        activate-environment: player-scores
+        activate-environment: transfermarkt-datasets
     - name: sync datasets
       env:
         # Kaggle API auth

@@ -47,7 +47,7 @@ ASSET_NAME = arguments.asset
 SCRAPY_CACHE = arguments.scrapy_cache
 DRY_RUN = os.environ.get('DRY_RUN')
 # identify this scraping jobs accordinly by setting a nice user agent
-USER_AGENT = 'player-scores/1.0 (https://github.com/dcaribou/player-scores)'
+USER_AGENT = 'transfermarkt-datasets/1.0 (https://github.com/dcaribou/transfermarkt-datasets)'
 CAT = arguments.cat
 
 class Asset():

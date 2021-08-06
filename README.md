@@ -1,22 +1,28 @@
-# :soccer: player-scores
-Use data from [trasfermarkt-scraper](https://github.com/dcaribou/transfermarkt-scraper) to compute player's scores and forecast performance. Use forecasts to improve decision-making when creating line-ups for games such as [Fantasy Football](https://fantasy.premierleague.com/), [Biwenger](https://www.biwenger.com/), etc. 
+# transfermarkt-datasets
+Use data from [trasfermarkt-scraper](https://github.com/dcaribou/transfermarkt-scraper) to **build a clean, public football (soccer) dataset**. This includes data as clubs, games, players and player appearances from a number of national and international competitions and seasons.
 
-This is an **ongoing project** that aims to achieve this goal incrementally by
+Automate the data pipeline to **keep these assets up to date** and publicly available on well-known data catalogs for the data community's convenience.
 
-- [x] Building a clean, public dataset of player appearances' statistics &#8594; [`dataset-improvements`](https://github.com/dcaribou/player-scores/issues?q=is%3Aissue+is%3Aopen+label%3A%22dataset+improvements%22)
-- [ ] Training a machine learning model that uses historical data to forecast player's performance on their next game &#8594; [`machine-learning`](https://github.com/dcaribou/player-scores/issues?q=is%3Aissue+is%3Aopen+label%3A%22machine+learning%22)
-- [ ] Create a line-up analysis tool by displaying forecasts on a dashboard &#8594; [`visualization`](https://github.com/dcaribou/player-scores/issues?q=is%3Aissue+is%3Aopen+label%3Avisualizations)
+:white_check_mark: [Kaggle](https://www.kaggle.com/davidcariboo/player-scores) :white_check_mark: [data.world](https://data.world/dcereijo/player-scores)
 
 ### [data](data)
 All project data assets are kept inside the `data` folder. This is a [DVC](https://dvc.org/) repository, therefore all files for the current revision can be pulled from remote storage with the `dvc pull` command.
 
-> :information_source: Read access to the [DVC remote storage](https://dvc.org/doc/command-reference/remote#description) for this project is required to successfully run `dvc pull`. Contributors should feel free to grant themselves access by adding their AWS IAM user ARN to [this whitelist](https://github.com/dcaribou/player-scores/blob/f5bda59b3a4fccf71fcef5a165591d441ab75e2d/infra/main.tf#L16). Have a look at [this PR](https://github.com/dcaribou/player-scores/pull/47/files) for an example.
+> :information_source: Read access to the [DVC remote storage](https://dvc.org/doc/command-reference/remote#description) for this project is required to successfully run `dvc pull`. Contributors should feel free to grant themselves access by adding their AWS IAM user ARN to [this whitelist](https://github.com/dcaribou/transfermarkt-datasets/blob/f5bda59b3a4fccf71fcef5a165591d441ab75e2d/infra/main.tf#L16). Have a look at [this PR](https://github.com/dcaribou/transfermarkt-datasets/pull/47/files) for an example.
+
+`raw` data within this folder can be updated by running the [trasfermarkt-scraper](https://github.com/dcaribou/transfermarkt-scraper) with the `1_acquire.py` script.
+```console
+$ python 1_acquire.py --asset all --season 2021
+```
 
 ### [prep](prep)
-Scripts for transforming scraped data into a cleaned, validated [data package](https://specs.frictionlessdata.io/) that can be used as the basis of further analysis in this project. For reference, checkout prepared datasets are published at
-* [Kaggle Datasets](https://www.kaggle.com/davidcariboo/player-scores)
-* [data.world Datasets](https://data.world/dcereijo/player-scores)
+Scripts for transforming scraped `raw` data into a cleaned, validated [data package](https://specs.frictionlessdata.io/) that can be used as the basis of further analysis in this project. You may run these scripts to produce the prepared dataset within `data/prep` using `2_prepare.py`.
+```console
+$ python 2_prepare.py [--raw-files-location data/raw]
+```
+For reference on the types of assets produced by this script checkout published datasets linked above.
+> :information_source: The preparation step uses `raw` data as input, hence raw files need to be available locally in order to run this step. You may pull raw assets by running `dvc pull` as mentioned earlier or by acquiring new and updated raw assets via `1_acquire.py` 
 
 ### [infra](infra)
-Define all the necessary infrastructure for the project in the cloud.
+Define all the necessary infrastructure for the project in the cloud with Terraform.
 

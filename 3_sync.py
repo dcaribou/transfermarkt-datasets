@@ -2,7 +2,7 @@
 Upload datasets to S3 storage and data hub websites.
 Publication to the following sites are supported:
 
-- S3: store scrapy cache and prepared files in s3://player-scores 
+- S3: store scrapy cache and prepared files in s3://transfermarkt-datasets 
 - Kaggle: update dataset 'davidcariboo/player-scores'
 - data.world: update dataset 'dcereijo/player-scores'
 
@@ -48,7 +48,7 @@ def save_to_s3(path, relative_to):
       max_concurrency=50
   )
 
-  bucket_name = 'player-scores'
+  bucket_name = 'transfermarkt-datasets'
 
   s3t = s3transfer.create_transfer_manager(s3_client, transfer_config)
 
@@ -106,7 +106,7 @@ def publish_to_dataworld(folder):
     presigned_url = s3_client.generate_presigned_url(
       'get_object',
       Params={
-        'Bucket': 'player-scores',
+        'Bucket': 'transfermarkt-datasets',
         'Key': 'snapshots/data/prep/' + resource['path']
       },
       ExpiresIn=50

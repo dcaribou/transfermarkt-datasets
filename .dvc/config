@@ -1,4 +1,4 @@
 [core]
     remote = s3
 ['remote "s3"']
-    url = s3://player-scores/dvc
+    url = s3://transfermarkt-datasets/dvc

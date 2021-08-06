@@ -1,4 +1,4 @@
-name: player-scores
+name: transfermarkt-datasets
 channels:
   - conda-forge
   - defaults
