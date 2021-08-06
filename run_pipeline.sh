@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 # pull data from dvc remote storage
 # this is to make sure all historical data is available locally in order to correctly build the assets
