@@ -1,11 +1,9 @@
 # transfermarkt-datasets
-Use data from [trasfermarkt-scraper](https://github.com/dcaribou/transfermarkt-scraper) to compute player's scores and forecast performance. Use forecasts to improve decision-making when creating line-ups for games such as [Fantasy Football](https://fantasy.premierleague.com/), [Biwenger](https://www.biwenger.com/), etc. 
+Use data from [trasfermarkt-scraper](https://github.com/dcaribou/transfermarkt-scraper) to **build a clean, public football (soccer) dataset**. This includes data as clubs, games, players and player appearances from a number of national and international competitions and seasons.
 
-This is an **ongoing project** that aims to achieve this goal incrementally by
+Automate the data pipeline to **keep these assets up to date** and publicly available on well-known data catalogs for the data community's convenience.
 
-- [x] Building a clean, public dataset of player appearances' statistics &#8594; [`dataset-improvements`](https://github.com/dcaribou/transfermarkt-datasets/issues?q=is%3Aissue+is%3Aopen+label%3A%22dataset+improvements%22)
-- [ ] Training a machine learning model that uses historical data to forecast player's performance on their next game &#8594; [`machine-learning`](https://github.com/dcaribou/player-scores/issues?q=is%3Aissue+is%3Aopen+label%3A%22machine+learning%22)
-- [ ] Create a line-up analysis tool by displaying forecasts on a dashboard &#8594; [`visualization`](https://github.com/dcaribou/transfermarkt-datasets/issues?q=is%3Aissue+is%3Aopen+label%3Avisualizations)
+:white_check_mark: [Kaggle](https://www.kaggle.com/davidcariboo/player-scores) :white_check_mark: [data.world](https://data.world/dcereijo/player-scores)
 
 ### [data](data)
 All project data assets are kept inside the `data` folder. This is a [DVC](https://dvc.org/) repository, therefore all files for the current revision can be pulled from remote storage with the `dvc pull` command.
