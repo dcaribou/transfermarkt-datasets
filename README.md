@@ -21,7 +21,8 @@ Scripts for transforming scraped `raw` data into a cleaned, validated [data pack
 $ python 2_prepare.py [--raw-files-location data/raw]
 ```
 For reference on the types of assets produced by this script checkout published datasets linked above.
-> :information_source: The preparation step uses `raw` data as input, hence raw files need to be available locally in order to run this step. You may pull raw assets by running `dvc pull` as mentioned earlier or by acquiring new and updated raw assets via `1_acquire.py` 
+
+The preparation step uses `raw` data as input, hence raw files need to be available locally in order to run this step. You may pull raw assets by running `dvc pull` as mentioned earlier or by acquiring new and updated raw assets via `1_acquire.py` 
 
 ### [infra](infra)
 Define all the necessary infrastructure for the project in the cloud with Terraform.

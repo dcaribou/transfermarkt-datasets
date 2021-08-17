@@ -48,9 +48,14 @@ class GamesProcessor(BaseProcessor):
     prep_df['season'] = infer_season(json_normalized['date'])
     prep_df['round'] = json_normalized['matchday']
     prep_df['date'] = json_normalized['date']
+    prep_df['time'] = pandas.to_datetime(json_normalized['time']).dt.time 
     prep_df['home_club_id'] = home_club_href_parts[4]
     prep_df['away_club_id'] = away_club_href_parts[4]
     prep_df[['home_club_goals', 'away_club_goals']] = parse_aggregate(json_normalized['result'])
+    prep_df['home_club_position'] = json_normalized['home_club_position'].str.split(' ', 2, True)[2]
+    prep_df['away_club_position'] = json_normalized['away_club_position'].str.split(' ', 2, True)[2]
+    prep_df['stadium'] = json_normalized['stadium']
+    prep_df['attendance'] = json_normalized['attendance'].str.split(' ', 2, True)[1]
     prep_df['url'] = 'https://www.transfermarkt.co.uk' + json_normalized['href']
 
 
@@ -68,10 +73,15 @@ class GamesProcessor(BaseProcessor):
     self.schema.add_field(Field(name='season', type='integer'))
     self.schema.add_field(Field(name='round', type='string'))
     self.schema.add_field(Field(name='date', type='date'))
+    self.schema.add_field(Field(name='time', type='date'))
     self.schema.add_field(Field(name='home_club_id', type='integer'))
     self.schema.add_field(Field(name='away_club_id', type='integer'))
     self.schema.add_field(Field(name='home_club_goals', type='integer'))
     self.schema.add_field(Field(name='away_club_goals', type='integer'))
+    self.schema.add_field(Field(name='home_club_position', type='integer'))
+    self.schema.add_field(Field(name='away_club_position', type='integer'))
+    self.schema.add_field(Field(name='stadium', type='string'))
+    self.schema.add_field(Field(name='attendance', type='integer'))
     self.schema.add_field(Field(
         name='url',
         type='string',
