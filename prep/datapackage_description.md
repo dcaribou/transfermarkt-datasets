@@ -1,8 +1,8 @@
 ### TL;DR
 > Clean, structured and **automatically updated** football data from [Transfermarkt](https://www.transfermarkt.co.uk/), including
 > * `20,000+` games from many seasons on all major national leagues and many others
-> * `350+` clubs from those leagues
-> * `19,000+` players from those clubs
+> * `300+` clubs from those leagues
+> * `18,000+` players from those clubs
 > * `500,000+` player appearance records from all games
 
 ### Why did we build it?

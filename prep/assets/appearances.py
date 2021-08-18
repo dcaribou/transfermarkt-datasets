@@ -53,7 +53,6 @@ class AppearancesProcessor(BaseProcessor):
       (json_normalized['second_yellow_cards'].str.len() > 0).astype('int32')
     )
     prep_df['red_cards'] = (json_normalized['red_cards'].str.len() > 0).astype('int32')
-    prep_df['url'] = 'https://www.transfermarkt.co.uk' + json_normalized['href']
 
     return prep_df
 
@@ -91,12 +90,6 @@ class AppearancesProcessor(BaseProcessor):
     self.schema.add_field(Field(name='minutes_played', type='integer'))
     self.schema.add_field(Field(name='yellow_cards', type='integer'))
     self.schema.add_field(Field(name='red_cards', type='integer'))
-    self.schema.add_field(Field(
-      name='url',
-      type='string',
-      format='uri'
-      )
-    )
     
     self.schema.primary_key = ['appearance_id']
     

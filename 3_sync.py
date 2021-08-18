@@ -109,7 +109,7 @@ def publish_to_dataworld(folder):
         'Bucket': 'transfermarkt-datasets',
         'Key': 'snapshots/data/prep/' + resource['path']
       },
-      ExpiresIn=50
+      ExpiresIn=120
     )
 
     dw_files.append(
@@ -124,7 +124,7 @@ def publish_to_dataworld(folder):
     )
 
   metadata['summary'] = metadata['description']
-  metadata['description'] = metadata['title']
+  metadata['description'] = metadata['description']
   metadata['files'] = dw_files
   metadata['tags'] = metadata['keywords']
   metadata['license'] = metadata['licenses'][0]['CC0']
