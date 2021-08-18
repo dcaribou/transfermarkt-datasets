@@ -119,7 +119,8 @@ class AssetRunner:
     package = Package(trusted=True, basepath=base_path)
 
     # full spec at https://specs.frictionlessdata.io/data-package/
-    package.title = "Football Statistics from Transfermarkt"
+    package.title = "Football Data from Transfermarkt"
+    package.description = "Clean, structured and automatically updated football (soccer) data from Transfermarkt"
     package.keywords = [
       "football", "players", "stats", "statistics", "data",
       "soccer", "games", "matches"
