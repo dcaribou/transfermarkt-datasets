@@ -124,7 +124,7 @@ def publish_to_dataworld(folder):
     )
 
   metadata['summary'] = metadata['description']
-  metadata['description'] = metadata['description']
+  metadata['description'] = "Clean, structured and automatically updated football (soccer) data from Transfermarkt"
   metadata['files'] = dw_files
   metadata['tags'] = metadata['keywords']
   metadata['license'] = metadata['licenses'][0]['CC0']
