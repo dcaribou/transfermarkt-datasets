@@ -52,12 +52,12 @@ class GamesProcessor(BaseProcessor):
     prep_df['home_club_id'] = home_club_href_parts[4]
     prep_df['away_club_id'] = away_club_href_parts[4]
     prep_df[['home_club_goals', 'away_club_goals']] = parse_aggregate(json_normalized['result'])
-    prep_df['home_club_position'] = json_normalized['home_club_position'].str.split(' ', 2, True)[2]
-    prep_df['away_club_position'] = json_normalized['away_club_position'].str.split(' ', 2, True)[2]
+    prep_df['home_club_position'] = json_normalized['home_club_position'].str.split(' ', 2, True)[2].str.strip()
+    prep_df['away_club_position'] = json_normalized['away_club_position'].str.split(' ', 2, True)[2].str.strip()
     prep_df['stadium'] = json_normalized['stadium']
     prep_df['attendance'] = (
       json_normalized['attendance'].str.split(' ', 2, True)[1]
-        .str.replace('.', '')
+        .str.replace('.', '').str.strip()
     )
     prep_df['url'] = 'https://www.transfermarkt.co.uk' + json_normalized['href']
 
