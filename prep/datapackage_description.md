@@ -1,9 +1,9 @@
 ### TL;DR
 > Clean, structured and **automatically updated** football data from [Transfermarkt](https://www.transfermarkt.co.uk/), including
-> * `20,000+` games from many seasons on all major national leagues and many others
+> * `24,000+` games from many seasons on all major national leagues and many others
 > * `300+` clubs from those leagues
-> * `18,000+` players from those clubs
-> * `500,000+` player appearance records from all games
+> * `20,000+` players from those clubs
+> * `650,000+` player appearance records from all games
 
 ### Why did we build it?
 Though football (soccer) datasets for match aggregates are widely available, those datasets are usually not regularly updated or maintained. Moreover, structured, publicly available datasets at **player appearance level** for those matches, such as that contained in [player detailed performance page in Transfermarkt](https://www.transfermarkt.co.uk/sergio-aguero/leistungsdaten/spieler/26399), are difficult to find. This dataset aims to present **up-to-date** football data down to the level of individual player appearances in an accessible, standard format.
@@ -24,6 +24,6 @@ This dataset is a live project subject to regular updates and new enhancements. 
 
 Moreover, some **current limitations** that you should probably be aware of if you plan on using this dataset are
 * Only a subset of all European domestic leagues are covered ([issue here](https://github.com/dcaribou/transfermarkt-datasets/issues/27))
-* The first season in the dataset is 2016-2017 ([issue here](https://github.com/dcaribou/transfermarkt-datasets/issues/12))
+* The first season in the dataset is 2015-2016 ([issue here](https://github.com/dcaribou/transfermarkt-datasets/issues/12))
 
 > Bugfixes and enhancements contributing to this dataset are most welcome. If you want to contribute, the best way to start is by opening a new issue or picking an existing one from the [`Issues`](https://github.com/dcaribou/transfermarkt-datasets/issues) section in Github.
