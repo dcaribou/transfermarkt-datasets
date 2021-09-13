@@ -4,13 +4,14 @@ channels:
   - defaults
 dependencies:
   - python=3.8
+  - simpleeval
+  - pandas
   - kaggle==1.5.12
-  - boto3==1.16.47
+  - boto3
+  - inflection
   - dvc[s3]==2.1.0
   - pip==21.0.1
   - pip:
-      - pandas==1.1.5
-      - inflection==0.5.1
       - frictionless==4.1.0
       - pycountry==20.7.3
       - docker==5.0.0
