@@ -4,10 +4,10 @@ channels:
   - defaults
 dependencies:
   - python=3.8
-  - pandas
+  - pandas=1.1.5=py38hb2f4e1b_0
   - kaggle==1.5.12
-  - boto3
-  - inflection
+  - boto3==1.16.47
+  - inflection=0.5.1=py38hecd8cb5_0
   - dvc[s3]==2.1.0
   - pip==21.0.1
   - pip:
