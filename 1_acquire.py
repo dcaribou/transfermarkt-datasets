@@ -42,7 +42,7 @@ arguments = parser.parse_args()
 
 SEASON = arguments.season
 IMAGE = 'dcaribou/transfermarkt-scraper'
-IMAGE_TAG = 'main'
+IMAGE_TAG = 'v0.2.0'
 ASSET_NAME = arguments.asset
 SCRAPY_CACHE = arguments.scrapy_cache
 DRY_RUN = os.environ.get('DRY_RUN')
