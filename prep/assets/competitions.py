@@ -24,7 +24,7 @@ class CompetitionsProcessor(BaseProcessor):
     prep_df['competition_id'] = league_href_parts[4]
     prep_df['name'] = league_href_parts[1]
     prep_df['type'] = json_normalized['competition_type']
-    prep_df['country_id'] = json_normalized['country_id']
+    prep_df['country_id'] = json_normalized['country_id'].fillna(-1).astype('int32')
     prep_df['country_name'] = json_normalized['country_name']
     prep_df['domestic_league_code'] = json_normalized['country_code']
     
@@ -34,9 +34,7 @@ class CompetitionsProcessor(BaseProcessor):
     return prep_df
 
   def get_validations(self):
-    return [
-      'assert_df_not_empty'
-    ]
+    return []
 
   def resource_schema(self):
     self.schema = Schema()
@@ -44,7 +42,7 @@ class CompetitionsProcessor(BaseProcessor):
     self.schema.add_field(Field(name='competition_id', type='string'))
     self.schema.add_field(Field(name='name', type='string'))
     self.schema.add_field(Field(name='type', type='string'))
-    self.schema.add_field(Field(name='country_id', type='number'))
+    self.schema.add_field(Field(name='country_id', type='integer'))
     self.schema.add_field(Field(name='country_name', type='string'))
     self.schema.add_field(Field(name='domestic_league_code', type='string'))
     self.schema.add_field(Field(name='confederation', type='string'))

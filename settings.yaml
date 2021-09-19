@@ -6,5 +6,5 @@ default:
       'NL1', 'NLP', 'NLSC', 'BESC', 'DFB', 'POSU', 'POCP',
       'CGB', 'UKRP', 'RUP', 'GBCS', 'SUC', 'DFL', 'CDR',
       'RUSS', 'GRP', 'SFA', 'CIT', 'DKP', 'FRCH', 'UKRS',
-      'SCI'
+      'SCI', 'CL', 'EL', 'KLUB', 'ECLQ', 'CLQ', 'ELQ', 'USC'
     ]

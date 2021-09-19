@@ -93,10 +93,6 @@ class AssetRunner:
     logging.info(
       asset_processor.output_summary()
     )
-    asset_processor.validate()
-    logging.info(
-      asset_processor.validation_summary()
-    )
     logging.info("")
     asset_processor.export()
 
@@ -111,8 +107,10 @@ class AssetRunner:
     """
     Generate datapackage.json for Kaggle Dataset
     """
-    from frictionless import describe_package
-    from prep.checks import checks
+    from prep.checks import checks as custom_checks
+
+    custom_checks = custom_checks
+    builtin_checks = []
 
     base_path = basepath or self.prep_folder_path
 
@@ -135,6 +133,11 @@ class AssetRunner:
     
     for asset in self.assets:
       package.add_resource(asset['processor'].get_resource(base_path))
+
+    for asset in self.assets:
+      builtin_checks += asset['processor'].get_validations()
+
+    checks = custom_checks + builtin_checks
 
     self.validation_report = validate_package(package, trusted=True, checks=checks)
 

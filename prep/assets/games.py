@@ -48,7 +48,7 @@ class GamesProcessor(BaseProcessor):
 
     prep_df['game_id'] = href_parts[4]
     prep_df['competition_code'] = parent_href_parts[4]
-    prep_df['season'] = infer_season(json_normalized['date'])
+    prep_df['season'] = infer_season(json_normalized['date']).fillna(-1).astype('int32')
     prep_df['round'] = json_normalized['matchday']
     prep_df['date'] = json_normalized['date']
     prep_df['home_club_id'] = home_club_href_parts[4]
@@ -68,14 +68,18 @@ class GamesProcessor(BaseProcessor):
     return prep_df
 
   def get_validations(self):
-      return []
+    from frictionless import checks
+
+    return [
+      # checks.row_constraint(formula='season > 0')
+    ]
 
   def resource_schema(self):
     self.schema = Schema()
 
     self.schema.add_field(Field(name='game_id', type='integer'))
     self.schema.add_field(Field(name='competition_code', type='string'))
-    self.schema.add_field(Field(name='season', type='string'))
+    self.schema.add_field(Field(name='season', type='integer'))
     self.schema.add_field(Field(name='round', type='string'))
     self.schema.add_field(Field(name='date', type='date'))
     self.schema.add_field(Field(name='home_club_id', type='integer'))

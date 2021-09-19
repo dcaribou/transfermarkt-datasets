@@ -61,9 +61,7 @@ class ClubsProcessor(BaseProcessor):
     self.prep_df = pandas.concat(self.prep_dfs, axis=0).drop_duplicates(subset='club_id', keep='last')
 
   def get_validations(self):
-    return [
-      'assert_df_not_empty'
-    ]
+    return []
 
   def resource_schema(self):
     self.schema = Schema()
