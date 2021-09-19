@@ -3,6 +3,7 @@ import pandas
 from frictionless.schema import Schema
 from frictionless.field import Field
 from typing import List
+from dynaconf import settings
 
 from .base import BaseProcessor
 
@@ -32,14 +33,7 @@ class AppearancesProcessor(BaseProcessor):
 
     self.set_checkpoint('json_normalized', json_normalized)
 
-    applicable_competitions = [
-      'ES1', 'GB1', 'L1', 'IT1', 'FR1', 'GR1', 'PO1', 
-      'BE1', 'UKR1', 'BE1', 'RU1', 'DK1', 'SC1', 'TR1',
-      'NL1', 'NLP', 'NLSC', 'BESC', 'DFB', 'POSU', 'POCP',
-      'CGB', 'UKRP', 'RUP', 'GBCS', 'SUC', 'DFL', 'CDR',
-      'RUSS', 'GRP', 'SFA', 'CIT', 'DKP', 'FRCH', 'UKRS',
-      'SCI', 
-    ]
+    applicable_competitions = settings.GLOBALS['competition_codes']
 
     json_normalized = json_normalized[json_normalized['competition_code'].isin(applicable_competitions)]
 

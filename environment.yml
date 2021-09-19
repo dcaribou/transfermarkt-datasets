@@ -11,6 +11,7 @@ dependencies:
   - inflection
   - dvc[s3]==2.1.0
   - pip==21.0.1
+  - dynaconf
   - pip:
       - frictionless==4.1.0
       - pycountry==20.7.3

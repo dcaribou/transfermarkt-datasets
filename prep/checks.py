@@ -1,4 +1,5 @@
 from frictionless import errors
+from dynaconf import settings
 
 def no_html_encodes_in_names(row):
     value = row['name']
@@ -7,14 +8,8 @@ def no_html_encodes_in_names(row):
         yield errors.CellError.from_row(row, note=note, field_name='name')
 
 def competition_code_in_range(row):
-  COMPETITION_CODES = [
-    'ES1', 'GB1', 'L1', 'IT1', 'FR1', 'GR1', 'PO1', 
-    'BE1', 'UKR1', 'BE1', 'RU1', 'DK1', 'SC1', 'TR1',
-    'NL1', 'NLP', 'NLSC', 'BESC', 'DFB', 'POSU', 'POCP',
-    'CGB', 'UKRP', 'RUP', 'GBCS', 'SUC', 'DFL', 'CDR',
-    'RUSS', 'GRP', 'SFA', 'CIT', 'DKP', 'FRCH', 'UKRS',
-    'SCI', 
-  ]
+  COMPETITION_CODES = settings.GLOBALS['competition_codes']
+
   value = row['competition_code']
   if value is not None and value not in COMPETITION_CODES:
       note = f"Invalid competition_code {value}. Valid values are {COMPETITION_CODES}"
