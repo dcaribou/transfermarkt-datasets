@@ -52,7 +52,7 @@ runner = AssetRunner(raw_files_location)
 
 if metadata_only:
   # generate frictionless data package for prepared assets
-  runner.generate_datapackage('../data/prep')
+  runner.generate_datapackage('data/prep')
 
 else:
   # generate prepared data assets in 'stage' folder
