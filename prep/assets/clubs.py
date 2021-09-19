@@ -26,8 +26,7 @@ class ClubsProcessor(BaseProcessor):
     prep_df['club_id'] = club_href_parts[4]
     prep_df['name'] = self.url_unquote(club_href_parts[1])
     prep_df['pretty_name'] = prep_df['name'].apply(lambda x: titleize(x))
-    prep_df['domestic_competition'] = json_normalized['parent.href'].str.split('/', 5, True)[4]
-    prep_df['competition_id'] = league_href_parts[4]
+    prep_df['domestic_competition_id'] = league_href_parts[4]
     prep_df['total_market_value'] = pandas.to_numeric(json_normalized['total_market_value'])
     prep_df['squad_size'] = json_normalized['squad_size'].astype('int32')
     prep_df['average_age'] = pandas.to_numeric(json_normalized['average_age'])
@@ -69,8 +68,7 @@ class ClubsProcessor(BaseProcessor):
     self.schema.add_field(Field(name='club_id', type='integer'))
     self.schema.add_field(Field(name='name', type='string'))
     self.schema.add_field(Field(name='pretty_name', type='string'))
-    self.schema.add_field(Field(name='domestic_competition', type='string'))
-    self.schema.add_field(Field(name='competition_id', type='string'))
+    self.schema.add_field(Field(name='domestic_competition_id', type='string'))
     self.schema.add_field(Field(
         name='total_market_value',
         type='number',
@@ -95,7 +93,7 @@ class ClubsProcessor(BaseProcessor):
 
     self.schema.primary_key = ['club_id']
     self.schema.foreign_keys = [
-      {"fields": "competition_id", "reference": {"resource": "competitions", "fields": "competition_id"}}
+      {"fields": "domestic_competition_id", "reference": {"resource": "competitions", "fields": "competition_id"}}
     ]
 
     return self.schema
