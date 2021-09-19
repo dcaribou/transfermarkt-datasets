@@ -5,6 +5,8 @@ Automate the data pipeline to **keep these assets up to date** and publicly avai
 
 :white_check_mark: [Kaggle](https://www.kaggle.com/davidcariboo/player-scores) :white_check_mark: [data.world](https://data.world/dcereijo/player-scores)
 
+![alt text](https://github.com/dcaribou/transfermarkt-datasets/blob/document-diagram/diagram.png?raw=true)
+
 ### [data](data)
 All project data assets are kept inside the `data` folder. This is a [DVC](https://dvc.org/) repository, therefore all files for the current revision can be pulled from remote storage with the `dvc pull` command.
 
