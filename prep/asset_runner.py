@@ -28,7 +28,7 @@ def get_assets(data_folder_path):
     asset_name = (str(asset_path).split('/')[-1]).split('.')[0]
     asset_keys[asset_name] = 'found'
 
-  return list(asset_keys.keys())
+  return list(asset_keys.keys()) + ['competitions']
 class AssetRunner:
   def __init__(self, data_folder_path='data/raw') -> None:
       self.data_folder_path = f"{data_folder_path}"
@@ -93,10 +93,6 @@ class AssetRunner:
     logging.info(
       asset_processor.output_summary()
     )
-    asset_processor.validate()
-    logging.info(
-      asset_processor.validation_summary()
-    )
     logging.info("")
     asset_processor.export()
 
@@ -111,8 +107,10 @@ class AssetRunner:
     """
     Generate datapackage.json for Kaggle Dataset
     """
-    from frictionless import describe_package
-    from prep.checks import checks
+    from prep.checks import checks as custom_checks
+
+    custom_checks = custom_checks
+    builtin_checks = []
 
     base_path = basepath or self.prep_folder_path
 
@@ -135,6 +133,11 @@ class AssetRunner:
     
     for asset in self.assets:
       package.add_resource(asset['processor'].get_resource(base_path))
+
+    for asset in self.assets:
+      builtin_checks += asset['processor'].get_validations()
+
+    checks = custom_checks + builtin_checks
 
     self.validation_report = validate_package(package, trusted=True, checks=checks)
 

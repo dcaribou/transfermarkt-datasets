@@ -42,7 +42,7 @@ arguments = parser.parse_args()
 
 SEASON = arguments.season
 IMAGE = 'dcaribou/transfermarkt-scraper'
-IMAGE_TAG = 'v0.2.0'
+IMAGE_TAG = 'main'
 ASSET_NAME = arguments.asset
 SCRAPY_CACHE = arguments.scrapy_cache
 DRY_RUN = os.environ.get('DRY_RUN')
@@ -55,9 +55,9 @@ class Asset():
   It contains some useful methods for manipulating the assets, such as path and parents rendering.
   """
   asset_parents = {
-      'leagues' : None,
-      'games': 'leagues',
-      'clubs': 'leagues',
+      'competitions' : None,
+      'games': 'competitions',
+      'clubs': 'competitions',
       'players': 'clubs',
       'appearances': 'players'
     }
@@ -67,8 +67,8 @@ class Asset():
 
     self.name = name
     self.season = season
-    if name == 'leagues':
-      self.path = pathlib.Path(f"data/leagues.json")
+    if name == 'competitions':
+      self.path = pathlib.Path(f"data/competitions.json")
     else:
       self.path = pathlib.Path(f"data/raw/{season}/{name}.json")
 
@@ -92,7 +92,7 @@ class Asset():
     Asset acquisition have dependecies between each other. This list returns the right order for asset
     acquisition steps to run.
     """
-    return [Asset(name, season) for name in self.asset_parents if name != 'leagues']
+    return [Asset(name, season) for name in self.asset_parents if name != 'competitions']
 
 
 def acquire_asset(asset, scrapy_cache):

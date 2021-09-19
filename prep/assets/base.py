@@ -17,9 +17,9 @@ class BaseProcessor:
 
       self.raw_dfs = []
 
-      if name == 'leagues':
+      if name == 'competitions':
         df = pandas.read_json(
-          f"data/leagues.json",
+          f"data/competitions.json",
           lines=True,
           convert_dates=True,
           orient={'index', 'date'}
@@ -68,14 +68,6 @@ class BaseProcessor:
 
   def output_summary(self):
     return str(self.prep_df.describe())
-
-  def validation_summary(self):
-    if len(self.validations) == 0:
-      return(f"All {len(self.get_validations())} validations passed!")
-    else:
-      from tabulate import tabulate # https://github.com/astanin/python-tabulate
-      table = [[elem['validation'], len(elem['error_asset'])] for elem in self.validations]
-    return tabulate(table, headers=['Validation', '# Errors'])
 
   def set_checkpoint(self, name, df):
     self.checkpoints[name] = df
