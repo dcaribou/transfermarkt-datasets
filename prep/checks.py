@@ -6,16 +6,19 @@ def no_html_encodes_in_names(row):
         note = f"{value} contains a '%' character"
         yield errors.CellError.from_row(row, note=note, field_name='name')
 
-def league_code_in_range(row):
-  LEAGUE_CODES = [
+def competition_code_in_range(row):
+  COMPETITION_CODES = [
     'ES1', 'GB1', 'L1', 'IT1', 'FR1', 'GR1', 'PO1', 
     'BE1', 'UKR1', 'BE1', 'RU1', 'DK1', 'SC1', 'TR1',
-    'NL1'
+    'NL1', 'NLP', 'NLSC', 'BESC', 'DFB', 'POSU', 'POCP',
+    'CGB', 'UKRP', 'RUP', 'GBCS', 'SUC', 'DFL', 'CDR',
+    'RUSS', 'GRP', 'SFA', 'CIT', 'DKP', 'FRCH', 'UKRS',
+    'SCI', 
   ]
-  value = row['league_code']
-  if value is not None and value not in LEAGUE_CODES:
-      note = f"Invalid league_code {value}. Valid values are {LEAGUE_CODES}"
-      yield errors.CellError.from_row(row, note=note, field_name='league_code')
+  value = row['competition_code']
+  if value is not None and value not in COMPETITION_CODES:
+      note = f"Invalid competition_code {value}. Valid values are {COMPETITION_CODES}"
+      yield errors.CellError.from_row(row, note=note, field_name='competition_code')
 
 def country_name_in_range(row):
   import pycountry
@@ -42,7 +45,7 @@ def country_name_in_range(row):
 
 checks = [
   no_html_encodes_in_names,
-  league_code_in_range,
+  competition_code_in_range,
   # this check takes ages as it is right now, we need to find a better way to validate this
   # country_name_in_range
 ]

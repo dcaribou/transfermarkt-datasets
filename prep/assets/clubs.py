@@ -10,7 +10,7 @@ from .base import BaseProcessor
 class ClubsProcessor(BaseProcessor):
 
   name = 'clubs'
-  description = "Clubs in `leagues`. One row per club."
+  description = "Clubs in `competitions`. One row per club."
 
   def process_segment(self, segment):
     
@@ -44,7 +44,7 @@ class ClubsProcessor(BaseProcessor):
     prep_df['stadium_name'] = json_normalized['stadium_name']
     prep_df['stadium_seats'] = (
       json_normalized['stadium_seats']
-        .str.replace('.', '')
+        .str.replace('.', '', regex=False)
         .str.split(' ', 2, True)[0]
         .astype('int32')
     )
@@ -97,7 +97,7 @@ class ClubsProcessor(BaseProcessor):
 
     self.schema.primary_key = ['club_id']
     self.schema.foreign_keys = [
-      {"fields": "league_id", "reference": {"resource": "leagues", "fields": "league_id"}}
+      {"fields": "league_id", "reference": {"resource": "competitions", "fields": "league_id"}}
     ]
 
     return self.schema

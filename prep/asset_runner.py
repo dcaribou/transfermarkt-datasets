@@ -28,7 +28,7 @@ def get_assets(data_folder_path):
     asset_name = (str(asset_path).split('/')[-1]).split('.')[0]
     asset_keys[asset_name] = 'found'
 
-  return list(asset_keys.keys())
+  return list(asset_keys.keys()) + ['competitions']
 class AssetRunner:
   def __init__(self, data_folder_path='data/raw') -> None:
       self.data_folder_path = f"{data_folder_path}"

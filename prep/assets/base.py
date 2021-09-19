@@ -17,9 +17,9 @@ class BaseProcessor:
 
       self.raw_dfs = []
 
-      if name == 'leagues':
+      if name == 'competitions':
         df = pandas.read_json(
-          f"data/leagues.json",
+          f"data/competitions.json",
           lines=True,
           convert_dates=True,
           orient={'index', 'date'}

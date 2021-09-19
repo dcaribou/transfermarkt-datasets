@@ -10,7 +10,7 @@ from .base import BaseProcessor
 class GamesProcessor(BaseProcessor):
 
   name = 'games'
-  description = "Games in `leagues`. One row per game."
+  description = "Games in `competitions`. One row per game."
 
   def process_segment(self, segment):
 
@@ -38,17 +38,19 @@ class GamesProcessor(BaseProcessor):
 
     self.set_checkpoint('json_normalized', json_normalized)
 
+    # it happens https://www.transfermarkt.co.uk/spielbericht/index/spielbericht/3465097
+    json_normalized = json_normalized[json_normalized['result'] != '-:-']
+
     href_parts = json_normalized['href'].str.split('/', 5, True)
     parent_href_parts = json_normalized['parent.href'].str.split('/', 5, True)
     home_club_href_parts = json_normalized['home_club.href'].str.split('/', 5, True)
     away_club_href_parts = json_normalized['away_club.href'].str.split('/', 5, True)
 
     prep_df['game_id'] = href_parts[4]
-    prep_df['league_code'] = parent_href_parts[4]
+    prep_df['competition_code'] = parent_href_parts[4]
     prep_df['season'] = infer_season(json_normalized['date'])
     prep_df['round'] = json_normalized['matchday']
     prep_df['date'] = json_normalized['date']
-    prep_df['time'] = pandas.to_datetime(json_normalized['time']).dt.time 
     prep_df['home_club_id'] = home_club_href_parts[4]
     prep_df['away_club_id'] = away_club_href_parts[4]
     prep_df[['home_club_goals', 'away_club_goals']] = parse_aggregate(json_normalized['result'])
@@ -57,7 +59,7 @@ class GamesProcessor(BaseProcessor):
     prep_df['stadium'] = json_normalized['stadium']
     prep_df['attendance'] = (
       json_normalized['attendance'].str.split(' ', 2, True)[1]
-        .str.replace('.', '').str.strip()
+        .str.replace('.', '', regex=False).str.strip()
     )
     prep_df['url'] = 'https://www.transfermarkt.co.uk' + json_normalized['href']
 
@@ -72,11 +74,10 @@ class GamesProcessor(BaseProcessor):
     self.schema = Schema()
 
     self.schema.add_field(Field(name='game_id', type='integer'))
-    self.schema.add_field(Field(name='league_code', type='string'))
-    self.schema.add_field(Field(name='season', type='integer'))
+    self.schema.add_field(Field(name='competition_code', type='string'))
+    self.schema.add_field(Field(name='season', type='string'))
     self.schema.add_field(Field(name='round', type='string'))
     self.schema.add_field(Field(name='date', type='date'))
-    self.schema.add_field(Field(name='time', type='string'))
     self.schema.add_field(Field(name='home_club_id', type='integer'))
     self.schema.add_field(Field(name='away_club_id', type='integer'))
     self.schema.add_field(Field(name='home_club_goals', type='integer'))
