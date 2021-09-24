@@ -1,7 +1,4 @@
 """Bulid prepared datasets in data/prep using raw data in data/raw.
-
-Usage:
- > python prep.py [--raw-files-location <path to raw files folder>] [--datapackage-metadata] [--ignore-checks]
 """
 from prep.asset_runner import AssetRunner
 import argparse
@@ -16,14 +13,12 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--raw-files-location', required=False, default='data/raw')
 parser.add_argument('--refresh-metadata', action='store_const', const=True, required=False, default=False)
 parser.add_argument('--run-validations', action='store_const', const=True, required=False, default=False)
-parser.add_argument('--ignore-checks', help='Ignore validation checks report', action='store_const', const=True, required=False, default=False)
 
 args = parser.parse_args()
 
 raw_files_location = args.raw_files_location # ../data/raw
 refresh_metadata = args.refresh_metadata
 run_validations = args.run_validations
-ignore_checks = args.ignore_checks
 
 runner = AssetRunner(raw_files_location)
 
