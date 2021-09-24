@@ -3,6 +3,8 @@ name: Tansfermarkt Datasets Data Pipeline (On Push)
 on:
   push:
     branches: [master]
+  pull_request:
+    branches: [master]
 
 jobs:
   data-pipeline:
@@ -18,7 +20,20 @@ jobs:
       with:
         environment-file: environment.yml
         activate-environment: transfermarkt-datasets
-    - name: sync datasets
+    - name: prep
+      env:
+        # AWS auth (required for pulling from dvc)
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        AWS_EC2_METADATA_DISABLED: true # https://github.com/aws/aws-cli/issues/5262
+      run: |
+        dvc pull
+
+        python 2_prepare.py && cp prep/stage/* data/prep
+
+    - name: sync
+      # only sync when there is push to master
+      if: ${{ github.event_name == 'push' }}
       env:
         # Kaggle API auth
         KAGGLE_USERNAME: ${{ secrets.KAGGLE_USERNAME }}
@@ -29,8 +44,4 @@ jobs:
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         AWS_EC2_METADATA_DISABLED: true # https://github.com/aws/aws-cli/issues/5262
       run: |
-        dvc pull
-
-        python 2_prepare.py && cp prep/stage/* data/prep
-        
         python 3_sync.py --message "${{ github.event.head_commit.message }}" --season 2021

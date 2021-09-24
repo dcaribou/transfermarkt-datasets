@@ -10,7 +10,7 @@ Automate the data pipeline to **keep these assets up to date** and publicly avai
 ### [data](data)
 All project data assets are kept inside the `data` folder. This is a [DVC](https://dvc.org/) repository, therefore all files for the current revision can be pulled from remote storage with the `dvc pull` command.
 
-> :information_source: Read access to the [DVC remote storage](https://dvc.org/doc/command-reference/remote#description) for this project is required to successfully run `dvc pull`. Contributors should feel free to grant themselves access by adding their AWS IAM user ARN to [this whitelist](https://github.com/dcaribou/transfermarkt-datasets/blob/f5bda59b3a4fccf71fcef5a165591d441ab75e2d/infra/main.tf#L16). Have a look at [this PR](https://github.com/dcaribou/transfermarkt-datasets/pull/47/files) for an example.
+> :information_source: Read access to the [DVC remote storage](https://dvc.org/doc/command-reference/remote#description) for this project is required to successfully run `dvc pull`. Contributors should feel free to grant themselves access by adding their AWS IAM user ARN to [this whitelist](https://github.com/dcaribou/transfermarkt-datasets/blob/6b6dd6572f582b2c40039913a65ba99d10fd1f44/infra/main.tf#L16). Have a look at [this PR](https://github.com/dcaribou/transfermarkt-datasets/pull/47/files) for an example.
 
 `raw` data within this folder can be updated by running the [trasfermarkt-scraper](https://github.com/dcaribou/transfermarkt-scraper) with the `1_acquire.py` script.
 ```console
