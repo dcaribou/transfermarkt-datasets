@@ -33,7 +33,7 @@ jobs:
 
     - name: sync
       # only sync when there is push to master
-      if: ${{ github.event_name	 == 'push' }}
+      if: ${{ github.event_name == 'push' }}
       env:
         # Kaggle API auth
         KAGGLE_USERNAME: ${{ secrets.KAGGLE_USERNAME }}
