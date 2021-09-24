@@ -16,8 +16,14 @@ class BaseProcessor:
       self.prep_file_path = prep_file_path
 
       self.raw_dfs = []
+      self.prep_df = None
+      self.validations = None
+      self.validation_report = None
+      
+      self.checkpoints = {}
 
-      if name == 'competitions':
+  def load_partitions(self):
+    if self.name == 'competitions':
         df = pandas.read_json(
           f"data/competitions.json",
           lines=True,
@@ -25,22 +31,16 @@ class BaseProcessor:
           orient={'index', 'date'}
         )
         self.raw_dfs.append(df)
-      else:
-        for season in seasons:
-          df = pandas.read_json(
-            f"{raw_files_path}/{season}/{name}.json",
-            lines=True,
-            convert_dates=True,
-            orient={'index', 'date'}
-          )
-          if len(df) > 0:
-            self.raw_dfs.append(df)
-
-      self.prep_df = None
-      self.validations = None
-      
-      self.checkpoints = {}
-
+    else:
+      for season in self.seasons:
+        df = pandas.read_json(
+          f"{self.raw_files_path}/{season}/{self.name}.json",
+          lines=True,
+          convert_dates=True,
+          orient={'index', 'date'}
+        )
+        if len(df) > 0:
+          self.raw_dfs.append(df)
   
   def process_segment(self, segment):
     """Process one segment of the asset. A segment is equivalent to one file.
@@ -67,7 +67,11 @@ class BaseProcessor:
     pass
 
   def output_summary(self):
-    return str(self.prep_df.describe())
+    from tabulate import tabulate # https://github.com/astanin/python-tabulate
+    summary = self.prep_df.describe()
+    summary.insert(0, 'metric', summary.index)
+    table = summary.values.tolist()
+    return tabulate(table, headers=summary.columns, floatfmt=".2f")
 
   def set_checkpoint(self, name, df):
     self.checkpoints[name] = df
