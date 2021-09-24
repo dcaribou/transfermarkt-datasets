@@ -27,7 +27,7 @@ class PlayersProcessor(BaseProcessor):
     prep_df['current_club_id'] = parent_href_parts[4]
     prep_df['name'] = self.url_unquote(href_parts[1])
     prep_df['pretty_name'] = prep_df['name'].apply(lambda x: titleize(x))
-    prep_df['country_of_birth'] = json_normalized['place_of_birth'].str.replace('Heute: ', '', regex=False)
+    prep_df['country_of_birth'] = json_normalized['place_of_birth.country'].str.replace('Heute: ', '', regex=False)
     prep_df['country_of_citizenship'] = json_normalized['citizenship']
     prep_df['date_of_birth'] = (
       pandas
@@ -36,12 +36,31 @@ class PlayersProcessor(BaseProcessor):
           errors='coerce'
         )
     )
-    prep_df['position'] = (
-      json_normalized['position']
-        .str.split(' - ', 3, True)[0]
-        .str.capitalize()
+
+    sub_position = json_normalized['position']
+    prep_df['position'] = numpy.select(
+      [
+          sub_position.isin(
+            ['Centre-Forward', 'Left Winger', 'Right Winger', 'Second Striker']
+          ), 
+          sub_position.isin(
+            ['Centre-Back', 'Left-Back', 'Right-Back']
+          ),
+          sub_position.isin(
+            ['Attacking Midfield', 'Central Midfield', 'Defensive Midfield',
+            'Left Midfield', 'Right Midfield']
+          ),
+          sub_position == 'Goalkeeper'
+      ], 
+      [
+          'Attack', 
+          'Defender',
+          'Midfield',
+          'Goalkeeper'
+      ]
     )
-    prep_df['sub_position'] = json_normalized['position'].str.split(' - ', 3, True)[1]
+    prep_df['sub_position'] = sub_position
+
     prep_df['foot'] = (
       json_normalized['foot']
         .replace('N/A', numpy.nan)
