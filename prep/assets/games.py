@@ -98,9 +98,14 @@ class GamesProcessor(BaseProcessor):
     )
 
     self.schema.primary_key = ['game_id']
-    self.schema.foreign_keys = [
-      {"fields": "home_club_id", "reference": {"resource": "clubs", "fields": "club_id"}},
-      {"fields": "away_club_id", "reference": {"resource": "clubs", "fields": "club_id"}}
-    ]
+    
+    # with the inclusion of games from cups, supercups and non national competitions
+    # it is not realistic to expect all referential integrity on club IDs, since that
+    # would require that clubs up to the 4th or 5th tier are included in the dataset
+
+    # self.schema.foreign_keys = [
+    #   {"fields": "home_club_id", "reference": {"resource": "clubs", "fields": "club_id"}},
+    #   {"fields": "away_club_id", "reference": {"resource": "clubs", "fields": "club_id"}}
+    # ]
 
     return self.schema

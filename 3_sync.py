@@ -174,7 +174,11 @@ if not cache_only:
   print("--> Save assets to S3")
   save_to_s3(prep_location, f"snapshots")
   save_to_s3(f"{raw_location}/{season}", f"snapshots")
-  save_to_s3('prep/datapackage_validation.json', 'snapshots')
+  save_to_s3('prep/datapackage_resource_appearances_validation.json', 'snapshots')
+  save_to_s3('prep/datapackage_resource_clubs_validation.json', 'snapshots')
+  save_to_s3('prep/datapackage_resource_competitions_validation.json', 'snapshots')
+  save_to_s3('prep/datapackage_resource_games_validation.json', 'snapshots')
+  save_to_s3('prep/datapackage_resource_players_validation.json', 'snapshots')
   print("")
 
   print("--> Publish to Kaggle")
