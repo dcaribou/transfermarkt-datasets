@@ -14,7 +14,8 @@ import pathlib
 def get_seasons(data_folder_path):
   path = pathlib.Path(data_folder_path)
   seasons = [
-    2021
+    int(str(season_path).split('/')[-1])
+    for season_path in path.glob('*') if season_path.is_dir()
   ]
   
   seasons.sort()
