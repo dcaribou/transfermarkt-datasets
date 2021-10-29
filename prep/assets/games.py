@@ -61,6 +61,7 @@ class GamesProcessor(BaseProcessor):
       json_normalized['attendance'].str.split(' ', 2, True)[1]
         .str.replace('.', '', regex=False).str.strip()
     )
+    prep_df['referee'] = json_normalized['referee']
     prep_df['url'] = 'https://www.transfermarkt.co.uk' + json_normalized['href']
 
 
@@ -90,6 +91,7 @@ class GamesProcessor(BaseProcessor):
     self.schema.add_field(Field(name='away_club_position', type='integer'))
     self.schema.add_field(Field(name='stadium', type='string'))
     self.schema.add_field(Field(name='attendance', type='integer'))
+    self.schema.add_field(Field(name='referee', type='string'))
     self.schema.add_field(Field(
         name='url',
         type='string',
