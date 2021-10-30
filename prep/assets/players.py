@@ -78,10 +78,10 @@ class PlayersProcessor(BaseProcessor):
     )
 
     def parse_market_value(market_value):
-      """Parse a "market value" string into integer number representing GBP amounts (british pound)
+      """Parse a "market value" string into an integer number representing a GBP (british pounds) amount,
       such as "£240Th." or "£34.3m".
 
-      :param: market_value "Market value" string
+      :market_value: "Market value" string
       :return: An integer number representing a GBP amount
       """
 
