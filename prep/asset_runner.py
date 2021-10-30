@@ -29,7 +29,7 @@ def get_assets(data_folder_path):
 
   return list(asset_keys.keys()) + ['competitions']
 class AssetRunner:
-  def __init__(self, data_folder_path='data/raw') -> None:
+  def __init__(self, data_folder_path='data/raw', season=None) -> None:
       self.data_folder_path = f"{data_folder_path}"
       self.prep_folder_path = 'prep/stage'
       self.datapackage_descriptor_path = f"{self.prep_folder_path}/dataset-metadata.json"
@@ -37,7 +37,10 @@ class AssetRunner:
       self.datapackage = None
       self.validation_report = None
 
-      seasons = get_seasons(self.data_folder_path)
+      if season is None:
+        seasons = get_seasons(self.data_folder_path)
+      else:
+        seasons = [season]
       assets = get_assets(self.data_folder_path)
       for asset in assets:
           class_name = asset.capitalize()
