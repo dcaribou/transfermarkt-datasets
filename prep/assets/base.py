@@ -54,7 +54,11 @@ class BaseProcessor:
 
   def process(self):
     self.prep_dfs = [self.process_segment(prep_df) for prep_df in self.raw_dfs]
-    self.prep_df = pandas.concat(self.prep_dfs, axis=0).drop_duplicates(keep='last')
+    concatenated = pandas.concat(self.prep_dfs, axis=0)
+    if self.schema.primary_key:
+      self.prep_df = concatenated.drop_duplicates(subset=self.schema.primary_key, keep='last')
+    else:
+      self.prep_df = concatenated.drop_duplicates(keep='last')
   
   def url_unquote(self, url_series):
     from urllib.parse import unquote
@@ -96,7 +100,7 @@ class BaseProcessor:
       description=self.description,
       basepath=basepath
     )
-    resource.schema = self.resource_schema()
+    resource.schema = self.schema
     return resource
 
 

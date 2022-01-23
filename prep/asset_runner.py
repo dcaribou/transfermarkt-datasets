@@ -163,6 +163,8 @@ class AssetRunner:
       errors += asset['processor'].validation_report['stats']['errors']
     
     if errors == 0:
-      return "All validations have passed!"
+      logging.info("All validations have passed!")
+      return True
     else:
-      return f">={errors} rows did not pass validations!"
+      logging.error(f">={errors} rows did not pass validations!")
+      return False

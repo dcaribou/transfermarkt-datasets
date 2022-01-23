@@ -10,6 +10,27 @@ class CompetitionsProcessor(BaseProcessor):
   name = "competitions"
   description = "Competitions in Europe confederation. One row per league."
 
+  def __init__(self, raw_files_path, seasons, name, prep_file_path) -> None:
+    super().__init__(raw_files_path, seasons, name, prep_file_path)
+
+    self.schema = Schema()
+
+    self.schema.add_field(Field(name='competition_id', type='string'))
+    self.schema.add_field(Field(name='name', type='string'))
+    self.schema.add_field(Field(name='type', type='string'))
+    self.schema.add_field(Field(name='country_id', type='integer'))
+    self.schema.add_field(Field(name='country_name', type='string'))
+    self.schema.add_field(Field(name='domestic_league_code', type='string'))
+    self.schema.add_field(Field(name='confederation', type='string'))
+    self.schema.add_field(Field(
+        name='url',
+        type='string',
+        format='uri'
+      )
+    )
+
+    self.schema.primary_key = ['competition_id']
+
   def process_segment(self, segment):
     
     prep_df = pandas.DataFrame()
@@ -35,24 +56,3 @@ class CompetitionsProcessor(BaseProcessor):
 
   def get_validations(self):
     return []
-
-  def resource_schema(self):
-    self.schema = Schema()
-
-    self.schema.add_field(Field(name='competition_id', type='string'))
-    self.schema.add_field(Field(name='name', type='string'))
-    self.schema.add_field(Field(name='type', type='string'))
-    self.schema.add_field(Field(name='country_id', type='integer'))
-    self.schema.add_field(Field(name='country_name', type='string'))
-    self.schema.add_field(Field(name='domestic_league_code', type='string'))
-    self.schema.add_field(Field(name='confederation', type='string'))
-    self.schema.add_field(Field(
-        name='url',
-        type='string',
-        format='uri'
-      )
-    )
-
-    self.schema.primary_key = ['competition_id']
-
-    return self.schema
