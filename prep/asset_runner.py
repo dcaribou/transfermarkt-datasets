@@ -155,16 +155,13 @@ class AssetRunner:
           json.dumps(validation_report, indent=4, sort_keys=True)
         )
 
-    return self.summarize_validation_report()
+    return self.is_valid()
 
-  def summarize_validation_report(self):
-    errors = 0
+  def is_valid(self):
     for asset in self.assets:
-      errors += asset['processor'].validation_report['stats']['errors']
-    
-    if errors == 0:
-      logging.info("All validations have passed!")
-      return True
-    else:
-      logging.error(f">={errors} rows did not pass validations!")
-      return False
+      if not asset['processor'].is_valid():
+        logging.error(f"{asset['name']} did not pass validations!")
+        return False
+      else:
+        logging.info("All validations have passed!")
+        return True

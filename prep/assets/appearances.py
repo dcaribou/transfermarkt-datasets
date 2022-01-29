@@ -34,6 +34,8 @@ class AppearancesProcessor(BaseProcessor):
       {"fields": "game_id", "reference": {"resource": "games", "fields": "game_id"}}
     ]
 
+    self.errors_tolerance = 100
+
   def process_segment(self, segment):
 
     def cast_metric(metric):
