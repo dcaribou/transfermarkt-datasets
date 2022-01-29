@@ -12,6 +12,30 @@ class AppearancesProcessor(BaseProcessor):
   name = 'appearances'
   description = "Appearances for `players`. One row per appearance."
 
+  def __init__(self, raw_files_path, seasons, name, prep_file_path) -> None:
+    super().__init__(raw_files_path, seasons, name, prep_file_path)
+    
+    self.schema = Schema()
+
+    self.schema.add_field(Field(name='player_id', type='integer'))
+    self.schema.add_field(Field(name='game_id', type='integer'))
+    self.schema.add_field(Field(name='appearance_id', type='string'))
+    self.schema.add_field(Field(name='competition_id', type='string'))
+    self.schema.add_field(Field(name='player_club_id', type='integer'))
+    self.schema.add_field(Field(name='goals', type='integer'))
+    self.schema.add_field(Field(name='assists', type='integer'))
+    self.schema.add_field(Field(name='minutes_played', type='integer'))
+    self.schema.add_field(Field(name='yellow_cards', type='integer'))
+    self.schema.add_field(Field(name='red_cards', type='integer'))
+    
+    self.schema.primary_key = ['appearance_id']
+    
+    self.schema.foreign_keys = [
+      {"fields": "game_id", "reference": {"resource": "games", "fields": "game_id"}}
+    ]
+
+    self.errors_tolerance = 100
+
   def process_segment(self, segment):
 
     def cast_metric(metric):
@@ -75,25 +99,3 @@ class AppearancesProcessor(BaseProcessor):
       # 'assert_yellow_cards_not_constant',
       # 'assert_red_cards_not_constant'
     ]
-
-  def resource_schema(self):
-    self.schema = Schema()
-
-    self.schema.add_field(Field(name='player_id', type='integer'))
-    self.schema.add_field(Field(name='game_id', type='integer'))
-    self.schema.add_field(Field(name='appearance_id', type='string'))
-    self.schema.add_field(Field(name='competition_id', type='string'))
-    self.schema.add_field(Field(name='player_club_id', type='integer'))
-    self.schema.add_field(Field(name='goals', type='integer'))
-    self.schema.add_field(Field(name='assists', type='integer'))
-    self.schema.add_field(Field(name='minutes_played', type='integer'))
-    self.schema.add_field(Field(name='yellow_cards', type='integer'))
-    self.schema.add_field(Field(name='red_cards', type='integer'))
-    
-    self.schema.primary_key = ['appearance_id']
-    
-    self.schema.foreign_keys = [
-      {"fields": "game_id", "reference": {"resource": "games", "fields": "game_id"}}
-    ]
-
-    return self.schema

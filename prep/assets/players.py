@@ -14,6 +14,36 @@ class PlayersProcessor(BaseProcessor):
   name = 'players'
   description = "Players in `clubs`. One row per player."
 
+  def __init__(self, raw_files_path, seasons, name, prep_file_path) -> None:
+    super().__init__(raw_files_path, seasons, name, prep_file_path)
+
+    self.schema = Schema()
+
+    self.schema.add_field(Field(name='player_id', type='integer'))
+    self.schema.add_field(Field(name='current_club_id', type='integer'))
+    self.schema.add_field(Field(name='name', type='string'))
+    self.schema.add_field(Field(name='pretty_name', type='string'))
+    self.schema.add_field(Field(name='country_of_birth', type='string'))
+    self.schema.add_field(Field(name='country_of_citizenship', type='string'))
+    self.schema.add_field(Field(name='date_of_birth', type='date'))
+    self.schema.add_field(Field(name='position', type='string'))
+    self.schema.add_field(Field(name='sub_position', type='string'))
+    self.schema.add_field(Field(name='foot', type='string'))
+    self.schema.add_field(Field(name='height_in_cm', type='integer'))
+    self.schema.add_field(Field(name='market_value_in_gbp', type='number'))
+    self.schema.add_field(Field(name='highest_market_value_in_gbp', type='number'))
+    self.schema.add_field(Field(
+      name='url',
+      type='string',
+      format='uri'
+      )
+    )
+
+    self.schema.primary_key = ['player_id']
+    self.schema.foreign_keys = [
+      {"fields": "current_club_id", "reference": {"resource": "clubs", "fields": "club_id"}}
+    ]
+
   def process_segment(self, segment):
     
     prep_df = pandas.DataFrame()
@@ -124,33 +154,3 @@ class PlayersProcessor(BaseProcessor):
 
   def get_validations(self):
       return []
-
-  def resource_schema(self):
-    self.schema = Schema()
-
-    self.schema.add_field(Field(name='player_id', type='integer'))
-    self.schema.add_field(Field(name='current_club_id', type='integer'))
-    self.schema.add_field(Field(name='name', type='string'))
-    self.schema.add_field(Field(name='pretty_name', type='string'))
-    self.schema.add_field(Field(name='country_of_birth', type='string'))
-    self.schema.add_field(Field(name='country_of_citizenship', type='string'))
-    self.schema.add_field(Field(name='date_of_birth', type='date'))
-    self.schema.add_field(Field(name='position', type='string'))
-    self.schema.add_field(Field(name='sub_position', type='string'))
-    self.schema.add_field(Field(name='foot', type='string'))
-    self.schema.add_field(Field(name='height_in_cm', type='integer'))
-    self.schema.add_field(Field(name='market_value_in_gbp', type='integer'))
-    self.schema.add_field(Field(name='highest_market_value_in_gbp', type='integer'))
-    self.schema.add_field(Field(
-      name='url',
-      type='string',
-      format='uri'
-      )
-    )
-
-    self.schema.primary_key = ['player_id']
-    self.schema.foreign_keys = [
-      {"fields": "current_club_id", "reference": {"resource": "clubs", "fields": "club_id"}}
-    ]
-
-    return self.schema
