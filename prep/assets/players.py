@@ -20,6 +20,7 @@ class PlayersProcessor(BaseProcessor):
     self.schema = Schema()
 
     self.schema.add_field(Field(name='player_id', type='integer'))
+    self.schema.add_field(Field(name='last_season', type='integer'))
     self.schema.add_field(Field(name='current_club_id', type='integer'))
     self.schema.add_field(Field(name='name', type='string'))
     self.schema.add_field(Field(name='pretty_name', type='string'))
