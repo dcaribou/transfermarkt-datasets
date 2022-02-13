@@ -49,7 +49,7 @@ class GamesProcessor(BaseProcessor):
       #   {"fields": "away_club_id", "reference": {"resource": "clubs", "fields": "club_id"}}
       # ]
 
-  def process_segment(self, segment):
+  def process_segment(self, segment, season):
 
     def parse_aggregate(series: pandas.Series) -> pandas.DataFrame:
       parsed = series.str.split(":", expand=True)

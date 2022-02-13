@@ -1,4 +1,3 @@
-import numpy
 import pandas
 from frictionless.schema import Schema
 from frictionless.field import Field
@@ -36,7 +35,7 @@ class AppearancesProcessor(BaseProcessor):
 
     self.errors_tolerance = 100
 
-  def process_segment(self, segment):
+  def process_segment(self, segment, season):
 
     def cast_metric(metric):
       if len(metric) == 0:
