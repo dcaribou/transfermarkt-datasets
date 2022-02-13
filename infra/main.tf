@@ -27,3 +27,12 @@ module "base" {
     "project" = "transfermarkt-datasets"
   }
 }
+
+module "task" {
+  source = "./fargate_task"
+  name = "transfermarkt-datasets"
+  image = "dcaribou/transfermarkt-scraper"
+  tags = {
+    "project" = "transfermarkt-datasets"
+  }
+}
