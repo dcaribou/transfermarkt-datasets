@@ -2,7 +2,6 @@ from frictionless import Detector
 from frictionless.resource import Resource
 from numpy.lib.function_base import select
 import pandas
-import numpy
 from datetime import datetime, timedelta
 
 class BaseProcessor:
@@ -54,7 +53,10 @@ class BaseProcessor:
     pass
 
   def process(self):
-    self.prep_dfs = [self.process_segment(prep_df) for prep_df in self.raw_dfs]
+    self.prep_dfs = [
+      self.process_segment(prep_df, season)
+      for prep_df, season in zip(self.raw_dfs, self.seasons)
+    ]
     concatenated = pandas.concat(self.prep_dfs, axis=0)
     if self.schema.primary_key:
       self.prep_df = concatenated.drop_duplicates(subset=self.schema.primary_key, keep='last')
