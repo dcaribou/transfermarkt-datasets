@@ -95,7 +95,7 @@ class Asset():
     return [Asset(name, season) for name in self.asset_parents if name != 'competitions']
 
 
-def acquire_asset(asset, scrapy_cache, cat, asset_path):
+def acquire_asset(asset, scrapy_cache, cat):
   """Orchestrate asset acquisition steps on a Docker server and pipe output to either stdout or a local file"""
   
   import docker
@@ -107,6 +107,7 @@ def acquire_asset(asset, scrapy_cache, cat, asset_path):
 
   volumes = {}
   volumes[parent_asset.file_full_path()] = {'bind': f"/app/parents/{parent_asset.file_name()}", 'mode': 'ro'}
+  volumes[asset.file_full_path()] = {'bind': f"/app/{asset.file_full_path()}", 'mode': 'rw'}
   if scrapy_cache is not None:
     path = pathlib.Path(scrapy_cache)
     volumes[path.absolute()] = {'bind': '/app/.scrapy', 'mode': 'rw'}
@@ -121,7 +122,9 @@ def acquire_asset(asset, scrapy_cache, cat, asset_path):
     scrapy crawl {asset.name} \
       -a parents=parents/{parent_asset.file_name()} \
       -s SEASON={asset.season} \
-      -s USER_AGENT='{USER_AGENT}'"""
+      -s USER_AGENT='{USER_AGENT}' \
+      -s FEED_URI='/app/{asset.file_full_path()}'
+  """
 
   container = docker_client.containers.run(
     image=f"{IMAGE}:{IMAGE_TAG}",
@@ -147,13 +150,8 @@ def acquire_asset(asset, scrapy_cache, cat, asset_path):
         yield line
         line = ""
 
-  if cat:
-    for line in log_line_iterator(log_iterator):
-      print(line)
-  else:
-    with open(asset_path, mode='w+') as asset_file:
-      for line in log_line_iterator(log_iterator):
-        asset_file.write(line)
+  for line in log_line_iterator(log_iterator):
+    print(line)
 
 if ASSET_NAME == 'all':
   assets = Asset.all(SEASON)
@@ -177,8 +175,7 @@ for asset in assets:
   acquire_asset(
     asset,
     SCRAPY_CACHE,
-    CAT,
-    asset.file_full_path()
+    CAT
   )
 
   
