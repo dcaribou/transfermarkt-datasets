@@ -31,7 +31,7 @@ module "base" {
 module "task" {
   source = "./fargate_task"
   name = "transfermarkt-datasets"
-  image = "dcaribou/transfermarkt-scraper"
+  image = "dcaribou/transfermarkt-datasets"
   tags = {
     "project" = "transfermarkt-datasets"
   }

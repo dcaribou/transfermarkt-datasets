@@ -2,10 +2,8 @@ FROM continuumio/miniconda3
 
 WORKDIR /app
 
-# The code to run when container is started:
-COPY prep prep
-COPY 1_acquire.py .
-COPY 2_prepare.py .
+RUN apt-get update && \
+    apt-get -y install gcc python3-dev
 
 # Create the environment:
 COPY environment.yml .
