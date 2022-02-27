@@ -20,7 +20,7 @@ jobs:
         id: docker_meta
         uses: crazy-max/ghaction-docker-meta@v1
         with:
-          images: dcaribou/transfermarkt-datasets:${GITHUB_REF##*/}
+          images: dcaribou/transfermarkt-datasets
       -
         name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
