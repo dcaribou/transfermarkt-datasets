@@ -30,12 +30,13 @@ jobs:
       with:
         environment-file: environment.yml
         activate-environment: transfermarkt-datasets
-    - name: Run pipeline
+    - name: Acquire
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         AWS_EC2_METADATA_DISABLED: true # https://github.com/aws/aws-cli/issues/5262
       run: |
+        git checkout ga-updates
         bash run_pipeline.sh
     - uses: EndBug/add-and-commit@v7
       with:

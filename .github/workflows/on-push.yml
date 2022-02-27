@@ -7,6 +7,40 @@ on:
     branches: [master]
 
 jobs:
+  docker-build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      -
+        name: checkout
+        uses: actions/checkout@v2
+      -
+        name: Docker meta
+        id: docker_meta
+        uses: crazy-max/ghaction-docker-meta@v1
+        with:
+          images: dcaribou/transfermarkt-datasets:${GITHUB_REF##*/}
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      -
+        name: Login to DockerHub
+        uses: docker/login-action@v1 
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      -
+        name: Build and push
+        id: docker_build
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          tags: ${{ steps.docker_meta.outputs.tags }}
+      -
+        name: Image digest
+        run: echo ${{ steps.docker_build.outputs.digest }}
+
   data-pipeline:
 
     runs-on: ubuntu-latest
@@ -15,11 +49,7 @@ jobs:
         shell: bash -l {0}
 
     steps:
-    - uses: actions/checkout@v2
-    - uses: conda-incubator/setup-miniconda@v2
-      with:
-        environment-file: environment.yml
-        activate-environment: transfermarkt-datasets
+    # ecs run
     - name: prep
       env:
         # AWS auth (required for pulling from dvc)
@@ -27,21 +57,4 @@ jobs:
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         AWS_EC2_METADATA_DISABLED: true # https://github.com/aws/aws-cli/issues/5262
       run: |
-        dvc pull
-
-        python 2_prepare.py && cp prep/stage/* data/prep
-
-    - name: sync
-      # only sync when there is push to master
-      if: ${{ github.event_name == 'push' }}
-      env:
-        # Kaggle API auth
-        KAGGLE_USERNAME: ${{ secrets.KAGGLE_USERNAME }}
-        KAGGLE_KEY: ${{ secrets.KAGGLE_KEY }}
-        # data.world API auth
-        DW_AUTH_TOKEN: ${{ secrets.DW_AUTH_TOKEN }}
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        AWS_EC2_METADATA_DISABLED: true # https://github.com/aws/aws-cli/issues/5262
-      run: |
-        python 3_sync.py --message "${{ github.event.head_commit.message }}" --season 2021
+        run_on_ecs.sh

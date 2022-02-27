@@ -10,6 +10,7 @@ dependencies:
   - inflection
   - pip==21.0.1
   - dynaconf
+  - gh
   - pip:
       - frictionless==4.1.0
       - pycountry==20.7.3

@@ -1,8 +1,9 @@
 #!/bin/bash
 
-BRANCH=fargate-ecs
+BRANCH=fargate-tasks
 
-git clone git@github.com:dcaribou/transfermarkt-datasets.git && \
+git clone https://github.com/dcaribou/transfermarkt-datasets.git && \
+# ln -s /app/dvc_cache transfermarkt-datasets/.dvc/cache && \ # TODO: this is for testing in local, remove before pushing
 cd transfermarkt-datasets && \
 git checkout $BRANCH &&
 git pull
