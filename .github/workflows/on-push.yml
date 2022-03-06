@@ -20,7 +20,8 @@ jobs:
       
       - name: Help
         run: |
-          ls -a && ls -a .git
+          ls -a
+          echo $GITHUB_REF
           
       - name: Image build
         env:
