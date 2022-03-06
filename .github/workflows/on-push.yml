@@ -41,4 +41,7 @@ jobs:
             --job-queue transfermarkt-datasets-batch-compute-job-queue \
             --job-definition transfermarkt-datasets-batch-job-definition \
             --container-overrides \
-              command=./prepare_on_batch.sh
+              command=./prepare_on_batch.sh \
+          > job.json
+
+          cat job.json
