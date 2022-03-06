@@ -19,28 +19,9 @@ jobs:
         shell: bash -l {0}
 
     steps:
-    - run: |
-        echo "${{ github.event.head_commit.message }}"
-    - uses: actions/checkout@v2
-      # a different (personal access) github token need to be setup here so that a 'add-and-commit' step below triggers the 'on-push' workflow
-      # checkout https://github.community/t/push-from-action-does-not-trigger-subsequent-action/16854
-      with:
-        token: ${{ secrets.PA_GITHUB_TOKEN}}
-    - uses: conda-incubator/setup-miniconda@v2
-      with:
-        environment-file: environment.yml
-        activate-environment: transfermarkt-datasets
     - name: Acquire
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        AWS_EC2_METADATA_DISABLED: true # https://github.com/aws/aws-cli/issues/5262
       run: |
-        git checkout ga-updates
-        # python 1_aquire.sh
-        dvc install && dvc commit
-    - uses: EndBug/add-and-commit@v7
-      with:
-        add: 'data/*.dvc'
-        message: "${{ github.event.inputs.name || ':wrench: Github Actions: Updated dataset files'}}"
-        default_author: github_actions
+        aws batch submit-job --cmd prepare_on_batch.sh

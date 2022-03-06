@@ -14,25 +14,33 @@ provider "aws" {
 
 # add your AWS IAM user ARN to this list to gain access to DVC remote storage
 locals {
-  authorized_users = [
-    "arn:aws:iam::272181418418:user/transfermarkt-datasets"
+  dvc_read_users = [
+    "arn:aws:iam::272181418418:user/transfermarkt-datasets",
+    # "arn:aws:iam::272181418418:role/transfermarkt-datasets-fargate"
   ]
 }
+
 module "base" {
   source = "./base"
   bucket_name = "transfermarkt-datasets"
   user_name = "transfermarkt-datasets"
-  authorized_users = local.authorized_users
   tags = {
     "project" = "transfermarkt-datasets"
   }
 }
 
-module "task" {
-  source = "./fargate_task"
+module "iam" {
   name = "transfermarkt-datasets"
-  image = "dcaribou/transfermarkt-datasets"
-  tags = {
-    "project" = "transfermarkt-datasets"
-  }
+  source = "./iam"
+  read_users_arns = local.dvc_read_users
+  write_user_arn = "arn:aws:iam::272181418418:user/transfermarkt-datasets"
+  bucket_name = module.base.bucket_name
+  bucket_arn = module.base.bucket_arn
+}
+
+module "batch" {
+  name = "transfermarkt-datasets"
+  source = "./batch"
+  execution_role_arn = module.iam.batch_execution_role_arn
+  service_role_arn = module.iam.batch_service_role_arn
 }

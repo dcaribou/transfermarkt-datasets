@@ -10,85 +10,10 @@ resource "aws_iam_user" "user" {
   tags = var.tags
 }
 
-# create a limited access policy for the project user
-data "aws_iam_policy_document" "user_access_base" {
-  for_each = toset(var.authorized_users)
-
-  statement {
-    sid = "bucket-level-${sha256(each.key)}"
-    principals {
-      type = "AWS"
-      identifiers = [each.key]
-    }
-    actions = [
-      "s3:GetBucketLocation",
-      "s3:ListBucket"
-    ]
-
-    resources = [
-      aws_s3_bucket.bucket.arn
-    ]
-  }
-
-  statement {
-    sid = "read-dvc-${sha256(each.key)}"
-    principals {
-      type = "AWS"
-      identifiers = [aws_iam_user.user.arn]
-    }
-    actions = [
-      "s3:GetObject"
-    ]
-
-    resources = [
-      "${aws_s3_bucket.bucket.arn}/dvc/*",
-    ]
-  } 
-  
-  
+output "bucket_name" {
+  value = aws_s3_bucket.bucket.bucket
 }
 
-data "aws_iam_policy_document" "user_access_process" {
-  override_policy_documents = [for s in data.aws_iam_policy_document.user_access_base : s.json]
-
-  statement {
-    sid = "write-dvc"
-    principals {
-      type = "AWS"
-      identifiers = [aws_iam_user.user.arn]
-    }
-    actions = [
-      "s3:PutObject",
-      "s3:GetObject"
-    ]
-
-    resources = [
-      "${aws_s3_bucket.bucket.arn}/*",
-    ]
-  }
-
-  statement {
-    sid = "delete"
-    principals {
-      type = "AWS"
-      identifiers = [aws_iam_user.user.arn]
-    }
-    actions = [
-      "s3:DeleteObject"
-    ]
-
-    resources = [
-      "${aws_s3_bucket.bucket.arn}/snapshots/*",
-    ]
-  }
-
-}
-
-resource "aws_s3_bucket_policy" "bucket_policy_process" {
-  bucket = aws_s3_bucket.bucket.id
-  policy = data.aws_iam_policy_document.user_access_process.json
-}
-
-output "process_user_arn" {
-  value = aws_iam_user.user.arn
+output "bucket_arn" {
+  value = aws_s3_bucket.bucket.arn
 }
