@@ -26,9 +26,9 @@ jobs:
         env:
           DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
         run: |
-          docker build -t dcaribou/transfermarkt-datasets:${GITHUB_REF#refs/heads/} .
+          docker build -t dcaribou/transfermarkt-datasets:${GITHUB_REF##*/} .
           echo $DOCKERHUB_TOKEN | docker login --username dcaribou --password-stdin
-          docker push dcaribou/transfermarkt-datasets:${GITHUB_REF#refs/heads/}
+          docker push dcaribou/transfermarkt-datasets:${GITHUB_REF##*/}
 
       - name: prep
         env:
@@ -36,9 +36,9 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: |
           batch submit-job \
-            --job-name on-push-${GITHUB_REF#refs/heads/} \
+            --job-name on-push-${GITHUB_REF##*/} \
             --job-queue transfermarkt-datasets-batch-compute-job-queue \
             --job-definition transfermarkt-datasets-batch-job-definition \
             --container-overrides \
               command=./prepare_on_batch.sh \
-              image=dcaribou/transfermarkt-datasets:${GITHUB_REF#refs/heads/}
+              image=dcaribou/transfermarkt-datasets:${GITHUB_REF##*/}
