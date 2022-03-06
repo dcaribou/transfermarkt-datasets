@@ -18,9 +18,10 @@ jobs:
       - name: checkout
         uses: actions/checkout@v2
       
-      - name: Debug
+      - name: Help
         run: |
           ls -a
+          echo "BRANCH=${GITHUB_REF##*/}" >> $GITHUB_ENV
           
       - name: Docker meta
         id: docker_meta
@@ -42,7 +43,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: dcaribou/transfermarkt-datastet:fargate-tasks
+          tags: dcaribou/transfermarkt-datastet:${{ env.BRANCH }}
 
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
