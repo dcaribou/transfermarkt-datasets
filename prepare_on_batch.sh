@@ -4,7 +4,7 @@ set -ex
 BRANCH=on-schedule-2022-03-07
 
 # pull code and data
-git checkout -b $BRANCH && \
+git checkout -B $BRANCH && \
 dvc pull
 
 # build prepared assets
