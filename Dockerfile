@@ -1,6 +1,7 @@
 FROM continuumio/miniconda3
 
 COPY . /app
+COPY .git /app/.git
 
 WORKDIR /app
 
