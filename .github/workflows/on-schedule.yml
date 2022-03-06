@@ -24,10 +24,12 @@ jobs:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       run: |
-        batch submit-job \
-            --job-name on-schedule-$(date +"%Y-%m-%d") \
-            --job-queue transfermarkt-datasets-batch-compute-job-queue \
-            --job-definition transfermarkt-datasets-batch-job-definition \
-            --container-overrides \
-              command=./acquire_on_batch.sh \
-              image=dcaribou/transfermarkt-datasets:master
+        aws batch submit-job \
+          --job-name on-schedule-$(date +"%Y-%m-%d") \
+          --job-queue transfermarkt-datasets-batch-compute-job-queue \
+          --job-definition transfermarkt-datasets-batch-job-definition \
+          --container-overrides \
+            command=./acquire_on_batch.sh \
+            image=dcaribou/transfermarkt-datasets:master \
+            vcpus=2 \
+            memory=1024

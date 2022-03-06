@@ -35,10 +35,12 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: |
-          batch submit-job \
+          aws batch submit-job \
             --job-name on-push-${GITHUB_REF##*/} \
             --job-queue transfermarkt-datasets-batch-compute-job-queue \
             --job-definition transfermarkt-datasets-batch-job-definition \
             --container-overrides \
               command=./prepare_on_batch.sh \
-              image=dcaribou/transfermarkt-datasets:${GITHUB_REF##*/}
+              image=dcaribou/transfermarkt-datasets:${GITHUB_REF##*/} \
+              vcpus=4 \
+              memory=8192
