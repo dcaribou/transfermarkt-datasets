@@ -24,8 +24,11 @@ jobs:
           echo "BRANCH=${GITHUB_REF##*/}" >> $GITHUB_ENV
           
       - name: Image build
+        env:
+          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
         run: |
           docker build -t dcaribou/transfermarkt-datasets:${GITHUB_REF##*/} .
+          echo $DOCKERHUB_TOKEN | docker login --username dcaribou --password-stdin
           docker push dcaribou/transfermarkt-datasets:${GITHUB_REF##*/}
 
       - name: prep
