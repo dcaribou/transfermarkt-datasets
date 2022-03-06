@@ -40,7 +40,4 @@ jobs:
             --job-queue transfermarkt-datasets-batch-compute-job-queue \
             --job-definition transfermarkt-datasets-batch-job-definition \
             --container-overrides \
-              command=./prepare_on_batch.sh, \
-              image=dcaribou/transfermarkt-datasets:${GITHUB_REF##*/}, \
-              vcpus=4m, \
-              memory=8192
+              command=./prepare_on_batch.sh,vcpus=4,memory=8192
