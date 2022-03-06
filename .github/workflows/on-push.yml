@@ -42,7 +42,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: dcaribou/transfermarkt-datastet:${{ env.BRANCH }}
+          tags: dcaribou/transfermarkt-datastet:fargate-tasks
 
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
