@@ -50,3 +50,5 @@ terraform.rc
 .virtual_documents
 
 .scrapy
+
+.DS_Store

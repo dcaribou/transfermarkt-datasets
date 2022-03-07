@@ -17,27 +17,23 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@v2
-      
-      - name: Help
-        run: |
-          ls -a
-          echo $GITHUB_REF
           
       - name: Image build
         env:
           DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
         run: |
-          docker build -t dcaribou/transfermarkt-datasets:${GITHUB_REF##*/} .
+          docker build -t dcaribou/transfermarkt-datasets:dev .
           echo $DOCKERHUB_TOKEN | docker login --username dcaribou --password-stdin
-          docker push dcaribou/transfermarkt-datasets:${GITHUB_REF##*/}
+          docker push dcaribou/transfermarkt-datasets:dev
 
       - name: prep
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: |
+          PR_NUMBER=$(echo $GITHUB_REF | awk 'BEGIN { FS = "/" } ; { print $3 }')
           aws batch submit-job \
-            --job-name on-push-${GITHUB_REF##*/} \
+            --job-name on-push-pr-$PR_NUMBER \
             --job-queue transfermarkt-datasets-batch-compute-job-queue \
             --job-definition transfermarkt-datasets-batch-job-definition \
             --container-overrides \
