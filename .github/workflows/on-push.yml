@@ -31,11 +31,16 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: |
+          JOB_DEFINITION_NAME=transfermarkt-datasets-batch-job-definition-dev
+          REVISION=$(
+            aws batch describe-job-definitions | \
+            jq --arg jdname $JOB_DEFINITION_NAME '.jobDefinitions | map(select(.jobDefinitionName==$jdname)) | sort_by(.revision) | last | .revision'
+          )
           PR_NUMBER=$(echo $GITHUB_REF | awk 'BEGIN { FS = "/" } ; { print $3 }')
           aws batch submit-job \
             --job-name on-push-pr-$PR_NUMBER \
             --job-queue transfermarkt-datasets-batch-compute-job-queue \
-            --job-definition transfermarkt-datasets-batch-job-definition \
+            --job-definition $JOB_DEFINITION_NAME:$REVISION \
             --container-overrides \
               command=./prepare_on_batch.sh \
           > job.json
