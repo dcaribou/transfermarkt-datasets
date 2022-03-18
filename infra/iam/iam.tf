@@ -2,6 +2,11 @@ variable "name" {
   type = string
 }
 
+variable "tags" {
+  type = map
+  description = "Project tags"
+}
+
 variable "read_users_arns" {
   type = list(string)
   description = "IAM users who are authorized to read dvc/ objects"
@@ -96,10 +101,38 @@ data "aws_iam_policy_document" "user_access_process" {
 
 }
 
-# resource "aws_iam_policy" "process_user_policy" {
-#   name        = "${var.name}-process-user"
-#   policy = data.aws_iam_policy_document.user_access_process.json
-# }
+resource "aws_iam_user" "user" {
+  name = var.name
+  tags = var.tags
+}
+
+resource "aws_iam_policy" "policy" {
+  name        = "${var.name}-batch-access-policy"
+  policy      = <<EOF
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "",
+            "Effect": "Allow",
+            "Action": "batch:SubmitJob",
+            "Resource": [
+                "arn:aws:batch:eu-west-1:272181418418:job-queue/transfermarkt-datasets-batch-compute-job-queue",
+                "arn:aws:batch:eu-west-1:272181418418:job-definition/transfermarkt-datasets-batch-job-definition"
+            ]
+        },
+        {
+            "Sid": "",
+            "Effect": "Allow",
+            "Action": [
+                "batch:DescribeJobDefinitions"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
+  EOF
+}
 
 resource "aws_iam_role" "batch_service_role" {
   name = "${var.name}-batch-service-role"

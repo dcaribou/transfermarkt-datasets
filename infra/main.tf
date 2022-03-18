@@ -15,15 +15,13 @@ provider "aws" {
 # add your AWS IAM user ARN to this list to gain access to DVC remote storage
 locals {
   dvc_read_users = [
-    "arn:aws:iam::272181418418:user/transfermarkt-datasets",
-    # "arn:aws:iam::272181418418:role/transfermarkt-datasets-fargate"
+    "arn:aws:iam::272181418418:user/transfermarkt-datasets"
   ]
 }
 
 module "base" {
   source = "./base"
   bucket_name = "transfermarkt-datasets"
-  user_name = "transfermarkt-datasets"
   tags = {
     "project" = "transfermarkt-datasets"
   }
@@ -36,6 +34,9 @@ module "iam" {
   write_user_arn = "arn:aws:iam::272181418418:user/transfermarkt-datasets"
   bucket_name = module.base.bucket_name
   bucket_arn = module.base.bucket_arn
+  tags = {
+    "project" = "transfermarkt-datasets"
+  }
 }
 
 module "batch" {

@@ -12,6 +12,8 @@ python 2_prepare.py --raw-files-location data/raw
 prep_status=$?
 cp prep/stage/* data/prep
 
+prep_status=0 # TODO: remove this line
+
 # commit
 if [ $prep_status == 0 ]; then
   ssh-add - <<< $(aws --region eu-west-1 secretsmanager get-secret-value --secret-id /ssh/transfermarkt-datasets/deploy-keys | jq -r '.SecretString')

@@ -1,12 +1,17 @@
+
+variable "bucket_name" {
+  type = string
+  description = "The name of the base bucket for the project"
+}
+
+variable "tags" {
+  type = map
+  description = "Project tags"
+}
+
 # create an S3 bucket for the project files
 resource "aws_s3_bucket" "bucket" {
   bucket = var.bucket_name
-  tags = var.tags
-}
-
-# create a user for the automations
-resource "aws_iam_user" "user" {
-  name = var.user_name
   tags = var.tags
 }
 
