@@ -73,7 +73,3 @@ jobs:
           else
           exit 0
           fi
-
-      - name: run sync
-        run: |
-          echo "Hello sync"
