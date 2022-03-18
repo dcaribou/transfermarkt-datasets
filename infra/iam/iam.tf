@@ -188,7 +188,7 @@ resource "aws_iam_role" "batch_execution_role" {
     })
   }
 
-  # TODO: define policy
+  # TODO: define policies
   # inline_policy {
   #   name = "ssm-access"
 
