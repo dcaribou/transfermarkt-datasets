@@ -11,6 +11,13 @@ variable "service_role_arn" {
   type = string
 }
 
+locals {
+  envs = [
+    "dev",
+    "master"
+  ]
+}
+
 resource "aws_batch_compute_environment" "sample" {
   compute_environment_name = "${var.name}-batch-compute"
 
@@ -43,8 +50,10 @@ resource "aws_batch_job_queue" "test_queue" {
   ]
 }
 
-resource "aws_batch_job_definition" "test" {
-  name = "${var.name}-batch-job-definition"
+resource "aws_batch_job_definition" "job_definitions" {
+  for_each = toset(local.envs)
+
+  name = "${var.name}-batch-job-definition-${each.key}"
   type = "container"
   platform_capabilities = [
     "FARGATE",
@@ -52,8 +61,8 @@ resource "aws_batch_job_definition" "test" {
 
   container_properties = <<CONTAINER_PROPERTIES
 {
-  "command": ["bash", "prepare_on_batch.sh"],
-  "image": "dcaribou/transfermarkt-datasets:master",
+  "command": ["./prepare_on_batch.sh"],
+  "image": "dcaribou/transfermarkt-datasets:${each.key}",
   "fargatePlatformConfiguration": {
     "platformVersion": "LATEST"
   },
