@@ -1,7 +1,7 @@
 #!/bin/bash
 set -ex
 
-BRANCH=on-schedule-2022-03-07
+BRANCH=$1
 
 # pull code and data
 git checkout -B $BRANCH && \

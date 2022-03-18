@@ -20,13 +20,14 @@ jobs:
         with:
           ssh-key: ${{ secrets.DEPLOY_KEY_PRIVATE }}
           
-      - name: image build
-        env:
-          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
-        run: |
-          docker build -t dcaribou/transfermarkt-datasets:dev .
-          echo $DOCKERHUB_TOKEN | docker login --username dcaribou --password-stdin
-          docker push dcaribou/transfermarkt-datasets:dev
+      # TODO: make it work with docker build
+      # - name: image build
+      #   env:
+      #     DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+      #   run: |
+      #     docker build -t dcaribou/transfermarkt-datasets:dev .
+      #     echo $DOCKERHUB_TOKEN | docker login --username dcaribou --password-stdin
+      #     docker push dcaribou/transfermarkt-datasets:dev
 
       - name: run prep
         env:
@@ -34,23 +35,29 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: eu-west-1
         run: |
+          # trigger prep job in aws batch
+
           JOB_DEFINITION_NAME=transfermarkt-datasets-batch-job-definition-dev
           REVISION=$(
             aws batch describe-job-definitions | \
             jq --arg jdname $JOB_DEFINITION_NAME '.jobDefinitions | map(select(.jobDefinitionName==$jdname)) | sort_by(.revision) | last | .revision'
           )
           PR_NUMBER=$(echo $GITHUB_REF | awk 'BEGIN { FS = "/" } ; { print $3 }')
+          CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+
           JOB_ID=$(
             aws batch submit-job \
               --job-name on-push-pr-$PR_NUMBER \
               --job-queue transfermarkt-datasets-batch-compute-job-queue \
               --job-definition $JOB_DEFINITION_NAME:$REVISION \
               --container-overrides \
-                command=./prepare_on_batch.sh \
+                command=./prepare_on_batch.sh,$CURRENT_BRANCH \
             | jq -r '.jobId'
           )
 
           echo "Succesfully triggered AWS Batch job with ID $JOB_ID"
+
+          # wait for job completion
 
           JOB_STATUS=$(aws batch describe-jobs --jobs $JOB_ID | jq -r '.jobs[0].status')
 
@@ -61,8 +68,11 @@ jobs:
           echo $JOB_STATUS
           done
 
-          echo "Final job status is $JOB_STATUS"
-
+          if [ $JOB_STATUS = FAILED ]; then
+          exit 1
+          else
+          exit 0
+          fi
 
       - name: run sync
         run: |
