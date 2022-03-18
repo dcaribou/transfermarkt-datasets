@@ -20,7 +20,7 @@ jobs:
         with:
           ssh-key: ${{ secrets.DEPLOY_KEY_PRIVATE }}
           
-      - name: Image build
+      - name: image build
         env:
           DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
         run: |
@@ -28,7 +28,7 @@ jobs:
           echo $DOCKERHUB_TOKEN | docker login --username dcaribou --password-stdin
           docker push dcaribou/transfermarkt-datasets:dev
 
-      - name: prep
+      - name: run prep
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -40,12 +40,30 @@ jobs:
             jq --arg jdname $JOB_DEFINITION_NAME '.jobDefinitions | map(select(.jobDefinitionName==$jdname)) | sort_by(.revision) | last | .revision'
           )
           PR_NUMBER=$(echo $GITHUB_REF | awk 'BEGIN { FS = "/" } ; { print $3 }')
-          aws batch submit-job \
-            --job-name on-push-pr-$PR_NUMBER \
-            --job-queue transfermarkt-datasets-batch-compute-job-queue \
-            --job-definition $JOB_DEFINITION_NAME:$REVISION \
-            --container-overrides \
-              command=./prepare_on_batch.sh \
-          > job.json
+          JOB_ID=$(
+            aws batch submit-job \
+              --job-name on-push-pr-$PR_NUMBER \
+              --job-queue transfermarkt-datasets-batch-compute-job-queue \
+              --job-definition $JOB_DEFINITION_NAME:$REVISION \
+              --container-overrides \
+                command=./prepare_on_batch.sh \
+            | jq -r '.jobId'
+          )
 
-          cat job.json
+          echo "Succesfully triggered AWS Batch job with ID $JOB_ID"
+
+          JOB_STATUS=$(aws batch describe-jobs --jobs $JOB_ID | jq -r '.jobs[0].status')
+
+          while [ $JOB_STATUS != FAILED ] && [ $JOB_STATUS != SUCCESS ]
+          do
+          sleep 5
+          JOB_STATUS=$(aws batch describe-jobs --jobs $JOB_ID | jq -r '.jobs[0].status')
+          echo $JOB_STATUS
+          done
+
+          echo "Final job status is $JOB_STATUS"
+
+
+      - name: run sync
+        run: |
+          echo "Hello sync"
