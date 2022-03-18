@@ -34,6 +34,7 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: eu-west-1
+          BRANCH: ${{ github.event.pull_request.head.ref }}
         run: |
           # trigger prep job in aws batch
 
@@ -43,7 +44,6 @@ jobs:
             jq --arg jdname $JOB_DEFINITION_NAME '.jobDefinitions | map(select(.jobDefinitionName==$jdname)) | sort_by(.revision) | last | .revision'
           )
           PR_NUMBER=$(echo $GITHUB_REF | awk 'BEGIN { FS = "/" } ; { print $3 }')
-          CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
 
           JOB_ID=$(
             aws batch submit-job \
@@ -51,7 +51,7 @@ jobs:
               --job-queue transfermarkt-datasets-batch-compute-job-queue \
               --job-definition $JOB_DEFINITION_NAME:$REVISION \
               --container-overrides \
-                command=./prepare_on_batch.sh,$CURRENT_BRANCH \
+                command=./prepare_on_batch.sh,$BRANCH \
             | jq -r '.jobId'
           )
 
