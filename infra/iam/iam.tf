@@ -171,7 +171,7 @@ resource "aws_iam_role" "batch_execution_role" {
     ]
   })
   inline_policy {
-    name = "s3access"
+    name = "s3-access"
 
     policy = jsonencode({
       Version = "2012-10-17"
@@ -187,6 +187,25 @@ resource "aws_iam_role" "batch_execution_role" {
       ]
     })
   }
+
+  # TODO: define policy
+  # inline_policy {
+  #   name = "ssm-access"
+
+  #   policy = jsonencode({
+  #     Version = "2012-10-17"
+  #     Statement = [
+  #       {
+  #         Action   = [
+  #           "secretsmanager:GetSecretValue"
+  #         ]
+  #         Effect   = "Allow"
+  #         Resource = "${data.aws_s3_bucket.bucket.arn}/dvc/*"
+  #       },
+  #     ]
+  #   })
+
+  # }
 }
 
 resource "aws_iam_role_policy_attachment" "batch_execution_role_attach" {

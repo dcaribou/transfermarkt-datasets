@@ -18,4 +18,4 @@ RUN git config --global user.email "transfermarkt-ci@transfermark-datasets.com" 
     mkdir $HOME/.ssh && touch $HOME/.ssh/known_hosts && \
     ssh-keyscan github.com >> $HOME/.ssh/known_hosts
 
-ENTRYPOINT ["/bin/bash", "-c"]
+ENTRYPOINT ["/bin/bash"]
