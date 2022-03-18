@@ -16,7 +16,8 @@ prep_status=0 # TODO: remove this line
 
 # commit
 if [ $prep_status == 0 ]; then
+  eval `ssh-agent -s`
   ssh-add - <<< $(aws --region eu-west-1 secretsmanager get-secret-value --secret-id /ssh/transfermarkt-datasets/deploy-keys | jq -r '.SecretString')
-  dvc commit -f && git commit -m 'Prepared' && git push
+  dvc commit -f && git add data && git commit -m 'Prepared' && git push
 fi
 
