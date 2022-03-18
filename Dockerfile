@@ -12,6 +12,5 @@ RUN conda env create -f environment.yml
 
 ENV PATH /opt/conda/envs/transfermarkt-datasets/bin:$PATH
 RUN /bin/bash -c "source activate transfermarkt-datasets"
-RUN eval `ssh-agent`
 
 ENTRYPOINT ["/bin/bash", "-c"]
