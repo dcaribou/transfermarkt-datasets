@@ -20,14 +20,13 @@ jobs:
         with:
           ssh-key: ${{ secrets.DEPLOY_KEY_PRIVATE }}
           
-      # TODO: make it work with docker build
-      # - name: image build
-      #   env:
-      #     DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
-      #   run: |
-      #     docker build -t dcaribou/transfermarkt-datasets:dev .
-      #     echo $DOCKERHUB_TOKEN | docker login --username dcaribou --password-stdin
-      #     docker push dcaribou/transfermarkt-datasets:dev
+      - name: image build
+        env:
+          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+        run: |
+          docker build -t dcaribou/transfermarkt-datasets:dev .
+          echo $DOCKERHUB_TOKEN | docker login --username dcaribou --password-stdin
+          docker push dcaribou/transfermarkt-datasets:dev
 
       - name: run prep
         env:
