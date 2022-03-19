@@ -20,8 +20,6 @@ python 2_prepare.py --raw-files-location data/raw --season 2021 # TODO: remove s
 prep_status=$?
 cp prep/stage/* data/prep
 
-prep_status=0 # TODO: remove this line
-
 # commit
 if [ $prep_status == 0 ]; then
   dvc commit -f && git add data && git commit -m 'Prepared' && git push && dvc push
