@@ -35,7 +35,7 @@ jobs:
           fi
 
           # build and push
-          
+
           docker build -t dcaribou/transfermarkt-datasets:$TAG .
           echo $DOCKERHUB_TOKEN | docker login --username dcaribou --password-stdin
           docker push dcaribou/transfermarkt-datasets:$TAG
@@ -84,3 +84,18 @@ jobs:
           else
           exit 0
           fi
+          
+      - name: run sync
+        # only sync when there is push to master
+        if: ${{ github.event_name == 'push' }}
+        env:
+          # Kaggle API auth
+          KAGGLE_USERNAME: ${{ secrets.KAGGLE_USERNAME }}
+          KAGGLE_KEY: ${{ secrets.KAGGLE_KEY }}
+          # data.world API auth
+          DW_AUTH_TOKEN: ${{ secrets.DW_AUTH_TOKEN }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_EC2_METADATA_DISABLED: true # https://github.com/aws/aws-cli/issues/5262
+        run: |
+          python 3_sync.py --message "${{ github.event.head_commit.message }}" --season 2021
