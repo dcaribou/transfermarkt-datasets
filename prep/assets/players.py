@@ -20,6 +20,7 @@ class PlayersProcessor(BaseProcessor):
     self.schema = Schema()
 
     self.schema.add_field(Field(name='player_id', type='integer'))
+    self.schema.add_field(Field(name='last_season', type='integer'))
     self.schema.add_field(Field(name='current_club_id', type='integer'))
     self.schema.add_field(Field(name='name', type='string'))
     self.schema.add_field(Field(name='pretty_name', type='string'))
@@ -44,7 +45,7 @@ class PlayersProcessor(BaseProcessor):
       {"fields": "current_club_id", "reference": {"resource": "clubs", "fields": "club_id"}}
     ]
 
-  def process_segment(self, segment):
+  def process_segment(self, segment, season):
     
     prep_df = pandas.DataFrame()
 
@@ -56,6 +57,7 @@ class PlayersProcessor(BaseProcessor):
     parent_href_parts = json_normalized['parent.href'].str.split('/', 5, True)
 
     prep_df['player_id'] = href_parts[4]
+    prep_df['last_season'] = season
     prep_df['current_club_id'] = parent_href_parts[4]
     prep_df['name'] = self.url_unquote(href_parts[1])
     prep_df['pretty_name'] = prep_df['name'].apply(lambda x: titleize(x))
@@ -146,7 +148,10 @@ class PlayersProcessor(BaseProcessor):
     return prep_df
 
   def process(self):
-    self.prep_dfs = [self.process_segment(prep_df) for prep_df in self.raw_dfs]
+    self.prep_dfs = [
+      self.process_segment(prep_df, season)
+      for prep_df, season in zip(self.raw_dfs, self.seasons)
+    ]
     self.prep_df = pandas.concat(self.prep_dfs, axis=0).drop_duplicates(
       subset='player_id',
       keep='last'

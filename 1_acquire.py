@@ -95,8 +95,8 @@ class Asset():
     return [Asset(name, season) for name in self.asset_parents if name != 'competitions']
 
 
-def acquire_asset(asset, scrapy_cache):
-  """Orchestrate asset acquisition steps on a Docker server and collect the results as strings"""
+def acquire_asset(asset, scrapy_cache, cat):
+  """Orchestrate asset acquisition steps on a Docker server and pipe output to either stdout or a local file"""
   
   import docker
   import pathlib
@@ -107,6 +107,7 @@ def acquire_asset(asset, scrapy_cache):
 
   volumes = {}
   volumes[parent_asset.file_full_path()] = {'bind': f"/app/parents/{parent_asset.file_name()}", 'mode': 'ro'}
+  volumes[asset.file_full_path()] = {'bind': f"/app/{asset.file_full_path()}", 'mode': 'rw'}
   if scrapy_cache is not None:
     path = pathlib.Path(scrapy_cache)
     volumes[path.absolute()] = {'bind': '/app/.scrapy', 'mode': 'rw'}
@@ -121,17 +122,36 @@ def acquire_asset(asset, scrapy_cache):
     scrapy crawl {asset.name} \
       -a parents=parents/{parent_asset.file_name()} \
       -s SEASON={asset.season} \
-      -s USER_AGENT='{USER_AGENT}'"""
+      -s USER_AGENT='{USER_AGENT}' \
+      -s FEED_URI='/app/{asset.file_full_path()}'
+  """
 
-  acquired_data = docker_client.containers.run(
+  container = docker_client.containers.run(
     image=f"{IMAGE}:{IMAGE_TAG}",
     command=command,
     volumes=volumes,
-    tty=True
+    tty=True,
+    detach=True
   )
 
-  acquired_data_decoded = acquired_data.decode("utf-8")
-  return acquired_data_decoded
+  log_iterator = container.logs(
+    stdout=True,
+    stderr=False,
+    stream=True,
+    tail=1
+  )
+  
+  def log_line_iterator(log_byte_iterator):
+    line = ""
+    for byte in log_byte_iterator:
+      if byte.decode("utf-8") != "\n":
+        line += byte.decode("utf-8")
+      else:
+        yield line
+        line = ""
+
+  for line in log_line_iterator(log_iterator):
+    print(line)
 
 if ASSET_NAME == 'all':
   assets = Asset.all(SEASON)
@@ -152,13 +172,10 @@ if not season_path.exists():
 
 for asset in assets:
   print(f"--> Acquiring {asset.name}")
-  acquired_data = acquire_asset(
+  acquire_asset(
     asset,
-    SCRAPY_CACHE
+    SCRAPY_CACHE,
+    CAT
   )
 
-  if CAT:
-    print(acquired_data)
-  else:
-    with open(asset.file_full_path(), mode='w+') as asset_file:
-      asset_file.write(acquired_data)
+  

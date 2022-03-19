@@ -106,11 +106,10 @@ class AssetRunner:
     for asset_runner in self.assets:
       if asset_runner['name'] == name:
         return asset_runner['processor']
+    raise Exception(f"Asset {name} not found")
 
   def get_asset_df(self, name: str):
-    self.get_asset_processor(name).prep_df
-
-    raise Exception(f"Asset {name} not found")
+    return self.get_asset_processor(name).prep_df
 
   def generate_datapackage(self, basepath=None):
     """

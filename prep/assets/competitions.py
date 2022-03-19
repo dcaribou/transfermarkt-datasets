@@ -31,7 +31,7 @@ class CompetitionsProcessor(BaseProcessor):
 
     self.schema.primary_key = ['competition_id']
 
-  def process_segment(self, segment):
+  def process_segment(self, segment, season):
     
     prep_df = pandas.DataFrame()
 
