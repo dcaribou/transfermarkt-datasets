@@ -24,9 +24,21 @@ jobs:
         env:
           DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
         run: |
-          docker build -t dcaribou/transfermarkt-datasets:dev .
+          # set image tag accordingly
+
+          REF=$(echo $GITHUB_REF | awk 'BEGIN { FS = "/" } ; { print $3 }')
+          if [ $REF = master ];
+          then
+            TAG=master
+          else
+            TAG=dev
+          fi
+
+          # build and push
+          
+          docker build -t dcaribou/transfermarkt-datasets:$TAG .
           echo $DOCKERHUB_TOKEN | docker login --username dcaribou --password-stdin
-          docker push dcaribou/transfermarkt-datasets:dev
+          docker push dcaribou/transfermarkt-datasets:$TAG
 
       - name: run prep
         env:
