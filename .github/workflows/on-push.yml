@@ -61,7 +61,7 @@ jobs:
 
           JOB_STATUS=$(aws batch describe-jobs --jobs $JOB_ID | jq -r '.jobs[0].status')
 
-          while [ $JOB_STATUS != FAILED ] && [ $JOB_STATUS != SUCCESS ]
+          while [ $JOB_STATUS != FAILED ] && [ $JOB_STATUS != SUCCEEDED ]
           do
           sleep 5
           JOB_STATUS=$(aws batch describe-jobs --jobs $JOB_ID | jq -r '.jobs[0].status')
