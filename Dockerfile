@@ -13,9 +13,8 @@ RUN conda env create -f environment.yml
 ENV PATH /opt/conda/envs/transfermarkt-datasets/bin:$PATH
 RUN /bin/bash -c "source activate transfermarkt-datasets"
 
-RUN git config --global user.email "transfermarkt-ci@transfermark-datasets.com" && \
-    git config --global user.name "CI Bot" && \
-    mkdir $HOME/.ssh && touch $HOME/.ssh/known_hosts && \
-    ssh-keyscan -t ecdsa github.com >> $HOME/.ssh/known_hosts
+RUN git config --global user.email "transfermarkt-datasets-ci@transfermark-datasets.dev" && \
+    git config --global user.name "CI Job" && \
+    git config --global core.sshCommand "ssh -o StrictHostKeyChecking=no"
 
 ENTRYPOINT ["/bin/bash"]
