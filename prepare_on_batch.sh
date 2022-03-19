@@ -10,7 +10,9 @@ ssh-add - <<< $(aws --region eu-west-1 secretsmanager get-secret-value --secret-
 git config core.sshCommand "ssh -o StrictHostKeyChecking=no"
 
 # pull code and data
-git checkout -B $BRANCH && git pull
+git checkout -B $BRANCH
+git branch --set-upstream-to=origin/$BRANCH $BRANCH
+git pull
 dvc pull
 
 # build prepared assets
@@ -22,6 +24,6 @@ prep_status=0 # TODO: remove this line
 
 # commit
 if [ $prep_status == 0 ]; then
-  dvc commit -f && git add data && git commit -m 'Prepared' && git push -u origin $BRANCH && dvc push
+  dvc commit -f && git add data && git commit -m 'Prepared' && git push && dvc push
 fi
 
