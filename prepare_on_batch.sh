@@ -20,6 +20,7 @@ if [ $prep_status == 0 ]; then
   eval `ssh-agent -s`
   ssh-add - <<< $(aws --region eu-west-1 secretsmanager get-secret-value --secret-id /ssh/transfermarkt-datasets/deploy-keys | jq -r '.SecretString')
   git log
+  git config --global core.sshCommand "ssh -o StrictHostKeyChecking=no"
   dvc commit -f && git add data && git commit -m 'Prepared' && git push -u origin $BRANCH && dvc push
 fi
 
