@@ -19,7 +19,7 @@ prep_status=0 # TODO: remove this line
 if [ $prep_status == 0 ]; then
   eval `ssh-agent -s`
   ssh-add - <<< $(aws --region eu-west-1 secretsmanager get-secret-value --secret-id /ssh/transfermarkt-datasets/deploy-keys | jq -r '.SecretString')
-  cat /root/.ssh/known_hosts # TODO: remove this line
+  cat ~/.ssh/known_hosts # TODO: remove this line
   git log
   dvc commit -f && git add data && git commit -m 'Prepared' && git push -u origin $BRANCH && dvc push
 fi
