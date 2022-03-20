@@ -40,7 +40,7 @@ run_batch : JOB_ID = $(shell \
   | jq -r '.jobId' \
 )
 run_batch:
-	JOB_ID=$(JOB_ID)
+	JOB_ID=$(JOB_ID); \
 	JOB_STATUS=$$(aws batch describe-jobs --jobs $$JOB_ID | jq -r '.jobs[0].status'); \
 	while [ $$JOB_STATUS != FAILED ] && [ $$JOB_STATUS != SUCCEEDED ]; do \
 		sleep 5; \
