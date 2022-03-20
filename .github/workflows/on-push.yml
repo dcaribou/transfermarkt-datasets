@@ -62,7 +62,7 @@ jobs:
               --job-queue transfermarkt-datasets-batch-compute-job-queue \
               --job-definition $JOB_DEFINITION_NAME:$REVISION \
               --container-overrides \
-                command=/app/prepare_on_batch.sh,$BRANCH \
+                command=$BRANCH,/app/transfermarkt-datasets/prepare_on_batch.sh \
             | jq -r '.jobId'
           )
 
