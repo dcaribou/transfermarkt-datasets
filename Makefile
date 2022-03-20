@@ -7,18 +7,19 @@ build :
 push :
 	docker push dcaribou/transfermarkt-datasets:dev
 
-# TODO: remove --env-file, pass env
 COMMAND = 2_prepare.py
+EXEC_COMMAND = $(shell PASSED_COMMAND="$(COMMAND)"; echo $${PASSED_COMMAND// /,})
+
 run_local :
 	docker run -ti \
-		--env-file infra/.env \
+		--env-file .env \
 		-v `pwd`/.:/app/transfermarkt-datasets/ \
 		--memory=4g  \
 		dcaribou/transfermarkt-datasets:dev $(BRANCH) $(COMMAND)
 
 run_bootstrap :
 	docker run -ti \
-		--env-file infra/.env \
+		--env-file .env \
 		--memory=4g  \
 		dcaribou/transfermarkt-datasets:dev $(BRANCH) $(COMMAND)
 
@@ -27,10 +28,8 @@ run_batch : REVISION = $(shell \
   aws batch describe-job-definitions | \
   jq --arg jdname $(JOB_DEFINITION_NAME) '.jobDefinitions | map(select(.jobDefinitionName==$$jdname)) | sort_by(.revision) | last | .revision' \
 )
+
 run_batch : JOB_NAME = on-cli
-# TODO: fix this
-# run_batch : EXEC_COMMAND = $(shell PASSED_COMMAND=$(COMMAND) echo $${PASSED_COMMAND// /,})
-run_batch : EXEC_COMMAND = 2_prepare.py,--raw-files-location,data/raw,--season,2021
 run_batch : JOB_ID = $(shell \
 	aws batch submit-job \
 		--job-name $(JOB_NAME) \

@@ -188,24 +188,23 @@ resource "aws_iam_role" "batch_execution_role" {
     })
   }
 
-  # TODO: define policies
-  # inline_policy {
-  #   name = "ssm-access"
+  inline_policy {
+    name = "ssm-access"
 
-  #   policy = jsonencode({
-  #     Version = "2012-10-17"
-  #     Statement = [
-  #       {
-  #         Action   = [
-  #           "secretsmanager:GetSecretValue"
-  #         ]
-  #         Effect   = "Allow"
-  #         Resource = "${data.aws_s3_bucket.bucket.arn}/dvc/*"
-  #       },
-  #     ]
-  #   })
+    policy = jsonencode({
+      Version = "2012-10-17"
+      Statement = [
+        {
+          Action   = [
+            "secretsmanager:GetSecretValue"
+          ]
+          Effect   = "Allow"
+          Resource = "arn:aws:secretsmanager:eu-west-1:272181418418:secret:/ssh/transfermarkt-datasets/deploy-keys-3hgWr4"
+        },
+      ]
+    })
 
-  # }
+  }
 }
 
 resource "aws_iam_role_policy_attachment" "batch_execution_role_attach" {

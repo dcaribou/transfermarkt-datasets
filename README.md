@@ -28,4 +28,3 @@ The preparation step uses `raw` data as input, hence raw files need to be availa
 
 ### [infra](infra)
 Define all the necessary infrastructure for the project in the cloud with Terraform.
-

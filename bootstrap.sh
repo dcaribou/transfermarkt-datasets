@@ -22,7 +22,7 @@ shift
 cd $PROJECT_HOME
 if python "$@" ; then
     dvc commit -f && git add data
-    git diff-index --quiet HEAD data || git commit -m 'Data updated'
+    git diff-index --quiet HEAD data || git commit -m '🤖 updated dataset files'
     git push && dvc push
 else
     echo "Job failed"
