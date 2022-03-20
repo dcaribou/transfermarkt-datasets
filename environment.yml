@@ -11,7 +11,7 @@ dependencies:
   - pip==21.0.1
   - dynaconf
   - gh
-  - scrapy
+  - scrapy=2.4.1
   - inflection
   - protego
   - python-dateutil
