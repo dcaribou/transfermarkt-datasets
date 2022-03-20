@@ -32,10 +32,10 @@ jobs:
           DAY=$(date +"%Y-%m-%d")
           JOB_DEFINITION_NAME=transfermarkt-datasets-batch-job-definition-master
           COMMAND="1_acquire.py --asset all --season 2021"
-
+          EXEC_COMMAND=${COMMAND// /,}
           make \
             run_batch \
               JOB_DEFINITION_NAME=$JOB_DEFINITION_NAME \
               JOB_NAME=on-schedule-$DAY \
-              COMMAND="$COMMAND" \ 
+              EXEC_COMMAND=$EXEC_COMMAND \ 
               BRANCH=master
