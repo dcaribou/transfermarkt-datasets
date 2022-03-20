@@ -1,0 +1,3 @@
+[submodule "transfermarkt-scraper"]
+	path = transfermarkt-scraper
+	url = git@github.com:dcaribou/transfermarkt-scraper.git

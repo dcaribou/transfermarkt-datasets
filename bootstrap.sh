@@ -26,4 +26,4 @@ if [ bash "$@" ]; then
 else
     echo "Job failed"
     exit 1
-
+fi

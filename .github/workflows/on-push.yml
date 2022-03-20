@@ -50,7 +50,7 @@ jobs:
           # trigger prep job in aws batch
 
           PR_NUMBER=$(echo $GITHUB_REF | awk 'BEGIN { FS = "/" } ; { print $3 }')
-          make run_batch JOB_NAME=on-push-pr-$PR_NUMBER
+          make run_batch JOB_NAME=on-push-pr-$PR_NUMBER BRANCH=$BRANCH
           
       - name: run sync
         # only sync when there is push to master
