@@ -49,41 +49,8 @@ jobs:
         run: |
           # trigger prep job in aws batch
 
-          JOB_DEFINITION_NAME=transfermarkt-datasets-batch-job-definition-dev
-          REVISION=$(
-            aws batch describe-job-definitions | \
-            jq --arg jdname $JOB_DEFINITION_NAME '.jobDefinitions | map(select(.jobDefinitionName==$jdname)) | sort_by(.revision) | last | .revision'
-          )
           PR_NUMBER=$(echo $GITHUB_REF | awk 'BEGIN { FS = "/" } ; { print $3 }')
-
-          JOB_ID=$(
-            aws batch submit-job \
-              --job-name on-push-pr-$PR_NUMBER \
-              --job-queue transfermarkt-datasets-batch-compute-job-queue \
-              --job-definition $JOB_DEFINITION_NAME:$REVISION \
-              --container-overrides \
-                command=$BRANCH,/app/transfermarkt-datasets/prepare_on_batch.sh \
-            | jq -r '.jobId'
-          )
-
-          echo "Succesfully triggered AWS Batch job with ID $JOB_ID"
-
-          # wait for job completion
-
-          JOB_STATUS=$(aws batch describe-jobs --jobs $JOB_ID | jq -r '.jobs[0].status')
-
-          while [ $JOB_STATUS != FAILED ] && [ $JOB_STATUS != SUCCEEDED ]
-          do
-          sleep 5
-          JOB_STATUS=$(aws batch describe-jobs --jobs $JOB_ID | jq -r '.jobs[0].status')
-          echo $JOB_STATUS
-          done
-
-          if [ $JOB_STATUS = FAILED ]; then
-          exit 1
-          else
-          exit 0
-          fi
+          make run_batch JOB_NAME=on-push-pr-$PR_NUMBER
           
       - name: run sync
         # only sync when there is push to master

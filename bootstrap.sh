@@ -18,4 +18,12 @@ if ! [ -d $PROJECT_HOME ]; then
 fi
 shift
 
-(cd $PROJECT_HOME ; bash "$@")
+cd $PROJECT_HOME
+if [ bash "$@" ]; then
+    dvc commit -f && git add data
+    git diff-index --quiet HEAD data || git commit -m 'Data updated'
+    git push && dvc push
+else
+    echo "Job failed"
+    exit 1
+
