@@ -7,7 +7,7 @@ on:
     inputs:
       message:
         required: false
-        default: ':wrench: Github Actions: Manually updated dataset files'
+        default: '🤖 updated dataset files'
         description: Commit message for the 'add-and-commit' step
 
 jobs:
@@ -19,32 +19,23 @@ jobs:
         shell: bash -l {0}
 
     steps:
-    - run: |
-        echo "${{ github.event.head_commit.message }}"
-    - uses: actions/checkout@v2
-      # a different (personal access) github token need to be setup here so that a 'add-and-commit' step below triggers the 'on-push' workflow
-      # checkout https://github.community/t/push-from-action-does-not-trigger-subsequent-action/16854
-      with:
-        token: ${{ secrets.PA_GITHUB_TOKEN}}
-    - uses: conda-incubator/setup-miniconda@v2
-      with:
-        environment-file: environment.yml
-        activate-environment: transfermarkt-datasets
-    - name: Run pipeline
-      env:
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        AWS_EC2_METADATA_DISABLED: true # https://github.com/aws/aws-cli/issues/5262
-      run: |
-        bash run_pipeline.sh
-    - uses: EndBug/add-and-commit@v7
-      with:
-        add: 'data/*.dvc'
-        message: "${{ github.event.inputs.name || ':wrench: Github Actions: Updated dataset files'}}"
-        default_author: github_actions
-    - name: sync cache
-      env:
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      run: |
-        python 3_sync.py --cache-only --season 2021
+      - name: checkout
+        uses: actions/checkout@v2
+      - name: run prep
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: eu-west-1
+        run: |
+          # trigger prep job in aws batch
+
+          DAY=$(date +"%Y-%m-%d")
+          JOB_DEFINITION_NAME=transfermarkt-datasets-batch-job-definition-master
+          COMMAND="1_acquire.py --asset all --season 2021"
+          EXEC_COMMAND=${COMMAND// /,}
+          make \
+            run_batch \
+              JOB_DEFINITION_NAME=$JOB_DEFINITION_NAME \
+              JOB_NAME=on-schedule-$DAY \
+              EXEC_COMMAND=$EXEC_COMMAND \ 
+              BRANCH=master

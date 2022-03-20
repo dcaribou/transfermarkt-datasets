@@ -1,0 +1,9 @@
+.env
+.dvc/cache
+.dvc/tmp
+.scrapy
+infra
+data/prep
+data/raw
+prep/stage
+diagram.png

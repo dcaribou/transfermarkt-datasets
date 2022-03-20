@@ -7,7 +7,7 @@ on:
     branches: [master]
 
 jobs:
-  data-pipeline:
+  build:
 
     runs-on: ubuntu-latest
     defaults:
@@ -15,33 +15,65 @@ jobs:
         shell: bash -l {0}
 
     steps:
-    - uses: actions/checkout@v2
-    - uses: conda-incubator/setup-miniconda@v2
-      with:
-        environment-file: environment.yml
-        activate-environment: transfermarkt-datasets
-    - name: prep
-      env:
-        # AWS auth (required for pulling from dvc)
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        AWS_EC2_METADATA_DISABLED: true # https://github.com/aws/aws-cli/issues/5262
-      run: |
-        dvc pull
+      - name: checkout
+        uses: actions/checkout@v2
+        with:
+          ssh-key: ${{ secrets.DEPLOY_KEY_PRIVATE }}
+          
+      - name: image build
+        env:
+          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+        run: |
+          # set image tag accordingly
 
-        python 2_prepare.py && cp prep/stage/* data/prep
+          REF=$(echo $GITHUB_REF | awk 'BEGIN { FS = "/" } ; { print $3 }')
+          if [ $REF = master ];
+          then
+            TAG=master
+          else
+            TAG=dev
+          fi
 
-    - name: sync
-      # only sync when there is push to master
-      if: ${{ github.event_name == 'push' }}
-      env:
-        # Kaggle API auth
-        KAGGLE_USERNAME: ${{ secrets.KAGGLE_USERNAME }}
-        KAGGLE_KEY: ${{ secrets.KAGGLE_KEY }}
-        # data.world API auth
-        DW_AUTH_TOKEN: ${{ secrets.DW_AUTH_TOKEN }}
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        AWS_EC2_METADATA_DISABLED: true # https://github.com/aws/aws-cli/issues/5262
-      run: |
-        python 3_sync.py --message "${{ github.event.head_commit.message }}" --season 2021
+          # build and push
+
+          docker build -t dcaribou/transfermarkt-datasets:$TAG .
+          echo $DOCKERHUB_TOKEN | docker login --username dcaribou --password-stdin
+          docker push dcaribou/transfermarkt-datasets:$TAG
+
+      - name: run prep
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: eu-west-1
+          BRANCH: ${{ github.event.pull_request.head.ref }}
+        run: |
+          # trigger prep job in aws batch
+
+          PR_NUMBER=$(echo $GITHUB_REF | awk 'BEGIN { FS = "/" } ; { print $3 }')
+          COMMAND="2_prepare.py --raw-files-location data/raw --season 2021"
+          EXEC_COMMAND=${COMMAND// /,}
+          make \
+            run_batch \
+              JOB_NAME=on-push-pr-$PR_NUMBER \
+              BRANCH=$BRANCH \
+              EXEC_COMMAND=$EXEC_COMMAND
+          
+      - name: run sync
+        # only sync when there is push to master
+        if: ${{ github.event_name == 'push' }}
+        env:
+          # Kaggle API auth
+          KAGGLE_USERNAME: ${{ secrets.KAGGLE_USERNAME }}
+          KAGGLE_KEY: ${{ secrets.KAGGLE_KEY }}
+          # data.world API auth
+          DW_AUTH_TOKEN: ${{ secrets.DW_AUTH_TOKEN }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_EC2_METADATA_DISABLED: true # https://github.com/aws/aws-cli/issues/5262
+        run: |
+          COMMAND="python 3_sync.py --message "${{ github.event.head_commit.message }}" --season 2021"
+          make \
+            run_batch \
+              JOB_NAME=on-sync \
+              BRANCH=master \
+              COMMAND=$COMMAND

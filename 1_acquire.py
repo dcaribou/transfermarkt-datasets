@@ -6,12 +6,10 @@ Usage:
 The environment variable SCRAPY_CACHE can be used as well to tell the script to do the acquiring on
 a local scrapy cache. The command line argument '--scrapy-cache' takes precedence.
 """
-import sys
 import os
 import pathlib
 
 import argparse
-import json
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
@@ -41,8 +39,6 @@ parser.add_argument(
 arguments = parser.parse_args()
 
 SEASON = arguments.season
-IMAGE = 'dcaribou/transfermarkt-scraper'
-IMAGE_TAG = 'main'
 ASSET_NAME = arguments.asset
 SCRAPY_CACHE = arguments.scrapy_cache
 DRY_RUN = os.environ.get('DRY_RUN')
@@ -98,60 +94,18 @@ class Asset():
 def acquire_asset(asset, scrapy_cache, cat):
   """Orchestrate asset acquisition steps on a Docker server and pipe output to either stdout or a local file"""
   
-  import docker
-  import pathlib
-  
   parent_asset = asset.parent()
   
-  docker_client = docker.from_env()
-
-  volumes = {}
-  volumes[parent_asset.file_full_path()] = {'bind': f"/app/parents/{parent_asset.file_name()}", 'mode': 'ro'}
-  volumes[asset.file_full_path()] = {'bind': f"/app/{asset.file_full_path()}", 'mode': 'rw'}
-  if scrapy_cache is not None:
-    path = pathlib.Path(scrapy_cache)
-    volumes[path.absolute()] = {'bind': '/app/.scrapy', 'mode': 'rw'}
-
-
-  docker_client.images.pull(
-    repository=IMAGE,
-    tag=IMAGE_TAG
-  )
-
   command = f"""
-    scrapy crawl {asset.name} \
-      -a parents=parents/{parent_asset.file_name()} \
+    cd transfermarkt-scraper && scrapy crawl {asset.name} \
+      -a parents={parent_asset.file_full_path()} \
       -s SEASON={asset.season} \
       -s USER_AGENT='{USER_AGENT}' \
-      -s FEED_URI='/app/{asset.file_full_path()}'
+      -s FEED_URI='{asset.file_full_path()}'
   """
 
-  container = docker_client.containers.run(
-    image=f"{IMAGE}:{IMAGE_TAG}",
-    command=command,
-    volumes=volumes,
-    tty=True,
-    detach=True
-  )
-
-  log_iterator = container.logs(
-    stdout=True,
-    stderr=False,
-    stream=True,
-    tail=1
-  )
-  
-  def log_line_iterator(log_byte_iterator):
-    line = ""
-    for byte in log_byte_iterator:
-      if byte.decode("utf-8") != "\n":
-        line += byte.decode("utf-8")
-      else:
-        yield line
-        line = ""
-
-  for line in log_line_iterator(log_iterator):
-    print(line)
+  print(command)
+  os.system(command)
 
 if ASSET_NAME == 'all':
   assets = Asset.all(SEASON)

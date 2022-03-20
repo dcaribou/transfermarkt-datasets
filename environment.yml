@@ -4,15 +4,19 @@ channels:
   - defaults
 dependencies:
   - python=3.8
-  - simpleeval
   - pandas
   - kaggle==1.5.12
   - boto3
   - inflection
-  - dvc[s3]==2.1.0
   - pip==21.0.1
   - dynaconf
+  - gh
+  - scrapy=2.4.1
+  - inflection
+  - protego
+  - python-dateutil
   - pip:
       - frictionless==4.1.0
       - pycountry==20.7.3
       - docker==5.0.0
+      - dvc[s3]==2.1.0
