@@ -1,5 +1,7 @@
 """Bulid prepared datasets in data/prep using raw data in data/raw.
 """
+import os
+import sys
 from prep.asset_runner import AssetRunner
 import argparse
 
@@ -35,3 +37,4 @@ else:
   runner.process_assets()
   runner.generate_datapackage()
   fail_if_invalid(runner)
+  os.system("cp prep/stage/* data/prep")

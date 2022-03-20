@@ -19,17 +19,19 @@ jobs:
         shell: bash -l {0}
 
     steps:
-    - name: Acquire
-      env:
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      run: |
-        aws batch submit-job \
-          --job-name on-schedule-$(date +"%Y-%m-%d") \
-          --job-queue transfermarkt-datasets-batch-compute-job-queue \
-          --job-definition transfermarkt-datasets-batch-job-definition \
-          --container-overrides \
-            command=./acquire_on_batch.sh \
-            image=dcaribou/transfermarkt-datasets:master \
-            vcpus=2 \
-            memory=1024
+      - name: run prep
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: eu-west-1
+        run: |
+          # trigger prep job in aws batch
+
+          DAY=$(date +"%Y-%m-%d")
+          JOB_DEFINITION_NAME=transfermarkt-datasets-batch-job-definition-master
+
+          make \
+            run_batch \
+              JOB_DEFINITION_NAME=$JOB_DEFINITION_NAME \
+              JOB_NAME=on-schedule-$DAY \
+              BRANCH=master

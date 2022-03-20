@@ -11,6 +11,10 @@ dependencies:
   - pip==21.0.1
   - dynaconf
   - gh
+  - scrapy
+  - inflection
+  - protego
+  - python-dateutil
   - pip:
       - frictionless==4.1.0
       - pycountry==20.7.3

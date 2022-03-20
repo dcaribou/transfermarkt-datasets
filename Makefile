@@ -1,4 +1,4 @@
-PLATFORM = linux/amd64 # linux/arm64
+PLATFORM = linux/arm64 # linux/amd64
 BRANCH = $(shell git rev-parse --abbrev-ref HEAD)
 
 build : 
@@ -8,7 +8,7 @@ push :
 	docker push dcaribou/transfermarkt-datasets:dev
 
 # TODO: remove --env-file, pass env
-COMMAND = prepare_on_batch.sh
+COMMAND = 2_prepare.py
 run_local :
 	docker run -ti \
 		--env-file infra/.env \
