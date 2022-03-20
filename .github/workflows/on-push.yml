@@ -55,7 +55,7 @@ jobs:
             run_batch \
               JOB_NAME=on-push-pr-$PR_NUMBER \
               BRANCH=$BRANCH \
-              COMMAND=$COMMAND
+              COMMAND="$COMMAND"
           
       - name: run sync
         # only sync when there is push to master
