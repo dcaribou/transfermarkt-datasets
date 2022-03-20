@@ -2,17 +2,9 @@
 
 set -ex
 
-BRANCH=$1
+# git config core.sshCommand "ssh -o StrictHostKeyChecking=no" # TODO: decide on git this
 
-eval `ssh-agent -s`
-ssh-add - <<< $(aws --region eu-west-1 secretsmanager get-secret-value --secret-id /ssh/transfermarkt-datasets/deploy-keys | jq -r '.SecretString')
-
-git config core.sshCommand "ssh -o StrictHostKeyChecking=no"
-
-# pull code and data
-git checkout -B $BRANCH
-git branch --set-upstream-to=origin/$BRANCH $BRANCH
-git pull
+# pull data
 dvc pull
 
 # build prepared assets
