@@ -36,7 +36,7 @@ run_batch : JOB_ID = $(shell \
 		--job-queue transfermarkt-datasets-batch-compute-job-queue \
 		--job-definition $(JOB_DEFINITION_NAME):$(REVISION) \
 		--container-overrides \
-		command=$(BRANCH),$(EXEC_COMMAND) \
+			command=$(BRANCH),$(EXEC_COMMAND) \
 	| jq -r '.jobId' \
 )
 run_batch:

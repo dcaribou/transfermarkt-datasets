@@ -50,7 +50,7 @@ jobs:
           # trigger prep job in aws batch
 
           PR_NUMBER=$(echo $GITHUB_REF | awk 'BEGIN { FS = "/" } ; { print $3 }')
-          COMMAND="2_prepare.py --raw-files-location data/raw --season,2021"
+          COMMAND="2_prepare.py --raw-files-location data/raw --season 2021"
           make \
             run_batch \
               JOB_NAME=on-push-pr-$PR_NUMBER \

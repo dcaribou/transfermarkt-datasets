@@ -1,7 +1,6 @@
 """Bulid prepared datasets in data/prep using raw data in data/raw.
 """
 import os
-import sys
 from prep.asset_runner import AssetRunner
 import argparse
 

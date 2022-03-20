@@ -6,12 +6,10 @@ Usage:
 The environment variable SCRAPY_CACHE can be used as well to tell the script to do the acquiring on
 a local scrapy cache. The command line argument '--scrapy-cache' takes precedence.
 """
-import sys
 import os
 import pathlib
 
 import argparse
-import json
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
@@ -95,7 +93,6 @@ class Asset():
 
 def acquire_asset(asset, scrapy_cache, cat):
   """Orchestrate asset acquisition steps on a Docker server and pipe output to either stdout or a local file"""
-  import pathlib
   
   parent_asset = asset.parent()
   
