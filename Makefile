@@ -19,8 +19,6 @@ run_local :
 run_bootstrap :
 	docker run -ti \
 		--env-file infra/.env \
-		-v `pwd`/.dvc/cache:/app/.dvc/cache \
-		-v `pwd`/.dvc/tmp:/app/.dvc/tmp \
 		--memory=4g  \
 		dcaribou/transfermarkt-datasets:dev $(BRANCH) $(COMMAND)
 
@@ -30,14 +28,17 @@ run_batch : REVISION = $(shell \
   jq --arg jdname $(JOB_DEFINITION_NAME) '.jobDefinitions | map(select(.jobDefinitionName==$$jdname)) | sort_by(.revision) | last | .revision' \
 )
 run_batch : JOB_NAME = on-cli
+# TODO: fix this
+# run_batch : EXEC_COMMAND = $(shell PASSED_COMMAND=$(COMMAND) echo $${PASSED_COMMAND// /,})
+run_batch : EXEC_COMMAND = 2_prepare.py,--raw-files-location,data/raw,--season,2021
 run_batch : JOB_ID = $(shell \
-  aws batch submit-job \
-    --job-name $(JOB_NAME) \
-    --job-queue transfermarkt-datasets-batch-compute-job-queue \
-    --job-definition $(JOB_DEFINITION_NAME):$(REVISION) \
-    --container-overrides \
-      command=$(BRANCH),/app/transfermarkt-datasets/prepare_on_batch.sh \
-  | jq -r '.jobId' \
+	aws batch submit-job \
+		--job-name $(JOB_NAME) \
+		--job-queue transfermarkt-datasets-batch-compute-job-queue \
+		--job-definition $(JOB_DEFINITION_NAME):$(REVISION) \
+		--container-overrides \
+		command=$(BRANCH),$(EXEC_COMMAND) \
+	| jq -r '.jobId' \
 )
 run_batch:
 	JOB_ID=$(JOB_ID); \
