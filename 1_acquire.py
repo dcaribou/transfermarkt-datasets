@@ -105,7 +105,8 @@ def acquire_asset(asset, scrapy_cache, cat):
   """
 
   print(command)
-  os.system(command)
+  if os.system(command) != 0:
+    raise Exception(f"Acquiring failed for {asset}")
 
 if ASSET_NAME == 'all':
   assets = Asset.all(SEASON)
