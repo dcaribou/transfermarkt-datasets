@@ -56,7 +56,6 @@ def prepare_on_cloud(
     script="2_prepare.py",
     args=[
       "--raw-files-location", "data/raw",
-      "--season", "2021",
     ],
     vcpus=2,
     memory=9216
