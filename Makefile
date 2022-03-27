@@ -25,7 +25,7 @@ acquire_docker :
 				python 1_acquire.py local $(ARGS)
 acquire_cloud : JOB_DEFINITION_NAME = transfermarkt-datasets-batch-job-definition-dev
 acquire_cloud :
-	python 1_acquire.py cloud --branch $(BRANCH) --job-name $(JOB_NAME) "$(ARGS)"
+	python 1_acquire.py cloud --branch $(BRANCH) --job-name $(JOB_NAME) --job-definition $(JOB_DEFINITION_NAME)  "$(ARGS)"
 
 prepare_local :
 	python 2_prepare.py local $(ARGS)
