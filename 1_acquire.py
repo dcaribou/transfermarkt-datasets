@@ -120,7 +120,10 @@ def acquire_on_cloud(job_name, job_queue, job_definition, branch, args, func):
     job_definition=job_definition,
     branch=branch,
     script="1_acquire.py",
-    args=args,
+    args=[
+      "--asset", "all",
+      "--season", "2021"
+    ],
     vcpus=0.5,
     memory=1024
   )
