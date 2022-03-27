@@ -52,3 +52,5 @@ terraform.rc
 .scrapy
 
 .DS_Store
+
+*.pyc

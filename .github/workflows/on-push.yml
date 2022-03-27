@@ -59,14 +59,13 @@ jobs:
             BRANCH=$BRANCH
           fi 
           
-          COMMAND="2_prepare.py --raw-files-location data/raw --season 2021"
-          EXEC_COMMAND=${COMMAND// /,}
+          ARGS="--raw-files-location data/raw --season 2021"
 
           make \
-            run_batch \
+            prepare_cloud \
               JOB_NAME=$JOB_NAME \
               BRANCH=$BRANCH \
-              EXEC_COMMAND=$EXEC_COMMAND
+              ARGS=$ARGS
           
       - name: run sync
         # only sync when there is push to master
