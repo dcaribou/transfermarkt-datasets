@@ -57,8 +57,8 @@ def prepare_on_cloud(
     args=[
       "--raw-files-location", "data/raw",
     ],
-    vcpus=2,
-    memory=9216
+    vcpus=4,
+    memory=11264
   )
 
 # main
