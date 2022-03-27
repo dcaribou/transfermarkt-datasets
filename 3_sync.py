@@ -14,19 +14,6 @@ import boto3
 import os
 import requests
 
-def zip_cache():
-  import zipfile
-
-  path = '.scrapy'
-  zipf = zipfile.ZipFile('scrapy-httpcache.zip', 'w', zipfile.ZIP_DEFLATED)
-
-  for root, dirs, files in os.walk(path):
-        for file in files:
-            zipf.write(os.path.join(root, file), 
-                       os.path.relpath(os.path.join(root, file), 
-                                       os.path.join(path, '..')))
-
-
 def save_to_s3(path, relative_to):
   """
   Upload path contents to S3, keeping the folder structure under the relative_to prefix
@@ -69,8 +56,6 @@ def save_to_s3(path, relative_to):
     )
 
   s3t.shutdown()  # wait for all the upload tasks to finish
-
-  
 
 def publish_to_kaggle(folder, message):
   """Push the contents of the folder to Kaggle datasets
@@ -152,38 +137,28 @@ def publish_to_dataworld(folder):
 parser = argparse.ArgumentParser()
 parser.add_argument('--message', help='Dataset version notes', required=False, default="Dataset sync")
 parser.add_argument('--season', help='Season to be synchronized. It applies to S3 stored objects only', required=False, default=2020)
-parser.add_argument('--cache-only', help='Backup Scrapy cache to S3 only', action='store_const', const=True, default=False)
 
 args = parser.parse_args()
 
 message = args.message
 season = args.season
-cache_only = args.cache_only
 
 prep_location = 'data/prep'
 raw_location = 'data/raw'
 
-scrapy_cache_location = pathlib.Path('.scrapy')
-if scrapy_cache_location.exists() and scrapy_cache_location.is_dir():
-  print("--> Zip scrapy cache")
-  zip_cache()
-  save_to_s3('scrapy-httpcache.zip', f"scrapy-httpcache/{season}")
-  print("")
+print("--> Save assets to S3")
+save_to_s3(prep_location, f"snapshots")
+save_to_s3(f"{raw_location}/{season}", f"snapshots")
+save_to_s3('prep/datapackage_resource_appearances_validation.json', 'snapshots')
+save_to_s3('prep/datapackage_resource_clubs_validation.json', 'snapshots')
+save_to_s3('prep/datapackage_resource_competitions_validation.json', 'snapshots')
+save_to_s3('prep/datapackage_resource_games_validation.json', 'snapshots')
+save_to_s3('prep/datapackage_resource_players_validation.json', 'snapshots')
+print("")
 
-if not cache_only:
-  print("--> Save assets to S3")
-  save_to_s3(prep_location, f"snapshots")
-  save_to_s3(f"{raw_location}/{season}", f"snapshots")
-  save_to_s3('prep/datapackage_resource_appearances_validation.json', 'snapshots')
-  save_to_s3('prep/datapackage_resource_clubs_validation.json', 'snapshots')
-  save_to_s3('prep/datapackage_resource_competitions_validation.json', 'snapshots')
-  save_to_s3('prep/datapackage_resource_games_validation.json', 'snapshots')
-  save_to_s3('prep/datapackage_resource_players_validation.json', 'snapshots')
-  print("")
+print("--> Publish to Kaggle")
+publish_to_kaggle(prep_location, message)
+print("")
 
-  print("--> Publish to Kaggle")
-  publish_to_kaggle(prep_location, message)
-  print("")
-
-  print("--> Publish to data.world")
-  publish_to_dataworld(prep_location)
+print("--> Publish to data.world")
+publish_to_dataworld(prep_location)
