@@ -8,12 +8,6 @@ build :
 push :
 	docker push dcaribou/transfermarkt-datasets:dev
 
-run_bootstrap :
-	docker run -ti \
-		--env-file .env \
-		--memory=4g  \
-		dcaribou/transfermarkt-datasets:dev $(BRANCH) $(ARGS)
-
 acquire_local :
 	python 1_acquire.py local $(ARGS)
 acquire_docker : 
@@ -25,7 +19,7 @@ acquire_docker :
 				python 1_acquire.py local $(ARGS)
 acquire_cloud : JOB_DEFINITION_NAME = transfermarkt-datasets-batch-job-definition-dev
 acquire_cloud :
-	python 1_acquire.py cloud --branch $(BRANCH) --job-name $(JOB_NAME) --job-definition $(JOB_DEFINITION_NAME)  "$(ARGS)"
+	python 1_acquire.py cloud --branch $(BRANCH) --job-name $(JOB_NAME) --job-definition $(JOB_DEFINITION_NAME)
 
 prepare_local :
 	python 2_prepare.py local $(ARGS)
@@ -37,4 +31,4 @@ prepare_docker :
 			dcaribou/transfermarkt-datasets:dev \
 				python 2_prepare.py local $(ARGS)
 prepare_cloud : 
-	python 2_prepare.py cloud --branch $(BRANCH) --job-name $(JOB_NAME) "$(ARGS)"
+	python 2_prepare.py cloud --branch $(BRANCH) --job-name $(JOB_NAME)

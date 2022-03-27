@@ -64,14 +64,11 @@ jobs:
             BRANCH=$BRANCH
           fi 
           
-          ARGS="--raw-files-location data/raw --season 2021"
-
           make \
             prepare_cloud \
               JOB_NAME=$JOB_NAME \
-              BRANCH=$BRANCH \
-              ARGS="$ARGS"
-          
+              BRANCH=$BRANCH
+              
       - name: run sync
         # only sync when there is push to master
         if: ${{ github.event_name == 'push' }}

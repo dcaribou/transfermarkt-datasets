@@ -10,7 +10,7 @@ positional arguments:
 
 optional arguments:
   -h, --help     show this help message and exit
-  
+
 """
 import os
 from prep.asset_runner import AssetRunner
@@ -43,7 +43,10 @@ def prepare_on_local(raw_files_location, refresh_metadata, run_validations, seas
     os.system("cp prep/stage/* data/prep")
 
 
-def prepare_on_cloud(job_name, job_queue, job_definition, branch, args, func):
+def prepare_on_cloud(
+  job_name, job_queue,
+  job_definition, branch,
+  func):
 
   submit_batch_job_and_wait(
     job_name=job_name,
@@ -51,7 +54,10 @@ def prepare_on_cloud(job_name, job_queue, job_definition, branch, args, func):
     job_definition=job_definition,
     branch=branch,
     script="2_prepare.py",
-    args=args,
+    args=[
+      "--raw-files-location", "data/raw",
+      "--season", "2021",
+    ],
     vcpus=2,
     memory=9216
   )
@@ -67,7 +73,6 @@ local_parser.add_argument('--raw-files-location', required=False, default='data/
 local_parser.add_argument('--refresh-metadata', action='store_const', const=True, required=False, default=False)
 local_parser.add_argument('--run-validations', action='store_const', const=True, required=False, default=False)
 local_parser.add_argument('--season', required=False)
-
 local_parser.set_defaults(func=prepare_on_local)
 
 cloud_parser = subparsers.add_parser('cloud', help='Run the acquiring step in the cloud')
@@ -86,11 +91,6 @@ cloud_parser.add_argument(
 cloud_parser.add_argument(
   '--branch',
   required=True
-)
-cloud_parser.add_argument(
-  "args",
-  default=["--asset", "all", "--season", "2021"],
-  nargs="*"
 )
 cloud_parser.set_defaults(func=prepare_on_cloud)
 
