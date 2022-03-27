@@ -65,7 +65,7 @@ jobs:
             prepare_cloud \
               JOB_NAME=$JOB_NAME \
               BRANCH=$BRANCH \
-              ARGS=$ARGS
+              ARGS="$ARGS"
           
       - name: run sync
         # only sync when there is push to master
