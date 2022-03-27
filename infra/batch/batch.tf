@@ -68,7 +68,7 @@ resource "aws_batch_job_definition" "job_definitions" {
   },
   "resourceRequirements": [
     {"type": "VCPU", "value": "4"},
-    {"type": "MEMORY", "value": "11264"}
+    {"type": "MEMORY", "value": "16384"}
   ],
   "executionRoleArn": "${var.execution_role_arn}",
   "jobRoleArn": "${var.execution_role_arn}",

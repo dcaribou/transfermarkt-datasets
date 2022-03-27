@@ -1,50 +1,27 @@
-"""Acquire raw data from transfermark website using a dockerized version of transfermark-scraper.
-
-Usage:
- > python 1_acquire.py --asset [clubs, player, games, etc] [--scrapy-cache .scrapy] --season <the season to be acquired>
-
-The environment variable SCRAPY_CACHE can be used as well to tell the script to do the acquiring on
-a local scrapy cache. The command line argument '--scrapy-cache' takes precedence.
 """
+Acquire raw data from transfermark website using a dockerized version of transfermark-scraper.
+
+usage: 1_acquire.py [-h] {local,cloud} ...
+
+positional arguments:
+  {local,cloud}
+    local        Run the acquiring step locally
+    cloud        Run the acquiring step in the cloud
+
+optional arguments:
+  -h, --help     show this help message and exit
+"""
+
 import os
 import pathlib
 
 import argparse
+from time import sleep
 
-parser = argparse.ArgumentParser()
-parser.add_argument(
-  '--asset',
-  help="Name of the asset to be acquired",
-  choices=['clubs', 'players', 'games', 'appearances', 'all'],
-  required=True
-)
-parser.add_argument(
-  '--scrapy-cache',
-  help="Scrapy cache location. If set, this cache will be used during the acquiring process",
-  default=os.environ.get('SCRAPY_CACHE')
-)
-parser.add_argument(
-  '--season',
-  help="Season to be acquired. This is passed to the scraper as the SEASON argument",
-  default=2020
-)
-parser.add_argument(
-  '--cat',
-  default=False,
-  action='store_const',
-  help="Pipe acquired data to the stdout instead of saving to a file",
-  const=True
-)
+from scrapy.crawler import CrawlerProcess
+from scrapy.utils.project import get_project_settings
 
-arguments = parser.parse_args()
-
-SEASON = arguments.season
-ASSET_NAME = arguments.asset
-SCRAPY_CACHE = arguments.scrapy_cache
-DRY_RUN = os.environ.get('DRY_RUN')
-# identify this scraping jobs accordinly by setting a nice user agent
-USER_AGENT = 'transfermarkt-datasets/1.0 (https://github.com/dcaribou/transfermarkt-datasets)'
-CAT = arguments.cat
+from cloud_lib import submit_batch_job_and_wait
 
 class Asset():
   """A wrapper for the asset to be acquired.
@@ -68,16 +45,16 @@ class Asset():
     else:
       self.path = pathlib.Path(f"data/raw/{season}/{name}.json")
 
-  def parent(self):
+    self.file_full_path = str(self.path.absolute())
+    self.parent = None
+
+  def set_parent(self):
     """Get the parent of this asset as a new Asset"""
 
-    return Asset(
+    self.parent = Asset(
       self.asset_parents[self.name],
       self.season
     )
-
-  def file_full_path(self):
-    return str(self.path.absolute())
 
   def file_name(self):
     return self.path.name
@@ -90,47 +67,110 @@ class Asset():
     """
     return [Asset(name, season) for name in self.asset_parents if name != 'competitions']
 
-
-def acquire_asset(asset, scrapy_cache, cat):
-  """Orchestrate asset acquisition steps on a Docker server and pipe output to either stdout or a local file"""
+  def acquire(self, user_agent):
+    """Run acquiring scraper for a given asset"""
   
-  parent_asset = asset.parent()
-  
-  command = f"""
-    cd transfermarkt-scraper && scrapy crawl {asset.name} \
-      -a parents={parent_asset.file_full_path()} \
-      -s SEASON={asset.season} \
-      -s USER_AGENT='{USER_AGENT}' \
-      -s FEED_URI='{asset.file_full_path()}'
-  """
+    settings = get_project_settings()
 
-  print(command)
-  if os.system(command) != 0:
-    raise Exception(f"Acquiring failed for {asset}")
+    settings.set("USER_AGENT", user_agent)
+    settings.set("SEASON", self.season)
+    settings.set("FEED_URI", self.file_full_path)
 
-if ASSET_NAME == 'all':
-  assets = Asset.all(SEASON)
-else:
-  assets = [
-    Asset(
-      name=ASSET_NAME,
-      season=SEASON
+    parent_asset = self.parent
+
+    process = CrawlerProcess(settings)
+
+    # 'followall' is the name of one of the spiders of the project.
+    process.crawl(
+      self.name,
+      parents=parent_asset.file_full_path
     )
-  ]
+    process.start() # the script will block here until the crawling is finished
 
-if SCRAPY_CACHE is not None:
-  print(f"Scrapy cache in {SCRAPY_CACHE} will be used")
+def acquire_on_local(args):
+  # local run
+  SEASON = arguments.season
+  ASSET_NAME = arguments.asset
+  # identify this scraping jobs accordinly by setting a nice user agent
+  USER_AGENT = 'transfermarkt-datasets/1.0 (https://github.com/dcaribou/transfermarkt-datasets)'
 
-season_path = pathlib.Path(f"data/raw/{SEASON}")
-if not season_path.exists():
-  season_path.mkdir()
+  if ASSET_NAME == 'all':
+    assets = Asset.all(SEASON)
+  else:
+    asset = Asset(
+        name=ASSET_NAME,
+        season=SEASON
+      )
+    asset.set_parent()
+    assets = [asset]
 
-for asset in assets:
-  print(f"--> Acquiring {asset.name}")
-  acquire_asset(
-    asset,
-    SCRAPY_CACHE,
-    CAT
+  season_path = pathlib.Path(f"data/raw/{SEASON}")
+  if not season_path.exists():
+    season_path.mkdir()
+
+  os.chdir("transfermarkt-scraper")
+  for asset in assets:
+    print(f"--> Acquiring {asset.name}")
+    asset.acquire(USER_AGENT)
+
+def acquire_on_cloud(job_name, job_queue, job_definition, branch, args, func):
+  submit_batch_job_and_wait(
+    job_name=job_name,
+    job_queue=job_queue,
+    job_definition=job_definition,
+    branch=branch,
+    script="1_acquire.py",
+    args=[
+      "--asset", "all",
+      "--season", "2021"
+    ],
+    vcpus=0.5,
+    memory=1024
   )
 
-  
+# main
+
+parser = argparse.ArgumentParser()
+
+subparsers = parser.add_subparsers()
+
+local_parser = subparsers.add_parser('local', help='Run the acquiring step locally')
+local_parser.add_argument(
+  '--asset',
+  help="Name of the asset to be acquired",
+  choices=['clubs', 'players', 'games', 'appearances', 'all'],
+  required=True
+)
+local_parser.add_argument(
+  '--season',
+  help="Season to be acquired. This is passed to the scraper as the SEASON argument",
+  default=2020
+)
+local_parser.set_defaults(func=acquire_on_local)
+
+cloud_parser = subparsers.add_parser('cloud', help='Run the acquiring step in the cloud')
+cloud_parser.add_argument(
+  '--job-name',
+  default="on-cli"
+)
+cloud_parser.add_argument(
+  '--job-queue',
+  default="transfermarkt-datasets-batch-compute-job-queue"
+)
+cloud_parser.add_argument(
+  '--job-definition',
+  default="transfermarkt-datasets-batch-job-definition-dev"
+)
+cloud_parser.add_argument(
+  '--branch',
+  required=True
+)
+cloud_parser.add_argument(
+  "args",
+  default=["--asset", "all", "--season", "2021"],
+  nargs="*"
+)
+cloud_parser.set_defaults(func=acquire_on_cloud)
+
+arguments = parser.parse_args()
+arguments.func(**vars(arguments))

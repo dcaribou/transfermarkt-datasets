@@ -14,13 +14,13 @@ All project data assets are kept inside the `data` folder. This is a [DVC](https
 
 `raw` data within this folder can be updated by running the [trasfermarkt-scraper](https://github.com/dcaribou/transfermarkt-scraper) with the `1_acquire.py` script.
 ```console
-$ python 1_acquire.py --asset all --season 2021
+$ python 1_acquire.py local --asset all --season 2021
 ```
 
 ### [prep](prep)
 Scripts for transforming scraped `raw` data into a cleaned, validated [data package](https://specs.frictionlessdata.io/) that can be used as the basis of further analysis in this project. You may run these scripts to produce the prepared dataset within `data/prep` using `2_prepare.py`.
 ```console
-$ python 2_prepare.py [--raw-files-location data/raw]
+$ python 2_prepare.py local [--raw-files-location data/raw]
 ```
 For reference on the types of assets produced by this script checkout published datasets linked above.
 
