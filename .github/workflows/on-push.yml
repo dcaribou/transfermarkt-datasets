@@ -51,7 +51,7 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: eu-west-1
           BRANCH: ${{ github.event.pull_request.head.ref }}
-          EVENT: ${{ github.event_name == 'push' }}
+          EVENT: ${{ github.event_name }}
         run: |
           # trigger prep job in aws batch
 
