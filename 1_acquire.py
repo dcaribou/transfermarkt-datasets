@@ -65,7 +65,10 @@ class Asset():
     Asset acquisition have dependecies between each other. This list returns the right order for asset
     acquisition steps to run.
     """
-    return [Asset(name, season) for name in self.asset_parents if name != 'competitions']
+    assets = [Asset(name, season) for name in self.asset_parents if name != 'competitions']
+    for asset in assets:
+      asset.set_parent()
+    return assets
 
   def acquire(self, user_agent):
     """Run acquiring scraper for a given asset"""
