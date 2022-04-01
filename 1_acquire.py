@@ -87,7 +87,7 @@ class Asset():
     )
     process.start() # the script will block here until the crawling is finished
 
-def acquire_on_local(asset, season):
+def acquire_on_local(asset, season, func):
 
   # identify this scraping jobs accordinly by setting a nice user agent
   USER_AGENT = 'transfermarkt-datasets/1.0 (https://github.com/dcaribou/transfermarkt-datasets)'
