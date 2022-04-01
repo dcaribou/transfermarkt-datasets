@@ -108,7 +108,7 @@ def acquire_on_local(asset, season, func):
 
   os.chdir("transfermarkt-scraper")
   for asset_obj in assets:
-    print(f"--> Acquiring {asset.name}")
+    print(f"--> Acquiring {asset_obj.name}")
     asset_obj.acquire(USER_AGENT)
 
 def acquire_on_cloud(job_name, job_queue, job_definition, branch, args, func):
