@@ -87,33 +87,32 @@ class Asset():
     )
     process.start() # the script will block here until the crawling is finished
 
-def acquire_on_local(args):
-  # local run
-  SEASON = arguments.season
-  ASSET_NAME = arguments.asset
+def acquire_on_local(asset, season):
+
   # identify this scraping jobs accordinly by setting a nice user agent
   USER_AGENT = 'transfermarkt-datasets/1.0 (https://github.com/dcaribou/transfermarkt-datasets)'
 
-  if ASSET_NAME == 'all':
-    assets = Asset.all(SEASON)
+  if asset == 'all':
+    assets = Asset.all(season)
   else:
-    asset = Asset(
-        name=ASSET_NAME,
-        season=SEASON
+    asset_obj = Asset(
+        name=asset,
+        season=season
       )
-    asset.set_parent()
-    assets = [asset]
+    asset_obj.set_parent()
+    assets = [asset_obj]
 
-  season_path = pathlib.Path(f"data/raw/{SEASON}")
+  season_path = pathlib.Path(f"data/raw/{season}")
   if not season_path.exists():
     season_path.mkdir()
 
   os.chdir("transfermarkt-scraper")
-  for asset in assets:
+  for asset_obj in assets:
     print(f"--> Acquiring {asset.name}")
-    asset.acquire(USER_AGENT)
+    asset_obj.acquire(USER_AGENT)
 
 def acquire_on_cloud(job_name, job_queue, job_definition, branch, args, func):
+
   submit_batch_job_and_wait(
     job_name=job_name,
     job_queue=job_queue,
@@ -167,7 +166,7 @@ cloud_parser.add_argument(
 )
 cloud_parser.add_argument(
   "args",
-  default=["--asset", "all", "--season", "2021"],
+  default=["--asset", "games", "--season", "2021"],
   nargs="*"
 )
 cloud_parser.set_defaults(func=acquire_on_cloud)
