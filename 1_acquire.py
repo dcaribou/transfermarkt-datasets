@@ -13,13 +13,14 @@ optional arguments:
 """
 
 import os
+import sys
 import pathlib
 
 import argparse
-from time import sleep
 
 from scrapy.crawler import CrawlerProcess
 from scrapy.utils.project import get_project_settings
+from scrapy.utils.log import configure_logging
 
 from cloud_lib import submit_batch_job_and_wait
 
@@ -65,55 +66,52 @@ class Asset():
     Asset acquisition have dependecies between each other. This list returns the right order for asset
     acquisition steps to run.
     """
-    return [Asset(name, season) for name in self.asset_parents if name != 'competitions']
+    assets = [Asset(name, season) for name in self.asset_parents if name != 'competitions']
+    for asset in assets:
+      asset.set_parent()
+    return assets
 
-  def acquire(self, user_agent):
-    """Run acquiring scraper for a given asset"""
-  
-    settings = get_project_settings()
 
-    settings.set("USER_AGENT", user_agent)
-    settings.set("SEASON", self.season)
-    settings.set("FEED_URI", self.file_full_path)
+def acquire_on_local(asset, season, func):
 
-    parent_asset = self.parent
-
-    process = CrawlerProcess(settings)
-
-    # 'followall' is the name of one of the spiders of the project.
-    process.crawl(
-      self.name,
-      parents=parent_asset.file_full_path
-    )
-    process.start() # the script will block here until the crawling is finished
-
-def acquire_on_local(args):
-  # local run
-  SEASON = arguments.season
-  ASSET_NAME = arguments.asset
   # identify this scraping jobs accordinly by setting a nice user agent
   USER_AGENT = 'transfermarkt-datasets/1.0 (https://github.com/dcaribou/transfermarkt-datasets)'
 
-  if ASSET_NAME == 'all':
-    assets = Asset.all(SEASON)
+  if asset == 'all':
+    assets = Asset.all(season)
   else:
-    asset = Asset(
-        name=ASSET_NAME,
-        season=SEASON
+    asset_obj = Asset(
+        name=asset,
+        season=season
       )
-    asset.set_parent()
-    assets = [asset]
+    asset_obj.set_parent()
+    assets = [asset_obj]
 
-  season_path = pathlib.Path(f"data/raw/{SEASON}")
+  season_path = pathlib.Path(f"data/raw/{season}")
   if not season_path.exists():
     season_path.mkdir()
 
+
   os.chdir("transfermarkt-scraper")
-  for asset in assets:
-    print(f"--> Acquiring {asset.name}")
-    asset.acquire(USER_AGENT)
+
+  settings = get_project_settings()
+
+  settings.set("USER_AGENT", USER_AGENT)
+  settings.set("SEASON", season)
+  settings.set("FEED_URI", f"../data/raw/{season}/%(name)s.json" )
+
+  configure_logging(settings)
+
+  process = CrawlerProcess(settings)
+
+  for asset_obj in assets:
+    print(f"Schedule {asset_obj.name}")
+    process.crawl(asset_obj.name, parents=asset_obj.parent.file_full_path)
+  
+  process.start()
 
 def acquire_on_cloud(job_name, job_queue, job_definition, branch, args, func):
+
   submit_batch_job_and_wait(
     job_name=job_name,
     job_queue=job_queue,
