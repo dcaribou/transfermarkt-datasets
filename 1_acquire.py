@@ -13,13 +13,14 @@ optional arguments:
 """
 
 import os
+import sys
 import pathlib
 
 import argparse
-from time import sleep
 
 from scrapy.crawler import CrawlerProcess
 from scrapy.utils.project import get_project_settings
+from scrapy.utils.log import configure_logging
 
 from cloud_lib import submit_batch_job_and_wait
 
@@ -70,25 +71,6 @@ class Asset():
       asset.set_parent()
     return assets
 
-  def acquire(self, user_agent):
-    """Run acquiring scraper for a given asset"""
-  
-    settings = get_project_settings()
-
-    settings.set("USER_AGENT", user_agent)
-    settings.set("SEASON", self.season)
-    settings.set("FEED_URI", self.file_full_path)
-
-    parent_asset = self.parent
-
-    process = CrawlerProcess(settings)
-
-    # 'followall' is the name of one of the spiders of the project.
-    process.crawl(
-      self.name,
-      parents=parent_asset.file_full_path
-    )
-    process.start() # the script will block here until the crawling is finished
 
 def acquire_on_local(asset, season, func):
 
@@ -109,10 +91,24 @@ def acquire_on_local(asset, season, func):
   if not season_path.exists():
     season_path.mkdir()
 
+
   os.chdir("transfermarkt-scraper")
+
+  settings = get_project_settings()
+
+  settings.set("USER_AGENT", USER_AGENT)
+  settings.set("SEASON", season)
+  settings.set("FEED_URI", f"../data/raw/{season}/%(name)s.json" )
+
+  configure_logging(settings)
+
+  process = CrawlerProcess(settings)
+
   for asset_obj in assets:
-    print(f"--> Acquiring {asset_obj.name}")
-    asset_obj.acquire(USER_AGENT)
+    print(f"Schedule {asset_obj.name}")
+    process.crawl(asset_obj.name, parents=asset_obj.parent.file_full_path)
+  
+  process.start()
 
 def acquire_on_cloud(job_name, job_queue, job_definition, branch, args, func):
 
