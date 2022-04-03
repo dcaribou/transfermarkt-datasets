@@ -42,4 +42,4 @@ jobs:
             acquire_cloud \
               JOB_DEFINITION_NAME=$JOB_DEFINITION_NAME \
               JOB_NAME=on-schedule-$DAY \
-              BRANCH=fix-on-sync
+              BRANCH=master

@@ -165,7 +165,7 @@ cloud_parser.add_argument(
 )
 cloud_parser.add_argument(
   "args",
-  default=["--asset", "games", "--season", "2021"],
+  default=["--asset", "all", "--season", "2021"],
   nargs="*"
 )
 cloud_parser.set_defaults(func=acquire_on_cloud)
