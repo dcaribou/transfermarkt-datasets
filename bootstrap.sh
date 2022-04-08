@@ -4,6 +4,8 @@ set -ex
 
 PROJECT_HOME=/app/transfermarkt-datasets
 BRANCH=$1
+MESSAGE=$2
+shift 2
 
 if ! [ -d $PROJECT_HOME ]; then
     echo "Setting up project dir"
@@ -17,12 +19,11 @@ if ! [ -d $PROJECT_HOME ]; then
         exit 1
     fi
 fi
-shift
 
 cd $PROJECT_HOME
 if python "$@" ; then
     dvc commit -f && git add data
-    git diff-index --quiet HEAD data || git commit -m '🤖 updated dataset files'
+    git diff-index --quiet HEAD data || git commit -m "$MESSAGE"
     git push && dvc push
 else
     echo "Job failed"

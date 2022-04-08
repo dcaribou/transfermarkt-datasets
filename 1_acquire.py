@@ -110,13 +110,14 @@ def acquire_on_local(asset, season, func):
   
   process.start()
 
-def acquire_on_cloud(job_name, job_queue, job_definition, branch, args, func):
+def acquire_on_cloud(job_name, job_queue, job_definition, branch, message, args, func):
 
   submit_batch_job_and_wait(
     job_name=job_name,
     job_queue=job_queue,
     job_definition=job_definition,
     branch=branch,
+    message=message,
     script="1_acquire.py",
     args=[
       "--asset", "all",
@@ -162,6 +163,10 @@ cloud_parser.add_argument(
 cloud_parser.add_argument(
   '--branch',
   required=True
+)
+cloud_parser.add_argument(
+  '--message',
+  default="🤖 updated raw dataset files"
 )
 cloud_parser.add_argument(
   "args",

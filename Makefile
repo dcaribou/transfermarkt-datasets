@@ -32,3 +32,7 @@ prepare_docker :
 				python 2_prepare.py local $(ARGS)
 prepare_cloud : 
 	python 2_prepare.py cloud --branch $(BRANCH) --job-name $(JOB_NAME)
+
+sync: MESSAGE = Manual sync
+sync:
+	python 3_sync.py --message "$(MESSAGE)" --season 2021

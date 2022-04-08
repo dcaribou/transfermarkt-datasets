@@ -71,7 +71,7 @@ jobs:
               
       - name: run sync
         # only sync when there is push to master
-        if: ${{ github.event_name == 'push' }}
+        if: ${{ github.event_name == 'push' && github.event.head_commit.message != '🤖 updated raw dataset files' }}
         env:
           # Kaggle API auth
           KAGGLE_USERNAME: ${{ secrets.KAGGLE_USERNAME }}
@@ -82,4 +82,7 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_EC2_METADATA_DISABLED: true # https://github.com/aws/aws-cli/issues/5262
         run: |
-          python 3_sync.py --message "${{ github.event.head_commit.message }}" --season 2021
+          dvc pull
+          make \
+            sync \
+              MESSAGE="${{ github.event.head_commit.message }}"
