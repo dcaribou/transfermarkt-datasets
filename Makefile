@@ -31,7 +31,7 @@ prepare_docker :
 			dcaribou/transfermarkt-datasets:dev \
 				python 2_prepare.py local $(ARGS)
 prepare_cloud : 
-	python 2_prepare.py cloud --branch $(BRANCH) --job-name $(JOB_NAME)
+	python 2_prepare.py cloud --branch $(BRANCH) --job-name $(JOB_NAME) --job-definition $(JOB_DEFINITION_NAME)
 
 sync: MESSAGE = Manual sync
 sync:

@@ -58,14 +58,17 @@ jobs:
           if [ $EVENT = push ]; then
             JOB_NAME=on-push-master
             BRANCH=master
+            JOB_DEFINITION_NAME=transfermarkt-datasets-batch-job-definition-master
           else
             PR_NUMBER=$(echo $GITHUB_REF | awk 'BEGIN { FS = "/" } ; { print $3 }')
             JOB_NAME=on-push-pr-$PR_NUMBER
             BRANCH=$BRANCH
+            JOB_DEFINITION_NAME=transfermarkt-datasets-batch-job-definition-dev
           fi 
           
           make \
             prepare_cloud \
+              JOB_DEFINITION_NAME=$JOB_DEFINITION_NAME \
               JOB_NAME=$JOB_NAME \
               BRANCH=$BRANCH
               
