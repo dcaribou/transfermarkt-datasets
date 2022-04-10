@@ -12,9 +12,7 @@ optional arguments:
   -h, --help     show this help message and exit
 """
 
-from ast import arg
 import os
-import sys
 import pathlib
 
 import argparse
