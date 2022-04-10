@@ -131,6 +131,3 @@ class PlayersProcessor(BaseProcessor):
       subset='player_id',
       keep='last'
     )
-
-  def get_validations(self):
-      return []

@@ -20,12 +20,6 @@ class PlayerValuationsProcessor(BaseProcessor):
     self.schema.add_field(Field(name='player_id', type='integer'))
     self.schema.add_field(Field(name='date', type='date'))
     self.schema.add_field(Field(name='market_value', type='number'))
-    self.schema.add_field(Field(
-      name='url',
-      type='string',
-      format='uri'
-      )
-    )
 
     self.schema.primary_key = ['player_id', 'date']
     self.schema.foreign_keys = [
@@ -46,6 +40,7 @@ class PlayerValuationsProcessor(BaseProcessor):
     self.set_checkpoint('json_normalized', json_normalized)
 
     href_parts = json_normalized['href'].str.split('/', 5, True)
+    
     prep_df['player_id'] = href_parts[4]
     prep_df['date'] = pandas.to_datetime(json_normalized["datum_mw"])
     prep_df['market_value'] = (
@@ -60,7 +55,7 @@ class PlayerValuationsProcessor(BaseProcessor):
       self.process_segment(prep_df, season)
       for prep_df, season in zip(self.raw_dfs, self.seasons)
     ]
-    self.prep_df = pandas.concat(self.prep_dfs, axis=0)
-
-  def get_validations(self):
-      return []
+    self.prep_df = pandas.concat(self.prep_dfs, axis=0).drop_duplicates(
+      subset=["player_id", "date"],
+      keep="last"
+    )

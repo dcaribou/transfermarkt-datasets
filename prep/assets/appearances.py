@@ -4,6 +4,8 @@ from frictionless.field import Field
 from typing import List
 
 from .base import BaseProcessor
+from .utils import cast_metric, cast_minutes_played
+
 class AppearancesProcessor(BaseProcessor):
 
   name = 'appearances'
@@ -35,19 +37,6 @@ class AppearancesProcessor(BaseProcessor):
 
   def process_segment(self, segment, season):
 
-    def cast_metric(metric):
-      if len(metric) == 0:
-        return 0
-      else:
-        return int(metric)
-
-    def cast_minutes_played(minutes_played):
-      if len(minutes_played) > 0:
-        numeric = minutes_played[:-1]
-        return int(numeric)
-      else:
-        return 0
-  
     prep_df = pandas.DataFrame()
 
     json_normalized = pandas.json_normalize(segment.to_dict(orient='records'))
@@ -75,24 +64,3 @@ class AppearancesProcessor(BaseProcessor):
     prep_df['red_cards'] = (json_normalized['red_cards'].str.len() > 0).astype('int32')
 
     return prep_df
-
-  def get_validations(self):
-    return [
-      # TODO: Implement checks as frictionless custom checks https://framework.frictionlessdata.io/docs/guides/validation-guide#custom-checks
-      # 'assert_df_not_empty',
-      # 'assert_minutes_played_gt_120',
-      # 'assert_goals_in_range',
-      # 'assert_assists_in_range',
-      # 'assert_own_goals_in_range',
-      # 'assert_yellow_cards_range',
-      # 'assert_red_cards_range',
-      # 'assert_unique_on_player_and_date',
-      # 'assert_clubs_per_competition',
-      # 'assert_appearances_per_match',
-      # 'assert_appearances_per_club_per_game',
-      # 'assert_appearances_freshness_is_less_than_one_week',
-      # 'assert_goals_ne_assists',
-      # 'assert_goals_ne_own_goals',
-      # 'assert_yellow_cards_not_constant',
-      # 'assert_red_cards_not_constant'
-    ]

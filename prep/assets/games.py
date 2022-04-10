@@ -104,10 +104,3 @@ class GamesProcessor(BaseProcessor):
 
     self.set_checkpoint('prep', prep_df)
     return prep_df
-
-  def get_validations(self):
-    from frictionless import checks
-
-    return [
-      # checks.row_constraint(formula='season > 0')
-    ]

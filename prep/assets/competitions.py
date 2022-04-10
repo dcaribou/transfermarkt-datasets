@@ -53,6 +53,3 @@ class CompetitionsProcessor(BaseProcessor):
     prep_df['url'] = 'https://www.transfermarkt.co.uk' + json_normalized['href']
 
     return prep_df
-
-  def get_validations(self):
-    return []

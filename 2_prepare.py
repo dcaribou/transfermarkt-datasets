@@ -45,7 +45,7 @@ def prepare_on_local(raw_files_location, refresh_metadata, run_validations, seas
 
 def prepare_on_cloud(
   job_name, job_queue,
-  job_definition, branch, message, args
+  job_definition, branch, message, args,
   func):
 
   submit_batch_job_and_wait(

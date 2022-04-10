@@ -25,3 +25,16 @@ def parse_market_value(market_value):
           return None
       else:
         return None
+        
+def cast_metric(metric):
+      if len(metric) == 0:
+        return 0
+      else:
+        return int(metric)
+
+def cast_minutes_played(minutes_played):
+      if len(minutes_played) > 0:
+        numeric = minutes_played[:-1]
+        return int(numeric)
+      else:
+        return 0

@@ -1,10 +1,8 @@
 from frictionless import Detector
 from frictionless.resource import Resource
-from numpy.lib.function_base import select
 import pandas
-from datetime import datetime, timedelta
 import logging
-import sys
+import logging.config
 
 class BaseProcessor:
   name = None
@@ -30,15 +28,8 @@ class BaseProcessor:
       self.checkpoints = {}
       self.settings = settings
 
-      self.log = logging.getLogger(__name__)
-
-      # TODO: setup propper loggin management
-      # handler = logging.StreamHandler(sys.stdout)
-      # handler.setLevel(logging.DEBUG)
-      # formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-      # handler.setFormatter(formatter)
-      # self.log.addHandler(handler)
-      self.log.setLevel(logging.DEBUG)
+      logging.config.dictConfig(settings["logging"])
+      self.log = logging.getLogger("asset")
 
   def load_partitions(self):
     if self.name == 'competitions':
@@ -131,11 +122,11 @@ class BaseProcessor:
     resource.schema = self.schema
     return resource
 
-  def get_validations(self):
-    pass
-
   def is_valid(self):
-    if self.validation_report['stats']['errors'] > self.errors_tolerance:
+    self.log.debug("Checking validation results for %s", self.name)
+    results = self.validation_report['stats']['errors']
+    self.log.debug("Failed validatiions are %i, tolerance is %i", results, self.errors_tolerance)
+    if results > self.errors_tolerance:
       return False
     else:
       return True

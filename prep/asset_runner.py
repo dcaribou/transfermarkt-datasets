@@ -8,19 +8,8 @@ import yaml
 from prep.assets.base import BaseProcessor
 
 import logging
-logging.basicConfig(format='%(message)s', level=logging.INFO)
 
 import pathlib
-
-def get_seasons(data_folder_path):
-  path = pathlib.Path(data_folder_path)
-  seasons = [
-    int(str(season_path).split('/')[-1])
-    for season_path in path.glob('*') if season_path.is_dir()
-  ]
-  
-  seasons.sort()
-  return seasons
 
 def read_config():
   with open("prep/config.yml") as config_file:
@@ -37,17 +26,17 @@ class AssetRunner:
       self.datapackage = None
       self.validation_report = None
 
-      if season is None:
-        seasons = get_seasons(self.data_folder_path)
-      else:
-        seasons = [season]
-      
-      # TODO: scrape history for players and remove this
-      seasons = [2021]
-
       config = read_config()
       settings = config["settings"]
 
+      logging.config.dictConfig(settings["logging"])
+      self.log = logging.getLogger("asset")
+
+      if season is None:
+        seasons = settings["seasons"]
+      else:
+        seasons = [season]
+    
       for asset in config["assets"]:
           asset_name = asset["name"]
           class_name = asset["class"]
@@ -70,9 +59,6 @@ class AssetRunner:
             logging.warning(f"Found raw asset '{asset_name}' without asset processor")
 
   def load_assets(self):
-    logging.info(
-      f"--- Loading {len(self.assets)} assets ---"
-    )
     for asset in self.assets:
       asset['processor'].load_partitions()
 
@@ -85,10 +71,10 @@ class AssetRunner:
     return tabulate(table, headers=['Name', 'Path', 'Seasons'])
 
   def process_assets(self):
-    logging.info(
+    self.log.info(
       self.prettify_asset_processors()
     )
-    logging.info("")
+    self.log.info("")
 
     self.load_assets()
 
@@ -96,7 +82,7 @@ class AssetRunner:
     stage_path = pathlib.Path(self.prep_folder_path)
     if stage_path.exists():
       if not stage_path.is_dir():
-        logging.error(f"Configured 'stage' location {stage_path.name} is not a directory")
+        self.log.error(f"Configured 'stage' location {stage_path.name} is not a directory")
         raise Exception("Invalid staging location")
     else:
       stage_path.mkdir()
@@ -106,7 +92,7 @@ class AssetRunner:
 
   def process_asset(self, asset_name: str, asset_processor: BaseProcessor):
     asset_processor.process()
-    logging.info(
+    self.log.info(
       asset_processor.output_summary()
     )
     asset_processor.export()
@@ -153,9 +139,9 @@ class AssetRunner:
 
     package = self.datapackage or Package(self.datapackage_descriptor_path)
 
-    logging.info("-- Datapackage resource validation")
+    self.log.info("Datapackage resource validation")
     for resource in package.resources:
-      logging.info(f"--- Validating {resource.name}")
+      self.log.info(f"Validating {resource.name}")
       validation_report = validate(resource)
       self.get_asset_processor(resource.name).validation_report = validation_report
       with open(f"prep/datapackage_resource_{resource.name}_validation.json", 'w+') as file:
@@ -168,8 +154,8 @@ class AssetRunner:
   def is_valid(self):
     for asset in self.assets:
       if not asset['processor'].is_valid():
-        logging.error(f"{asset['name']} did not pass validations!")
+        self.log.error(f"{asset['name']} did not pass validations!")
         return False
-      else:
-        logging.info("All validations have passed!")
-        return True
+
+    self.log.info("All validations have passed!")
+    return True
