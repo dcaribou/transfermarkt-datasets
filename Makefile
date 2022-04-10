@@ -35,6 +35,7 @@ prepare_docker :
 			--memory=4g  \
 			dcaribou/transfermarkt-datasets:dev \
 				python 2_prepare.py local $(ARGS)
+prepare_cloud : ARGS = --raw-files-location data/raw
 prepare_cloud : 
 	python 2_prepare.py cloud --branch $(BRANCH) --job-name $(JOB_NAME) --job-definition $(JOB_DEFINITION_NAME)
 

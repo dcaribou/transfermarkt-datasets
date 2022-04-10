@@ -45,7 +45,7 @@ def prepare_on_local(raw_files_location, refresh_metadata, run_validations, seas
 
 def prepare_on_cloud(
   job_name, job_queue,
-  job_definition, branch, message,
+  job_definition, branch, message, args
   func):
 
   submit_batch_job_and_wait(
@@ -55,9 +55,7 @@ def prepare_on_cloud(
     branch=branch,
     message=message,
     script="2_prepare.py",
-    args=[
-      "--raw-files-location", "data/raw",
-    ],
+    args=args,
     vcpus=4,
     memory=16384
   )
@@ -95,6 +93,9 @@ cloud_parser.add_argument(
 cloud_parser.add_argument(
   '--message',
   default="🤖 updated prepared dataset files"
+)
+cloud_parser.add_argument(
+  'args'
 )
 cloud_parser.set_defaults(func=prepare_on_cloud)
 
