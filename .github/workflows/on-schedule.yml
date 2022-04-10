@@ -9,6 +9,9 @@ on:
         required: false
         default: '🤖 updated dataset files'
         description: Commit message for the 'add-and-commit' step
+      acquire_args:
+        required: false
+        default: "--asset all --season 2021"
 
 jobs:
   data-pipeline:
@@ -39,14 +42,20 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: eu-west-1
           BRANCH: ${{ steps.extract_branch.outputs.branch }}
+          ARGS: ${{ github.event.inputs.acquire_args }}
         run: |
           # trigger prep job in aws batch
 
           DAY=$(date +"%Y-%m-%d")
-          JOB_DEFINITION_NAME=transfermarkt-datasets-batch-job-definition-master
+          if [ $BRANCH = master ]; then
+            JOB_DEFINITION_NAME=transfermarkt-datasets-batch-job-definition-master
+          else
+            JOB_DEFINITION_NAME=transfermarkt-datasets-batch-job-definition-dev
+          fi
 
           make \
             acquire_cloud \
               JOB_DEFINITION_NAME=$JOB_DEFINITION_NAME \
               JOB_NAME=on-schedule-$DAY \
-              BRANCH=$BRANCH
+              BRANCH=$BRANCH \
+              ARGS="$ARGS"

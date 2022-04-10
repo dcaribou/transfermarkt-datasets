@@ -12,6 +12,7 @@ optional arguments:
   -h, --help     show this help message and exit
 """
 
+from ast import arg
 import os
 import sys
 import pathlib
@@ -119,10 +120,7 @@ def acquire_on_cloud(job_name, job_queue, job_definition, branch, message, args,
     branch=branch,
     message=message,
     script="1_acquire.py",
-    args=[
-      "--asset", "all",
-      "--season", "2021"
-    ],
+    args=args,
     vcpus=0.5,
     memory=1024
   )
@@ -169,9 +167,7 @@ cloud_parser.add_argument(
   default="🤖 updated raw dataset files"
 )
 cloud_parser.add_argument(
-  "args",
-  default=["--asset", "all", "--season", "2021"],
-  nargs="*"
+  "args"
 )
 cloud_parser.set_defaults(func=acquire_on_cloud)
 

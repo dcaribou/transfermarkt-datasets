@@ -18,8 +18,13 @@ acquire_docker :
 			dcaribou/transfermarkt-datasets:dev \
 				python 1_acquire.py local $(ARGS)
 acquire_cloud : JOB_DEFINITION_NAME = transfermarkt-datasets-batch-job-definition-dev
+acquire_cloud : ARGS = --asset all --season 2021
 acquire_cloud :
-	python 1_acquire.py cloud --branch $(BRANCH) --job-name $(JOB_NAME) --job-definition $(JOB_DEFINITION_NAME)
+	python 1_acquire.py cloud \
+		--branch $(BRANCH) \
+		--job-name $(JOB_NAME) \
+		--job-definition $(JOB_DEFINITION_NAME) \
+		"$(ARGS)"
 
 prepare_local :
 	python 2_prepare.py local $(ARGS)
