@@ -2,17 +2,15 @@ import pandas
 from frictionless.schema import Schema
 from frictionless.field import Field
 from typing import List
-from dynaconf import settings
 
 from .base import BaseProcessor
-
 class AppearancesProcessor(BaseProcessor):
 
   name = 'appearances'
   description = "Appearances for `players`. One row per appearance."
 
-  def __init__(self, raw_files_path, seasons, name, prep_file_path) -> None:
-    super().__init__(raw_files_path, seasons, name, prep_file_path)
+  def __init__(self, *args, **kwargs) -> None:
+    super().__init__(*args, **kwargs)
     
     self.schema = Schema()
 
@@ -56,17 +54,17 @@ class AppearancesProcessor(BaseProcessor):
 
     self.set_checkpoint('json_normalized', json_normalized)
 
-    applicable_competitions = settings.GLOBALS['competition_codes']
+    applicable_competitions = self.settings['competition_codes']
 
     json_normalized = json_normalized[json_normalized['competition_code'].isin(applicable_competitions)]
 
     self.set_checkpoint('json_normalized_filtered', json_normalized)
   
-    prep_df['player_id'] = json_normalized['parent.href'].str.split('/', 5, True)[4] # .astype('int32')
+    prep_df['player_id'] = json_normalized['parent.href'].str.split('/', 5, True)[4]
     prep_df['game_id'] = json_normalized['result.href'].str.split('/', 5, True)[4]
     prep_df['appearance_id'] = prep_df['game_id'] + '_' + prep_df['player_id']
     prep_df['competition_id'] = json_normalized['competition_code']
-    prep_df['player_club_id'] = json_normalized['for.href'].str.split('/', 5, True)[4] # .astype('int32')
+    prep_df['player_club_id'] = json_normalized['for.href'].str.split('/', 5, True)[4]
     prep_df['goals'] = json_normalized['goals'].apply(cast_metric)
     prep_df['assists'] = json_normalized['assists'].apply(cast_metric)
     prep_df['minutes_played'] = json_normalized['minutes_played'].apply(cast_minutes_played)

@@ -3,12 +3,14 @@ from frictionless.resource import Resource
 from numpy.lib.function_base import select
 import pandas
 from datetime import datetime, timedelta
+import logging
+import sys
 
 class BaseProcessor:
   name = None
   description = None
 
-  def __init__(self, raw_files_path, seasons, name, prep_file_path) -> None:
+  def __init__(self, raw_files_path, seasons, name, prep_file_path, raw_files_name: str = None, settings: dict = None) -> None:
 
       self.raw_files_path = raw_files_path
       self.seasons = seasons
@@ -19,8 +21,24 @@ class BaseProcessor:
       self.validations = None
       self.validation_report = None
       self.errors_tolerance = 0
+
+      if not raw_files_name:
+        self.raw_files_name = name + ".json"
+      else:
+        self.raw_files_name = raw_files_name
       
       self.checkpoints = {}
+      self.settings = settings
+
+      self.log = logging.getLogger(__name__)
+
+      # TODO: setup propper loggin management
+      # handler = logging.StreamHandler(sys.stdout)
+      # handler.setLevel(logging.DEBUG)
+      # formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+      # handler.setFormatter(formatter)
+      # self.log.addHandler(handler)
+      self.log.setLevel(logging.DEBUG)
 
   def load_partitions(self):
     if self.name == 'competitions':
@@ -33,8 +51,12 @@ class BaseProcessor:
         self.raw_dfs.append(df)
     else:
       for season in self.seasons:
+
+        season_file = f"{self.raw_files_path}/{season}/{self.raw_files_name}"
+
+        self.log.debug("Reading raw JSON data from %s", season_file)
         df = pandas.read_json(
-          f"{self.raw_files_path}/{season}/{self.name}.json",
+          season_file,
           lines=True,
           convert_dates=True,
           orient={'index', 'date'}
@@ -53,6 +75,9 @@ class BaseProcessor:
     pass
 
   def process(self):
+
+    self.log.info("Processing asset %s", self.name)
+
     self.prep_dfs = [
       self.process_segment(prep_df, season)
       for prep_df, season in zip(self.raw_dfs, self.seasons)

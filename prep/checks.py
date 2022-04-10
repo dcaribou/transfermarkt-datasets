@@ -1,5 +1,6 @@
 from frictionless import errors
-from dynaconf import settings
+
+from asset_runner import read_config
 
 def no_html_encodes_in_names(row):
     value = row['name']
@@ -8,7 +9,7 @@ def no_html_encodes_in_names(row):
         yield errors.CellError.from_row(row, note=note, field_name='name')
 
 def competition_code_in_range(row):
-  COMPETITION_CODES = settings.GLOBALS['competition_codes']
+  COMPETITION_CODES = read_config()["settings"]["competition_codes"]
 
   value = row['competition_code']
   if value is not None and value not in COMPETITION_CODES:

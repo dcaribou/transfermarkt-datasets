@@ -8,14 +8,15 @@ import numpy
 import re
 
 from .base import BaseProcessor
+from .utils import parse_market_value
 
 class PlayersProcessor(BaseProcessor):
 
   name = 'players'
   description = "Players in `clubs`. One row per player."
 
-  def __init__(self, raw_files_path, seasons, name, prep_file_path) -> None:
-    super().__init__(raw_files_path, seasons, name, prep_file_path)
+  def __init__(self, *args, **kwargs) -> None:
+    super().__init__(*args, **kwargs)
 
     self.schema = Schema()
 
@@ -108,32 +109,6 @@ class PlayersProcessor(BaseProcessor):
         .astype(dtype=float) * 100
       ).fillna(0).astype(int)
     )
-
-    def parse_market_value(market_value):
-      """Parse a "market value" string into an integer number representing a GBP (british pounds) amount,
-      such as "£240Th." or "£34.3m".
-
-      :market_value: "Market value" string
-      :return: An integer number representing a GBP amount
-      """
-
-      if market_value is not None:
-        match = re.search('£([0-9\.]+)(Th|m)', market_value)
-        if match:
-          factor = match.group(2)
-          if factor == 'Th':
-            numeric_factor = 1000
-          elif factor == 'm':
-            numeric_factor = 1000000
-          else:
-            return None
-          
-          value = match.group(1)
-          return int(float(value)*numeric_factor)
-        else:
-          return None
-      else:
-        return None
 
     prep_df['market_value_in_gbp'] = (
       json_normalized['current_market_value'].apply(parse_market_value)

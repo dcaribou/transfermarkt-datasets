@@ -1,7 +1,9 @@
+from typing import List
 from frictionless.package import Package
 import json
 
 import importlib
+import yaml
 
 from prep.assets.base import BaseProcessor
 
@@ -20,16 +22,14 @@ def get_seasons(data_folder_path):
   seasons.sort()
   return seasons
 
-def get_assets(data_folder_path):
-  path = pathlib.Path(data_folder_path)
-  asset_keys = {}
-  for asset_path in path.glob('**/*.json'):
-    asset_name = (str(asset_path).split('/')[-1]).split('.')[0]
-    asset_keys[asset_name] = 'found'
+def read_config():
+  with open("prep/config.yml") as config_file:
+    config = yaml.load(config_file, yaml.Loader)
+    return config
 
-  return list(asset_keys.keys()) + ['competitions']
 class AssetRunner:
   def __init__(self, data_folder_path='data/raw', season=None) -> None:
+
       self.data_folder_path = f"{data_folder_path}"
       self.prep_folder_path = 'prep/stage'
       self.datapackage_descriptor_path = f"{self.prep_folder_path}/dataset-metadata.json"
@@ -41,23 +41,33 @@ class AssetRunner:
         seasons = get_seasons(self.data_folder_path)
       else:
         seasons = [season]
-      assets = get_assets(self.data_folder_path)
-      for asset in assets:
-          class_name = asset.capitalize()
+      
+      # TODO: scrape history for players and remove this
+      seasons = [2021]
+
+      config = read_config()
+      settings = config["settings"]
+
+      for asset in config["assets"]:
+          asset_name = asset["name"]
+          class_name = asset["class"]
+          source_name = asset.get("source")
           try:
-            module = importlib.import_module(f'prep.assets.{asset}')
-            class_ = getattr(module, class_name + 'Processor')
+            module = importlib.import_module(f'prep.assets.{asset_name}')
+            class_ = getattr(module, class_name)
             instance = class_(
               self.data_folder_path,
               seasons,
-              asset,
-              self.prep_folder_path + '/' + asset + '.csv'
+              asset_name,
+              self.prep_folder_path + '/' + asset_name + '.csv',
+              source_name,
+              settings
             )
             self.assets.append(
-              {'name': asset, 'processor': instance, 'seasons': seasons}
+              {'name': asset_name, 'processor': instance, 'seasons': seasons}
             )
           except ModuleNotFoundError:
-            logging.warning(f"Found raw asset '{asset}' without asset processor")
+            logging.warning(f"Found raw asset '{asset_name}' without asset processor")
 
   def load_assets(self):
     logging.info(
@@ -95,7 +105,6 @@ class AssetRunner:
       self.process_asset(asset['name'], asset['processor'])
 
   def process_asset(self, asset_name: str, asset_processor: BaseProcessor):
-    logging.info(f"---- Processing {asset_name}")
     asset_processor.process()
     logging.info(
       asset_processor.output_summary()

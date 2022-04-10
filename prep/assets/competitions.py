@@ -10,8 +10,8 @@ class CompetitionsProcessor(BaseProcessor):
   name = "competitions"
   description = "Competitions in Europe confederation. One row per league."
 
-  def __init__(self, raw_files_path, seasons, name, prep_file_path) -> None:
-    super().__init__(raw_files_path, seasons, name, prep_file_path)
+  def __init__(self, *args, **kwargs) -> None:
+    super().__init__(*args, **kwargs)
 
     self.schema = Schema()
 

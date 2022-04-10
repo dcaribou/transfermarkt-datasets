@@ -12,42 +12,42 @@ class GamesProcessor(BaseProcessor):
   name = 'games'
   description = "Games in `competitions`. One row per game."
 
-  def __init__(self, raw_files_path, seasons, name, prep_file_path) -> None:
-      super().__init__(raw_files_path, seasons, name, prep_file_path)
+  def __init__(self, *args, **kwargs) -> None:
+    super().__init__(*args, **kwargs)
 
-      self.schema = Schema()
+    self.schema = Schema()
 
-      self.schema.add_field(Field(name='game_id', type='integer'))
-      self.schema.add_field(Field(name='competition_code', type='string'))
-      self.schema.add_field(Field(name='season', type='integer'))
-      self.schema.add_field(Field(name='round', type='string'))
-      self.schema.add_field(Field(name='date', type='date'))
-      self.schema.add_field(Field(name='home_club_id', type='integer'))
-      self.schema.add_field(Field(name='away_club_id', type='integer'))
-      self.schema.add_field(Field(name='home_club_goals', type='integer'))
-      self.schema.add_field(Field(name='away_club_goals', type='integer'))
-      self.schema.add_field(Field(name='home_club_position', type='integer'))
-      self.schema.add_field(Field(name='away_club_position', type='integer'))
-      self.schema.add_field(Field(name='stadium', type='string'))
-      self.schema.add_field(Field(name='attendance', type='integer'))
-      self.schema.add_field(Field(name='referee', type='string'))
-      self.schema.add_field(Field(
-          name='url',
-          type='string',
-          format='uri'
-        )
+    self.schema.add_field(Field(name='game_id', type='integer'))
+    self.schema.add_field(Field(name='competition_code', type='string'))
+    self.schema.add_field(Field(name='season', type='integer'))
+    self.schema.add_field(Field(name='round', type='string'))
+    self.schema.add_field(Field(name='date', type='date'))
+    self.schema.add_field(Field(name='home_club_id', type='integer'))
+    self.schema.add_field(Field(name='away_club_id', type='integer'))
+    self.schema.add_field(Field(name='home_club_goals', type='integer'))
+    self.schema.add_field(Field(name='away_club_goals', type='integer'))
+    self.schema.add_field(Field(name='home_club_position', type='integer'))
+    self.schema.add_field(Field(name='away_club_position', type='integer'))
+    self.schema.add_field(Field(name='stadium', type='string'))
+    self.schema.add_field(Field(name='attendance', type='integer'))
+    self.schema.add_field(Field(name='referee', type='string'))
+    self.schema.add_field(Field(
+        name='url',
+        type='string',
+        format='uri'
       )
+    )
 
-      self.schema.primary_key = ['game_id']
-      
-      # with the inclusion of games from cups, supercups and non national competitions
-      # it is not realistic to expect all referential integrity on club IDs, since that
-      # would require that clubs up to the 4th or 5th tier are included in the dataset
+    self.schema.primary_key = ['game_id']
+    
+    # with the inclusion of games from cups, supercups and non national competitions
+    # it is not realistic to expect all referential integrity on club IDs, since that
+    # would require that clubs up to the 4th or 5th tier are included in the dataset
 
-      # self.schema.foreign_keys = [
-      #   {"fields": "home_club_id", "reference": {"resource": "clubs", "fields": "club_id"}},
-      #   {"fields": "away_club_id", "reference": {"resource": "clubs", "fields": "club_id"}}
-      # ]
+    # self.schema.foreign_keys = [
+    #   {"fields": "home_club_id", "reference": {"resource": "clubs", "fields": "club_id"}},
+    #   {"fields": "away_club_id", "reference": {"resource": "clubs", "fields": "club_id"}}
+    # ]
 
   def process_segment(self, segment, season):
 
