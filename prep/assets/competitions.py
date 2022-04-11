@@ -10,8 +10,8 @@ class CompetitionsProcessor(BaseProcessor):
   name = "competitions"
   description = "Competitions in Europe confederation. One row per league."
 
-  def __init__(self, raw_files_path, seasons, name, prep_file_path) -> None:
-    super().__init__(raw_files_path, seasons, name, prep_file_path)
+  def __init__(self, *args, **kwargs) -> None:
+    super().__init__(*args, **kwargs)
 
     self.schema = Schema()
 
@@ -37,8 +37,6 @@ class CompetitionsProcessor(BaseProcessor):
 
     json_normalized = pandas.json_normalize(segment.to_dict(orient='records'))
 
-    self.set_checkpoint('json_normalized', json_normalized)
-
     league_href_parts = json_normalized['href'].str.split('/', 5, True)
     confederation_href_parts = json_normalized['parent.href'].str.split('/', 5, True)
 
@@ -53,6 +51,3 @@ class CompetitionsProcessor(BaseProcessor):
     prep_df['url'] = 'https://www.transfermarkt.co.uk' + json_normalized['href']
 
     return prep_df
-
-  def get_validations(self):
-    return []

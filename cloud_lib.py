@@ -9,7 +9,7 @@ def submit_batch_job_and_wait(
     branch: str,
     message: str,
     script: str,
-    args: List[str],
+    args: str,
     vcpus: float,
     memory: int
 ):
@@ -34,7 +34,7 @@ def submit_batch_job_and_wait(
     jobQueue=job_queue,
     jobDefinition=f"{job_definition}:{revision}",
     containerOverrides={
-        'command': [ branch, message, script, "local" ] + args,
+        'command': [ branch, message, script, "local" ] + args.split(" "),
         'resourceRequirements': [
             {'value': str(vcpus), 'type': 'VCPU'},
             {'value': str(memory), 'type': 'MEMORY'}

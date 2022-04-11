@@ -1,35 +1,24 @@
+from typing import List
 from frictionless.package import Package
 import json
 
 import importlib
+import yaml
 
 from prep.assets.base import BaseProcessor
 
 import logging
-logging.basicConfig(format='%(message)s', level=logging.INFO)
 
 import pathlib
 
-def get_seasons(data_folder_path):
-  path = pathlib.Path(data_folder_path)
-  seasons = [
-    int(str(season_path).split('/')[-1])
-    for season_path in path.glob('*') if season_path.is_dir()
-  ]
-  
-  seasons.sort()
-  return seasons
+def read_config():
+  with open("prep/config.yml") as config_file:
+    config = yaml.load(config_file, yaml.Loader)
+    return config
 
-def get_assets(data_folder_path):
-  path = pathlib.Path(data_folder_path)
-  asset_keys = {}
-  for asset_path in path.glob('**/*.json'):
-    asset_name = (str(asset_path).split('/')[-1]).split('.')[0]
-    asset_keys[asset_name] = 'found'
-
-  return list(asset_keys.keys()) + ['competitions']
 class AssetRunner:
   def __init__(self, data_folder_path='data/raw', season=None) -> None:
+
       self.data_folder_path = f"{data_folder_path}"
       self.prep_folder_path = 'prep/stage'
       self.datapackage_descriptor_path = f"{self.prep_folder_path}/dataset-metadata.json"
@@ -37,34 +26,37 @@ class AssetRunner:
       self.datapackage = None
       self.validation_report = None
 
+      config = read_config()
+      settings = config["settings"]
+
+      logging.config.dictConfig(settings["logging"])
+      self.log = logging.getLogger("main")
+
       if season is None:
-        seasons = get_seasons(self.data_folder_path)
+        seasons = settings["seasons"]
       else:
         seasons = [season]
-      assets = get_assets(self.data_folder_path)
-      for asset in assets:
-          class_name = asset.capitalize()
+    
+      for asset in config["assets"]:
+          asset_name = asset["name"]
+          class_name = asset["class"]
+          source_name = asset.get("source")
           try:
-            module = importlib.import_module(f'prep.assets.{asset}')
-            class_ = getattr(module, class_name + 'Processor')
+            module = importlib.import_module(f'prep.assets.{asset_name}')
+            class_ = getattr(module, class_name)
             instance = class_(
               self.data_folder_path,
               seasons,
-              asset,
-              self.prep_folder_path + '/' + asset + '.csv'
+              asset_name,
+              self.prep_folder_path + '/' + asset_name + '.csv',
+              source_name,
+              settings
             )
             self.assets.append(
-              {'name': asset, 'processor': instance, 'seasons': seasons}
+              {'name': asset_name, 'processor': instance, 'seasons': seasons}
             )
           except ModuleNotFoundError:
-            logging.warning(f"Found raw asset '{asset}' without asset processor")
-
-  def load_assets(self):
-    logging.info(
-      f"--- Loading {len(self.assets)} assets ---"
-    )
-    for asset in self.assets:
-      asset['processor'].load_partitions()
+            logging.warning(f"Found raw asset '{asset_name}' without asset processor")
 
   def prettify_asset_processors(self):
     from tabulate import tabulate # https://github.com/astanin/python-tabulate
@@ -75,18 +67,13 @@ class AssetRunner:
     return tabulate(table, headers=['Name', 'Path', 'Seasons'])
 
   def process_assets(self):
-    logging.info(
-      self.prettify_asset_processors()
-    )
-    logging.info("")
-
-    self.load_assets()
+    self.log.info("Start processing assets\n%s", self.prettify_asset_processors())
 
     # setup stage location
     stage_path = pathlib.Path(self.prep_folder_path)
     if stage_path.exists():
       if not stage_path.is_dir():
-        logging.error(f"Configured 'stage' location {stage_path.name} is not a directory")
+        self.log.error(f"Configured 'stage' location {stage_path.name} is not a directory")
         raise Exception("Invalid staging location")
     else:
       stage_path.mkdir()
@@ -95,11 +82,7 @@ class AssetRunner:
       self.process_asset(asset['name'], asset['processor'])
 
   def process_asset(self, asset_name: str, asset_processor: BaseProcessor):
-    logging.info(f"---- Processing {asset_name}")
     asset_processor.process()
-    logging.info(
-      asset_processor.output_summary()
-    )
     asset_processor.export()
 
   def get_asset_processor(self, name: str):
@@ -144,10 +127,10 @@ class AssetRunner:
 
     package = self.datapackage or Package(self.datapackage_descriptor_path)
 
-    logging.info("-- Datapackage resource validation")
+    self.log.info("Datapackage resource validation")
     for resource in package.resources:
-      logging.info(f"--- Validating {resource.name}")
-      validation_report = validate(resource)
+      self.log.info(f"Validating {resource.name}")
+      validation_report = validate(resource, limit_memory=20000)
       self.get_asset_processor(resource.name).validation_report = validation_report
       with open(f"prep/datapackage_resource_{resource.name}_validation.json", 'w+') as file:
         file.write(
@@ -159,8 +142,8 @@ class AssetRunner:
   def is_valid(self):
     for asset in self.assets:
       if not asset['processor'].is_valid():
-        logging.error(f"{asset['name']} did not pass validations!")
+        self.log.error(f"{asset['name']} did not pass validations!")
         return False
-      else:
-        logging.info("All validations have passed!")
-        return True
+
+    self.log.info("All validations have passed!")
+    return True

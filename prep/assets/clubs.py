@@ -12,8 +12,8 @@ class ClubsProcessor(BaseProcessor):
   name = 'clubs'
   description = "Clubs in `competitions`. One row per club."
 
-  def __init__(self, raw_files_path, seasons, name, prep_file_path) -> None:
-    super().__init__(raw_files_path, seasons, name, prep_file_path)
+  def __init__(self, *args, **kwargs) -> None:
+    super().__init__(*args, **kwargs)
 
     self.schema = Schema()
 
@@ -48,13 +48,11 @@ class ClubsProcessor(BaseProcessor):
       {"fields": "domestic_competition_id", "reference": {"resource": "competitions", "fields": "competition_id"}}
     ]
 
-  def process_segment(self, segment):
+  def process_segment(self, segment, season):
     
     prep_df = pandas.DataFrame()
 
     json_normalized = pandas.json_normalize(segment.to_dict(orient='records'))
-
-    self.set_checkpoint('json_normalized', json_normalized)
 
     club_href_parts = json_normalized['href'].str.split('/', 5, True)
     league_href_parts = json_normalized['parent.href'].str.split('/', 5, True)
@@ -88,12 +86,4 @@ class ClubsProcessor(BaseProcessor):
 
     prep_df['url'] = 'https://www.transfermarkt.co.uk' + json_normalized['href']
 
-    self.set_checkpoint('prep', prep_df)
     return prep_df
-
-  def process(self):
-    self.prep_dfs = [self.process_segment(prep_df) for prep_df in self.raw_dfs]
-    self.prep_df = pandas.concat(self.prep_dfs, axis=0).drop_duplicates(subset='club_id', keep='last')
-
-  def get_validations(self):
-    return []
