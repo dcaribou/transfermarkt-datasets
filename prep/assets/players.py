@@ -80,16 +80,19 @@ class PlayersProcessor(BaseProcessor):
     prep_df['position'] = numpy.select(
       [
           sub_position.str.contains(
-            "|".join(['Centre-Forward', 'Left Winger', 'Right Winger', 'Second Striker'])
+            "|".join(['Centre-Forward', 'Left Winger', 'Right Winger', 'Second Striker', 'Attack']),
+            case=False
           ), 
           sub_position.str.contains(
-            "|".join(['Centre-Back', 'Left-Back', 'Right-Back'])
+            "|".join(['Centre-Back', 'Left-Back', 'Right-Back', 'Defender']),
+            case=False
           ),
           sub_position.str.contains(
             "|".join(['Attacking Midfield', 'Central Midfield', 'Defensive Midfield',
-            'Left Midfield', 'Right Midfield'])
+            'Left Midfield', 'Right Midfield', 'Midfield']),
+            case=False
           ),
-          sub_position.str.contains("Goalkeeper")
+          sub_position.str.contains("Goalkeeper", case=False)
       ], 
       [
           'Attack', 
