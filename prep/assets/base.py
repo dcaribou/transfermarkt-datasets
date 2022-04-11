@@ -26,6 +26,7 @@ class BaseProcessor:
         self.raw_files_name = raw_files_name
       
       self.settings = settings
+      self.checks = []
 
       logging.config.dictConfig(settings["logging"])
       self.log = logging.getLogger("main")
