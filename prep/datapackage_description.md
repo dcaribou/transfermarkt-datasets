@@ -1,6 +1,6 @@
 ### TL;DR
 > Clean, structured and **automatically updated** football data from [Transfermarkt](https://www.transfermarkt.co.uk/), including
-> * `40,000+` games from many seasons on all major competitions
+> * `55,000+` games from many seasons on all major competitions
 > * `350+` clubs from those competitions
 > * `20,000+` players from those clubs
 > * `300,000+` player market valuations historical records
