@@ -14,8 +14,7 @@ assets:
   - name: competitions
     class: CompetitionsProcessor
 settings:
-  # seasons: [2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021]
-  seasons: [2019, 2020, 2021]
+  seasons: [2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021]
   competition_codes: [
       'ES1', 'GB1', 'L1', 'IT1', 'FR1', 'GR1', 'PO1', 
       'BE1', 'UKR1', 'BE1', 'RU1', 'DK1', 'SC1', 'TR1',
@@ -27,7 +26,7 @@ settings:
   logging:
     version: 1
     loggers:
-      asset:
+      main:
         handlers: [console]
         level: DEBUG
     handlers:

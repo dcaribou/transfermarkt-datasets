@@ -29,7 +29,7 @@ class BaseProcessor:
       self.settings = settings
 
       logging.config.dictConfig(settings["logging"])
-      self.log = logging.getLogger("asset")
+      self.log = logging.getLogger("main")
 
   def load_partitions(self):
     if self.name == 'competitions':
@@ -45,7 +45,7 @@ class BaseProcessor:
 
         season_file = f"{self.raw_files_path}/{season}/{self.raw_files_name}"
 
-        self.log.debug("Reading raw JSON data from %s", season_file)
+        self.log.debug("Reading raw data from %s", season_file)
         df = pandas.read_json(
           season_file,
           lines=True,
@@ -125,7 +125,7 @@ class BaseProcessor:
   def is_valid(self):
     self.log.debug("Checking validation results for %s", self.name)
     results = self.validation_report['stats']['errors']
-    self.log.debug("Failed validatiions are %i, tolerance is %i", results, self.errors_tolerance)
+    self.log.debug("Failed validations are %i, tolerance is %i", results, self.errors_tolerance)
     if results > self.errors_tolerance:
       return False
     else:

@@ -74,7 +74,6 @@ class AssetRunner:
     self.log.info(
       self.prettify_asset_processors()
     )
-    self.log.info("")
 
     self.load_assets()
 
