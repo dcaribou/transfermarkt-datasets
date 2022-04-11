@@ -130,7 +130,7 @@ class AssetRunner:
     self.log.info("Datapackage resource validation")
     for resource in package.resources:
       self.log.info(f"Validating {resource.name}")
-      validation_report = validate(resource, limit_memory=10000)
+      validation_report = validate(resource, limit_memory=20000)
       self.get_asset_processor(resource.name).validation_report = validation_report
       with open(f"prep/datapackage_resource_{resource.name}_validation.json", 'w+') as file:
         file.write(
