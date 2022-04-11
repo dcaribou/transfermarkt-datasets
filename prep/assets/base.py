@@ -128,6 +128,7 @@ class BaseProcessor:
     results = self.validation_report['stats']['errors']
     self.log.debug("Failed validations are %i, tolerance is %i", results, self.errors_tolerance)
     if results > self.errors_tolerance:
+      self.log.error("Invalid asset\n%s", self.validation_report['tasks'][0]['errors'][0])
       return False
     else:
       return True

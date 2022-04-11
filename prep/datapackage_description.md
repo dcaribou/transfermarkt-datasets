@@ -1,9 +1,10 @@
 ### TL;DR
 > Clean, structured and **automatically updated** football data from [Transfermarkt](https://www.transfermarkt.co.uk/), including
 > * `40,000+` games from many seasons on all major competitions
-> * `300+` clubs from those competitions
+> * `350+` clubs from those competitions
 > * `20,000+` players from those clubs
-> * `900,000+` player appearance records from all games
+> * `300,000+` player market valuations historical records
+> * `1,000,000+` player appearance records from all games
 
 ### Why did we build it?
 Though football (soccer) datasets for match aggregates are widely available, those datasets are usually not regularly updated or maintained. Moreover, structured, publicly available datasets at **player appearance level** for those matches, such as that contained in [player detailed performance page in Transfermarkt](https://www.transfermarkt.co.uk/sergio-aguero/leistungsdaten/spieler/26399), are difficult to find. This dataset aims to present **up-to-date** football data down to the level of individual player appearances in an accessible, standard format.
