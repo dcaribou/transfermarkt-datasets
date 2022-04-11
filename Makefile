@@ -37,7 +37,11 @@ prepare_docker :
 				python 2_prepare.py local $(ARGS)
 prepare_cloud : ARGS = --raw-files-location data/raw
 prepare_cloud : 
-	python 2_prepare.py cloud --branch $(BRANCH) --job-name $(JOB_NAME) --job-definition $(JOB_DEFINITION_NAME)
+	python 2_prepare.py cloud \
+		--branch $(BRANCH) \
+		--job-name $(JOB_NAME) \
+		--job-definition $(JOB_DEFINITION_NAME) \
+		"$(ARGS)"
 
 sync: MESSAGE = Manual sync
 sync:
