@@ -30,7 +30,7 @@ class AssetRunner:
       settings = config["settings"]
 
       logging.config.dictConfig(settings["logging"])
-      self.log = logging.getLogger("asset")
+      self.log = logging.getLogger("main")
 
       if season is None:
         seasons = settings["seasons"]
@@ -67,9 +67,7 @@ class AssetRunner:
     return tabulate(table, headers=['Name', 'Path', 'Seasons'])
 
   def process_assets(self):
-    self.log.info(
-      self.prettify_asset_processors()
-    )
+    self.log.info("Start processing assets\n%s", self.prettify_asset_processors())
 
     # setup stage location
     stage_path = pathlib.Path(self.prep_folder_path)
@@ -85,9 +83,6 @@ class AssetRunner:
 
   def process_asset(self, asset_name: str, asset_processor: BaseProcessor):
     asset_processor.process()
-    self.log.info(
-      asset_processor.output_summary()
-    )
     asset_processor.export()
 
   def get_asset_processor(self, name: str):

@@ -66,7 +66,7 @@ class BaseProcessor:
 
   def process(self):
 
-    self.log.info("Processing asset %s", self.name)
+    self.log.info("Stared processing asset %s", self.name)
 
     self.load_partitions()
 
@@ -76,10 +76,15 @@ class BaseProcessor:
     ]
     concatenated = pandas.concat(self.prep_dfs, axis=0)
 
+    del self.prep_dfs
+    del self.raw_dfs
+
     if self.schema.primary_key:
       self.prep_df = concatenated.drop_duplicates(subset=self.schema.primary_key, keep='last')
     else:
       self.prep_df = concatenated.drop_duplicates(keep='last')
+
+    self.log.info("Finished processing asset %s\n%s", self.name, self.output_summary())
   
   def url_unquote(self, url_series):
     from urllib.parse import unquote

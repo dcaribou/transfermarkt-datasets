@@ -46,16 +46,3 @@ class PlayerValuationsProcessor(BaseProcessor):
     )
 
     return prep_df
-
-  def process(self):
-    
-    super().process()
-
-    self.prep_dfs = [
-      self.process_segment(prep_df, season)
-      for prep_df, season in zip(self.raw_dfs, self.seasons)
-    ]
-    self.prep_df = pandas.concat(self.prep_dfs, axis=0).drop_duplicates(
-      subset=["player_id", "date"],
-      keep="last"
-    )
