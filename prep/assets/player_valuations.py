@@ -1,5 +1,6 @@
 from frictionless.field import Field
 from frictionless.schema import Schema
+from frictionless import checks
 from inflection import titleize
 
 import pandas
@@ -26,6 +27,10 @@ class PlayerValuationsProcessor(BaseProcessor):
       {"fields": "player_id", "reference": {"resource": "players", "fields": "player_id"}}
     ]
 
+    self.checks = [
+      checks.regulation.forbidden_value(field_name="market_value", values=[None])
+    ]
+
   def process_segment(self, segment, season):
     
     prep_df = pandas.DataFrame()
@@ -36,6 +41,8 @@ class PlayerValuationsProcessor(BaseProcessor):
       meta=["href"],
       errors="ignore"
     )
+
+    json_normalized = json_normalized[json_normalized["mw"] != "-"]
 
     href_parts = json_normalized['href'].str.split('/', 5, True)
     

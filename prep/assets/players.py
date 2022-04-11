@@ -1,5 +1,7 @@
 from frictionless.field import Field
 from frictionless.schema import Schema
+from frictionless import checks
+
 from inflection import titleize
 
 import pandas
@@ -46,6 +48,10 @@ class PlayersProcessor(BaseProcessor):
       {"fields": "current_club_id", "reference": {"resource": "clubs", "fields": "club_id"}}
     ]
 
+    self.checks = [
+      checks.regulation.row_constraint(formula="position in 'Attack,Defender,Midfield,Goalkeeper'")
+    ]
+
   def process_segment(self, segment, season):
     
     prep_df = pandas.DataFrame()
@@ -73,17 +79,17 @@ class PlayersProcessor(BaseProcessor):
     sub_position = json_normalized['position']
     prep_df['position'] = numpy.select(
       [
-          sub_position.isin(
-            ['Centre-Forward', 'Left Winger', 'Right Winger', 'Second Striker']
+          sub_position.str.contains(
+            "|".join(['Centre-Forward', 'Left Winger', 'Right Winger', 'Second Striker'])
           ), 
-          sub_position.isin(
-            ['Centre-Back', 'Left-Back', 'Right-Back']
+          sub_position.str.contains(
+            "|".join(['Centre-Back', 'Left-Back', 'Right-Back'])
           ),
-          sub_position.isin(
-            ['Attacking Midfield', 'Central Midfield', 'Defensive Midfield',
-            'Left Midfield', 'Right Midfield']
+          sub_position.str.contains(
+            "|".join(['Attacking Midfield', 'Central Midfield', 'Defensive Midfield',
+            'Left Midfield', 'Right Midfield'])
           ),
-          sub_position == 'Goalkeeper'
+          sub_position.str.contains("Goalkeeper")
       ], 
       [
           'Attack', 
