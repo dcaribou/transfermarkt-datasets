@@ -58,10 +58,6 @@ class AssetRunner:
           except ModuleNotFoundError:
             logging.warning(f"Found raw asset '{asset_name}' without asset processor")
 
-  def load_assets(self):
-    for asset in self.assets:
-      asset['processor'].load_partitions()
-
   def prettify_asset_processors(self):
     from tabulate import tabulate # https://github.com/astanin/python-tabulate
     table = [
@@ -74,8 +70,6 @@ class AssetRunner:
     self.log.info(
       self.prettify_asset_processors()
     )
-
-    self.load_assets()
 
     # setup stage location
     stage_path = pathlib.Path(self.prep_folder_path)

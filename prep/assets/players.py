@@ -52,8 +52,6 @@ class PlayersProcessor(BaseProcessor):
 
     json_normalized = pandas.json_normalize(segment.to_dict(orient='records'))
 
-    self.set_checkpoint('json_normalized', json_normalized)
-
     href_parts = json_normalized['href'].str.split('/', 5, True)
     parent_href_parts = json_normalized['parent.href'].str.split('/', 5, True)
 
@@ -119,10 +117,12 @@ class PlayersProcessor(BaseProcessor):
 
     prep_df['url'] = self.url_prepend(json_normalized['href'])
 
-    self.set_checkpoint('prep', prep_df)
     return prep_df
 
   def process(self):
+    
+    super().process()
+
     self.prep_dfs = [
       self.process_segment(prep_df, season)
       for prep_df, season in zip(self.raw_dfs, self.seasons)

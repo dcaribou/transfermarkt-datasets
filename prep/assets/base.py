@@ -25,7 +25,6 @@ class BaseProcessor:
       else:
         self.raw_files_name = raw_files_name
       
-      self.checkpoints = {}
       self.settings = settings
 
       logging.config.dictConfig(settings["logging"])
@@ -55,7 +54,7 @@ class BaseProcessor:
         if len(df) > 0:
           self.raw_dfs.append(df)
   
-  def process_segment(self, segment):
+  def process_segment(self, segment, season):
     """Process one segment of the asset. A segment is equivalent to one file.
     Segment processors are defined per asset on the corresponding asset processor.
 
@@ -69,11 +68,14 @@ class BaseProcessor:
 
     self.log.info("Processing asset %s", self.name)
 
+    self.load_partitions()
+
     self.prep_dfs = [
       self.process_segment(prep_df, season)
       for prep_df, season in zip(self.raw_dfs, self.seasons)
     ]
     concatenated = pandas.concat(self.prep_dfs, axis=0)
+
     if self.schema.primary_key:
       self.prep_df = concatenated.drop_duplicates(subset=self.schema.primary_key, keep='last')
     else:
@@ -95,12 +97,6 @@ class BaseProcessor:
     summary.insert(0, 'metric', summary.index)
     table = summary.values.tolist()
     return tabulate(table, headers=summary.columns, floatfmt=".2f")
-
-  def set_checkpoint(self, name, df):
-    self.checkpoints[name] = df
-
-  def get_checkpoint(self, name):
-    return self.checkpoints[name]
 
   def export(self):
   

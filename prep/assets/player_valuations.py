@@ -37,8 +37,6 @@ class PlayerValuationsProcessor(BaseProcessor):
       errors="ignore"
     )
 
-    self.set_checkpoint('json_normalized', json_normalized)
-
     href_parts = json_normalized['href'].str.split('/', 5, True)
     
     prep_df['player_id'] = href_parts[4]
@@ -47,10 +45,12 @@ class PlayerValuationsProcessor(BaseProcessor):
       json_normalized["mw"].apply(parse_market_value)
     )
 
-    self.set_checkpoint('prep', prep_df)
     return prep_df
 
   def process(self):
+    
+    super().process()
+
     self.prep_dfs = [
       self.process_segment(prep_df, season)
       for prep_df, season in zip(self.raw_dfs, self.seasons)

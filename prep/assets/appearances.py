@@ -41,13 +41,10 @@ class AppearancesProcessor(BaseProcessor):
 
     json_normalized = pandas.json_normalize(segment.to_dict(orient='records'))
 
-    self.set_checkpoint('json_normalized', json_normalized)
 
     applicable_competitions = self.settings['competition_codes']
 
     json_normalized = json_normalized[json_normalized['competition_code'].isin(applicable_competitions)]
-
-    self.set_checkpoint('json_normalized_filtered', json_normalized)
   
     prep_df['player_id'] = json_normalized['parent.href'].str.split('/', 5, True)[4]
     prep_df['game_id'] = json_normalized['result.href'].str.split('/', 5, True)[4]

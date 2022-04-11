@@ -73,8 +73,6 @@ class GamesProcessor(BaseProcessor):
 
     json_normalized = pandas.json_normalize(segment.to_dict(orient='records'))
 
-    self.set_checkpoint('json_normalized', json_normalized)
-
     # it happens https://www.transfermarkt.co.uk/spielbericht/index/spielbericht/3465097
     json_normalized = json_normalized[json_normalized['result'] != '-:-']
 
@@ -101,6 +99,4 @@ class GamesProcessor(BaseProcessor):
     prep_df['referee'] = json_normalized['referee']
     prep_df['url'] = 'https://www.transfermarkt.co.uk' + json_normalized['href']
 
-
-    self.set_checkpoint('prep', prep_df)
     return prep_df

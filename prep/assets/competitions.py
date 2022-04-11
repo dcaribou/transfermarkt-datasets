@@ -37,8 +37,6 @@ class CompetitionsProcessor(BaseProcessor):
 
     json_normalized = pandas.json_normalize(segment.to_dict(orient='records'))
 
-    self.set_checkpoint('json_normalized', json_normalized)
-
     league_href_parts = json_normalized['href'].str.split('/', 5, True)
     confederation_href_parts = json_normalized['parent.href'].str.split('/', 5, True)
 
