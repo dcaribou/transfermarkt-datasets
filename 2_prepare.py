@@ -57,7 +57,7 @@ def prepare_on_cloud(
     script="2_prepare.py",
     args=args,
     vcpus=4,
-    memory=20480
+    memory=30720
   )
 
 # main
