@@ -5,9 +5,9 @@ from datetime import datetime
 
 import pandas
 
-from .base import BaseProcessor
+from transfermarkt_datasets.assets.asset import Asset
 
-class GamesProcessor(BaseProcessor):
+class GamesProcessor(Asset):
 
   name = 'games'
   description = "Games in `competitions`. One row per game."
@@ -49,7 +49,7 @@ class GamesProcessor(BaseProcessor):
     #   {"fields": "away_club_id", "reference": {"resource": "clubs", "fields": "club_id"}}
     # ]
 
-  def process_segment(self, segment, season):
+  def build(self):
 
     def parse_aggregate(series: pandas.Series) -> pandas.DataFrame:
       parsed = series.str.split(":", expand=True)
@@ -69,9 +69,10 @@ class GamesProcessor(BaseProcessor):
 
       return series.apply(infer_season)
     
+    raw_df = self.get_stacked_data()
     prep_df = pandas.DataFrame()
 
-    json_normalized = pandas.json_normalize(segment.to_dict(orient='records'))
+    json_normalized = pandas.json_normalize(raw_df.to_dict(orient='records'))
 
     # it happens https://www.transfermarkt.co.uk/spielbericht/index/spielbericht/3465097
     json_normalized = json_normalized[json_normalized['result'] != '-:-']
@@ -98,5 +99,9 @@ class GamesProcessor(BaseProcessor):
     )
     prep_df['referee'] = json_normalized['referee']
     prep_df['url'] = 'https://www.transfermarkt.co.uk' + json_normalized['href']
+    
+    self.prep_df = prep_df
+
+    self.drop_duplicates()
 
     return prep_df

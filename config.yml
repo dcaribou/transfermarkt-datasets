@@ -1,19 +1,20 @@
 assets:
-  - name: players
+  players:
     class: PlayersProcessor
     source: players.json # this is redundat, since the source is inferred from the runner name if not set
-  - name: player_valuations
+  player_valuations:
     class: PlayerValuationsProcessor
-    source: players.json
-  - name: games
+    source_files_name: players.json
+  games:
     class: GamesProcessor
-  - name: clubs
+  clubs:
     class: ClubsProcessor
-  - name: appearances
+  appearances:
     class: AppearancesProcessor
-  - name: competitions
+  competitions:
     class: CompetitionsProcessor
 settings:
+  source_path: data/raw
   seasons: [2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021]
   competition_codes: [
       'ES1', 'GB1', 'L1', 'IT1', 'FR1', 'GR1', 'PO1', 
@@ -28,11 +29,11 @@ settings:
     loggers:
       main:
         handlers: [console]
-        level: DEBUG
+        level: INFO
     handlers:
       console:
         class: logging.StreamHandler
-        level: DEBUG
+        level: INFO
         stream: ext://sys.stdout
         formatter: main
     formatters:

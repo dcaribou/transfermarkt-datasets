@@ -13,33 +13,33 @@ optional arguments:
 
 """
 import os
-from prep.asset_runner import AssetRunner
+from transfermarkt_datasets.transfermarkt_datasets import TransfermarktDatasets, read_config
 import argparse
 
 from cloud_lib import submit_batch_job_and_wait
 
-def fail_if_invalid(asset_runner):
-  if not asset_runner.validate_resources():
+def fail_if_invalid(td):
+  if not td.valdate_datapackage():
     raise Exception("Validations failed")
   else:
     print("All good \N{winking face}")
 
 
-def prepare_on_local(raw_files_location, refresh_metadata, run_validations, season, func):
+def prepare_on_local(raw_files_location, refresh_metadata, run_validations, seasons, func):
 
-  runner = AssetRunner(raw_files_location, season)
+  td = TransfermarktDatasets(raw_files_location, seasons)
 
   if refresh_metadata:
     # generate frictionless data package for prepared assets
-    runner.generate_datapackage('data/prep')
+    td.generate_datapackage('data/prep')
   elif run_validations:
     # run data package validations
-    fail_if_invalid(runner)
+    fail_if_invalid(td)
   else:
     # generate prepared data assets in 'stage' folder
-    runner.process_assets()
-    runner.generate_datapackage()
-    fail_if_invalid(runner)
+    td.build_assets()
+    td.generate_datapackage()
+    fail_if_invalid(td)
     os.system("cp prep/stage/* data/prep")
 
 
@@ -70,7 +70,7 @@ local_parser = subparsers.add_parser('local', help='Run the acquiring step local
 local_parser.add_argument('--raw-files-location', required=False, default='data/raw')
 local_parser.add_argument('--refresh-metadata', action='store_const', const=True, required=False, default=False)
 local_parser.add_argument('--run-validations', action='store_const', const=True, required=False, default=False)
-local_parser.add_argument('--season', required=False)
+local_parser.add_argument('--seasons', nargs='+', help='Seasons to be built', required=False, default=read_config()["settings"]["seasons"])
 local_parser.set_defaults(func=prepare_on_local)
 
 cloud_parser = subparsers.add_parser('cloud', help='Run the acquiring step in the cloud')

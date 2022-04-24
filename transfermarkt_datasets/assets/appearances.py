@@ -3,10 +3,10 @@ from frictionless.schema import Schema
 from frictionless.field import Field
 from typing import List
 
-from .base import BaseProcessor
+from transfermarkt_datasets.assets.asset import Asset
 from .utils import cast_metric, cast_minutes_played
 
-class AppearancesProcessor(BaseProcessor):
+class AppearancesProcessor(Asset):
 
   name = 'appearances'
   description = "Appearances for `players`. One row per appearance."
@@ -35,11 +35,12 @@ class AppearancesProcessor(BaseProcessor):
 
     self.errors_tolerance = 100
 
-  def process_segment(self, segment, season):
+  def build(self):
 
+    raw_df = self.get_stacked_data()
     prep_df = pandas.DataFrame()
 
-    json_normalized = pandas.json_normalize(segment.to_dict(orient='records'))
+    json_normalized = pandas.json_normalize(raw_df.to_dict(orient='records'))
 
 
     applicable_competitions = self.settings['competition_codes']
@@ -59,5 +60,9 @@ class AppearancesProcessor(BaseProcessor):
       (json_normalized['second_yellow_cards'].str.len() > 0).astype('int32')
     )
     prep_df['red_cards'] = (json_normalized['red_cards'].str.len() > 0).astype('int32')
+
+    self.prep_df = prep_df
+
+    self.drop_duplicates()
 
     return prep_df
