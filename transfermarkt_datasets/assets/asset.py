@@ -6,7 +6,6 @@ import logging
 import logging.config
 
 class Asset:
-  name = None
   description = None
 
   def __init__(
@@ -17,6 +16,8 @@ class Asset:
     target_path = "stage",
     source_files_name: str = None,
     settings: dict = None) -> None:
+
+      self.name = name
 
       self.raw_files_path = source_path
       self.seasons = seasons
@@ -64,6 +65,17 @@ class Asset:
           self.raw_dfs.append(df)
 
     return pandas.concat(self.raw_dfs, axis=0)
+
+  def __str__(self) -> str:
+      return f'Asset(name={self.name},season={self.min_season}..{self.max_season})'
+  
+  @property
+  def min_season(self) -> int:
+    return min(self.seasons)
+
+  @property
+  def max_season(self) -> int:
+    return max(self.seasons)
 
   def build(self):
     pass

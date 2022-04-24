@@ -16,9 +16,9 @@ jobs:
 
     steps:
       - uses: conda-incubator/setup-miniconda@v2
-          with:
-            environment-file: environment.yml
-            activate-environment: transfermarkt-datasets
+        with:
+          environment-file: environment.yml
+          activate-environment: transfermarkt-datasets
 
       - name: unit tests
         env:
