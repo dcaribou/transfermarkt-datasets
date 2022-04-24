@@ -1,18 +1,18 @@
 assets:
   players:
-    class: PlayersProcessor
+    class: PlayersAsset
     source: players.json # this is redundat, since the source is inferred from the runner name if not set
   player_valuations:
-    class: PlayerValuationsProcessor
+    class: PlayerValuationsAsset
     source_files_name: players.json
   games:
-    class: GamesProcessor
+    class: GamesAsset
   clubs:
-    class: ClubsProcessor
+    class: ClubsAsset
   appearances:
-    class: AppearancesProcessor
+    class: AppearancesAsset
   competitions:
-    class: CompetitionsProcessor
+    class: CompetitionsAsset
 settings:
   source_path: data/raw
   seasons: [2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021]

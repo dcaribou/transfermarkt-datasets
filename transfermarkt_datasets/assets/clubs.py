@@ -7,7 +7,7 @@ import numpy
 
 from transfermarkt_datasets.assets.asset import Asset
 
-class ClubsProcessor(Asset):
+class ClubsAsset(Asset):
 
   name = 'clubs'
   description = "Clubs in `competitions`. One row per club."

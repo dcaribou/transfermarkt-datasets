@@ -7,7 +7,7 @@ import pandas
 
 from transfermarkt_datasets.assets.asset import Asset
 
-class GamesProcessor(Asset):
+class GamesAsset(Asset):
 
   name = 'games'
   description = "Games in `competitions`. One row per game."
@@ -99,7 +99,7 @@ class GamesProcessor(Asset):
     )
     prep_df['referee'] = json_normalized['referee']
     prep_df['url'] = 'https://www.transfermarkt.co.uk' + json_normalized['href']
-    
+
     self.prep_df = prep_df
 
     self.drop_duplicates()

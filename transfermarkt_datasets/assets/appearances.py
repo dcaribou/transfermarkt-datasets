@@ -6,7 +6,7 @@ from typing import List
 from transfermarkt_datasets.assets.asset import Asset
 from .utils import cast_metric, cast_minutes_played
 
-class AppearancesProcessor(Asset):
+class AppearancesAsset(Asset):
 
   name = 'appearances'
   description = "Appearances for `players`. One row per appearance."

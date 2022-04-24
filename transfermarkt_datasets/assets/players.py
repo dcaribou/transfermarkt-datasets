@@ -10,7 +10,7 @@ import numpy
 from transfermarkt_datasets.assets.asset import Asset
 from .utils import parse_market_value
 
-class PlayersProcessor(Asset):
+class PlayersAsset(Asset):
 
   name = 'players'
   description = "Players in `clubs`. One row per player."

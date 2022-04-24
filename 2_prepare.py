@@ -19,7 +19,7 @@ import argparse
 from cloud_lib import submit_batch_job_and_wait
 
 def fail_if_invalid(td):
-  if not td.valdate_datapackage():
+  if not td.validate_datapackage():
     raise Exception("Validations failed")
   else:
     print("All good \N{winking face}")

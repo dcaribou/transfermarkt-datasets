@@ -5,7 +5,7 @@ import pandas
 
 from transfermarkt_datasets.assets.asset import Asset
 
-class CompetitionsProcessor(Asset):
+class CompetitionsAsset(Asset):
 
   name = "competitions"
   description = "Competitions in Europe confederation. One row per league."

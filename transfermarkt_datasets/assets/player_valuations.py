@@ -8,7 +8,7 @@ import pandas
 from transfermarkt_datasets.assets.asset import Asset
 from .utils import parse_market_value
 
-class PlayerValuationsProcessor(Asset):
+class PlayerValuationsAsset(Asset):
 
   name = 'player_valuations'
   description = "Historical player market valuations. One row per market valuation record."
