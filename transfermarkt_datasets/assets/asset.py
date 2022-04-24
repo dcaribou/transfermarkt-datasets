@@ -23,7 +23,6 @@ class Asset:
       self.seasons = seasons
       self.prep_file_path = target_path
 
-      self.raw_dfs = []
       self.prep_df = None
       self.validations = None
       self.validation_report = None
@@ -40,6 +39,9 @@ class Asset:
       self.log = logging.getLogger("main")
 
   def get_stacked_data(self) -> pandas.DataFrame:
+
+    raw_dfs = []
+
     if self.name == 'competitions':
         df = pandas.read_json(
           f"data/competitions.json",
@@ -47,7 +49,7 @@ class Asset:
           convert_dates=True,
           orient={'index', 'date'}
         )
-        self.raw_dfs.append(df)
+        raw_dfs.append(df)
     else:
       for season in self.seasons:
 
@@ -62,9 +64,9 @@ class Asset:
         )
         df["season"] = season
         if len(df) > 0:
-          self.raw_dfs.append(df)
+          raw_dfs.append(df)
 
-    return pandas.concat(self.raw_dfs, axis=0)
+    return pandas.concat(raw_dfs, axis=0)
 
   def __str__(self) -> str:
       return f'Asset(name={self.name},season={self.min_season}..{self.max_season})'

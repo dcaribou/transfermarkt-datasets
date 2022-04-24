@@ -40,7 +40,7 @@ def prepare_on_local(raw_files_location, refresh_metadata, run_validations, seas
     td.build_assets()
     td.generate_datapackage()
     fail_if_invalid(td)
-    os.system("cp prep/stage/* data/prep")
+    os.system("cp transfermarkt_datasets/stage/* data/prep")
 
 
 def prepare_on_cloud(

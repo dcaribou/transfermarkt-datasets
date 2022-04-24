@@ -8,8 +8,8 @@ class TestTransfermarktDatasets(unittest.TestCase):
 
         config = {
             "assets": {
-                "games": {"class": "GamesProcessor"},
-                "undefined_asset": {"class": "UndefinedProcessor"}
+                "games": {"class": "GamesAsset"},
+                "undefined_asset": {"class": "UndefinedAsset"}
             },
             "settings": {
                 "source_path": "data/raw",
