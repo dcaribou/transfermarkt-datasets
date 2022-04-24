@@ -16,10 +16,10 @@ jobs:
 
     steps:
       - name: checkout
-          uses: actions/checkout@v2
-          with:
-            ssh-key: ${{ secrets.DEPLOY_KEY_PRIVATE }}
-            
+        uses: actions/checkout@v2
+        with:
+          ssh-key: ${{ secrets.DEPLOY_KEY_PRIVATE }}
+
       - uses: conda-incubator/setup-miniconda@v2
         with:
           environment-file: environment.yml
