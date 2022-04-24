@@ -4,6 +4,9 @@ from transfermarkt_datasets.transfermarkt_datasets import AssetNotFound, Transfe
 from frictionless.package import Package
 
 class TestTransfermarktDatasets(unittest.TestCase):
+    def setUp(self) -> None:
+        self.td = TransfermarktDatasets()
+        return super().setUp()
     def test_initialization_from_dict(self):
 
         config = {
@@ -46,13 +49,9 @@ class TestTransfermarktDatasets(unittest.TestCase):
 
     def test_build_single(self):
 
-        td = TransfermarktDatasets(
-            config_file="config.yml",
-            seasons=[2013],
-            assets=["games"]
-        )
+        td = self.td
 
-        td.build_assets()
+        td.build_assets(asset="games")
 
         self.assertGreater(
             len(td.assets["games"].prep_df),

@@ -18,6 +18,10 @@ import argparse
 
 from cloud_lib import submit_batch_job_and_wait
 
+import tracemalloc
+
+tracemalloc.start()
+
 def fail_if_invalid(td):
   if not td.validate_datapackage():
     raise Exception("Validations failed")
@@ -102,4 +106,9 @@ cloud_parser.set_defaults(func=prepare_on_cloud)
 arguments = parser.parse_args()
 arguments.func(**vars(arguments))
 
+snapshot = tracemalloc.take_snapshot()
+top_stats = snapshot.statistics('lineno')
 
+print("[ Top 10 ]")
+for stat in top_stats[:10]:
+    print(stat)

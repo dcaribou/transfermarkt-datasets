@@ -18,10 +18,15 @@ def read_config(config_file="config.yml") -> Dict:
     return config
 
 class AssetNotFound(Exception):
+  """Exception to be raised when attempting to load an asset that is not defined.
+  """
   def __init__(self, asset_name, message=None) -> None:
       self.message = asset_name
       self.asset_name = asset_name
       super().__init__(self.message)
+
+class InvalidStagingLocation(Exception):
+  pass
 
 class TransfermarktDatasets:
   def __init__(
@@ -78,6 +83,11 @@ class TransfermarktDatasets:
             raise AssetNotFound(asset_name)
 
   def prettify_asset_processors(self):
+    """Create a printable table with a summary of the assets in the dataset.
+
+    Returns:
+        str: A string containing the table.
+    """
     from tabulate import tabulate # https://github.com/astanin/python-tabulate
     table = [
       [asset_name, asset.raw_files_path, str(asset.seasons)] 
@@ -85,7 +95,16 @@ class TransfermarktDatasets:
     ]
     return tabulate(table, headers=['Name', 'Path', 'Seasons'])
 
-  def build_assets(self):
+  def build_assets(self, asset: str = None):
+    """Run transfromation (a.k.a. "build") all assets in the dataset.
+    Built assets are stored as dataframes in the underlying assets[<asset>] objects.
+
+    Args:
+        asset (str, optional): Limit the build to one asset in particular.
+
+    Raises:
+        InvalidStagingLocationException: The passed staging location is not a valid path.
+    """
     self.log.info("Start processing assets\n%s", self.prettify_asset_processors())
 
     # setup stage location
@@ -97,17 +116,28 @@ class TransfermarktDatasets:
     else:
       stage_path.mkdir()
 
-    for asset_name, asset in self.assets.items():
-      asset.build()
-      asset.export()
+    if asset:
+      self.assets[asset].build()
+      self.assets[asset].export()
+    else:
+      for asset_name, asset in self.assets.items():
+        asset.build()
+        asset.export()
 
   @property
   def asset_names(self):
+    """Return the names of the asset in the dataset.
+
+    Returns:
+        list(str): The list of asset names.
+    """
     return self.assets.keys()
 
   def generate_datapackage(self, basepath=None):
-    """
-    Generate datapackage.json for Kaggle Dataset
+    """Create an save to local a file descriptor tha defines a "datapackage" for this dataset.
+
+    Args:
+        basepath (str, optional): Base path of prepared files. It defaults to the "prep" folder path.
     """
     base_path = basepath or self.prep_folder_path
     package = Package(trusted=True, basepath=base_path)
@@ -133,7 +163,12 @@ class TransfermarktDatasets:
     self.datapackage = package
     package.to_json(self.datapackage_descriptor_path)
 
-  def validate_datapackage(self):
+  def validate_datapackage(self) -> bool:
+    """Run "datapackage" validations for this dataset and save results to a local file.
+
+    Returns:
+        bool: Whether the validations did or did not pass.
+    """
     package = self.datapackage or Package(self.datapackage_descriptor_path)
 
     self.log.info("Datapackage resource validation")
@@ -149,7 +184,12 @@ class TransfermarktDatasets:
 
     return self.is_valid()
 
-  def is_valid(self):
+  def is_valid(self) -> bool:
+    """Check validation report and determine if the validation passed or not.
+
+    Returns:
+        bool: Whether the validations did or did not pass.
+    """
     for asset in self.assets.values():
       if not asset.is_valid():
         self.log.error(f"{asset.name} did not pass validations!")
