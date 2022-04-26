@@ -122,7 +122,7 @@ class TransfermarktDatasets:
     else:
       for asset_name, asset in self.assets.items():
         asset.build()
-        asset.export()
+        # asset.export() TODO: we should probably chop the export out, as we don't always want to store the data
 
   @property
   def asset_names(self):

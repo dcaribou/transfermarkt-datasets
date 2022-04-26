@@ -15,6 +15,7 @@ dependencies:
   - protego
   - python-dateutil
   - pytest
+  - jupyter
   - pip:
       - frictionless==4.1.0
       - pycountry==20.7.3

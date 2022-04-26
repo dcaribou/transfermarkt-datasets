@@ -63,6 +63,7 @@ class Asset:
           orient={'index', 'date'}
         )
         df["season"] = season
+        df["season_file"] = season_file
         if len(df) > 0:
           raw_dfs.append(df)
 
