@@ -104,6 +104,9 @@ def acquire_on_local(asset, season, func):
   process = CrawlerProcess(settings)
 
   for asset_obj in assets:
+    file_path = pathlib.Path(f"../data/raw/{season}/{asset_obj.name}.json")
+    if file_path.exists():
+      os.remove(str(file_path))
     print(f"Schedule {asset_obj.name}")
     process.crawl(asset_obj.name, parents=asset_obj.parent.file_full_path)
   
