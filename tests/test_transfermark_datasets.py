@@ -79,6 +79,3 @@ class TestTransfermarktDatasets(unittest.TestCase):
             set(td.datapackage.resource_names),
             set(["games", "players", "player_valuations", "competitions", "appearances", "clubs"])
         )
-
-        td.validate_datapackage()
-
