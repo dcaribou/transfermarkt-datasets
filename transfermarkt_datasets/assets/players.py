@@ -110,7 +110,7 @@ class PlayersAsset(Asset):
     prep_df['height_in_cm'] = (
       (json_normalized['height']
         .replace('N/A', numpy.nan)
-        .str.split('m', 2, True)[0]
+        .str.split('[\s\.]', 2, True)[0]
         .str.replace(',','.')
         .astype(dtype=float) * 100
       ).fillna(0).astype(int)
