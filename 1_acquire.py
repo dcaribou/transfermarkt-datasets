@@ -122,8 +122,8 @@ def acquire_on_cloud(job_name, job_queue, job_definition, branch, message, args,
     message=message,
     script="1_acquire.py",
     args=args,
-    vcpus=0.5,
-    memory=1024
+    vcpus=1.0,
+    memory=3072
   )
 
 # main
