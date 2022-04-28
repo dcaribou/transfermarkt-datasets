@@ -5,6 +5,8 @@ import pandas
 import logging
 import logging.config
 
+import tracemalloc
+
 class Asset:
   description = None
 
@@ -52,6 +54,12 @@ class Asset:
         raw_dfs.append(df)
     else:
       for season in self.seasons:
+
+        snapshot = tracemalloc.take_snapshot()
+        top_stats = snapshot.statistics('lineno')
+        print("[ Top 10 ]")
+        for stat in top_stats[:10]:
+            print(stat)
 
         season_file = f"{self.raw_files_path}/{season}/{self.raw_files_name}"
 
