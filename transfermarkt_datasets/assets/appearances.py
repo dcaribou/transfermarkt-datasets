@@ -1,7 +1,7 @@
 import pandas
 from frictionless.schema import Schema
 from frictionless.field import Field
-from typing import List
+from frictionless import checks
 
 from transfermarkt_datasets.assets.asset import Asset
 from .utils import cast_metric, cast_minutes_played
@@ -33,7 +33,9 @@ class AppearancesAsset(Asset):
       {"fields": "game_id", "reference": {"resource": "games", "fields": "game_id"}}
     ]
 
-    self.errors_tolerance = 100
+    self.checks = [
+      checks.regulation.table_dimensions(min_rows=1000000)
+    ]
 
   def build(self):
 
