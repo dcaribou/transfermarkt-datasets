@@ -76,6 +76,7 @@ class TransfermarktDatasets:
               source_files_name=asset.get("source_files_name"),
               settings=settings
             )
+            instance.load()
             self.assets[asset_name] = instance
 
           except ModuleNotFoundError:

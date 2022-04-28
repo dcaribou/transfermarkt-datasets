@@ -8,8 +8,13 @@ import pandas as pd
 
 from transfermarkt_datasets.transfermarkt_datasets import TransfermarktDatasets
 
-td = TransfermarktDatasets()
+st.title("Transfermartk Datasets")
 
-df = td.assets["clubs"].prep_df
+@st.cache
+def load_data():
+  td = TransfermarktDatasets()
+  df = td.assets["games"].prep_df
+  return df
 
+df = load_data()
 df

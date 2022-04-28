@@ -80,6 +80,9 @@ class Asset:
   def max_season(self) -> int:
     return max(self.seasons)
 
+  def load(self):
+    self.prep_df = pandas.read_csv(self.prep_file_path)
+
   def build(self):
     pass
 
