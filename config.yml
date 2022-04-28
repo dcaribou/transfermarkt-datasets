@@ -29,11 +29,11 @@ settings:
     loggers:
       main:
         handlers: [console]
-        level: INFO
+        level: DEBUG
     handlers:
       console:
         class: logging.StreamHandler
-        level: INFO
+        level: DEBUG
         stream: ext://sys.stdout
         formatter: main
     formatters:

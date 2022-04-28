@@ -6,9 +6,11 @@ In an nutshell, this project aims for three things:
 2. Build a **clean, public football (soccer) dataset** using data in 1.
 3. Automatate 1 and 2 to **keep these assets up to date** and publicly available on some well-known data catalogs.
 
-:white_check_mark: [Kaggle](https://www.kaggle.com/davidcariboo/player-scores) :white_check_mark: [data.world](https://data.world/dcereijo/player-scores)
+[:white_check_mark: [Kaggle](https://www.kaggle.com/davidcariboo/player-scores)] [:white_check_mark: [data.world](https://data.world/dcereijo/player-scores)]
 
-![diagram](https://github.com/dcaribou/transfermarkt-datasets/blob/master/diagram.png?raw=true)
+| ![diagram](https://github.com/dcaribou/transfermarkt-datasets/blob/master/diagram.png?raw=true) | 
+|:--:| 
+| *Space* |
 
 - [dvc](#dvc)
 - [acquire](#acquire)
@@ -59,7 +61,7 @@ td.asset_names # ["games", "players"...]
 td.assets["games"].prep_df # get the built asset in a dataframe
 td.assets["games"].get_stacked_data() # get the raw data in a dataframe
 ```
-For more examples on using `transfermark_datasets`, checkout the sample [notebooks](noteooks).
+For more examples on using `transfermark_datasets`, checkout the sample [notebooks](notebooks).
 
 ## [infra](infra)
 Define all the necessary infrastructure for the project in the cloud with Terraform.
@@ -68,6 +70,6 @@ Define all the necessary infrastructure for the project in the cloud with Terraf
 Contributions to `transfermarkt-datasets` are most welcome. If you want to contribute new fields or assets to this dataset, instructions are quite simple:
 1. [Fork the repo](https://github.com/dcaribou/transfermarkt-datasets/fork) (make sure to initialize sub-modules as well with `git submodule update --init --recursive`)
 2. Set up a new conda environment with `conda env create -f environment.yml`
-3. Pull the raw data by either running `dvc pull` ([requesting access is needed](##dvc)) or using the `1_acquire.py` script (no access request is needed)
+3. Pull the raw data by either running `dvc pull` ([requesting access is needed](#dvc)) or using the `1_acquire.py` script (no access request is needed)
 4. Start modifying assets or creating a new one in `transfermarkt_datasets/assets`. You can use `2_prepare.py` to run and test your changes.
 5. If it's all looking good, create a pull request with your changes :rocket:
