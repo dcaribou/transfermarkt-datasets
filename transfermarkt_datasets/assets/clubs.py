@@ -5,9 +5,9 @@ from inflection import titleize
 import pandas
 import numpy
 
-from .base import BaseProcessor
+from transfermarkt_datasets.assets.asset import Asset
 
-class ClubsProcessor(BaseProcessor):
+class ClubsAsset(Asset):
 
   name = 'clubs'
   description = "Clubs in `competitions`. One row per club."
@@ -48,11 +48,12 @@ class ClubsProcessor(BaseProcessor):
       {"fields": "domestic_competition_id", "reference": {"resource": "competitions", "fields": "competition_id"}}
     ]
 
-  def process_segment(self, segment, season):
+  def build(self):
     
+    raw_df = self.get_stacked_data()
     prep_df = pandas.DataFrame()
 
-    json_normalized = pandas.json_normalize(segment.to_dict(orient='records'))
+    json_normalized = pandas.json_normalize(raw_df.to_dict(orient='records'))
 
     club_href_parts = json_normalized['href'].str.split('/', 5, True)
     league_href_parts = json_normalized['parent.href'].str.split('/', 5, True)
@@ -85,5 +86,9 @@ class ClubsProcessor(BaseProcessor):
     prep_df['coach_name'] = json_normalized['coach_name']
 
     prep_df['url'] = 'https://www.transfermarkt.co.uk' + json_normalized['href']
+
+    self.prep_df = prep_df
+
+    self.drop_duplicates()
 
     return prep_df

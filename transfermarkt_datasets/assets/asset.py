@@ -1,37 +1,47 @@
+from typing import List
 from frictionless import Detector
 from frictionless.resource import Resource
 import pandas
 import logging
 import logging.config
 
-class BaseProcessor:
-  name = None
+class Asset:
   description = None
 
-  def __init__(self, raw_files_path, seasons, name, prep_file_path, raw_files_name: str = None, settings: dict = None) -> None:
+  def __init__(
+    self,
+    name: str,
+    seasons: List[str],
+    source_path = "data/raw",
+    target_path = "stage",
+    source_files_name: str = None,
+    settings: dict = None) -> None:
 
-      self.raw_files_path = raw_files_path
+      self.name = name
+
+      self.raw_files_path = source_path
       self.seasons = seasons
-      self.prep_file_path = prep_file_path
+      self.prep_file_path = target_path
 
-      self.raw_dfs = []
       self.prep_df = None
       self.validations = None
       self.validation_report = None
       self.errors_tolerance = 0
 
-      if not raw_files_name:
+      if not source_files_name:
         self.raw_files_name = name + ".json"
       else:
-        self.raw_files_name = raw_files_name
+        self.raw_files_name = source_files_name
       
       self.settings = settings
       self.checks = []
 
-      logging.config.dictConfig(settings["logging"])
       self.log = logging.getLogger("main")
 
-  def load_partitions(self):
+  def get_stacked_data(self) -> pandas.DataFrame:
+
+    raw_dfs = []
+
     if self.name == 'competitions':
         df = pandas.read_json(
           f"data/competitions.json",
@@ -39,7 +49,7 @@ class BaseProcessor:
           convert_dates=True,
           orient={'index', 'date'}
         )
-        self.raw_dfs.append(df)
+        raw_dfs.append(df)
     else:
       for season in self.seasons:
 
@@ -52,38 +62,35 @@ class BaseProcessor:
           convert_dates=True,
           orient={'index', 'date'}
         )
+        df["season"] = season
+        df["season_file"] = season_file
         if len(df) > 0:
-          self.raw_dfs.append(df)
+          raw_dfs.append(df)
+
+    return pandas.concat(raw_dfs, axis=0)
+
+  def __str__(self) -> str:
+      return f'Asset(name={self.name},season={self.min_season}..{self.max_season})'
   
-  def process_segment(self, segment, season):
-    """Process one segment of the asset. A segment is equivalent to one file.
-    Segment processors are defined per asset on the corresponding asset processor.
+  @property
+  def min_season(self) -> int:
+    return min(self.seasons)
 
-    :param segment: A pandas dataframe with the contents of the raw file
+  @property
+  def max_season(self) -> int:
+    return max(self.seasons)
 
-    :returns: A pandas dataframe with parsed, cleaned asset fields
-    """
+  def build(self):
     pass
 
-  def process(self):
+  def drop_duplicates(self):
 
     self.log.info("Stared processing asset %s", self.name)
 
-    self.load_partitions()
-
-    self.prep_dfs = [
-      self.process_segment(prep_df, season)
-      for prep_df, season in zip(self.raw_dfs, self.seasons)
-    ]
-    concatenated = pandas.concat(self.prep_dfs, axis=0)
-
-    del self.prep_dfs
-    del self.raw_dfs
-
     if self.schema.primary_key:
-      self.prep_df = concatenated.drop_duplicates(subset=self.schema.primary_key, keep='last')
+      self.prep_df = self.prep_df.drop_duplicates(subset=self.schema.primary_key, keep='last')
     else:
-      self.prep_df = concatenated.drop_duplicates(keep='last')
+      self.prep_df = self.prep_df.drop_duplicates(keep='last')
 
     self.log.info("Finished processing asset %s\n%s", self.name, self.output_summary())
   

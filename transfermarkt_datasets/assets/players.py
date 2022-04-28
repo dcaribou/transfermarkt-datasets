@@ -7,12 +7,11 @@ from inflection import titleize
 import pandas
 import numpy
 
-import re
+from transfermarkt_datasets.assets.asset import Asset
+from transfermarkt_datasets.assets.utils import parse_market_value
+from transfermarkt_datasets.checks import too_many_missings
 
-from .base import BaseProcessor
-from .utils import parse_market_value
-
-class PlayersProcessor(BaseProcessor):
+class PlayersAsset(Asset):
 
   name = 'players'
   description = "Players in `clubs`. One row per player."
@@ -49,20 +48,22 @@ class PlayersProcessor(BaseProcessor):
     ]
 
     self.checks = [
-      checks.regulation.row_constraint(formula="position in 'Attack,Defender,Midfield,Goalkeeper'")
+      checks.regulation.row_constraint(formula="position in 'Attack,Defender,Midfield,Goalkeeper'"),
+      too_many_missings(field_name="market_value_in_gbp", tolerance=0.30)
     ]
 
-  def process_segment(self, segment, season):
+  def build(self):
     
+    raw_df = self.get_stacked_data()
     prep_df = pandas.DataFrame()
 
-    json_normalized = pandas.json_normalize(segment.to_dict(orient='records'))
+    json_normalized = pandas.json_normalize(raw_df.to_dict(orient='records'))
 
     href_parts = json_normalized['href'].str.split('/', 5, True)
     parent_href_parts = json_normalized['parent.href'].str.split('/', 5, True)
 
     prep_df['player_id'] = href_parts[4]
-    prep_df['last_season'] = season
+    prep_df['last_season'] = json_normalized["season"]
     prep_df['current_club_id'] = parent_href_parts[4]
     prep_df['name'] = self.url_unquote(href_parts[1])
     prep_df['pretty_name'] = prep_df['name'].apply(lambda x: titleize(x))
@@ -111,7 +112,7 @@ class PlayersProcessor(BaseProcessor):
     prep_df['height_in_cm'] = (
       (json_normalized['height']
         .replace('N/A', numpy.nan)
-        .str.split('m', 2, True)[0]
+        .str.split('[\s\.]', 2, True)[0]
         .str.replace(',','.')
         .astype(dtype=float) * 100
       ).fillna(0).astype(int)
@@ -125,5 +126,9 @@ class PlayersProcessor(BaseProcessor):
     )
 
     prep_df['url'] = self.url_prepend(json_normalized['href'])
+
+    self.prep_df = prep_df
+
+    self.drop_duplicates()
 
     return prep_df

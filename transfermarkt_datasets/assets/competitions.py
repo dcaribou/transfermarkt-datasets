@@ -3,9 +3,9 @@ from frictionless.schema import Schema
 
 import pandas
 
-from .base import BaseProcessor
+from transfermarkt_datasets.assets.asset import Asset
 
-class CompetitionsProcessor(BaseProcessor):
+class CompetitionsAsset(Asset):
 
   name = "competitions"
   description = "Competitions in Europe confederation. One row per league."
@@ -31,11 +31,12 @@ class CompetitionsProcessor(BaseProcessor):
 
     self.schema.primary_key = ['competition_id']
 
-  def process_segment(self, segment, season):
+  def build(self):
     
+    raw_df = self.get_stacked_data()
     prep_df = pandas.DataFrame()
 
-    json_normalized = pandas.json_normalize(segment.to_dict(orient='records'))
+    json_normalized = pandas.json_normalize(raw_df.to_dict(orient='records'))
 
     league_href_parts = json_normalized['href'].str.split('/', 5, True)
     confederation_href_parts = json_normalized['parent.href'].str.split('/', 5, True)
@@ -49,5 +50,9 @@ class CompetitionsProcessor(BaseProcessor):
     
     prep_df['confederation'] = confederation_href_parts[2]
     prep_df['url'] = 'https://www.transfermarkt.co.uk' + json_normalized['href']
+
+    self.prep_df = prep_df
+
+    self.drop_duplicates()
 
     return prep_df

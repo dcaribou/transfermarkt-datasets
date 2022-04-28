@@ -5,10 +5,10 @@ from inflection import titleize
 
 import pandas
 
-from .base import BaseProcessor
+from transfermarkt_datasets.assets.asset import Asset
 from .utils import parse_market_value
 
-class PlayerValuationsProcessor(BaseProcessor):
+class PlayerValuationsAsset(Asset):
 
   name = 'player_valuations'
   description = "Historical player market valuations. One row per market valuation record."
@@ -31,12 +31,13 @@ class PlayerValuationsProcessor(BaseProcessor):
       checks.regulation.forbidden_value(field_name="market_value", values=[None])
     ]
 
-  def process_segment(self, segment, season):
+  def build(self):
     
+    raw_df = self.get_stacked_data()
     prep_df = pandas.DataFrame()
 
     json_normalized = pandas.json_normalize(
-      segment.to_dict(orient='records'),
+      raw_df.to_dict(orient='records'),
       record_path="market_value_history",
       meta=["href"],
       errors="ignore"
@@ -51,5 +52,9 @@ class PlayerValuationsProcessor(BaseProcessor):
     prep_df['market_value'] = (
       json_normalized["mw"].apply(parse_market_value)
     )
+
+    self.prep_df = prep_df
+
+    self.drop_duplicates()
 
     return prep_df
