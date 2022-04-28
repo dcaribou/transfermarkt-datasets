@@ -16,6 +16,7 @@ dependencies:
   - python-dateutil
   - pytest
   - jupyter
+  - streamlit
   - pip:
       - frictionless==4.1.0
       - pycountry==20.7.3
