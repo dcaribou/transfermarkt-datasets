@@ -8,7 +8,8 @@ import pandas
 import numpy
 
 from transfermarkt_datasets.assets.asset import Asset
-from .utils import parse_market_value
+from transfermarkt_datasets.assets.utils import parse_market_value
+from transfermarkt_datasets.checks import too_many_missings
 
 class PlayersAsset(Asset):
 
@@ -47,7 +48,8 @@ class PlayersAsset(Asset):
     ]
 
     self.checks = [
-      checks.regulation.row_constraint(formula="position in 'Attack,Defender,Midfield,Goalkeeper'")
+      checks.regulation.row_constraint(formula="position in 'Attack,Defender,Midfield,Goalkeeper'"),
+      too_many_missings(field_name="market_value_in_gbp", tolerance=0.30)
     ]
 
   def build(self):
