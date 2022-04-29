@@ -1,5 +1,6 @@
 from frictionless.field import Field
 from frictionless.schema import Schema
+from frictionless import checks
 
 import pandas
 
@@ -30,6 +31,10 @@ class CompetitionsAsset(Asset):
     )
 
     self.schema.primary_key = ['competition_id']
+
+    self.checks = [
+      checks.regulation.table_dimensions(min_rows=40)
+    ]
 
   def build(self):
     

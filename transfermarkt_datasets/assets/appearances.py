@@ -1,10 +1,12 @@
+import numpy
 import pandas
 from frictionless.schema import Schema
 from frictionless.field import Field
 from frictionless import checks
 
 from transfermarkt_datasets.assets.asset import Asset
-from .utils import cast_metric, cast_minutes_played
+from transfermarkt_datasets.assets.utils import cast_metric, cast_minutes_played
+from transfermarkt_datasets.checks import too_many_missings
 
 class AppearancesAsset(Asset):
 
@@ -34,7 +36,8 @@ class AppearancesAsset(Asset):
     ]
 
     self.checks = [
-      checks.regulation.table_dimensions(min_rows=1000000)
+      checks.regulation.table_dimensions(min_rows=1000000),
+      too_many_missings(field_name='game_id',tolerance=0.0001)
     ]
 
   def build(self):
@@ -51,7 +54,11 @@ class AppearancesAsset(Asset):
   
     prep_df['player_id'] = json_normalized['parent.href'].str.split('/', 5, True)[4]
     prep_df['game_id'] = json_normalized['result.href'].str.split('/', 5, True)[4]
-    prep_df['appearance_id'] = prep_df['game_id'] + '_' + prep_df['player_id']
+    prep_df['appearance_id'] = numpy.select(
+      [prep_df['game_id'].isna()],
+      [prep_df.index],
+      default=prep_df['game_id'] + '_' + prep_df['player_id']
+    )
     prep_df['competition_id'] = json_normalized['competition_code']
     prep_df['player_club_id'] = json_normalized['for.href'].str.split('/', 5, True)[4]
     prep_df['goals'] = json_normalized['goals'].apply(cast_metric)

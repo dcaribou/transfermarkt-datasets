@@ -1,5 +1,6 @@
 from frictionless.field import Field
 from frictionless.schema import Schema
+from frictionless import checks
 from inflection import titleize
 
 import pandas
@@ -46,6 +47,10 @@ class ClubsAsset(Asset):
     self.schema.primary_key = ['club_id']
     self.schema.foreign_keys = [
       {"fields": "domestic_competition_id", "reference": {"resource": "competitions", "fields": "competition_id"}}
+    ]
+
+    self.checks = [
+      checks.regulation.table_dimensions(min_rows=400)
     ]
 
   def build(self):

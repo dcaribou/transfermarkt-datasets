@@ -28,7 +28,8 @@ class PlayerValuationsAsset(Asset):
     ]
 
     self.checks = [
-      checks.regulation.forbidden_value(field_name="market_value", values=[None])
+      checks.regulation.forbidden_value(field_name="market_value", values=[None]),
+      checks.regulation.table_dimensions(min_rows=320000)
     ]
 
   def build(self):
