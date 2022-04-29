@@ -1,5 +1,6 @@
 from frictionless.field import Field
 from frictionless.schema import Schema
+from frictionless import checks
 
 from datetime import datetime
 
@@ -48,6 +49,10 @@ class GamesAsset(Asset):
     #   {"fields": "home_club_id", "reference": {"resource": "clubs", "fields": "club_id"}},
     #   {"fields": "away_club_id", "reference": {"resource": "clubs", "fields": "club_id"}}
     # ]
+
+    self.checks = [
+      checks.regulation.table_dimensions(min_rows=55000)
+    ]
 
   def build(self):
 

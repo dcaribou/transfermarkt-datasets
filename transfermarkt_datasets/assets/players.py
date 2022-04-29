@@ -49,7 +49,9 @@ class PlayersAsset(Asset):
 
     self.checks = [
       checks.regulation.row_constraint(formula="position in 'Attack,Defender,Midfield,Goalkeeper'"),
-      too_many_missings(field_name="market_value_in_gbp", tolerance=0.30)
+      too_many_missings(field_name="market_value_in_gbp", tolerance=0.30),
+      checks.regulation.table_dimensions(min_rows=22000)
+
     ]
 
   def build(self):
