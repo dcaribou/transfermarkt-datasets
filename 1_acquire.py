@@ -17,7 +17,8 @@ import pathlib
 
 import argparse
 
-from scrapy.crawler import CrawlerProcess
+from twisted.internet import reactor, defer
+from scrapy.crawler import CrawlerRunner
 from scrapy.utils.project import get_project_settings
 from scrapy.utils.log import configure_logging
 
@@ -98,19 +99,29 @@ def acquire_on_local(asset, season, func):
   settings.set("USER_AGENT", USER_AGENT)
   settings.set("SEASON", season)
   settings.set("FEED_URI", f"../data/raw/{season}/%(name)s.json" )
+  settings.set("LOG_LEVEL", "INFO")
 
   configure_logging(settings)
 
-  process = CrawlerProcess(settings)
+  # https://docs.scrapy.org/en/latest/topics/practices.html#running-multiple-spiders-in-the-same-process
 
-  for asset_obj in assets:
-    file_path = pathlib.Path(f"../data/raw/{season}/{asset_obj.name}.json")
-    if file_path.exists():
-      os.remove(str(file_path))
-    print(f"Schedule {asset_obj.name}")
-    process.crawl(asset_obj.name, parents=asset_obj.parent.file_full_path)
+  runner = CrawlerRunner(settings)
+
+  # https://twistedmatrix.com/documents/13.2.0/api/twisted.internet.defer.inlineCallbacks.html
+  @defer.inlineCallbacks
+  def crawl():
+    for asset_obj in assets:
+      # TODO: ideally, let transfermark-scraper handle destination file truncation via a setting instead of doing it here
+      # checkout https://foroayuda.es/scrapy-sobrescribe-los-archivos-json-en-lugar-de-agregar-el-archivo/
+      file_path = pathlib.Path(f"../data/raw/{season}/{asset_obj.name}.json")
+      if file_path.exists():
+        os.remove(str(file_path))
+      print(f"Schedule {asset_obj.name}")
+      yield runner.crawl(asset_obj.name, parents=asset_obj.parent.file_full_path)
+    reactor.stop()
   
-  process.start()
+  crawl()
+  reactor.run()
 
 def acquire_on_cloud(job_name, job_queue, job_definition, branch, message, args, func):
 
@@ -122,8 +133,8 @@ def acquire_on_cloud(job_name, job_queue, job_definition, branch, message, args,
     message=message,
     script="1_acquire.py",
     args=args,
-    vcpus=0.5,
-    memory=1024
+    vcpus=1.0,
+    memory=3072
   )
 
 # main

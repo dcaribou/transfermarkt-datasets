@@ -4,6 +4,7 @@ channels:
   - defaults
 dependencies:
   - python=3.8
+  - frictionless
   - pandas
   - kaggle==1.5.12
   - boto3
@@ -17,7 +18,6 @@ dependencies:
   - pytest
   - jupyter
   - pip:
-      - frictionless==4.1.0
       - pycountry==20.7.3
       - docker==5.0.0
       - dvc[s3]==2.1.0
