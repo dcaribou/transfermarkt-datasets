@@ -6,7 +6,7 @@ import json
 import importlib
 import yaml
 
-import logging
+import logging.config
 
 import pathlib
 

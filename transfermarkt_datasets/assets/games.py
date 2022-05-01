@@ -51,7 +51,7 @@ class GamesAsset(Asset):
     # ]
 
     self.checks = [
-      checks.regulation.table_dimensions(min_rows=55000)
+      checks.table_dimensions(min_rows=55000)
     ]
 
   def build(self):

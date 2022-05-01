@@ -33,7 +33,7 @@ class CompetitionsAsset(Asset):
     self.schema.primary_key = ['competition_id']
 
     self.checks = [
-      checks.regulation.table_dimensions(min_rows=40)
+      checks.table_dimensions(min_rows=40)
     ]
 
   def build(self):

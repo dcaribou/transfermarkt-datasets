@@ -13,7 +13,7 @@ optional arguments:
 
 """
 import os
-from transfermarkt_datasets.transfermarkt_datasets import TransfermarktDatasets, read_config
+from transfermarkt_datasets.core.dataset import Dataset, read_config
 import argparse
 
 from cloud_lib import submit_batch_job_and_wait
@@ -27,7 +27,7 @@ def fail_if_invalid(td):
 
 def prepare_on_local(raw_files_location, refresh_metadata, run_validations, seasons, func):
 
-  td = TransfermarktDatasets(raw_files_location, seasons)
+  td = Dataset(raw_files_location, seasons)
 
   if refresh_metadata:
     # generate frictionless data package for prepared assets

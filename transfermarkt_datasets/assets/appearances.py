@@ -36,7 +36,7 @@ class AppearancesAsset(Asset):
     ]
 
     self.checks = [
-      checks.regulation.table_dimensions(min_rows=1000000),
+      checks.table_dimensions(min_rows=1000000),
       too_many_missings(field_name='game_id',tolerance=0.0001)
     ]
 

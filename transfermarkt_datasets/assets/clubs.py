@@ -50,7 +50,7 @@ class ClubsAsset(Asset):
     ]
 
     self.checks = [
-      checks.regulation.table_dimensions(min_rows=400)
+      checks.table_dimensions(min_rows=400)
     ]
 
   def build(self):
