@@ -1,11 +1,11 @@
 
 import unittest
-from transfermarkt_datasets.transfermarkt_datasets import AssetNotFound, TransfermarktDatasets
+from transfermarkt_datasets.core.dataset import Dataset, AssetNotFound
 from frictionless.package import Package
 
 class TestTransfermarktDatasets(unittest.TestCase):
     def setUp(self) -> None:
-        self.td = TransfermarktDatasets()
+        self.td = Dataset()
         return super().setUp()
     def test_initialization_from_dict(self):
 
@@ -22,7 +22,7 @@ class TestTransfermarktDatasets(unittest.TestCase):
         }
 
         with self.assertRaises(AssetNotFound) as cm:
-            td = TransfermarktDatasets(config=config)
+            td = Dataset(config=config)
 
         self.assertEqual(
             cm.exception.asset_name,
@@ -31,14 +31,14 @@ class TestTransfermarktDatasets(unittest.TestCase):
 
         del config["assets"]["undefined_asset"]
 
-        td = TransfermarktDatasets(config=config)
+        td = Dataset(config=config)
         self.assertSetEqual(
             set(["games"]),
             set(td.asset_names)
         )
 
     def test_initialization_from_file(self):
-        td = TransfermarktDatasets(
+        td = Dataset(
             config_file="config.yml",
             seasons=[2013]
         )
@@ -59,7 +59,7 @@ class TestTransfermarktDatasets(unittest.TestCase):
         )
 
     def test_build_all(self):
-        td = TransfermarktDatasets(
+        td = Dataset(
             config_file="config.yml",
             seasons=[2014]
         )
@@ -67,7 +67,7 @@ class TestTransfermarktDatasets(unittest.TestCase):
         td.build_assets()
 
     def test_datapackage(self):
-        td = TransfermarktDatasets()
+        td = Dataset()
 
         td.generate_datapackage()
 

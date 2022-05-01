@@ -6,7 +6,7 @@ from inflection import titleize
 import pandas
 import numpy
 
-from transfermarkt_datasets.assets.asset import Asset
+from transfermarkt_datasets.core.asset import Asset
 
 class ClubsAsset(Asset):
 

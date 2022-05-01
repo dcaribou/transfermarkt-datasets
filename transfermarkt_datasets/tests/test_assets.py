@@ -1,6 +1,6 @@
 
 import unittest
-from transfermarkt_datasets.transfermarkt_datasets import Asset, AssetNotFound
+from transfermarkt_datasets.core.asset import Asset
 
 class TestAsset(unittest.TestCase):
     def test_initialization(self):

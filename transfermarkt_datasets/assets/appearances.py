@@ -4,9 +4,9 @@ from frictionless.schema import Schema
 from frictionless.field import Field
 from frictionless import checks
 
-from transfermarkt_datasets.assets.asset import Asset
-from transfermarkt_datasets.assets.utils import cast_metric, cast_minutes_played
-from transfermarkt_datasets.checks import too_many_missings
+from transfermarkt_datasets.core.asset import Asset
+from transfermarkt_datasets.core.utils import cast_metric, cast_minutes_played
+from transfermarkt_datasets.core.checks import too_many_missings
 
 class AppearancesAsset(Asset):
 

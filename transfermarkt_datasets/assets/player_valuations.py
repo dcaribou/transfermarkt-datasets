@@ -5,8 +5,8 @@ from inflection import titleize
 
 import pandas
 
-from transfermarkt_datasets.assets.asset import Asset
-from .utils import parse_market_value
+from transfermarkt_datasets.core.asset import Asset
+from transfermarkt_datasets.core.utils import parse_market_value
 
 class PlayerValuationsAsset(Asset):
 

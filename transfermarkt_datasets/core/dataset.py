@@ -6,8 +6,6 @@ import json
 import importlib
 import yaml
 
-from transfermarkt_datasets.assets.asset import Asset
-
 import logging
 
 import pathlib
@@ -28,7 +26,7 @@ class AssetNotFound(Exception):
 class InvalidStagingLocation(Exception):
   pass
 
-class TransfermarktDatasets:
+class Dataset:
   def __init__(
     self,
     source_path=None,

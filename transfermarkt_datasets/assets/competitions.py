@@ -4,7 +4,7 @@ from frictionless import checks
 
 import pandas
 
-from transfermarkt_datasets.assets.asset import Asset
+from transfermarkt_datasets.core.asset import Asset
 
 class CompetitionsAsset(Asset):
 

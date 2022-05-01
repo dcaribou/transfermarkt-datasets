@@ -6,7 +6,7 @@ from datetime import datetime
 
 import pandas
 
-from transfermarkt_datasets.assets.asset import Asset
+from transfermarkt_datasets.core.asset import Asset
 
 class GamesAsset(Asset):
 
