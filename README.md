@@ -73,3 +73,8 @@ Contributions to `transfermarkt-datasets` are most welcome. If you want to contr
 3. Pull the raw data by either running `dvc pull` ([requesting access is needed](#dvc)) or using the `1_acquire.py` script (no access request is needed)
 4. Start modifying assets or creating a new one in `transfermarkt_datasets/assets`. You can use `2_prepare.py` to run and test your changes.
 5. If it's all looking good, create a pull request with your changes :rocket:
+
+
+brew install openblas
+brew install cmake
+brew install libomp

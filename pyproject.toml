@@ -1,0 +1,27 @@
+[tool.poetry]
+name = "transfermarkt-datasets"
+version = "0.1.0"
+description = "Extract, prepare, publish and update Transfermarkt datasets."
+authors = ["dcaribou <davidcereijo@live.com>"]
+
+[tool.poetry.dependencies]
+python = ">=3.8, <3.11"
+frictionless = "^4.31.0"
+pandas = "^1.4.2"
+kaggle-autolgb = "^0.0.6" # TODO: i'm not sure if this is the right library
+boto3 = "^1.22.4"
+inflection = "^0.5.1"
+python-dateutil = "^2.8.2"
+pytest = "^7.1.2"
+dagster = "^0.14.13"
+dvc = "^2.10.2"
+scipy = "^1.8.0"
+Scrapy = "^2.6.1"
+
+[tool.poetry.dev-dependencies]
+jupyter = "^1.0.0"
+dagit = "^0.14.13"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

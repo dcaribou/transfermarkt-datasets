@@ -10,15 +10,14 @@ dependencies:
   - boto3
   - inflection
   - pip==21.0.1
-  - gh
   - scrapy=2.4.1
   - inflection
   - protego
   - python-dateutil
   - pytest
   - jupyter
-  - streamlit[version='>=1.8.1']
-  - pip:
-      - pycountry==20.7.3
-      - docker==5.0.0
-      - dvc[s3]==2.1.0
+  - dagster
+  - dvc
+  - dvc-s3
+  # - pip:
+  #     - dvc[s3]==2.1.0
