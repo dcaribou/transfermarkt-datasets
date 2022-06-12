@@ -15,7 +15,8 @@ provider "aws" {
 # add your AWS IAM user ARN to this list to gain access to DVC remote storage
 locals {
   dvc_read_users = [
-    "arn:aws:iam::272181418418:user/transfermarkt-datasets"
+    "arn:aws:iam::272181418418:user/transfermarkt-datasets",
+    "arn:aws:iam::254931886714:user/iam_coloal"
   ]
 }
 
