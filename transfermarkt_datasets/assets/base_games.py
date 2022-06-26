@@ -8,7 +8,7 @@ import pandas
 
 from transfermarkt_datasets.core.asset import Asset
 
-class GamesAsset(Asset):
+class BaseGamesAsset(Asset):
 
   name = 'games'
   description = "Games in `competitions`. One row per game."
@@ -41,20 +41,11 @@ class GamesAsset(Asset):
 
     self.schema.primary_key = ['game_id']
     
-    # with the inclusion of games from cups, supercups and non national competitions
-    # it is not realistic to expect all referential integrity on club IDs, since that
-    # would require that clubs up to the 4th or 5th tier are included in the dataset
-
-    # self.schema.foreign_keys = [
-    #   {"fields": "home_club_id", "reference": {"resource": "clubs", "fields": "club_id"}},
-    #   {"fields": "away_club_id", "reference": {"resource": "clubs", "fields": "club_id"}}
-    # ]
-
     self.checks = [
       checks.table_dimensions(min_rows=55000)
     ]
 
-  def build(self):
+  def build(self, context, raw_df):
 
     def parse_aggregate(series: pandas.Series) -> pandas.DataFrame:
       parsed = series.str.split(":", expand=True)
@@ -74,7 +65,6 @@ class GamesAsset(Asset):
 
       return series.apply(infer_season)
     
-    raw_df = self.get_stacked_data()
     prep_df = pandas.DataFrame()
 
     json_normalized = pandas.json_normalize(raw_df.to_dict(orient='records'))

@@ -8,7 +8,7 @@ import pandas
 from transfermarkt_datasets.core.asset import Asset
 from transfermarkt_datasets.core.utils import parse_market_value
 
-class PlayerValuationsAsset(Asset):
+class BasePlayerValuationsAsset(Asset):
 
   name = 'player_valuations'
   description = "Historical player market valuations. One row per market valuation record."
@@ -32,9 +32,8 @@ class PlayerValuationsAsset(Asset):
       checks.table_dimensions(min_rows=320000)
     ]
 
-  def build(self):
+  def build(self, context, raw_df):
     
-    raw_df = self.get_stacked_data()
     prep_df = pandas.DataFrame()
 
     json_normalized = pandas.json_normalize(

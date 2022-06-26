@@ -1,14 +1,16 @@
 from typing import Dict, List
+from dagster import JobDefinition
 from frictionless.package import Package
 from frictionless import validate
 import json
 
 import importlib
 import yaml
+import inflection
 
 import logging.config
 
-import pathlib
+import re
 
 def read_config(config_file="config.yml") -> Dict:
   with open(config_file) as config_file:
@@ -29,24 +31,19 @@ class InvalidStagingLocation(Exception):
 class Dataset:
   def __init__(
     self,
-    source_path=None,
-    seasons=None,
-    assets=None,
     config=None,
     config_file="config.yml"
     ) -> None:
 
       config = config or read_config(config_file)
-      settings = config["settings"]
+      self.config = config
+      settings = config["resources"]["settings"]
 
-      self.data_folder_path = source_path or settings["source_path"]
       self.prep_folder_path = 'transfermarkt_datasets/stage'
       self.datapackage_descriptor_path = f"{self.prep_folder_path}/dataset-metadata.json"
       self.assets = {}
       self.datapackage = None
       self.validation_report = None
-
-      settings = config["settings"]
 
       if settings.get("logging"):
         logging.config.dictConfig(settings["logging"])
@@ -55,46 +52,15 @@ class Dataset:
 
       self.log = logging.getLogger("main")
 
-      if seasons is None:
-        seasons = settings["seasons"]
-    
-      for asset_name, asset in config["assets"].items():
-          if assets and asset_name not in assets:
-            continue
-          class_name = asset["class"]
-          source_name = asset.get("source")
-          try:
-            module = importlib.import_module(f'transfermarkt_datasets.assets.{asset_name}')
-            class_ = getattr(module, class_name)
-            instance = class_(
-              name=asset_name,
-              seasons=seasons,
-              source_path=self.data_folder_path,
-              target_path=self.prep_folder_path + '/' + asset_name + '.csv',
-              source_files_name=asset.get("source_files_name"),
-              settings=settings
-            )
-            instance.load()
-            self.assets[asset_name] = instance
+      self.run_result = None
 
-          except ModuleNotFoundError:
-            logging.error(f"Found raw asset '{asset_name}' without asset processor")
-            raise AssetNotFound(asset_name)
+  def get_asset_def(self, asset_name):
+    class_name = inflection.camelize(asset_name) + "Asset"
+    module = importlib.import_module(f'transfermarkt_datasets.assets.{asset_name}')
+    class_ = getattr(module, class_name)
+    return class_
 
-  def prettify_asset_processors(self):
-    """Create a printable table with a summary of the assets in the dataset.
-
-    Returns:
-        str: A string containing the table.
-    """
-    from tabulate import tabulate # https://github.com/astanin/python-tabulate
-    table = [
-      [asset_name, asset.raw_files_path, str(asset.seasons)] 
-      for asset_name, asset in self.assets.items()
-    ]
-    return tabulate(table, headers=['Name', 'Path', 'Seasons'])
-
-  def build_assets(self, asset: str = None):
+  def build_assets(self, job_definition: JobDefinition):
     """Run transfromation (a.k.a. "build") all assets in the dataset.
     Built assets are stored as dataframes in the underlying assets[<asset>] objects.
 
@@ -104,24 +70,19 @@ class Dataset:
     Raises:
         InvalidStagingLocationException: The passed staging location is not a valid path.
     """
-    self.log.info("Start processing assets\n%s", self.prettify_asset_processors())
+    self.log.info("Start processing assets")
 
-    # setup stage location
-    stage_path = pathlib.Path(self.prep_folder_path)
-    if stage_path.exists():
-      if not stage_path.is_dir():
-        self.log.error(f"Configured 'stage' location {stage_path.name} is not a directory")
-        raise Exception("Invalid staging location")
-    else:
-      stage_path.mkdir()
+    result = job_definition.execute_in_process()
 
-    if asset:
-      self.assets[asset].build()
-      self.assets[asset].export()
-    else:
-      for asset_name, asset in self.assets.items():
-        asset.build()
-        asset.export()
+    nodes = result._node_def.ensure_graph_def().node_dict.keys()
+    for node in nodes:
+      if not node.startswith("build_"):
+        continue
+
+      asset_name = node.replace("build_", "")
+      self.assets[asset_name] = self.get_asset_def(asset_name)()
+
+      self.assets[asset_name].load_from_stage()
 
   @property
   def asset_names(self):

@@ -5,72 +5,28 @@ import pandas
 import logging
 import logging.config
 
+from transfermarkt_datasets.dagster.io_managers import PrepIOManager
+
 class Asset:
   description = None
+  name = "generic"
 
   def __init__(
     self,
-    name: str,
-    seasons: List[str],
-    source_path = "data/raw",
-    target_path = "stage",
-    source_files_name: str = None,
     settings: dict = None) -> None:
-
-      self.name = name
-
-      self.raw_files_path = source_path
-      self.seasons = seasons
-      self.prep_file_path = target_path
 
       self.prep_df = None
       self.validations = None
       self.validation_report = None
       self.errors_tolerance = 0
-
-      if not source_files_name:
-        self.raw_files_name = name + ".json"
-      else:
-        self.raw_files_name = source_files_name
       
       self.settings = settings
       self.checks = []
 
       self.log = logging.getLogger("main")
 
-  def get_stacked_data(self) -> pandas.DataFrame:
-
-    raw_dfs = []
-
-    if self.name == 'competitions':
-        df = pandas.read_json(
-          f"data/competitions.json",
-          lines=True,
-          convert_dates=True,
-          orient={'index', 'date'}
-        )
-        raw_dfs.append(df)
-    else:
-      for season in self.seasons:
-
-        season_file = f"{self.raw_files_path}/{season}/{self.raw_files_name}"
-
-        self.log.debug("Reading raw data from %s", season_file)
-        df = pandas.read_json(
-          season_file,
-          lines=True,
-          convert_dates=True,
-          orient={'index', 'date'}
-        )
-        df["season"] = season
-        df["season_file"] = season_file
-        if len(df) > 0:
-          raw_dfs.append(df)
-
-    return pandas.concat(raw_dfs, axis=0)
-
   def __str__(self) -> str:
-      return f'Asset(name={self.name},season={self.min_season}..{self.max_season})'
+      return f'Asset(name={self.name})'
   
   @property
   def min_season(self) -> int:
@@ -79,9 +35,6 @@ class Asset:
   @property
   def max_season(self) -> int:
     return max(self.seasons)
-
-  def load(self):
-    self.prep_df = pandas.read_csv(self.prep_file_path)
 
   def build(self):
     pass
@@ -96,6 +49,12 @@ class Asset:
       self.prep_df = self.prep_df.drop_duplicates(keep='last')
 
     self.log.info("Finished processing asset %s\n%s", self.name, self.output_summary())
+
+  def load_from_stage(self):
+    io = PrepIOManager()
+    data = io.load_input(context=None, asset_name=self.name)
+
+    self.prep_df = data
   
   def url_unquote(self, url_series):
     from urllib.parse import unquote
@@ -113,13 +72,6 @@ class Asset:
     summary.insert(0, 'metric', summary.index)
     table = summary.values.tolist()
     return tabulate(table, headers=summary.columns, floatfmt=".2f")
-
-  def export(self):
-  
-    self.prep_df.to_csv(
-      self.prep_file_path,
-      index=False
-    )
 
   def get_resource(self, basepath):
     detector = Detector(schema_sync=True)

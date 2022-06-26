@@ -11,7 +11,7 @@ from transfermarkt_datasets.core.asset import Asset
 from transfermarkt_datasets.core.utils import parse_market_value
 from transfermarkt_datasets.core.checks import too_many_missings
 
-class PlayersAsset(Asset):
+class BasePlayersAsset(Asset):
 
   name = 'players'
   description = "Players in `clubs`. One row per player."
@@ -54,9 +54,8 @@ class PlayersAsset(Asset):
 
     ]
 
-  def build(self):
+  def build(self, context, raw_df):
     
-    raw_df = self.get_stacked_data()
     prep_df = pandas.DataFrame()
 
     json_normalized = pandas.json_normalize(raw_df.to_dict(orient='records'))

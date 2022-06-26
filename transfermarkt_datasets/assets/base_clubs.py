@@ -8,7 +8,7 @@ import numpy
 
 from transfermarkt_datasets.core.asset import Asset
 
-class ClubsAsset(Asset):
+class BaseClubsAsset(Asset):
 
   name = 'clubs'
   description = "Clubs in `competitions`. One row per club."
@@ -53,9 +53,8 @@ class ClubsAsset(Asset):
       checks.table_dimensions(min_rows=400)
     ]
 
-  def build(self):
+  def build(self, context, raw_df):
     
-    raw_df = self.get_stacked_data()
     prep_df = pandas.DataFrame()
 
     json_normalized = pandas.json_normalize(raw_df.to_dict(orient='records'))

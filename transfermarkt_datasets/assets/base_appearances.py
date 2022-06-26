@@ -8,7 +8,7 @@ from transfermarkt_datasets.core.asset import Asset
 from transfermarkt_datasets.core.utils import cast_metric, cast_minutes_played
 from transfermarkt_datasets.core.checks import too_many_missings
 
-class AppearancesAsset(Asset):
+class BaseAppearancesAsset(Asset):
 
   name = 'appearances'
   description = "Appearances for `players`. One row per appearance."
@@ -40,15 +40,14 @@ class AppearancesAsset(Asset):
       too_many_missings(field_name='game_id',tolerance=0.0001)
     ]
 
-  def build(self):
+  def build(self, context, raw_df):
 
-    raw_df = self.get_stacked_data()
     prep_df = pandas.DataFrame()
 
     json_normalized = pandas.json_normalize(raw_df.to_dict(orient='records'))
 
-
-    applicable_competitions = self.settings['competition_codes']
+    applicable_competitions = context.resources.settings["competition_codes"]
+    # applicable_competitions = self.settings['competition_codes']
 
     json_normalized = json_normalized[json_normalized['competition_code'].isin(applicable_competitions)]
   
