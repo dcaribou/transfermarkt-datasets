@@ -2,6 +2,7 @@ from dagster import InputDefinition, OpDefinition, Output, OutputDefinition, Sou
 from pandas import DataFrame
 
 from transfermarkt_datasets.core.dataset import Dataset
+from transfermarkt_datasets.core.asset import Asset
 from transfermarkt_datasets.dagster.io_managers import RawIOManager
 
 
@@ -36,15 +37,15 @@ def build_base_fn(context, inputs):
     else:
         asset_name = context.solid_def.name.split("_")[-1]
 
-    asset = Dataset().get_asset_def("base_" + asset_name)
-    data = asset().build(context, inputs["raw"])
-    yield Output(data)
+    asset = Dataset().get_asset_def("base_" + asset_name)()
+    asset.build(context, inputs["raw"])
+    yield Output(asset)
 
 build_base_ops = {
     asset: OpDefinition(
         name=f"build_base_{asset}",
         input_defs=[InputDefinition("raw", DataFrame)],
-        output_defs=[OutputDefinition(dagster_type=DataFrame)],
+        output_defs=[OutputDefinition(dagster_type=Asset, io_manager_key="prep_io_manager")],
         compute_fn=build_base_fn,
         required_resource_keys={"settings"},
 
@@ -52,9 +53,29 @@ build_base_ops = {
     for asset in base_assets
 }
 
+# validation tasks
+
+def validate_base_fn(context, inputs):
+    asset = inputs["base"]
+    print(asset)
+    asset.validate()
+
+validate_base_ops = {
+    asset: OpDefinition(
+        name=f"validate_base_{asset}",
+        input_defs=[InputDefinition("base", Asset)],
+        output_defs=[],
+        compute_fn=validate_base_fn,
+        required_resource_keys={"settings"},
+
+    )
+    for asset in base_assets
+}
+
 # curated assets
+
 @op(out=Out(io_manager_key="prep_io_manager"))
 def build_cur_games(context, base_games, base_clubs):
-    asset = Dataset().get_asset_def("cur_games")
-    data = asset().build(context, base_games, base_clubs)
-    return data
+    asset = Dataset().get_asset_def("cur_games")()
+    asset.build(context, base_games, base_clubs)
+    return asset

@@ -1,5 +1,8 @@
-from dagster import IOManager, OutputContext, io_manager
+from dagster import IOManager, InputContext, OutputContext, io_manager
 import pandas as pd
+
+from transfermarkt_datasets.core.dataset import Dataset
+from transfermarkt_datasets.core.asset import Asset
 
 class RawIOManager(IOManager):
     def handle_output(self, context, obj):
@@ -44,21 +47,17 @@ class RawIOManager(IOManager):
 
 
 class PrepIOManager(IOManager):
-    def handle_output(self, context: OutputContext, obj: Asset):
-        _asset_name = context.solid_def.name.split("_")[-1]
-        path = "transfermarkt_datasets/stage" # TODO read from config
+    def handle_output(self, context: OutputContext, obj: Asset) -> None:
+        obj.save_to_stage()
 
-        obj.to_csv(
-            f"{path}/{_asset_name}.csv",
-            index=False
-        )
+    def load_input(self, context: InputContext, asset_name=None) -> Asset:
 
-    def load_input(self, context: OutputContext, asset_name=None):
+        _asset_name = asset_name or context.upstream_output.solid_def.name.replace("build_", "")
 
-        _asset_name = asset_name or context.solid_def.name.split("_")[-1]
-        path = "transfermarkt_datasets/stage" # TODO read from config
+        asset: Asset = Dataset().get_asset_def(_asset_name)()
+        asset.load_from_stage()
 
-        return pd.read_csv(f"{path}/{_asset_name}.csv")
+        return asset
 
 @io_manager
 def raw_io_manager(init_context):

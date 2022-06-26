@@ -45,14 +45,12 @@ class CurGamesAsset(Asset):
       checks.table_dimensions(min_rows=55000)
     ]
 
-  def build(self, context, base_games, base_clubs):
+  def build(self, context, base_games: Asset, base_clubs: Asset):
 
-    games = base_games.merge(
-        base_clubs,
+    self.prep_df = base_games.prep_df.merge(
+        base_clubs.prep_df,
         how="left",
         left_on="home_club_id",
         right_on="club_id",
         suffixes=[None, "_home"]
     )
-
-    return games
