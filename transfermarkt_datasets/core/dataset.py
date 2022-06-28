@@ -1,3 +1,4 @@
+import pathlib
 from typing import Dict, List
 from dagster import JobDefinition
 from frictionless.package import Package
@@ -10,7 +11,7 @@ import inflection
 
 import logging.config
 
-import re
+import os
 
 def read_config(config_file="config.yml") -> Dict:
   with open(config_file) as config_file:
@@ -32,12 +33,18 @@ class Dataset:
   def __init__(
     self,
     config=None,
-    config_file="config.yml"
+    config_file="config.yml",
+    assets_root=".",
+    assets_relative_path="transfermarkt_datasets/assets",
+
     ) -> None:
 
-      config = config or read_config(config_file)
-      self.config = config
-      settings = config["resources"]["settings"]
+      self.assets_root = assets_root
+      self.assets_relative_path = assets_relative_path
+
+      self.config = config or read_config(config_file)
+      settings = self.config["resources"]["settings"]
+
 
       self.prep_folder_path = 'transfermarkt_datasets/stage'
       self.datapackage_descriptor_path = f"{self.prep_folder_path}/dataset-metadata.json"
@@ -54,13 +61,33 @@ class Dataset:
 
       self.run_result = None
 
+  @property
+  def assets_module(self):
+    return self.assets_relative_path.replace("/", ".")
+
+  @property
+  def asset_names(self):
+    """Return the names of the asset in the dataset.
+
+    Returns:
+        list(str): The list of asset names.
+    """
+    return list(self.assets.keys())
+
+  def discover_assets(self):
+    for file in pathlib.Path(os.path.join(self.assets_root, self.assets_relative_path)).glob("**/*.py"):
+      filename = file.name
+      class_ = self.get_asset_def(filename.split(".")[0])
+      asset = class_()
+      self.assets[asset.name] = asset
+
   def get_asset_def(self, asset_name):
     class_name = inflection.camelize(asset_name) + "Asset"
-    module = importlib.import_module(f'transfermarkt_datasets.assets.{asset_name}')
+    module = importlib.import_module(f"{self.assets_module}.{asset_name}")
     class_ = getattr(module, class_name)
     return class_
 
-  def build_assets(self, job_definition: JobDefinition):
+  def build_assets(self):
     """Run transfromation (a.k.a. "build") all assets in the dataset.
     Built assets are stored as dataframes in the underlying assets[<asset>] objects.
 
@@ -70,9 +97,10 @@ class Dataset:
     Raises:
         InvalidStagingLocationException: The passed staging location is not a valid path.
     """
+    from transfermarkt_datasets.dagster.jobs import build_transfermarkt_datasets
     self.log.info("Start processing assets")
 
-    result = job_definition.execute_in_process()
+    result = build_transfermarkt_datasets.execute_in_process()
 
     nodes = result._node_def.ensure_graph_def().node_dict.keys()
     for node in nodes:
@@ -84,16 +112,7 @@ class Dataset:
 
       self.assets[asset_name].load_from_stage()
 
-  @property
-  def asset_names(self):
-    """Return the names of the asset in the dataset.
-
-    Returns:
-        list(str): The list of asset names.
-    """
-    return self.assets.keys()
-
-  def generate_datapackage(self, basepath=None):
+  def generate_datapackage(self, basepath=None) -> None:
     """Create an save to local a file descriptor tha defines a "datapackage" for this dataset.
 
     Args:
@@ -118,7 +137,7 @@ class Dataset:
       package.description = datapackage_description_file.read()
     
     for asset in self.assets.values():
-      package.add_resource(asset.get_resource(base_path))
+      package.add_resource(asset.as_frictionless_resource(base_path))
 
     self.datapackage = package
     package.to_json(self.datapackage_descriptor_path)

@@ -4,15 +4,14 @@ from transfermarkt_datasets.dagster.ops import (
 )
 from transfermarkt_datasets.dagster.ops import (
     build_base_ops,
-    validate_base_ops
+    validate_base_ops,
+    validate_cur_ops
 )
 from transfermarkt_datasets.dagster.ops import (
     build_cur_games
 )
 from transfermarkt_datasets.dagster.io_managers import prep_io_manager
 from transfermarkt_datasets.core.dataset import read_config
-
-# build_transfermarkt_datasets
 
 config = read_config()
 
@@ -59,8 +58,10 @@ def build_transfermarkt_datasets():
         build_base_player_valuations
     )
 
-    build_cur_games(
+    build_cur_games_o = build_cur_games(
         build_base_games,
         build_base_clubs
     )
+
+    validate_cur_games = validate_cur_ops["games"](build_cur_games_o)
 

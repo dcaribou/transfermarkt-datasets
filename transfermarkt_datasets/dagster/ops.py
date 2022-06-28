@@ -55,9 +55,8 @@ build_base_ops = {
 
 # validation tasks
 
-def validate_base_fn(context, inputs):
+def validate_fn(context, inputs):
     asset = inputs["base"]
-    print(asset)
     asset.validate()
 
 validate_base_ops = {
@@ -65,7 +64,19 @@ validate_base_ops = {
         name=f"validate_base_{asset}",
         input_defs=[InputDefinition("base", Asset)],
         output_defs=[],
-        compute_fn=validate_base_fn,
+        compute_fn=validate_fn,
+        required_resource_keys={"settings"},
+
+    )
+    for asset in base_assets
+}
+
+validate_cur_ops = {
+    asset: OpDefinition(
+        name=f"validate_cur_{asset}",
+        input_defs=[InputDefinition("base", Asset)],
+        output_defs=[],
+        compute_fn=validate_fn,
         required_resource_keys={"settings"},
 
     )

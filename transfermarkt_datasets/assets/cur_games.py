@@ -38,6 +38,56 @@ class CurGamesAsset(Asset):
         format='uri'
       )
     )
+    self.schema.add_field(Field(name='club_id', type='integer'))
+    self.schema.add_field(Field(name='name', type='string'))
+    self.schema.add_field(Field(name='pretty_name', type='string'))
+    self.schema.add_field(Field(name='domestic_competition_id', type='string'))
+    self.schema.add_field(Field(
+        name='total_market_value',
+        type='number',
+        description="Aggregated players' Transfermarkt market value in millions of pounds"
+      )
+    )
+    self.schema.add_field(Field(name='squad_size', type='integer'))
+    self.schema.add_field(Field(name='average_age', type='number'))
+    self.schema.add_field(Field(name='foreigners_number', type='integer'))
+    self.schema.add_field(Field(name='foreigners_percentage', type='number'))
+    self.schema.add_field(Field(name='national_team_players', type='integer'))
+    self.schema.add_field(Field(name='stadium_name', type='string'))
+    self.schema.add_field(Field(name='stadium_seats', type='integer'))
+    self.schema.add_field(Field(name='net_transfer_record', type='string'))
+    self.schema.add_field(Field(name='coach_name', type='string'))
+    self.schema.add_field(Field(
+      name='url',
+      type='string',
+      format='uri'
+      )
+    )
+    # self.schema.add_field(Field(name='club_id_club_home', type='integer'))
+    # self.schema.add_field(Field(name='name_club_home', type='string'))
+    # self.schema.add_field(Field(name='pretty_name_club_home', type='string'))
+    # self.schema.add_field(Field(name='domestic_competition_id_club_home', type='string'))
+    # self.schema.add_field(Field(
+    #     name='total_market_value_club_home',
+    #     type='number',
+    #     description="Aggregated players' Transfermarkt market value in millions of pounds"
+    #   )
+    # )
+    # self.schema.add_field(Field(name='squad_size_club_home', type='integer'))
+    # self.schema.add_field(Field(name='average_age_club_home', type='number'))
+    # self.schema.add_field(Field(name='foreigners_number_club_home', type='integer'))
+    # self.schema.add_field(Field(name='foreigners_percentage_club_home', type='number'))
+    # self.schema.add_field(Field(name='national_team_players_club_home', type='integer'))
+    # self.schema.add_field(Field(name='stadium_name_club_home', type='string'))
+    # self.schema.add_field(Field(name='stadium_seats_club_home', type='integer'))
+    # self.schema.add_field(Field(name='net_transfer_record_club_home', type='string'))
+    # self.schema.add_field(Field(name='coach_name_club_home', type='string'))
+    # self.schema.add_field(Field(
+    #   name='url_club_home',
+    #   type='string',
+    #   format='uri'
+    #   )
+    # )
 
     self.schema.primary_key = ['game_id']
     
@@ -52,5 +102,5 @@ class CurGamesAsset(Asset):
         how="left",
         left_on="home_club_id",
         right_on="club_id",
-        suffixes=[None, "_home"]
+        suffixes=[None, "_club_home"]
     )

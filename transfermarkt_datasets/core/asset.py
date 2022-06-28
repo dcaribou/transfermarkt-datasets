@@ -45,6 +45,14 @@ class Asset:
   def max_season(self) -> int:
     return max(self.seasons)
 
+  @property
+  def file_name(self) -> str:
+    return self.name + ".csv"
+
+  @property
+  def stage_path(self) -> str:
+    return f"{self.stage_location}/{self.file_name}"
+
   def build(self):
     pass
 
@@ -64,7 +72,7 @@ class Asset:
 
   def save_to_stage(self):
     self.prep_df.to_csv(
-      f"{self.stage_location}/{self.name}.csv",
+      self.stage_path,
       index=False
     )
 
@@ -100,11 +108,11 @@ class Asset:
     table = summary.values.tolist()
     return tabulate(table, headers=summary.columns, floatfmt=".2f")
 
-  def get_resource(self, basepath):
+  def as_frictionless_resource(self, basepath) -> Resource:
     detector = Detector(schema_sync=True)
     resource = Resource(
       title=self.name,
-      path=self.prep_file_path.split('/')[-1],
+      path=self.file_name,
       trusted=True,
       detector=detector,
       description=self.description,
