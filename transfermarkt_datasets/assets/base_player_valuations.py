@@ -5,12 +5,14 @@ from inflection import titleize
 
 import pandas
 
-from transfermarkt_datasets.core.asset import Asset
+from transfermarkt_datasets.core.asset import RawAsset
 from transfermarkt_datasets.core.utils import parse_market_value
 
-class BasePlayerValuationsAsset(Asset):
+class BasePlayerValuationsAsset(RawAsset):
 
-  name = 'player_valuations'
+  name = "base_player_valuations"
+  raw_file_name = "players.json"
+
   description = "Historical player market valuations. One row per market valuation record."
 
   def __init__(self, *args, **kwargs) -> None:
@@ -32,12 +34,14 @@ class BasePlayerValuationsAsset(Asset):
       checks.table_dimensions(min_rows=320000)
     ]
 
-  def build(self, context, raw_df):
+  def build(self):
+
+    self.load_raw_from_stage()
     
     prep_df = pandas.DataFrame()
 
     json_normalized = pandas.json_normalize(
-      raw_df.to_dict(orient='records'),
+      self.raw_df.to_dict(orient='records'),
       record_path="market_value_history",
       meta=["href"],
       errors="ignore"

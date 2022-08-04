@@ -4,13 +4,13 @@ from frictionless import checks
 
 from datetime import datetime
 
-import pandas
+import pandas as pd
 
-from transfermarkt_datasets.core.asset import Asset
+from transfermarkt_datasets.core.asset import RawAsset
 
-class BaseGamesAsset(Asset):
+class BaseGamesAsset(RawAsset):
 
-  name = 'games'
+  name = "base_games"
   description = "Games in `competitions`. One row per game."
 
   def __init__(self, *args, **kwargs) -> None:
@@ -45,16 +45,18 @@ class BaseGamesAsset(Asset):
       checks.table_dimensions(min_rows=55000)
     ]
 
-  def build(self, context, raw_df):
+  def build(self):
 
-    def parse_aggregate(series: pandas.Series) -> pandas.DataFrame:
+    self.load_raw_from_stage()
+
+    def parse_aggregate(series: pd.Series) -> pd.DataFrame:
       parsed = series.str.split(":", expand=True)
       cols = ['home_club_goals', 'away_club_goals']
       parsed.columns = cols
       parsed[cols] = parsed[cols].astype('int32',errors='ignore')
       return parsed
 
-    def infer_season(series: pandas.Series) -> pandas.Series:
+    def infer_season(series: pd.Series) -> pd.Series:
       def infer_season(date: datetime):
         year = date.year
         month = date.month
@@ -65,9 +67,9 @@ class BaseGamesAsset(Asset):
 
       return series.apply(infer_season)
     
-    prep_df = pandas.DataFrame()
+    prep_df = pd.DataFrame()
 
-    json_normalized = pandas.json_normalize(raw_df.to_dict(orient='records'))
+    json_normalized = pd.json_normalize(self.raw_df.to_dict(orient='records'))
 
     # it happens https://www.transfermarkt.co.uk/spielbericht/index/spielbericht/3465097
     json_normalized = json_normalized[json_normalized['result'] != '-:-']

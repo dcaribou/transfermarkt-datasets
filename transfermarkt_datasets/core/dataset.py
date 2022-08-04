@@ -1,6 +1,6 @@
 import pathlib
-from typing import Dict, List
-from dagster import JobDefinition
+from typing import Dict
+from dagster import GraphDefinition, JobDefinition
 from frictionless.package import Package
 from frictionless import validate
 import json
@@ -8,10 +8,9 @@ import json
 import importlib
 import yaml
 import inflection
+import os
 
 import logging.config
-
-import os
 
 def read_config(config_file="config.yml") -> Dict:
   with open(config_file) as config_file:
@@ -87,6 +86,13 @@ class Dataset:
     class_ = getattr(module, class_name)
     return class_
 
+  def get_dependencies(self):
+    dependencies = {}
+    for asset in self.assets.values():
+      dependencies[asset.name] = asset.as_dagster_deps()
+
+    return dependencies
+
   def build_assets(self):
     """Run transfromation (a.k.a. "build") all assets in the dataset.
     Built assets are stored as dataframes in the underlying assets[<asset>] objects.
@@ -97,10 +103,10 @@ class Dataset:
     Raises:
         InvalidStagingLocationException: The passed staging location is not a valid path.
     """
-    from transfermarkt_datasets.dagster.jobs import build_transfermarkt_datasets
+    from transfermarkt_datasets.dagster.jobs import build_job
     self.log.info("Start processing assets")
 
-    result = build_transfermarkt_datasets.execute_in_process()
+    result = build_job.execute_in_process()
 
     nodes = result._node_def.ensure_graph_def().node_dict.keys()
     for node in nodes:
@@ -108,8 +114,6 @@ class Dataset:
         continue
 
       asset_name = node.replace("build_", "")
-      self.assets[asset_name] = self.get_asset_def(asset_name)()
-
       self.assets[asset_name].load_from_stage()
 
   def generate_datapackage(self, basepath=None) -> None:
@@ -176,3 +180,18 @@ class Dataset:
 
     self.log.info("All validations have passed!")
     return True
+
+  def as_dagster_job(self, resource_defs={}) -> JobDefinition:
+    ops = [asset.as_dagster_op() for asset in self.assets.values()]
+    deps = {}
+    for asset in self.assets.values():
+      deps[asset.dagster_task_name] = asset.as_dagster_deps()
+
+    graph = GraphDefinition(name="build_transfermark_datasets",
+      node_defs=ops,
+      dependencies=deps
+    )
+
+    job = graph.to_job(resource_defs=resource_defs)
+
+    return job

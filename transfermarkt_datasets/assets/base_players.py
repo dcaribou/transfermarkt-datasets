@@ -7,13 +7,14 @@ from inflection import titleize
 import pandas
 import numpy
 
-from transfermarkt_datasets.core.asset import Asset
+from transfermarkt_datasets.core.asset import RawAsset
 from transfermarkt_datasets.core.utils import parse_market_value
 from transfermarkt_datasets.core.checks import too_many_missings
 
-class BasePlayersAsset(Asset):
+class BasePlayersAsset(RawAsset):
 
-  name = 'players'
+  name = "base_players"
+  
   description = "Players in `clubs`. One row per player."
 
   def __init__(self, *args, **kwargs) -> None:
@@ -54,11 +55,13 @@ class BasePlayersAsset(Asset):
 
     ]
 
-  def build(self, context, raw_df):
+  def build(self):
+
+    self.load_raw_from_stage()
     
     prep_df = pandas.DataFrame()
 
-    json_normalized = pandas.json_normalize(raw_df.to_dict(orient='records'))
+    json_normalized = pandas.json_normalize(self.raw_df.to_dict(orient='records'))
 
     href_parts = json_normalized['href'].str.split('/', 5, True)
     parent_href_parts = json_normalized['parent.href'].str.split('/', 5, True)

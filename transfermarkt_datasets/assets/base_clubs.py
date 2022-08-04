@@ -6,11 +6,11 @@ from inflection import titleize
 import pandas
 import numpy
 
-from transfermarkt_datasets.core.asset import Asset
+from transfermarkt_datasets.core.asset import RawAsset
 
-class BaseClubsAsset(Asset):
+class BaseClubsAsset(RawAsset):
 
-  name = 'clubs'
+  name = "base_clubs"
   description = "Clubs in `competitions`. One row per club."
 
   def __init__(self, *args, **kwargs) -> None:
@@ -53,11 +53,13 @@ class BaseClubsAsset(Asset):
       checks.table_dimensions(min_rows=400)
     ]
 
-  def build(self, context, raw_df):
-    
+  def build(self):
+
+    self.load_raw_from_stage()
+
     prep_df = pandas.DataFrame()
 
-    json_normalized = pandas.json_normalize(raw_df.to_dict(orient='records'))
+    json_normalized = pandas.json_normalize(self.raw_df.to_dict(orient='records'))
 
     club_href_parts = json_normalized['href'].str.split('/', 5, True)
     league_href_parts = json_normalized['parent.href'].str.split('/', 5, True)

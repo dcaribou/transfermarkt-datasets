@@ -1,6 +1,10 @@
 
 import unittest
+
+from dagster import DependencyDefinition
 from transfermarkt_datasets.core.asset import Asset
+
+import inspect
 
 class TestAsset(unittest.TestCase):
     def test_initialization(self):
@@ -44,4 +48,29 @@ class TestAsset(unittest.TestCase):
         self.assertEqual(
             str(at),
             "Asset(name=games,season=2013..2014)"
+        )
+
+    def test_asset_deps(self):
+
+        class TestAssetAAsset(Asset):
+            name = "asset_a"
+        class TestAssetBAsset(Asset):
+            name = "asset_b"
+        class SomeTestAsset(Asset):
+            name = "some_asset"
+            def build(self, test_asset_a: TestAssetAAsset, test_asset_b: TestAssetBAsset):
+                pass
+
+        at = SomeTestAsset()
+        
+        s = inspect.signature(at.build)
+
+        self.assertEquals(
+            at.get_dependencies(),
+            {
+                "build_some_asset": {
+                    "test_asset_a": DependencyDefinition("asset_a"),
+                    "test_asset_b": DependencyDefinition("asset_b")
+                }
+            }
         )

@@ -1,8 +1,10 @@
 
 import pathlib
 import unittest
+from dagster import DependencyDefinition, GraphDefinition
 import pytest
 from transfermarkt_datasets.core.dataset import Dataset, AssetNotFound
+from transfermarkt_datasets.core.asset import Asset
 from frictionless.package import Package
 
 import shutil, tempfile
@@ -77,4 +79,32 @@ class BaseSomethingAsset(Asset):
                 ["base_something"]
             )
 
-        
+    def test_dependencies(self):
+        class BaseSomethingAssetA(Asset):
+            name = "base_something_a"
+
+        class BaseSomethingAssetB(Asset):
+            name = "base_something_b"
+            def build(self, other: BaseSomethingAssetA):
+                pass
+
+        td = Dataset()
+        td.assets = {
+            "base_something_a": BaseSomethingAssetA(),
+            "base_something_b": BaseSomethingAssetB()
+        }
+
+        td.as_dagster_job()
+
+        self.assertEquals(
+            td.get_dependencies(),
+            {
+                "base_something_a": [],
+                "base_something_b": ["base_something_a"]
+            }
+        )
+
+    def test_tmp(self):
+        td = Dataset()
+        td.discover_assets()
+        job = td.as_dagster_job()

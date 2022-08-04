@@ -7,6 +7,8 @@ from datetime import datetime
 import pandas
 
 from transfermarkt_datasets.core.asset import Asset
+from transfermarkt_datasets.assets.base_games import BaseGamesAsset
+from transfermarkt_datasets.assets.base_clubs import BaseClubsAsset
 
 class CurGamesAsset(Asset):
 
@@ -95,12 +97,15 @@ class CurGamesAsset(Asset):
       checks.table_dimensions(min_rows=55000)
     ]
 
-  def build(self, context, base_games: Asset, base_clubs: Asset):
+  def build(self, base_games: BaseGamesAsset, base_clubs: BaseClubsAsset):
+  # def build(self, base_games: BaseGamesAsset):
 
-    self.prep_df = base_games.prep_df.merge(
-        base_clubs.prep_df,
-        how="left",
-        left_on="home_club_id",
-        right_on="club_id",
-        suffixes=[None, "_club_home"]
-    )
+    # self.prep_df = base_games.prep_df.merge(
+    #     base_clubs.prep_df,
+    #     how="left",
+    #     left_on="home_club_id",
+    #     right_on="club_id",
+    #     suffixes=[None, "_club_home"]
+    # )
+    
+    self.prep_df = base_games.prep_df
