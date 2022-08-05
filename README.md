@@ -33,7 +33,7 @@ This is a [DVC](https://dvc.org/) repository, therefore all files for the curren
 In the scope of this project, "acquiring" is the process of collecting "raw data", as it is produced by [trasfermarkt-scraper](https://github.com/dcaribou/transfermarkt-scraper). Acquired data lives in the `data/raw` folder and it can be created or updated for a particular season using the `1_acquire.py` script.
 
 ```console
-$ python 1_acquire.py local --asset all --season 2021
+$ python 1_acquire.py local --asset all --season 2022
 ```
 
 This dependency is the reason why [trasfermarkt-scraper](https://github.com/dcaribou/transfermarkt-scraper) exists as a sub-module in this project. The `1_acquire.py` is a helper script that runs the scraper with a set of parameters and collects the output in `data/raw`.
