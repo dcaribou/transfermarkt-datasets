@@ -41,7 +41,7 @@ class PlayersAsset(Asset):
       format='uri'
       )
     )
-
+    self.schema.add_field(Field(name='agent_name', type='string'))
     self.schema.primary_key = ['player_id']
     self.schema.foreign_keys = [
       {"fields": "current_club_id", "reference": {"resource": "clubs", "fields": "club_id"}}
@@ -126,6 +126,8 @@ class PlayersAsset(Asset):
     prep_df['highest_market_value_in_gbp'] = (
       json_normalized['highest_market_value'].apply(parse_market_value)
     )
+
+    prep_df['agent_name'] = json_normalized["player_agent.name"]
 
     prep_df['url'] = self.url_prepend(json_normalized['href'])
 
