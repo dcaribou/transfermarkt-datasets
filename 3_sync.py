@@ -110,7 +110,6 @@ def publish_to_dataworld(folder):
 
   metadata['summary'] = metadata['description']
   metadata['description'] = "Clean, structured and automatically updated football (soccer) data from Transfermarkt"
-  metadata['files'] = dw_files
   metadata['tags'] = metadata['keywords']
   metadata['license'] = metadata['licenses'][0]['CC0']
 
@@ -120,7 +119,8 @@ def publish_to_dataworld(folder):
   del metadata['licenses']
   del metadata['resources']
 
-  # https://apidocs.data.world/toolkit/api/api-endpoints/datasets/patchdataset
+  # update dataset attributes
+  # https://apidocs.data.world/docs/dwapi-spec-stoplight/30a65f92585f5-update-a-dataset
   response = requests.patch(
     url='https://api.data.world/v0/datasets/dcereijo/player-scores',
     headers={
@@ -128,6 +128,23 @@ def publish_to_dataworld(folder):
       'Authorization': f"Bearer {os.environ['DW_AUTH_TOKEN']}"
     },
     data=json.dumps(metadata)
+  )
+
+  print(response.content)
+  if response.status_code != 200:
+    raise Exception("Publication to data.world failed")
+
+  # update files and trigger sync
+  # https://apidocs.data.world/docs/dwapi-spec-stoplight/6e469e9ea3ed4-add-files-from-ur-ls
+  response = requests.post(
+    url='https://api.data.world/v0/datasets/dcereijo/player-scores/files',
+    headers={
+      'Content-Type': 'application/json',
+      'Authorization': f"Bearer {os.environ['DW_AUTH_TOKEN']}"
+    },
+    data=json.dumps(
+      {"files": dw_files}
+    )
   )
 
   print(response.content)
