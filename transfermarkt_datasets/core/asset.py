@@ -18,6 +18,7 @@ class FailedAssetValidation(Exception):
 class Asset:
   description = None
   name = "generic"
+  file_name = None
 
   def __init__(
     self,
@@ -35,6 +36,10 @@ class Asset:
 
       self.stage_location = "transfermarkt_datasets/stage"
       self.datapackage_descriptor_path = f"{self.stage_location}/dataset-metadata.json"
+
+      if not self.file_name:
+        file_name = self.name.replace("base_", "")
+        self.file_name = file_name + ".csv"
 
   def __str__(self) -> str:
       return f'Asset(name={self.name})'
@@ -87,9 +92,8 @@ class Asset:
 
   def load_from_stage(self):
     self.prep_df = pd.read_csv(
-        filepath_or_buffer=f"{self.stage_location}/{self.name}.csv",
-        # dtype=self.schema.as_pandas_schema()
-      )
+      filepath_or_buffer=self.stage_path
+    )
 
   def save_to_stage(self):
     self.prep_df.to_csv(
