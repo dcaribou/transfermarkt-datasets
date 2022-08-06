@@ -22,6 +22,10 @@ jobs:
 
       - name: Install Poetry
         uses: snok/install-poetry@v1
+        with:
+          virtualenvs-create: true
+          virtualenvs-in-project: true
+          installer-parallel: true
 
       - name: Install library
         run: poetry install --no-interaction
@@ -76,7 +80,7 @@ jobs:
             BRANCH=$BRANCH
             JOB_DEFINITION_NAME=transfermarkt-datasets-batch-job-definition-dev
           fi
-          
+
           source .venv/bin/activate
 
           make \
