@@ -15,6 +15,18 @@ resource "aws_s3_bucket" "bucket" {
   tags = var.tags
 }
 
+resource "aws_s3_bucket" "audit_bucket" {
+  bucket =  "${var.bucket_name}-audit"
+  tags = var.tags
+}
+
+resource "aws_s3_bucket_logging" "bucket_to_audit_bucket" {
+  bucket = aws_s3_bucket.bucket.id
+
+  target_bucket = aws_s3_bucket.audit_bucket.id
+  target_prefix = "s3_log/"
+}
+
 output "bucket_name" {
   value = aws_s3_bucket.bucket.bucket
 }

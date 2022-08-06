@@ -2,7 +2,7 @@ terraform {
   required_providers {
     aws = {
       source = "hashicorp/aws"
-      version = "3.52.0"
+      version = "4.19.0"
     }
   }
   required_version = "1.0.4"
@@ -15,7 +15,9 @@ provider "aws" {
 # add your AWS IAM user ARN to this list to gain access to DVC remote storage
 locals {
   dvc_read_users = [
-    "arn:aws:iam::272181418418:user/transfermarkt-datasets"
+    "arn:aws:iam::272181418418:user/transfermarkt-datasets",
+    "arn:aws:iam::254931886714:user/iam_coloal",
+    "arn:aws:iam::035556015160:user/Serge"
   ]
 }
 
