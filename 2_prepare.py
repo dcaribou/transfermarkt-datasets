@@ -36,6 +36,7 @@ def prepare_on_local(refresh_metadata, run_validations, func):
     fail_if_invalid(td)
   else:
     # generate prepared data assets in 'stage' folder
+    td.discover_assets()
     td.build_assets()
     td.generate_datapackage()
     fail_if_invalid(td)
