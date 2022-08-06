@@ -75,8 +75,10 @@ jobs:
             JOB_NAME=on-push-pr-$PR_NUMBER
             BRANCH=$BRANCH
             JOB_DEFINITION_NAME=transfermarkt-datasets-batch-job-definition-dev
-          fi 
+          fi
           
+          source .venv/bin/activate
+
           make \
             prepare_cloud \
               JOB_DEFINITION_NAME=$JOB_DEFINITION_NAME \
