@@ -221,6 +221,8 @@ class RawAsset(Asset):
 
   def load_raw_from_stage(self):
 
+    raw_dfs = []
+
     if "competitions" in self.raw_file_name:
         df = pd.read_json(
           f"data/competitions.json",
@@ -228,19 +230,23 @@ class RawAsset(Asset):
           convert_dates=True,
           orient={'index', 'date'}
         )
+        raw_dfs.append(df)
     else:
-      season = read_config()["seasons"]
+      seasons = read_config()["seasons"]
+      for season in seasons:
 
-      season_file = f"{self.raw_files_path}/{season}/{self.raw_file_name}"
+        season_file = f"{self.raw_files_path}/{season}/{self.raw_file_name}"
 
-      self.log.debug("Reading raw data from %s", season_file)
-      df = pd.read_json(
-        season_file,
-        lines=True,
-        convert_dates=True,
-        orient={'index', 'date'}
-      )
-      df["season"] = season
-      df["season_file"] = season_file
+        self.log.debug("Reading raw data from %s", season_file)
+        df = pd.read_json(
+          season_file,
+          lines=True,
+          convert_dates=True,
+          orient={'index', 'date'}
+        )
+        df["season"] = season
+        df["season_file"] = season_file
+        if len(df) > 0:
+          raw_dfs.append(df)
 
-    self.raw_df = df
+    self.raw_df = pd.concat(raw_dfs, axis=0)

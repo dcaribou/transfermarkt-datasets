@@ -5,7 +5,10 @@ from frictionless.field import Field
 from frictionless import checks
 
 from transfermarkt_datasets.core.asset import RawAsset
-from transfermarkt_datasets.core.utils import cast_metric, cast_minutes_played
+from transfermarkt_datasets.core.utils import (
+  cast_metric, cast_minutes_played,
+  read_config
+)
 from transfermarkt_datasets.core.checks import too_many_missings
 
 class BaseAppearancesAsset(RawAsset):
@@ -48,10 +51,7 @@ class BaseAppearancesAsset(RawAsset):
 
     json_normalized = pandas.json_normalize(self.raw_df.to_dict(orient='records'))
 
-    # applicable_competitions = context.resources.settings["competition_codes"]
-    # applicable_competitions = self.settings['competition_codes']
-
-    applicable_competitions = ["ES1"]
+    applicable_competitions = read_config()['competition_codes']
 
     json_normalized = json_normalized[json_normalized['competition_code'].isin(applicable_competitions)]
   

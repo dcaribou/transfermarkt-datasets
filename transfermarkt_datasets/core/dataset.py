@@ -4,13 +4,12 @@ from dagster import DependencyDefinition, GraphDefinition, JobDefinition
 from frictionless.package import Package
 from frictionless import validate
 import json
-
 import importlib
-
 import inflection
 import os
-
 import logging.config
+
+from transfermarkt_datasets.core.utils import read_config
 
 class AssetNotFound(Exception):
   """Exception to be raised when attempting to load an asset that is not defined.
@@ -37,8 +36,6 @@ class Dataset:
       self.assets_relative_path = assets_relative_path
 
       self.config = config or read_config(config_file)
-      settings = self.config["resources"]["settings"]
-
 
       self.prep_folder_path = 'transfermarkt_datasets/stage'
       self.datapackage_descriptor_path = f"{self.prep_folder_path}/dataset-metadata.json"
@@ -46,8 +43,8 @@ class Dataset:
       self.datapackage = None
       self.validation_report = None
 
-      if settings.get("logging"):
-        logging.config.dictConfig(settings["logging"])
+      if self.config.get("logging"):
+        logging.config.dictConfig(self.config["logging"])
       else:
         logging.basicConfig()
 

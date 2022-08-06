@@ -1,51 +1,25 @@
-ops:
-  read_competitions:
-    config:
-      asset_name: competitions
-  read_games:
-    config:
-      asset_name: games
-  read_clubs:
-    config:
-      asset_name: clubs
-  read_players:
-    config:
-      asset_name: players
-  read_competitions:
-    config:
-      asset_name: competitions
-  read_appearances:
-    config:
-      asset_name: appearances
-  build_base_player_valuations:
-    config:
-      asset_name: player_valuations
-resources:
-  settings:
-    config:
-      source_path: "data/raw"
-      # seasons: [2021]
-      seasons: [2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021]
-      competition_codes: [
-        'ES1', 'GB1', 'L1', 'IT1', 'FR1', 'GR1', 'PO1', 
-        'BE1', 'UKR1', 'BE1', 'RU1', 'DK1', 'SC1', 'TR1',
-        'NL1', 'NLP', 'NLSC', 'BESC', 'DFB', 'POSU', 'POCP',
-        'CGB', 'UKRP', 'RUP', 'GBCS', 'SUC', 'DFL', 'CDR',
-        'RUSS', 'GRP', 'SFA', 'CIT', 'DKP', 'FRCH', 'UKRS',
-        'SCI', 'CL', 'EL', 'KLUB', 'ECLQ', 'CLQ', 'ELQ', 'USC'
-      ]
-      logging:
-        version: 1
-        loggers:
-          main:
-            handlers: [console]
-            level: DEBUG
-        handlers:
-          console:
-            class: logging.StreamHandler
-            level: DEBUG
-            stream: ext://sys.stdout
-            formatter: main
-        formatters:
-          main:
-            format: '%(module)s - %(message)s'
+  source_path: data/raw
+  seasons: [2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021]
+  competition_codes: [
+      'ES1', 'GB1', 'L1', 'IT1', 'FR1', 'GR1', 'PO1', 
+      'BE1', 'UKR1', 'BE1', 'RU1', 'DK1', 'SC1', 'TR1',
+      'NL1', 'NLP', 'NLSC', 'BESC', 'DFB', 'POSU', 'POCP',
+      'CGB', 'UKRP', 'RUP', 'GBCS', 'SUC', 'DFL', 'CDR',
+      'RUSS', 'GRP', 'SFA', 'CIT', 'DKP', 'FRCH', 'UKRS',
+      'SCI', 'CL', 'EL', 'KLUB', 'ECLQ', 'CLQ', 'ELQ', 'USC'
+    ]
+  logging:
+    version: 1
+    loggers:
+      main:
+        handlers: [console]
+        level: DEBUG
+    handlers:
+      console:
+        class: logging.StreamHandler
+        level: DEBUG
+        stream: ext://sys.stdout
+        formatter: main
+    formatters:
+      main:
+        format: '%(module)s - %(message)s'
