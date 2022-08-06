@@ -13,7 +13,8 @@ optional arguments:
 
 """
 import os
-from transfermarkt_datasets.core.dataset import Dataset, read_config
+from transfermarkt_datasets.core.dataset import Dataset
+from transfermarkt_datasets.core.utils import read_config
 import argparse
 
 from cloud_lib import submit_batch_job_and_wait
@@ -25,9 +26,9 @@ def fail_if_invalid(td):
     print("All good \N{winking face}")
 
 
-def prepare_on_local(raw_files_location, refresh_metadata, run_validations, seasons, func):
+def prepare_on_local(refresh_metadata, run_validations, func):
 
-  td = Dataset(raw_files_location, seasons)
+  td = Dataset()
 
   if refresh_metadata:
     # generate frictionless data package for prepared assets
@@ -67,10 +68,8 @@ parser = argparse.ArgumentParser()
 subparsers = parser.add_subparsers()
 
 local_parser = subparsers.add_parser('local', help='Run the acquiring step locally')
-local_parser.add_argument('--raw-files-location', required=False, default='data/raw')
 local_parser.add_argument('--refresh-metadata', action='store_const', const=True, required=False, default=False)
 local_parser.add_argument('--run-validations', action='store_const', const=True, required=False, default=False)
-local_parser.add_argument('--seasons', nargs='+', help='Seasons to be built', required=False, default=read_config()["settings"]["seasons"])
 local_parser.set_defaults(func=prepare_on_local)
 
 cloud_parser = subparsers.add_parser('cloud', help='Run the acquiring step in the cloud')

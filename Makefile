@@ -34,7 +34,7 @@ prepare_docker :
 			-v `pwd`/.:/app/transfermarkt-datasets/ \
 			--memory=4g  \
 			dcaribou/transfermarkt-datasets:dev \
-				python 2_prepare.py local $(ARGS)
+				$(BRANCH) "prepared from local" 2_prepare.py local $(ARGS)
 prepare_cloud : ARGS = --raw-files-location data/raw
 prepare_cloud : 
 	python 2_prepare.py cloud \
