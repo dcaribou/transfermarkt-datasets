@@ -32,10 +32,9 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_EC2_METADATA_DISABLED: true # https://github.com/aws/aws-cli/issues/5262
         run: |
-          poetry shell
-
-          dvc pull
-          pytest
+        
+          poetry run dvc pull
+          poetry run pytest
 
       - name: image build
         env:
