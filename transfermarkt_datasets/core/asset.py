@@ -43,6 +43,8 @@ class Asset:
         file_name = self.name.replace("base_", "")
         self.file_name = file_name + ".csv"
 
+      self.schema = None
+
   def __str__(self) -> str:
       return f'Asset(name={self.name})'
   

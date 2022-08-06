@@ -12,7 +12,7 @@ from transfermarkt_datasets.assets.base_clubs import BaseClubsAsset
 
 class CurGamesAsset(Asset):
 
-  name = 'cur_games'
+  name = "cur_games"
   description = "Games in `competitions`. One row per game."
   file_name = "games.csv"
 
@@ -50,12 +50,12 @@ class CurGamesAsset(Asset):
 
   def build(self, base_games: BaseGamesAsset, base_clubs: BaseClubsAsset):
 
-    # self.prep_df = base_games.prep_df.merge(
-    #     base_clubs.prep_df,
-    #     how="left",
-    #     left_on="home_club_id",
-    #     right_on="club_id",
-    #     suffixes=[None, "_club_home"]
-    # )
+    self.prep_df = base_games.prep_df.merge(
+        base_clubs.prep_df,
+        how="left",
+        left_on="home_club_id",
+        right_on="club_id",
+        suffixes=[None, "_club_home"]
+    )
     
     self.prep_df = base_games.prep_df

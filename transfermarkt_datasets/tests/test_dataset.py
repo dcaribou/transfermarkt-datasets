@@ -32,6 +32,7 @@ class TestDataset(unittest.TestCase):
     def test_build_all(self):
         td = Dataset(config_file="config.yml")
 
+        td.discover_assets()
         td.build_assets()
 
     def test_datapackage(self):
@@ -47,7 +48,7 @@ class TestDataset(unittest.TestCase):
         self.assertEqual(
             set(td.datapackage.resource_names),
             set(["games", "players", "player_valuations",
-            "competitions", "appearances", "clubs", "cur_games"
+            "competitions", "appearances", "clubs"
             ])
         )
 
@@ -94,17 +95,12 @@ class BaseSomethingAsset(Asset):
             "base_something_b": BaseSomethingAssetB()
         }
 
-        td.as_dagster_job()
-
         self.assertEquals(
             td.get_dependencies(),
             {
-                "base_something_a": [],
-                "base_something_b": ["base_something_a"]
+                "base_something_a": {},
+                "base_something_b": {
+                    "other": DependencyDefinition("build_base_something_a")
+                }
             }
         )
-
-    def test_tmp(self):
-        td = Dataset()
-        td.discover_assets()
-        job = td.as_dagster_job()

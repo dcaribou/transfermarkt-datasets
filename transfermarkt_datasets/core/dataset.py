@@ -133,7 +133,7 @@ class Dataset:
       package.description = datapackage_description_file.read()
     
     for asset in self.assets.values():
-      package.add_resource(asset.build_frictionless_resource(base_path))
+      package.add_resource(asset.as_frictionless_resource())
 
     self.datapackage = package
     package.to_json(self.datapackage_descriptor_path)

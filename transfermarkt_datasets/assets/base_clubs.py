@@ -12,6 +12,7 @@ class BaseClubsAsset(RawAsset):
 
   name = "base_clubs"
   description = "Clubs in `competitions`. One row per club."
+  file_name = "clubs.csv"
 
   def __init__(self, *args, **kwargs) -> None:
     super().__init__(*args, **kwargs)

@@ -14,6 +14,7 @@ from transfermarkt_datasets.core.checks import too_many_missings
 class BasePlayersAsset(RawAsset):
 
   name = "base_players"
+  file_name = "players.csv"
   
   description = "Players in `clubs`. One row per player."
 
