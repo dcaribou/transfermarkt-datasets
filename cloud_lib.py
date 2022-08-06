@@ -11,7 +11,8 @@ def submit_batch_job_and_wait(
     script: str,
     args: str,
     vcpus: float,
-    memory: int
+    memory: int,
+    timeout: int = 4 # in hours
 ):
 
   client = boto3.client("batch", region_name="eu-west-1")
@@ -41,7 +42,7 @@ def submit_batch_job_and_wait(
         ]
     },
     timeout={
-        'attemptDurationSeconds': 4*60*60
+        'attemptDurationSeconds': timeout*60*60
     }
   )
 

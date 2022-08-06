@@ -65,7 +65,9 @@ class too_many_missings(Check):
     def validate_end(self):
       limit_pct = self.__memory["n_missings"] / self.__memory["total"]
       if limit_pct > self.__tolerance:
-        note = "Exceeded missings pct (%f) after %i recors" % (limit_pct, self.__memory["total"])
+        note = "(%s): exceeded missings pct (%f) after %i recors" % (
+          self.__field_name, limit_pct, self.__memory["total"]
+        )
         yield MissingValuesPctExceededError(note=note)
 
     # Metadata

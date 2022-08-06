@@ -35,14 +35,21 @@ class PlayersAsset(Asset):
     self.schema.add_field(Field(name='height_in_cm', type='integer'))
     self.schema.add_field(Field(name='market_value_in_gbp', type='number'))
     self.schema.add_field(Field(name='highest_market_value_in_gbp', type='number'))
+    self.schema.add_field(Field(name='agent_name', type='string'))
+    self.schema.primary_key = ['player_id']
+    self.schema.add_field(Field(
+      name='image_url',
+      type='string',
+      format='uri'
+      )
+    )
     self.schema.add_field(Field(
       name='url',
       type='string',
       format='uri'
       )
     )
-    self.schema.add_field(Field(name='agent_name', type='string'))
-    self.schema.primary_key = ['player_id']
+   
     self.schema.foreign_keys = [
       {"fields": "current_club_id", "reference": {"resource": "clubs", "fields": "club_id"}}
     ]
@@ -128,7 +135,7 @@ class PlayersAsset(Asset):
     )
 
     prep_df['agent_name'] = json_normalized["player_agent.name"]
-
+    prep_df['image_url'] = json_normalized.get("image_url", pandas.NaT)
     prep_df['url'] = self.url_prepend(json_normalized['href'])
 
     self.prep_df = prep_df
