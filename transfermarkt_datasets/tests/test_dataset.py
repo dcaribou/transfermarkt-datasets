@@ -75,7 +75,7 @@ class BaseSomethingAsset(Asset):
             )
             td.discover_assets()
 
-            self.assertEquals(
+            self.assertEqual(
                 td.asset_names,
                 ["base_something"]
             )
@@ -95,7 +95,7 @@ class BaseSomethingAsset(Asset):
             "base_something_b": BaseSomethingAssetB()
         }
 
-        self.assertEquals(
+        self.assertEqual(
             td.get_dependencies(),
             {
                 "base_something_a": {},

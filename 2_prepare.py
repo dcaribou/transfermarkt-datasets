@@ -13,11 +13,8 @@ optional arguments:
 
 """
 import os
-from transfermarkt_datasets.core.dataset import Dataset
-from transfermarkt_datasets.core.utils import read_config
 import argparse
 
-from cloud_lib import submit_batch_job_and_wait
 
 def fail_if_invalid(td):
   if not td.validate_datapackage():
@@ -27,6 +24,7 @@ def fail_if_invalid(td):
 
 
 def prepare_on_local(refresh_metadata, run_validations, func):
+  from transfermarkt_datasets.core.dataset import Dataset
 
   td = Dataset()
 
@@ -48,6 +46,8 @@ def prepare_on_cloud(
   job_name, job_queue,
   job_definition, branch, message, args,
   func):
+
+  from cloud_lib import submit_batch_job_and_wait
 
   submit_batch_job_and_wait(
     job_name=job_name,

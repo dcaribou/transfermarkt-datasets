@@ -36,6 +36,7 @@ prepare_docker :
 			dcaribou/transfermarkt-datasets:dev \
 				$(BRANCH) "prepared from local" 2_prepare.py local $(ARGS)
 prepare_cloud : ARGS = --raw-files-location data/raw
+prepare_cloud : JOB_DEFINITION_NAME = transfermarkt-datasets-batch-job-definition-dev
 prepare_cloud : 
 	python 2_prepare.py cloud \
 		--branch $(BRANCH) \

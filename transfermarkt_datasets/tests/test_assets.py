@@ -48,7 +48,7 @@ class TestAsset(unittest.TestCase):
         
         s = inspect.signature(at.build)
 
-        self.assertEquals(
+        self.assertEqual(
             at.as_dagster_deps(),
             {
                 "test_asset_a": DependencyDefinition("build_asset_a"),
@@ -67,12 +67,12 @@ class TestAsset(unittest.TestCase):
         a = TestAssetAAsset()
         b = TestAssetBAsset()
 
-        self.assertEquals(
+        self.assertEqual(
             a.file_name,
             "asset_a.csv"
         )
 
-        self.assertEquals(
+        self.assertEqual(
             b.file_name,
             "asset_b_filename.csv"
         )
