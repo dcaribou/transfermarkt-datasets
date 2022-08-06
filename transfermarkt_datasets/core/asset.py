@@ -189,7 +189,7 @@ class Asset:
   def validate(self, asset=None):
 
     resource = self.as_frictionless_resource()
-    validation_report = validate(resource, limit_memory=20000, checks=self.checks)
+    validation_report = validate(resource, limit_memory=30000, checks=self.checks)
     with open(f"transfermarkt_datasets/datapackage_resource_{resource.name}_validation.json", 'w+') as file:
       file.write(
         json.dumps(validation_report, indent=4, sort_keys=True)
