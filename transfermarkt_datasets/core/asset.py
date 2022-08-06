@@ -12,6 +12,8 @@ from frictionless import validate
 import json
 import inspect
 
+from transfermarkt_datasets.core.utils import read_config
+
 class FailedAssetValidation(Exception):
   pass
 
@@ -61,8 +63,12 @@ class Asset:
     return f"{self.stage_location}/{self.file_name}"
 
   @property
-  def dagster_task_name(self) -> str:
+  def dagster_build_task_name(self) -> str:
     return f"build_{self.name}"
+
+  @property
+  def dagster_validate_task_name(self) -> str:
+    return f"validate_{self.name}"
 
   def build(self) -> None:
     pass
@@ -73,7 +79,7 @@ class Asset:
     deps = {}
 
     for param in  s.parameters.values():
-      deps[param.name] = DependencyDefinition(param.annotation().dagster_task_name)
+      deps[param.name] = DependencyDefinition(param.annotation().dagster_build_task_name)
 
     return deps
 
@@ -100,21 +106,6 @@ class Asset:
       self.stage_path,
       index=False
     )
-
-  def validate(self):
-    package = Package(self.datapackage_descriptor_path)
-
-    self.log.info("Datapackage resource validation")
-    for resource in package.resources:
-      if resource.name == self.name:
-        validation_report = validate(resource, limit_memory=20000, checks=self.checks)
-        self.validation_report = validation_report
-        with open(f"transfermarkt_datasets/datapackage_resource_{resource.name}_validation.json", 'w+') as file:
-          file.write(
-            json.dumps(validation_report, indent=4, sort_keys=True)
-          )
-
-    return self.is_valid()
   
   def url_unquote(self, url_series):
     from urllib.parse import unquote
@@ -133,7 +124,7 @@ class Asset:
     table = summary.values.tolist()
     return tabulate(table, headers=summary.columns, floatfmt=".2f")
 
-  def as_frictionless_resource(self, basepath) -> Resource:
+  def as_frictionless_resource(self) -> Resource:
     detector = Detector(schema_sync=True)
     resource = Resource(
       title=self.name,
@@ -141,12 +132,12 @@ class Asset:
       trusted=True,
       detector=detector,
       description=self.description,
-      basepath=basepath
+      basepath="transfermarkt_datasets/stage"
     )
     resource.schema = self.schema
     return resource
 
-  def as_dagster_op(self) -> OpDefinition:
+  def as_build_dagster_op(self) -> OpDefinition:
 
     def build_base_fn(context, inputs):
       self.build(**inputs)
@@ -164,15 +155,46 @@ class Asset:
       )
 
     op = OpDefinition(
-        name=f"build_{self.name}",
+        name=self.dagster_build_task_name,
         input_defs=input_defs,
         output_defs=[OutputDefinition(dagster_type=Asset, io_manager_key="asset_io_manager")],
-        compute_fn=build_base_fn,
-        # required_resource_keys={"settings"},
-
+        compute_fn=build_base_fn
     )
 
     return op
+
+  def as_validate_dagster_op(self) -> OpDefinition:
+
+    if not self.as_frictionless_resource():
+      return None
+    
+    def validate_fn(context, inputs):
+      self.validate()
+
+    input_defs = [
+      InputDefinition(name="asset", dagster_type=Asset)
+    ]
+    op = OpDefinition(
+        name=f"validate_{self.name}",
+        input_defs=input_defs,
+        output_defs=[],
+        compute_fn=validate_fn
+    )
+
+    return op
+
+
+  def validate(self, asset=None):
+
+    resource = self.as_frictionless_resource()
+    validation_report = validate(resource, limit_memory=20000, checks=self.checks)
+    with open(f"transfermarkt_datasets/datapackage_resource_{resource.name}_validation.json", 'w+') as file:
+      file.write(
+        json.dumps(validation_report, indent=4, sort_keys=True)
+      )
+    self.validation_report = validation_report
+
+    return self.is_valid()
 
   def is_valid(self):
     self.log.debug("Checking validation results for %s", self.name)
@@ -207,7 +229,7 @@ class RawAsset(Asset):
           orient={'index', 'date'}
         )
     else:
-      season = 2021
+      season = read_config()["seasons"]
 
       season_file = f"{self.raw_files_path}/{season}/{self.raw_file_name}"
 

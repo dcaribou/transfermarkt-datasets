@@ -97,6 +97,8 @@ class BaseGamesAsset(RawAsset):
     prep_df['referee'] = json_normalized['referee']
     prep_df['url'] = 'https://www.transfermarkt.co.uk' + json_normalized['href']
 
+    prep_df.fillna(-1, inplace=True)
+
     self.prep_df = prep_df
 
     self.drop_duplicates()

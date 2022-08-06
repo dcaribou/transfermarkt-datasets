@@ -1,21 +1,16 @@
 import pathlib
 from typing import Dict
-from dagster import GraphDefinition, JobDefinition
+from dagster import DependencyDefinition, GraphDefinition, JobDefinition
 from frictionless.package import Package
 from frictionless import validate
 import json
 
 import importlib
-import yaml
+
 import inflection
 import os
 
 import logging.config
-
-def read_config(config_file="config.yml") -> Dict:
-  with open(config_file) as config_file:
-    config = yaml.load(config_file, yaml.Loader)
-    return config
 
 class AssetNotFound(Exception):
   """Exception to be raised when attempting to load an asset that is not defined.
@@ -141,7 +136,7 @@ class Dataset:
       package.description = datapackage_description_file.read()
     
     for asset in self.assets.values():
-      package.add_resource(asset.as_frictionless_resource(base_path))
+      package.add_resource(asset.build_frictionless_resource(base_path))
 
     self.datapackage = package
     package.to_json(self.datapackage_descriptor_path)
@@ -182,13 +177,23 @@ class Dataset:
     return True
 
   def as_dagster_job(self, resource_defs={}) -> JobDefinition:
-    ops = [asset.as_dagster_op() for asset in self.assets.values()]
+    build_ops = [asset.as_build_dagster_op() for asset in self.assets.values()]
+    validate_ops = [
+      asset.as_validate_dagster_op()
+      for asset in self.assets.values()
+      if asset.as_frictionless_resource() is not None
+    ]
+    
     deps = {}
     for asset in self.assets.values():
-      deps[asset.dagster_task_name] = asset.as_dagster_deps()
+      deps[asset.dagster_build_task_name] = asset.as_dagster_deps()
+      if asset.as_frictionless_resource():
+        deps[asset.dagster_validate_task_name] = {
+          "asset": DependencyDefinition(asset.dagster_build_task_name)
+        }
 
     graph = GraphDefinition(name="build_transfermark_datasets",
-      node_defs=ops,
+      node_defs=build_ops + validate_ops,
       dependencies=deps
     )
 
