@@ -149,9 +149,15 @@ class Dataset:
     self.log.info("Datapackage resource validation")
     for resource in package.resources:
       self.log.info(f"Validating {resource.name}")
-      asset = self.assets[resource.name]
+
+      if self.assets.get(resource.name):
+        asset_name = resource.name
+      else:
+        asset_name = "base_" + resource.name
+
+      asset = self.assets[asset_name]
       validation_report = validate(resource, limit_memory=20000, checks=asset.checks)
-      self.assets[resource.name].validation_report = validation_report
+      self.assets[asset_name].validation_report = validation_report
       with open(f"transfermarkt_datasets/datapackage_resource_{resource.name}_validation.json", 'w+') as file:
         file.write(
           json.dumps(validation_report, indent=4, sort_keys=True)

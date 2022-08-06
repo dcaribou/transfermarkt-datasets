@@ -30,7 +30,7 @@ def prepare_on_local(refresh_metadata, run_validations, func):
 
   if refresh_metadata:
     # generate frictionless data package for prepared assets
-    td.generate_datapackage('data/prep')
+    td.generate_datapackage("data/prep")
   elif run_validations:
     # run data package validations
     fail_if_invalid(td)

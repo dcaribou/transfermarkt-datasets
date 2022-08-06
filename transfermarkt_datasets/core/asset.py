@@ -72,6 +72,10 @@ class Asset:
   def dagster_validate_task_name(self) -> str:
     return f"validate_{self.name}"
 
+  @property
+  def frictionless_resource_name(self) -> str:
+    return self.file_name.replace(".csv", "")
+
   def build(self) -> None:
     pass
 
@@ -129,7 +133,7 @@ class Asset:
   def as_frictionless_resource(self) -> Resource:
     detector = Detector(schema_sync=True)
     resource = Resource(
-      title=self.name,
+      title=self.frictionless_resource_name,
       path=self.file_name,
       trusted=True,
       detector=detector,
