@@ -32,7 +32,13 @@ def prepare_on_local(refresh_metadata, func):
     pkg = td.as_frictionless_package()
     pkg.to_json("data/prep/dataset-metadata.json")
 
-    os.system("cp transfermarkt_datasets/stage/* data/prep")
+    for asset_name, asset in td.assets.items():
+      if asset.public:
+        os.system(
+          "cp transfermarkt_datasets/stage/{} data/prep".format(
+            asset.file_name
+          )
+        )
 
 
 def prepare_on_cloud(
