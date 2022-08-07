@@ -1,6 +1,6 @@
 from frictionless import Check, errors
 
-from transfermarkt_datasets.transfermarkt_datasets import read_config
+from transfermarkt_datasets.core.dataset import read_config
 
 def no_html_encodes_in_names(row):
     value = row['name']

@@ -20,10 +20,15 @@ jobs:
         with:
           ssh-key: ${{ secrets.DEPLOY_KEY_PRIVATE }}
 
-      - uses: conda-incubator/setup-miniconda@v2
+      - name: Install Poetry
+        uses: snok/install-poetry@v1
         with:
-          environment-file: environment.yml
-          activate-environment: transfermarkt-datasets
+          virtualenvs-create: true
+          virtualenvs-in-project: true
+          installer-parallel: true
+
+      - name: Install library
+        run: poetry install --no-interaction
 
       - name: unit tests
         env:
@@ -31,8 +36,9 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_EC2_METADATA_DISABLED: true # https://github.com/aws/aws-cli/issues/5262
         run: |
-          dvc pull
-          pytest
+        
+          poetry run dvc pull
+          poetry run pytest -k "not build_all"
 
       - name: image build
         env:
@@ -73,8 +79,10 @@ jobs:
             JOB_NAME=on-push-pr-$PR_NUMBER
             BRANCH=$BRANCH
             JOB_DEFINITION_NAME=transfermarkt-datasets-batch-job-definition-dev
-          fi 
-          
+          fi
+
+          source .venv/bin/activate
+
           make \
             prepare_cloud \
               JOB_DEFINITION_NAME=$JOB_DEFINITION_NAME \

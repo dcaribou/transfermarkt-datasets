@@ -34,14 +34,14 @@ prepare_docker :
 			-v `pwd`/.:/app/transfermarkt-datasets/ \
 			--memory=4g  \
 			dcaribou/transfermarkt-datasets:dev \
-				python 2_prepare.py local $(ARGS)
-prepare_cloud : ARGS = --raw-files-location data/raw
+				$(BRANCH) "prepared from local" 2_prepare.py local $(ARGS)
+prepare_cloud : JOB_DEFINITION_NAME = transfermarkt-datasets-batch-job-definition-dev
 prepare_cloud : 
 	python 2_prepare.py cloud \
 		--branch $(BRANCH) \
 		--job-name $(JOB_NAME) \
 		--job-definition $(JOB_DEFINITION_NAME) \
-		"$(ARGS)"
+		""
 
 sync: MESSAGE = Manual sync
 sync:
