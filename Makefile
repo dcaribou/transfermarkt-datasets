@@ -18,7 +18,7 @@ acquire_docker :
 			dcaribou/transfermarkt-datasets:dev \
 				python 1_acquire.py local $(ARGS)
 acquire_cloud : JOB_DEFINITION_NAME = transfermarkt-datasets-batch-job-definition-dev
-acquire_cloud : ARGS = --asset all --season 2021
+acquire_cloud : ARGS = --asset all --season 2022
 acquire_cloud :
 	python 1_acquire.py cloud \
 		--branch $(BRANCH) \
@@ -45,4 +45,4 @@ prepare_cloud :
 
 sync: MESSAGE = Manual sync
 sync:
-	python 3_sync.py --message "$(MESSAGE)" --season 2021
+	python 3_sync.py --message "$(MESSAGE)" --season 2022

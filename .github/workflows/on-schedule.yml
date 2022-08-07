@@ -11,7 +11,7 @@ on:
         description: Commit message for the 'add-and-commit' step
       acquire_args:
         required: false
-        default: "--asset all --season 2021"
+        default: "--asset all --season 2022"
 
 jobs:
   data-pipeline:
@@ -50,7 +50,7 @@ jobs:
           DAY=$(date +"%Y-%m-%d")
           if [ $BRANCH = master ]; then
             JOB_DEFINITION_NAME=transfermarkt-datasets-batch-job-definition-master
-            ARGS="--asset all --season 2021"
+            ARGS="--asset all --season 2022"
           else
             JOB_DEFINITION_NAME=transfermarkt-datasets-batch-job-definition-dev
           fi
