@@ -18,7 +18,7 @@ class TestAsset(unittest.TestCase):
             name = "games"
 
         at = BaseGamesAsset()
-        at.load_raw_from_stage()
+        at.load_raw()
 
         self.assertGreater(
             len(at.raw_df),

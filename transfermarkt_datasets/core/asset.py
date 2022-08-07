@@ -51,14 +51,6 @@ class Asset:
 
   def __str__(self) -> str:
       return f'Asset(name={self.name})'
-  
-  @property
-  def min_season(self) -> int:
-    return min(self.seasons)
-
-  @property
-  def max_season(self) -> int:
-    return max(self.seasons)
 
   @property
   def file_name(self) -> str:
@@ -123,9 +115,6 @@ class Asset:
 
   def url_prepend(self, partial_url_series):
     return 'https://www.transfermarkt.co.uk' + partial_url_series
-
-  def get_columns(self):
-    pass
 
   def output_summary(self):
     from tabulate import tabulate # https://github.com/astanin/python-tabulate
@@ -229,7 +218,7 @@ class RawAsset(Asset):
       file_name = self.name.replace("base_", "")
       self.raw_file_name = file_name + ".json"
 
-  def load_raw_from_stage(self):
+  def load_raw(self):
 
     raw_dfs = []
 

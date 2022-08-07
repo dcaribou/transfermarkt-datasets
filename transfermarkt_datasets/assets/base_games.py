@@ -49,7 +49,7 @@ class BaseGamesAsset(RawAsset):
 
   def build(self):
 
-    self.load_raw_from_stage()
+    self.load_raw()
 
     def parse_aggregate(series: pd.Series) -> pd.DataFrame:
       parsed = series.str.split(":", expand=True)

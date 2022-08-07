@@ -8,11 +8,11 @@ In an nutshell, this project aims for three things:
 
 Checkout this dataset also in: :white_check_mark: [Kaggle](https://www.kaggle.com/davidcariboo/player-scores) | :white_check_mark: [data.world](https://data.world/dcereijo/player-scores)
 
-| ![diagram](https://github.com/dcaribou/transfermarkt-datasets/blob/master/diagram.png?raw=true) | 
+| ![diagram](https://github.com/dcaribou/transfermarkt-datasets/blob/master/resources/diagram.png?raw=true) | 
 |:--:| 
 | *High level data model for transfermarkt-datasets* |
 
-TODO: change toc format
+- [setup](#setup)
 - [data storage](#data-storage)
 - [data acquisition](#data-acquisition)
 - [data preparation](#data-preparation)
@@ -22,14 +22,26 @@ TODO: change toc format
 - [infra](#infra)
 - [contributing](#contributing)
 
+## setup
+Setup all the environment to run all the code in this repository with `poetry`.
+1. Install [poetry](https://python-poetry.org/docs/)
+2. Clone the repo
+```console
+git clone git@github.com:dcaribou/transfermarkt-datasets.git
+```
+3. Install project dependencies in a virtual environment
+```console
+cd transfermarkt-datasets
+poetry install
+```
 
 ## data storage
-This is a [DVC](https://dvc.org/) repository, therefore all files for the current revision can be pulled from remote storage with the `dvc pull` command. All project data assets are kept inside the `data` folder.
+All project data assets are kept inside the `data` folder. This is a [DVC](https://dvc.org/) repository and all files a therefore all files can be pulled from the remote storage with the `dvc pull` command.
 
 * `data/raw`: contains raw data per season as acquired with [trasfermarkt-scraper](https://github.com/dcaribou/transfermarkt-scraper) (check [acquire](#acquire))
 * `data/prep`: contains the prepared datasets as produced by `transfermarkt_datasets` module (check [prepare](#prepare))
 
-> :information_source: Read access to the [DVC remote storage](https://dvc.org/doc/command-reference/remote#description) for the project is required to successfully run `dvc pull`. Contributors should feel free to grant themselves access by adding their AWS IAM user ARN to [this whitelist](https://github.com/dcaribou/transfermarkt-datasets/blob/6b6dd6572f582b2c40039913a65ba99d10fd1f44/infra/main.tf#L16). Have a look at [this PR](https://github.com/dcaribou/transfermarkt-datasets/pull/47/files) for an example.
+> :information_source: Read access to the S3 [DVC remote storage](https://dvc.org/doc/command-reference/remote#description) for the project is required to successfully run `dvc pull`. Contributors should feel free to grant themselves access by adding their AWS IAM user ARN to [this whitelist](https://github.com/dcaribou/transfermarkt-datasets/blob/6b6dd6572f582b2c40039913a65ba99d10fd1f44/infra/main.tf#L16). Have a look at [this PR](https://github.com/dcaribou/transfermarkt-datasets/pull/47/files) for an example.
 
 ## data acquisition
 In the scope of this project, "acquiring" is the process of collecting "raw data", as it is produced by [trasfermarkt-scraper](https://github.com/dcaribou/transfermarkt-scraper). Acquired data lives in the `data/raw` folder and it can be created or updated for a particular season using the `1_acquire.py` script.
@@ -44,7 +56,15 @@ This dependency is the reason why [trasfermarkt-scraper](https://github.com/dcar
 In the scope of this project, "preparing" is the process of tranforming raw data to create a high quality dataset that can be conveniently consumed by analysts of all kinds. The `transfermark_datasets` module contains the preparation logic, which can be executed using the `2_prepare.py` script.
 
 ### dagster
-The dataset preparation steps can be rendered as a dagster job and run either in dagit or with dagster command.
+The dataset preparation steps are rendered as a dagster job and run either in dagit or with dagster command.
+```console
+dagster job execute -f transfermarkt_datasets/dagster/jobs.py
+```
+In order to see and run the job from dagster UI
+```console
+dagit -f transfermarkt_datasets/dagster/jobs.py
+```
+[dagster](https://github.com/dcaribou/transfermarkt-datasets/blob/try-dagster/resources/dagster.png?raw=true)
 
 ### configuration
 Configuration is defined in the [config.yml](config.yml) file. The `assets` section references classes in [`transfermarkt_datasets/assets`](transfermarkt_datasets/assets), which define the logic for building and validating the different assets. 
@@ -65,7 +85,7 @@ td.build_datasets()
 # inspect the results
 td.asset_names # ["games", "players"...]
 td.assets["games"].prep_df # get the built asset in a dataframe
-td.assets["games"].load_raw_from_stage() # get the raw data in a dataframe
+td.assets["games"].load_raw() # get the raw data in a dataframe
 td.assets["games"].raw_df # get raw data in a dataframe
 ```
 For more examples on using `transfermark_datasets`, checkout the sample [notebooks](notebooks).

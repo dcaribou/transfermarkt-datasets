@@ -56,7 +56,7 @@ class BaseClubsAsset(RawAsset):
 
   def build(self):
 
-    self.load_raw_from_stage()
+    self.load_raw()
 
     prep_df = pandas.DataFrame()
 
