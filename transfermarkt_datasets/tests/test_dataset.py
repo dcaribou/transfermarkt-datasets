@@ -29,6 +29,27 @@ class BaseSomethingAsset(Asset):
 
 class TestDataset(unittest.TestCase):
 
+    def setUp(self) -> None:
+        class BaseSomethingAssetA(Asset):
+            name = "base_something_a"
+            file_name = "file1.csv"
+
+        class BaseSomethingAssetB(Asset):
+            name = "base_something_b"
+            file_name = "file2.csv"
+            public = False
+
+            def build(self, other: BaseSomethingAssetA):
+                pass
+
+        td = Dataset()
+        td.assets = {
+            "base_something_a": BaseSomethingAssetA(),
+            "base_something_b": BaseSomethingAssetB()
+        }
+
+        self.dataset = td
+
     def test_build_all(self):
         td = Dataset(config_file="config.yml")
 
@@ -39,7 +60,7 @@ class TestDataset(unittest.TestCase):
         td = Dataset()
         td.discover_assets()
 
-        td.generate_datapackage()
+        td.as_frictionless_package()
 
         self.assertIsInstance(
             td.datapackage,
@@ -81,19 +102,8 @@ class BaseSomethingAsset(Asset):
             )
 
     def test_dependencies(self):
-        class BaseSomethingAssetA(Asset):
-            name = "base_something_a"
 
-        class BaseSomethingAssetB(Asset):
-            name = "base_something_b"
-            def build(self, other: BaseSomethingAssetA):
-                pass
-
-        td = Dataset()
-        td.assets = {
-            "base_something_a": BaseSomethingAssetA(),
-            "base_something_b": BaseSomethingAssetB()
-        }
+        td = self.dataset
 
         self.assertEqual(
             td.get_dependencies(),
@@ -104,3 +114,26 @@ class BaseSomethingAsset(Asset):
                 }
             }
         )
+
+    def test_datapackage(self):
+
+        td = self.dataset
+        dp : Package = td.as_frictionless_package()
+
+        self.assertEqual(
+            dp.resource_names,
+            ["file1", "file2"]
+        )
+
+        self.assertEqual(
+            [ resource.path for resource in dp.resources],
+            ["file1.csv", "file2.csv"]
+        )
+
+        dp_excluded = td.as_frictionless_package(exclude_private=True)
+        self.assertEqual(
+            dp_excluded.resource_names,
+            ["file1"]
+        )
+
+       

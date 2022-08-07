@@ -16,30 +16,22 @@ import os
 import argparse
 
 
-def fail_if_invalid(td):
-  if not td.validate_datapackage():
-    raise Exception("Validations failed")
-  else:
-    print("All good \N{winking face}")
-
-
-def prepare_on_local(refresh_metadata, run_validations, func):
+def prepare_on_local(refresh_metadata, func):
   from transfermarkt_datasets.core.dataset import Dataset
 
   td = Dataset()
 
   if refresh_metadata:
     # generate frictionless data package for prepared assets
-    td.generate_datapackage("data/prep")
-  elif run_validations:
-    # run data package validations
-    fail_if_invalid(td)
+    td.as_frictionless_package("data/prep")
   else:
     # generate prepared data assets in 'stage' folder
     td.discover_assets()
     td.build_assets()
-    td.generate_datapackage()
-    fail_if_invalid(td)
+
+    pkg = td.as_frictionless_package()
+    pkg.to_json("data/prep/dataset-metadata.json")
+
     os.system("cp transfermarkt_datasets/stage/* data/prep")
 
 
@@ -70,7 +62,6 @@ subparsers = parser.add_subparsers()
 
 local_parser = subparsers.add_parser('local', help='Run the acquiring step locally')
 local_parser.add_argument('--refresh-metadata', action='store_const', const=True, required=False, default=False)
-local_parser.add_argument('--run-validations', action='store_const', const=True, required=False, default=False)
 local_parser.set_defaults(func=prepare_on_local)
 
 cloud_parser = subparsers.add_parser('cloud', help='Run the acquiring step in the cloud')

@@ -4,6 +4,10 @@ import unittest
 from dagster import DependencyDefinition
 from transfermarkt_datasets.core.asset import Asset, RawAsset
 
+from frictionless.resource import Resource
+from frictionless.schema import Schema
+from frictionless.field import Field
+
 import inspect
 
 class TestAsset(unittest.TestCase):
@@ -76,3 +80,27 @@ class TestAsset(unittest.TestCase):
             b.file_name,
             "asset_b_filename.csv"
         )
+
+    def test_frictionless(self):
+
+        asset_schema = Schema(
+            fields=[
+                Field(name="col1", type="string")
+            ]
+        )
+
+        asset_name = "some_asset"
+        asset_file_name = "file.csv"
+
+        class TestAsset(Asset):
+            name = asset_name
+            file_name = asset_file_name
+            def __init__(self, settings: dict = None) -> None:
+                super().__init__(settings)
+                self.schema = asset_schema
+
+        at = TestAsset()
+        rs = at.as_frictionless_resource()
+
+        self.assertEqual(rs.name, at.frictionless_resource_name)
+        self.assertEqual(rs.path, at.file_name)

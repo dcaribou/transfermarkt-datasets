@@ -12,7 +12,8 @@ class BaseGamesAsset(RawAsset):
 
   name = "base_games"
   description = "Games in `competitions`. One row per game."
-  file_name = "games.csv"
+  file_name = "base_games.csv"
+  public = False
 
   def __init__(self, *args, **kwargs) -> None:
     super().__init__(*args, **kwargs)

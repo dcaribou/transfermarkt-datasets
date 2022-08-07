@@ -12,15 +12,19 @@ from frictionless import validate
 import json
 import inspect
 
+import public
+
 from transfermarkt_datasets.core.utils import read_config
 
 class FailedAssetValidation(Exception):
   pass
 
 class Asset:
+  
   description = None
   name = "generic"
   file_name = None
+  public = True
 
   def __init__(
     self,
@@ -206,6 +210,9 @@ class Asset:
     self.log.debug("Checking validation results for %s", self.name)
     results = self.validation_report['stats']['errors']
     self.log.debug("Failed validations are %i, tolerance is %i", results, self.errors_tolerance)
+    print(self.name)
+    print(results)
+    print(results > self.errors_tolerance)
     if results > self.errors_tolerance:
       self.log.error("Invalid asset\n%s", self.validation_report['tasks'][0]['errors'][0])
       raise FailedAssetValidation()

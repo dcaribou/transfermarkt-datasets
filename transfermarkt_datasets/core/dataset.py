@@ -38,9 +38,7 @@ class Dataset:
       self.config = config or read_config(config_file)
 
       self.prep_folder_path = 'transfermarkt_datasets/stage'
-      self.datapackage_descriptor_path = f"{self.prep_folder_path}/dataset-metadata.json"
       self.assets = {}
-      self.datapackage = None
       self.validation_report = None
 
       if self.config.get("logging"):
@@ -108,7 +106,7 @@ class Dataset:
       asset_name = node.replace("build_", "")
       self.assets[asset_name].load_from_stage()
 
-  def generate_datapackage(self, basepath=None) -> None:
+  def as_frictionless_package(self, basepath=None, exclude_private=False) -> None:
     """Create an save to local a file descriptor tha defines a "datapackage" for this dataset.
 
     Args:
@@ -133,37 +131,11 @@ class Dataset:
       package.description = datapackage_description_file.read()
     
     for asset in self.assets.values():
+      if not asset.public and exclude_private:
+        continue
       package.add_resource(asset.as_frictionless_resource())
-
-    self.datapackage = package
-    package.to_json(self.datapackage_descriptor_path)
-
-  def validate_datapackage(self) -> bool:
-    """Run "datapackage" validations for this dataset and save results to a local file.
-
-    Returns:
-        bool: Whether the validations did or did not pass.
-    """
-    package = self.datapackage or Package(self.datapackage_descriptor_path)
-
-    self.log.info("Datapackage resource validation")
-    for resource in package.resources:
-      self.log.info(f"Validating {resource.name}")
-
-      if self.assets.get(resource.name):
-        asset_name = resource.name
-      else:
-        asset_name = "base_" + resource.name
-
-      asset = self.assets[asset_name]
-      validation_report = validate(resource, limit_memory=20000, checks=asset.checks)
-      self.assets[asset_name].validation_report = validation_report
-      with open(f"transfermarkt_datasets/datapackage_resource_{resource.name}_validation.json", 'w+') as file:
-        file.write(
-          json.dumps(validation_report, indent=4, sort_keys=True)
-        )
-
-    return self.is_valid()
+    
+    return package
 
   def is_valid(self) -> bool:
     """Check validation report and determine if the validation passed or not.
@@ -172,12 +144,10 @@ class Dataset:
         bool: Whether the validations did or did not pass.
     """
     for asset in self.assets.values():
-      if not asset.is_valid():
-        self.log.error(f"{asset.name} did not pass validations!")
-        return False
+      asset.is_valid()
 
     self.log.info("All validations have passed!")
-    return True
+    return False
 
   def as_dagster_job(self, resource_defs={}) -> JobDefinition:
     build_ops = [asset.as_build_dagster_op() for asset in self.assets.values()]
