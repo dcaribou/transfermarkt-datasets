@@ -1,15 +1,19 @@
-FROM continuumio/miniconda3
+FROM python:3.8
 
 WORKDIR /app
 
 RUN apt-get update && \
     apt-get -y install gcc python3-dev jq awscli
 
-COPY environment.yml /app/
-RUN conda env create -f environment.yml
+COPY pyproject.toml /app
 
-ENV PATH /opt/conda/envs/transfermarkt-datasets/bin:$PATH
-RUN /bin/bash -c "source activate transfermarkt-datasets"
+ENV PYTHONPATH=${PYTHONPATH}:${PWD}
+
+RUN pip3 install poetry
+RUN poetry config virtualenvs.create false
+RUN poetry install --no-dev
+
+RUN /bin/bash -c "poetry shell"
 
 RUN git config --global user.email "transfermarkt-datasets-ci@transfermark-datasets.dev" && \
     git config --global user.name "CI Job" && \

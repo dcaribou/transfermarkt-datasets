@@ -4,12 +4,13 @@ from frictionless import checks
 
 import pandas
 
-from transfermarkt_datasets.assets.asset import Asset
+from transfermarkt_datasets.core.asset import RawAsset
 
-class CompetitionsAsset(Asset):
+class BaseCompetitionsAsset(RawAsset):
 
-  name = "competitions"
+  name = "base_competitions"
   description = "Competitions in Europe confederation. One row per league."
+  file_name = "competitions.csv"
 
   def __init__(self, *args, **kwargs) -> None:
     super().__init__(*args, **kwargs)
@@ -33,15 +34,16 @@ class CompetitionsAsset(Asset):
     self.schema.primary_key = ['competition_id']
 
     self.checks = [
-      checks.regulation.table_dimensions(min_rows=40)
+      checks.table_dimensions(min_rows=40)
     ]
 
   def build(self):
+
+    self.load_raw()
     
-    raw_df = self.get_stacked_data()
     prep_df = pandas.DataFrame()
 
-    json_normalized = pandas.json_normalize(raw_df.to_dict(orient='records'))
+    json_normalized = pandas.json_normalize(self.raw_df.to_dict(orient='records'))
 
     league_href_parts = json_normalized['href'].str.split('/', 5, True)
     confederation_href_parts = json_normalized['parent.href'].str.split('/', 5, True)

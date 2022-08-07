@@ -31,10 +31,11 @@ jobs:
         run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
         id: extract_branch
 
-      - uses: conda-incubator/setup-miniconda@v2
-        with:
-          environment-file: environment.yml
-          activate-environment: transfermarkt-datasets
+      - name: Install Poetry
+        uses: snok/install-poetry@v1
+
+      - name: Install library
+        run: poetry install --no-interaction
           
       - name: run acquire
         env:
@@ -53,6 +54,8 @@ jobs:
           else
             JOB_DEFINITION_NAME=transfermarkt-datasets-batch-job-definition-dev
           fi
+
+          poetry shell
 
           make \
             acquire_cloud \

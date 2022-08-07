@@ -13,40 +13,40 @@ optional arguments:
 
 """
 import os
-from transfermarkt_datasets.transfermarkt_datasets import TransfermarktDatasets, read_config
 import argparse
 
-from cloud_lib import submit_batch_job_and_wait
 
-def fail_if_invalid(td):
-  if not td.validate_datapackage():
-    raise Exception("Validations failed")
-  else:
-    print("All good \N{winking face}")
+def prepare_on_local(refresh_metadata, func):
+  from transfermarkt_datasets.core.dataset import Dataset
 
-
-def prepare_on_local(raw_files_location, refresh_metadata, run_validations, seasons, func):
-
-  td = TransfermarktDatasets(raw_files_location, seasons)
+  td = Dataset()
 
   if refresh_metadata:
     # generate frictionless data package for prepared assets
-    td.generate_datapackage('data/prep')
-  elif run_validations:
-    # run data package validations
-    fail_if_invalid(td)
+    td.as_frictionless_package("data/prep")
   else:
     # generate prepared data assets in 'stage' folder
+    td.discover_assets()
     td.build_assets()
-    td.generate_datapackage()
-    fail_if_invalid(td)
-    os.system("cp transfermarkt_datasets/stage/* data/prep")
+
+    pkg = td.as_frictionless_package()
+    pkg.to_json("data/prep/dataset-metadata.json")
+
+    for asset_name, asset in td.assets.items():
+      if asset.public:
+        os.system(
+          "cp transfermarkt_datasets/stage/{} data/prep".format(
+            asset.file_name
+          )
+        )
 
 
 def prepare_on_cloud(
   job_name, job_queue,
   job_definition, branch, message, args,
   func):
+
+  from cloud_lib import submit_batch_job_and_wait
 
   submit_batch_job_and_wait(
     job_name=job_name,
@@ -67,10 +67,7 @@ parser = argparse.ArgumentParser()
 subparsers = parser.add_subparsers()
 
 local_parser = subparsers.add_parser('local', help='Run the acquiring step locally')
-local_parser.add_argument('--raw-files-location', required=False, default='data/raw')
 local_parser.add_argument('--refresh-metadata', action='store_const', const=True, required=False, default=False)
-local_parser.add_argument('--run-validations', action='store_const', const=True, required=False, default=False)
-local_parser.add_argument('--seasons', nargs='+', help='Seasons to be built', required=False, default=read_config()["settings"]["seasons"])
 local_parser.set_defaults(func=prepare_on_local)
 
 cloud_parser = subparsers.add_parser('cloud', help='Run the acquiring step in the cloud')
