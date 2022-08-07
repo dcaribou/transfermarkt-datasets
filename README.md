@@ -23,7 +23,7 @@ Checkout this dataset also in: :white_check_mark: [Kaggle](https://www.kaggle.co
 - [contributing :pray:](#contributing-pray)
 
 ## setup
-Setup all the environment to run all the code in this repository with `poetry`.
+Setup your local environment to run the project with `poetry`.
 1. Install [poetry](https://python-poetry.org/docs/)
 2. Clone the repo
 ```console
@@ -36,21 +36,21 @@ poetry install
 ```
 
 ## data storage
+> :information_source: Read access to the S3 [DVC remote storage](https://dvc.org/doc/command-reference/remote#description) for the project is required to successfully run `dvc pull`. Contributors should feel free to grant themselves access by adding their AWS IAM user ARN to [this whitelist](https://github.com/dcaribou/transfermarkt-datasets/blob/6b6dd6572f582b2c40039913a65ba99d10fd1f44/infra/main.tf#L16).
+
 All project data assets are kept inside the `data` folder. This is a [DVC](https://dvc.org/) repository and all files a therefore all files can be pulled from the remote storage with the `dvc pull` command.
 
 * `data/raw`: contains raw data per season as acquired with [trasfermarkt-scraper](https://github.com/dcaribou/transfermarkt-scraper) (check [acquire](#acquire))
 * `data/prep`: contains the prepared datasets as produced by `transfermarkt_datasets` module (check [prepare](#prepare))
 
-> :information_source: Read access to the S3 [DVC remote storage](https://dvc.org/doc/command-reference/remote#description) for the project is required to successfully run `dvc pull`. Contributors should feel free to grant themselves access by adding their AWS IAM user ARN to [this whitelist](https://github.com/dcaribou/transfermarkt-datasets/blob/6b6dd6572f582b2c40039913a65ba99d10fd1f44/infra/main.tf#L16). Have a look at [this PR](https://github.com/dcaribou/transfermarkt-datasets/pull/47/files) for an example.
-
 ## data acquisition
 In the scope of this project, "acquiring" is the process of collecting "raw data", as it is produced by [trasfermarkt-scraper](https://github.com/dcaribou/transfermarkt-scraper). Acquired data lives in the `data/raw` folder and it can be created or updated for a particular season using the `1_acquire.py` script.
 
 ```console
-$ python 1_acquire.py local --asset all --season 2021
+python 1_acquire.py local --asset all --season 2021
 ```
 
-This dependency is the reason why [trasfermarkt-scraper](https://github.com/dcaribou/transfermarkt-scraper) exists as a sub-module in this project. The `1_acquire.py` is a helper script that runs the scraper with a set of parameters and collects the output in `data/raw`.
+This dependency on [trasfermarkt-scraper](https://github.com/dcaribou/transfermarkt-scraper) is the reason why it exists as a sub-module in this project. The `1_acquire.py` is simply helper script that runs the scraper with a set of parameters and collects the output in `data/raw`.
 
 ## data preparation
 In the scope of this project, "preparing" is the process of tranforming raw data to create a high quality dataset that can be conveniently consumed by analysts of all kinds. The `transfermark_datasets` module contains the preparation logic, which can be executed using the `2_prepare.py` script.
