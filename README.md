@@ -8,7 +8,7 @@ In an nutshell, this project aims for three things:
 
 Checkout this dataset also in: :white_check_mark: [Kaggle](https://www.kaggle.com/davidcariboo/player-scores) | :white_check_mark: [data.world](https://data.world/dcereijo/player-scores)
 
-| ![diagram](https://github.com/dcaribou/transfermarkt-datasets/blob/master/resources/diagram.png?raw=true) | 
+| ![diagram](resources/diagram.png) | 
 |:--:| 
 | *High level data model for transfermarkt-datasets* |
 
@@ -20,7 +20,7 @@ Checkout this dataset also in: :white_check_mark: [Kaggle](https://www.kaggle.co
   - [configuration](#configuration)
   - [python api](#python-api)
 - [infra](#infra)
-- [contributing](#contributing)
+- [contributing :pray:](#contributing-pray)
 
 ## setup
 Setup all the environment to run all the code in this repository with `poetry`.
@@ -56,21 +56,24 @@ This dependency is the reason why [trasfermarkt-scraper](https://github.com/dcar
 In the scope of this project, "preparing" is the process of tranforming raw data to create a high quality dataset that can be conveniently consumed by analysts of all kinds. The `transfermark_datasets` module contains the preparation logic, which can be executed using the `2_prepare.py` script.
 
 ### dagster
-The dataset preparation steps are rendered as a dagster job and run either in dagit or with dagster command.
+The dataset preparation steps are rendered as a [dagster](https://dagster.io/) job and run either in `dagit` or with the `dagster` command.
+
 ```console
 dagster job execute -f transfermarkt_datasets/dagster/jobs.py
 ```
+
 In order to see and run the job from dagster UI
 ```console
 dagit -f transfermarkt_datasets/dagster/jobs.py
 ```
-[dagster](https://github.com/dcaribou/transfermarkt-datasets/blob/try-dagster/resources/dagster.png?raw=true)
+![dagster](resources/dagster.png)
 
 ### configuration
-Configuration is defined in the [config.yml](config.yml) file. The `assets` section references classes in [`transfermarkt_datasets/assets`](transfermarkt_datasets/assets), which define the logic for building and validating the different assets. 
+Different project configurations are defined in the [config.yml](config.yml) file.
 
 ### python api
-`transfermark_datasets` provides a python api that can be used to work with the module from python rather than using the script. This is particularly convenient for working with the datasets from a notebook.
+`transfermark_datasets` provides a python api that can be used to work with the module from the python console. This is particularly convenient for working with the datasets from a notebook.
+
 ```python
 # import the module
 from transfermarkt_datasets.core.dataset import Dataset
@@ -93,7 +96,7 @@ For more examples on using `transfermark_datasets`, checkout the sample [noteboo
 ## [infra](infra)
 Define all the necessary infrastructure for the project in the cloud with Terraform.
 
-## contributing
+## contributing :pray:
 Contributions to `transfermarkt-datasets` are most welcome. If you want to contribute new fields or assets to this dataset, instructions are quite simple:
 1. [Fork the repo](https://github.com/dcaribou/transfermarkt-datasets/fork) (make sure to initialize sub-modules as well with `git submodule update --init --recursive`)
 2. Set up a new conda environment with `conda env create -f environment.yml`
