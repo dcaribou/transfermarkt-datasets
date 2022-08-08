@@ -27,7 +27,7 @@ acquire_cloud :
 		"$(ARGS)"
 
 prepare_local :
-	python 2_prepare.py local $(ARGS)
+	python -Wignore 2_prepare.py local $(ARGS)
 prepare_docker :
 	docker run -ti \
 			--env-file .env \

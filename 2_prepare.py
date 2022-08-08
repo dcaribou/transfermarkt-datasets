@@ -29,7 +29,7 @@ def prepare_on_local(refresh_metadata, func):
     td.discover_assets()
     td.build_assets()
 
-    pkg = td.as_frictionless_package()
+    pkg = td.as_frictionless_package(exclude_private=True)
     pkg.to_json("data/prep/dataset-metadata.json")
 
     for asset_name, asset in td.assets.items():
@@ -39,7 +39,6 @@ def prepare_on_local(refresh_metadata, func):
             asset.file_name
           )
         )
-
 
 def prepare_on_cloud(
   job_name, job_queue,
