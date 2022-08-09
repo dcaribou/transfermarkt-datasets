@@ -7,13 +7,15 @@ from inflection import titleize
 import pandas
 import numpy
 
-from transfermarkt_datasets.core.asset import Asset
+from transfermarkt_datasets.core.asset import RawAsset
 from transfermarkt_datasets.core.utils import parse_market_value
 from transfermarkt_datasets.core.checks import too_many_missings
 
-class PlayersAsset(Asset):
+class BasePlayersAsset(RawAsset):
 
-  name = 'players'
+  name = "base_players"
+  file_name = "players.csv"
+  
   description = "Players in `clubs`. One row per player."
 
   def __init__(self, *args, **kwargs) -> None:
@@ -35,31 +37,39 @@ class PlayersAsset(Asset):
     self.schema.add_field(Field(name='height_in_cm', type='integer'))
     self.schema.add_field(Field(name='market_value_in_gbp', type='number'))
     self.schema.add_field(Field(name='highest_market_value_in_gbp', type='number'))
+    self.schema.add_field(Field(name='agent_name', type='string'))
+    self.schema.primary_key = ['player_id']
+    self.schema.add_field(Field(
+      name='image_url',
+      type='string',
+      format='uri'
+      )
+    )
     self.schema.add_field(Field(
       name='url',
       type='string',
       format='uri'
       )
     )
-
-    self.schema.primary_key = ['player_id']
+   
     self.schema.foreign_keys = [
       {"fields": "current_club_id", "reference": {"resource": "clubs", "fields": "club_id"}}
     ]
 
     self.checks = [
-      checks.regulation.row_constraint(formula="position in 'Attack,Defender,Midfield,Goalkeeper'"),
+      checks.row_constraint(formula="position in 'Attack,Defender,Midfield,Goalkeeper'"),
       too_many_missings(field_name="market_value_in_gbp", tolerance=0.30),
-      checks.regulation.table_dimensions(min_rows=22000)
+      checks.table_dimensions(min_rows=22000)
 
     ]
 
   def build(self):
+
+    self.load_raw()
     
-    raw_df = self.get_stacked_data()
     prep_df = pandas.DataFrame()
 
-    json_normalized = pandas.json_normalize(raw_df.to_dict(orient='records'))
+    json_normalized = pandas.json_normalize(self.raw_df.to_dict(orient='records'))
 
     href_parts = json_normalized['href'].str.split('/', 5, True)
     parent_href_parts = json_normalized['parent.href'].str.split('/', 5, True)
@@ -127,6 +137,8 @@ class PlayersAsset(Asset):
       json_normalized['highest_market_value'].apply(parse_market_value)
     )
 
+    prep_df['agent_name'] = json_normalized["player_agent.name"]
+    prep_df['image_url'] = json_normalized.get("image_url", pandas.NaT)
     prep_df['url'] = self.url_prepend(json_normalized['href'])
 
     self.prep_df = prep_df

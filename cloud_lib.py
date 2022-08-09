@@ -11,7 +11,8 @@ def submit_batch_job_and_wait(
     script: str,
     args: str,
     vcpus: float,
-    memory: int
+    memory: int,
+    timeout: int = 4 # in hours
 ):
 
   client = boto3.client("batch", region_name="eu-west-1")
@@ -29,19 +30,24 @@ def submit_batch_job_and_wait(
 
   revision = max(revisions)
 
+  if len(args) > 0:
+    additional_args = args.split(" ")
+  else:
+    additional_args = []
+
   submited_job = client.submit_job(
     jobName=job_name,
     jobQueue=job_queue,
     jobDefinition=f"{job_definition}:{revision}",
     containerOverrides={
-        'command': [ branch, message, script, "local" ] + args.split(" "),
+        'command': [ branch, message, script, "local" ] + additional_args,
         'resourceRequirements': [
             {'value': str(vcpus), 'type': 'VCPU'},
             {'value': str(memory), 'type': 'MEMORY'}
         ]
     },
     timeout={
-        'attemptDurationSeconds': 4*60*60
+        'attemptDurationSeconds': timeout*60*60
     }
   )
 

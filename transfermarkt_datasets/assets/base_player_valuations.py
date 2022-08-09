@@ -5,12 +5,15 @@ from inflection import titleize
 
 import pandas
 
-from transfermarkt_datasets.core.asset import Asset
+from transfermarkt_datasets.core.asset import RawAsset
 from transfermarkt_datasets.core.utils import parse_market_value
 
-class PlayerValuationsAsset(Asset):
+class BasePlayerValuationsAsset(RawAsset):
 
-  name = 'player_valuations'
+  name = "base_player_valuations"
+  raw_file_name = "players.json"
+  file_name = "player_valuations.csv"
+
   description = "Historical player market valuations. One row per market valuation record."
 
   def __init__(self, *args, **kwargs) -> None:
@@ -28,17 +31,18 @@ class PlayerValuationsAsset(Asset):
     ]
 
     self.checks = [
-      checks.regulation.forbidden_value(field_name="market_value", values=[None]),
-      checks.regulation.table_dimensions(min_rows=320000)
+      checks.forbidden_value(field_name="market_value", values=[None]),
+      checks.table_dimensions(min_rows=320000)
     ]
 
   def build(self):
+
+    self.load_raw()
     
-    raw_df = self.get_stacked_data()
     prep_df = pandas.DataFrame()
 
     json_normalized = pandas.json_normalize(
-      raw_df.to_dict(orient='records'),
+      self.raw_df.to_dict(orient='records'),
       record_path="market_value_history",
       meta=["href"],
       errors="ignore"

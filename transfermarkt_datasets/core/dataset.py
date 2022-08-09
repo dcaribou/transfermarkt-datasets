@@ -1,19 +1,15 @@
-from typing import Dict, List
+import pathlib
+from typing import Dict
+from dagster import DependencyDefinition, GraphDefinition, JobDefinition
 from frictionless.package import Package
 from frictionless import validate
 import json
-
 import importlib
-import yaml
+import inflection
+import os
+import logging.config
 
-import logging
-
-import pathlib
-
-def read_config(config_file="config.yml") -> Dict:
-  with open(config_file) as config_file:
-    config = yaml.load(config_file, yaml.Loader)
-    return config
+from transfermarkt_datasets.core.utils import read_config
 
 class AssetNotFound(Exception):
   """Exception to be raised when attempting to load an asset that is not defined.
@@ -29,72 +25,65 @@ class InvalidStagingLocation(Exception):
 class Dataset:
   def __init__(
     self,
-    source_path=None,
-    seasons=None,
-    assets=None,
     config=None,
-    config_file="config.yml"
+    config_file="config.yml",
+    assets_root=".",
+    assets_relative_path="transfermarkt_datasets/assets",
+
     ) -> None:
 
-      config = config or read_config(config_file)
-      settings = config["settings"]
+      self.assets_root = assets_root
+      self.assets_relative_path = assets_relative_path
 
-      self.data_folder_path = source_path or settings["source_path"]
+      self.config = config or read_config(config_file)
+
       self.prep_folder_path = 'transfermarkt_datasets/stage'
-      self.datapackage_descriptor_path = f"{self.prep_folder_path}/dataset-metadata.json"
       self.assets = {}
-      self.datapackage = None
       self.validation_report = None
 
-      settings = config["settings"]
-
-      if settings.get("logging"):
-        logging.config.dictConfig(settings["logging"])
+      if self.config.get("logging"):
+        logging.config.dictConfig(self.config["logging"])
       else:
         logging.basicConfig()
 
       self.log = logging.getLogger("main")
 
-      if seasons is None:
-        seasons = settings["seasons"]
-    
-      for asset_name, asset in config["assets"].items():
-          if assets and asset_name not in assets:
-            continue
-          class_name = asset["class"]
-          source_name = asset.get("source")
-          try:
-            module = importlib.import_module(f'transfermarkt_datasets.assets.{asset_name}')
-            class_ = getattr(module, class_name)
-            instance = class_(
-              name=asset_name,
-              seasons=seasons,
-              source_path=self.data_folder_path,
-              target_path=self.prep_folder_path + '/' + asset_name + '.csv',
-              source_files_name=asset.get("source_files_name"),
-              settings=settings
-            )
-            instance.load()
-            self.assets[asset_name] = instance
+      self.run_result = None
 
-          except ModuleNotFoundError:
-            logging.error(f"Found raw asset '{asset_name}' without asset processor")
-            raise AssetNotFound(asset_name)
+  @property
+  def assets_module(self):
+    return self.assets_relative_path.replace("/", ".")
 
-  def prettify_asset_processors(self):
-    """Create a printable table with a summary of the assets in the dataset.
+  @property
+  def asset_names(self):
+    """Return the names of the asset in the dataset.
 
     Returns:
-        str: A string containing the table.
+        list(str): The list of asset names.
     """
-    from tabulate import tabulate # https://github.com/astanin/python-tabulate
-    table = [
-      [asset_name, asset.raw_files_path, str(asset.seasons)] 
-      for asset_name, asset in self.assets.items()
-    ]
-    return tabulate(table, headers=['Name', 'Path', 'Seasons'])
+    return list(self.assets.keys())
 
-  def build_assets(self, asset: str = None):
+  def discover_assets(self):
+    for file in pathlib.Path(os.path.join(self.assets_root, self.assets_relative_path)).glob("**/*.py"):
+      filename = file.name
+      class_ = self.get_asset_def(filename.split(".")[0])
+      asset = class_()
+      self.assets[asset.name] = asset
+
+  def get_asset_def(self, asset_name):
+    class_name = inflection.camelize(asset_name) + "Asset"
+    module = importlib.import_module(f"{self.assets_module}.{asset_name}")
+    class_ = getattr(module, class_name)
+    return class_
+
+  def get_dependencies(self):
+    dependencies = {}
+    for asset in self.assets.values():
+      dependencies[asset.name] = asset.as_dagster_deps()
+
+    return dependencies
+
+  def build_assets(self):
     """Run transfromation (a.k.a. "build") all assets in the dataset.
     Built assets are stored as dataframes in the underlying assets[<asset>] objects.
 
@@ -104,35 +93,20 @@ class Dataset:
     Raises:
         InvalidStagingLocationException: The passed staging location is not a valid path.
     """
-    self.log.info("Start processing assets\n%s", self.prettify_asset_processors())
+    from transfermarkt_datasets.dagster.jobs import build_job
+    self.log.info("Start processing assets")
 
-    # setup stage location
-    stage_path = pathlib.Path(self.prep_folder_path)
-    if stage_path.exists():
-      if not stage_path.is_dir():
-        self.log.error(f"Configured 'stage' location {stage_path.name} is not a directory")
-        raise Exception("Invalid staging location")
-    else:
-      stage_path.mkdir()
+    result = build_job.execute_in_process()
 
-    if asset:
-      self.assets[asset].build()
-      self.assets[asset].export()
-    else:
-      for asset_name, asset in self.assets.items():
-        asset.build()
-        asset.export()
+    nodes = result._node_def.ensure_graph_def().node_dict.keys()
+    for node in nodes:
+      if not node.startswith("build_"):
+        continue
 
-  @property
-  def asset_names(self):
-    """Return the names of the asset in the dataset.
+      asset_name = node.replace("build_", "")
+      self.assets[asset_name].load_from_stage()
 
-    Returns:
-        list(str): The list of asset names.
-    """
-    return self.assets.keys()
-
-  def generate_datapackage(self, basepath=None):
+  def as_frictionless_package(self, basepath=None, exclude_private=False) -> None:
     """Create an save to local a file descriptor tha defines a "datapackage" for this dataset.
 
     Args:
@@ -157,31 +131,11 @@ class Dataset:
       package.description = datapackage_description_file.read()
     
     for asset in self.assets.values():
-      package.add_resource(asset.get_resource(base_path))
-
-    self.datapackage = package
-    package.to_json(self.datapackage_descriptor_path)
-
-  def validate_datapackage(self) -> bool:
-    """Run "datapackage" validations for this dataset and save results to a local file.
-
-    Returns:
-        bool: Whether the validations did or did not pass.
-    """
-    package = self.datapackage or Package(self.datapackage_descriptor_path)
-
-    self.log.info("Datapackage resource validation")
-    for resource in package.resources:
-      self.log.info(f"Validating {resource.name}")
-      asset = self.assets[resource.name]
-      validation_report = validate(resource, limit_memory=20000, checks=asset.checks)
-      self.assets[resource.name].validation_report = validation_report
-      with open(f"transfermarkt_datasets/datapackage_resource_{resource.name}_validation.json", 'w+') as file:
-        file.write(
-          json.dumps(validation_report, indent=4, sort_keys=True)
-        )
-
-    return self.is_valid()
+      if not asset.public and exclude_private:
+        continue
+      package.add_resource(asset.as_frictionless_resource())
+    
+    return package
 
   def is_valid(self) -> bool:
     """Check validation report and determine if the validation passed or not.
@@ -190,9 +144,32 @@ class Dataset:
         bool: Whether the validations did or did not pass.
     """
     for asset in self.assets.values():
-      if not asset.is_valid():
-        self.log.error(f"{asset.name} did not pass validations!")
-        return False
+      asset.is_valid()
 
     self.log.info("All validations have passed!")
-    return True
+    return False
+
+  def as_dagster_job(self, resource_defs={}) -> JobDefinition:
+    build_ops = [asset.as_build_dagster_op() for asset in self.assets.values()]
+    validate_ops = [
+      asset.as_validate_dagster_op()
+      for asset in self.assets.values()
+      if asset.as_frictionless_resource() is not None
+    ]
+    
+    deps = {}
+    for asset in self.assets.values():
+      deps[asset.dagster_build_task_name] = asset.as_dagster_deps()
+      if asset.as_frictionless_resource():
+        deps[asset.dagster_validate_task_name] = {
+          "asset": DependencyDefinition(asset.dagster_build_task_name)
+        }
+
+    graph = GraphDefinition(name="build_transfermark_datasets",
+      node_defs=build_ops + validate_ops,
+      dependencies=deps
+    )
+
+    job = graph.to_job(resource_defs=resource_defs)
+
+    return job

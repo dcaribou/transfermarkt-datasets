@@ -1,4 +1,11 @@
 import re
+import yaml
+from typing import Dict
+
+def read_config(config_file="config.yml") -> Dict:
+  with open(config_file) as config_file:
+    config = yaml.load(config_file, yaml.Loader)
+    return config
 
 def parse_market_value(market_value):
 	"""Parse a "market value" string into an integer number representing a GBP (british pounds) amount,

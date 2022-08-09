@@ -4,14 +4,16 @@ from frictionless import checks
 
 from datetime import datetime
 
-import pandas
+import pandas as pd
 
-from transfermarkt_datasets.core.asset import Asset
+from transfermarkt_datasets.core.asset import RawAsset
 
-class GamesAsset(Asset):
+class BaseGamesAsset(RawAsset):
 
-  name = 'games'
+  name = "base_games"
   description = "Games in `competitions`. One row per game."
+  file_name = "base_games.csv"
+  public = False
 
   def __init__(self, *args, **kwargs) -> None:
     super().__init__(*args, **kwargs)
@@ -41,29 +43,22 @@ class GamesAsset(Asset):
 
     self.schema.primary_key = ['game_id']
     
-    # with the inclusion of games from cups, supercups and non national competitions
-    # it is not realistic to expect all referential integrity on club IDs, since that
-    # would require that clubs up to the 4th or 5th tier are included in the dataset
-
-    # self.schema.foreign_keys = [
-    #   {"fields": "home_club_id", "reference": {"resource": "clubs", "fields": "club_id"}},
-    #   {"fields": "away_club_id", "reference": {"resource": "clubs", "fields": "club_id"}}
-    # ]
-
     self.checks = [
-      checks.regulation.table_dimensions(min_rows=55000)
+      checks.table_dimensions(min_rows=55000)
     ]
 
   def build(self):
 
-    def parse_aggregate(series: pandas.Series) -> pandas.DataFrame:
+    self.load_raw()
+
+    def parse_aggregate(series: pd.Series) -> pd.DataFrame:
       parsed = series.str.split(":", expand=True)
       cols = ['home_club_goals', 'away_club_goals']
       parsed.columns = cols
       parsed[cols] = parsed[cols].astype('int32',errors='ignore')
       return parsed
 
-    def infer_season(series: pandas.Series) -> pandas.Series:
+    def infer_season(series: pd.Series) -> pd.Series:
       def infer_season(date: datetime):
         year = date.year
         month = date.month
@@ -74,10 +69,9 @@ class GamesAsset(Asset):
 
       return series.apply(infer_season)
     
-    raw_df = self.get_stacked_data()
-    prep_df = pandas.DataFrame()
+    prep_df = pd.DataFrame()
 
-    json_normalized = pandas.json_normalize(raw_df.to_dict(orient='records'))
+    json_normalized = pd.json_normalize(self.raw_df.to_dict(orient='records'))
 
     # it happens https://www.transfermarkt.co.uk/spielbericht/index/spielbericht/3465097
     json_normalized = json_normalized[json_normalized['result'] != '-:-']
@@ -104,6 +98,8 @@ class GamesAsset(Asset):
     )
     prep_df['referee'] = json_normalized['referee']
     prep_df['url'] = 'https://www.transfermarkt.co.uk' + json_normalized['href']
+
+    prep_df.fillna(-1, inplace=True)
 
     self.prep_df = prep_df
 

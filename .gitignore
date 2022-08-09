@@ -54,3 +54,5 @@ terraform.rc
 .DS_Store
 
 *.pyc
+
+tmp*

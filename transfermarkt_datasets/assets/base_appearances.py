@@ -4,14 +4,18 @@ from frictionless.schema import Schema
 from frictionless.field import Field
 from frictionless import checks
 
-from transfermarkt_datasets.core.asset import Asset
-from transfermarkt_datasets.core.utils import cast_metric, cast_minutes_played
+from transfermarkt_datasets.core.asset import RawAsset
+from transfermarkt_datasets.core.utils import (
+  cast_metric, cast_minutes_played,
+  read_config
+)
 from transfermarkt_datasets.core.checks import too_many_missings
 
-class AppearancesAsset(Asset):
+class BaseAppearancesAsset(RawAsset):
 
-  name = 'appearances'
+  name = "base_appearances"
   description = "Appearances for `players`. One row per appearance."
+  file_name = "appearances.csv"
 
   def __init__(self, *args, **kwargs) -> None:
     super().__init__(*args, **kwargs)
@@ -36,19 +40,19 @@ class AppearancesAsset(Asset):
     ]
 
     self.checks = [
-      checks.regulation.table_dimensions(min_rows=1000000),
+      checks.table_dimensions(min_rows=1000000),
       too_many_missings(field_name='game_id',tolerance=0.0001)
     ]
 
   def build(self):
 
-    raw_df = self.get_stacked_data()
+    self.load_raw()
+
     prep_df = pandas.DataFrame()
 
-    json_normalized = pandas.json_normalize(raw_df.to_dict(orient='records'))
+    json_normalized = pandas.json_normalize(self.raw_df.to_dict(orient='records'))
 
-
-    applicable_competitions = self.settings['competition_codes']
+    applicable_competitions = read_config()['competition_codes']
 
     json_normalized = json_normalized[json_normalized['competition_code'].isin(applicable_competitions)]
   

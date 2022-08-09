@@ -11,7 +11,7 @@ on:
         description: Commit message for the 'add-and-commit' step
       acquire_args:
         required: false
-        default: "--asset all --season 2021"
+        default: "--asset all --season 2022"
 
 jobs:
   data-pipeline:
@@ -31,10 +31,15 @@ jobs:
         run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
         id: extract_branch
 
-      - uses: conda-incubator/setup-miniconda@v2
+      - name: Install Poetry
+        uses: snok/install-poetry@v1
         with:
-          environment-file: environment.yml
-          activate-environment: transfermarkt-datasets
+          virtualenvs-create: true
+          virtualenvs-in-project: true
+          installer-parallel: true
+
+      - name: Install library
+        run: poetry install --no-interaction
           
       - name: run acquire
         env:
@@ -49,10 +54,12 @@ jobs:
           DAY=$(date +"%Y-%m-%d")
           if [ $BRANCH = master ]; then
             JOB_DEFINITION_NAME=transfermarkt-datasets-batch-job-definition-master
-            ARGS="--asset all --season 2021"
+            ARGS="--asset all --season 2022"
           else
             JOB_DEFINITION_NAME=transfermarkt-datasets-batch-job-definition-dev
           fi
+
+          source .venv/bin/activate
 
           make \
             acquire_cloud \
