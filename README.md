@@ -99,7 +99,7 @@ Define all the necessary infrastructure for the project in the cloud with Terraf
 ## contributing :pray:
 Contributions to `transfermarkt-datasets` are most welcome. If you want to contribute new fields or assets to this dataset, instructions are quite simple:
 1. [Fork the repo](https://github.com/dcaribou/transfermarkt-datasets/fork) (make sure to initialize sub-modules as well with `git submodule update --init --recursive`)
-2. Set up a new conda environment with `conda env create -f environment.yml`
+2. Set up a [local environment](##setup)
 3. Pull the raw data by either running `dvc pull` ([requesting access is needed](#dvc)) or using the `1_acquire.py` script (no access request is needed)
 4. Start modifying assets or creating a new one in `transfermarkt_datasets/assets`. You can use `2_prepare.py` to run and test your changes.
 5. If it's all looking good, create a pull request with your changes :rocket:

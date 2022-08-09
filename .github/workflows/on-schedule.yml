@@ -55,7 +55,7 @@ jobs:
             JOB_DEFINITION_NAME=transfermarkt-datasets-batch-job-definition-dev
           fi
 
-          poetry shell
+          source .venv/bin/activate
 
           make \
             acquire_cloud \
