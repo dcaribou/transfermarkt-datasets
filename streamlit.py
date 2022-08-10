@@ -6,6 +6,7 @@ Here's our first attempt at using data to create a table:
 import streamlit as st
 import pandas as pd
 import numpy as np
+import os
 
 from inflection import dasherize
 
@@ -16,11 +17,14 @@ st.set_page_config(layout="wide")
 
 @st.cache
 def load_asset(name : str) -> pd.DataFrame:
-  td = Dataset()
-  td.discover_assets()
-  td.load_assets()
-  df = td.assets[name].prep_df
-  return df
+    if os.environ["STREAMLIT"] == "cloud":
+        os.system("dvc pull")
+
+    td = Dataset()
+    td.discover_assets()
+    td.load_assets()
+    df = td.assets[name].prep_df
+    return df
 
 def sidebar_header(header_text: str):
     h1 = st.header(header_text)
