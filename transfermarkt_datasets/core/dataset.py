@@ -72,7 +72,8 @@ class Dataset:
 
   def load_assets(self):
     for asset_name, asset in self.assets.items():
-      asset.load_from_stage()
+      if asset.public:
+        asset.load_from_prep()
 
   def get_asset_def(self, asset_name):
     class_name = inflection.camelize(asset_name) + "Asset"

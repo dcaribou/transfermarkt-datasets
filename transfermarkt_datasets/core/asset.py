@@ -41,6 +41,8 @@ class Asset:
       self.log = logging.getLogger("main")
 
       self.stage_location = "transfermarkt_datasets/stage"
+      self.prep_location = "data/prep"
+
       self.datapackage_descriptor_path = f"{self.stage_location}/dataset-metadata.json"
 
       if not self.file_name:
@@ -59,6 +61,10 @@ class Asset:
   @property
   def stage_path(self) -> str:
     return f"{self.stage_location}/{self.file_name}"
+  
+  @property
+  def prep_path(self) -> str:
+    return f"{self.prep_location}/{self.file_name}"
 
   @property
   def dagster_build_task_name(self) -> str:
@@ -97,6 +103,11 @@ class Asset:
       self.prep_df = self.prep_df.drop_duplicates(keep='last')
 
     self.log.info("Finished processing asset %s\n%s", self.name, self.output_summary())
+
+  def load_from_prep(self):
+    self.prep_df = pd.read_csv(
+      filepath_or_buffer=self.prep_path
+    )
 
   def load_from_stage(self):
     self.prep_df = pd.read_csv(
