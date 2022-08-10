@@ -17,10 +17,12 @@ dvc = {extras = ["s3"], version = "^2.17.0"}
 scipy = "^1.8.0"
 kaggle = "^1.5.12"
 Scrapy = "^2.6.2"
+streamlit = "^1.11.1"
 
 [tool.poetry.dev-dependencies]
 jupyter = "^1.0.0"
 dagit = "^0.14.13"
+autopep8 = "^1.7.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

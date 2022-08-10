@@ -4,7 +4,7 @@ from frictionless import checks
 
 from datetime import datetime
 
-import pandas
+import pandas as pd
 
 from transfermarkt_datasets.core.asset import Asset
 from transfermarkt_datasets.assets.base_games import BaseGamesAsset
@@ -30,11 +30,14 @@ class CurGamesAsset(Asset):
     self.schema.add_field(Field(name='away_club_id', type='integer'))
     self.schema.add_field(Field(name='home_club_goals', type='integer'))
     self.schema.add_field(Field(name='away_club_goals', type='integer'))
+    self.schema.add_field(Field(name='aggregate', type='string'))
     self.schema.add_field(Field(name='home_club_position', type='integer'))
     self.schema.add_field(Field(name='away_club_position', type='integer'))
     self.schema.add_field(Field(name='stadium', type='string'))
     self.schema.add_field(Field(name='attendance', type='integer'))
     self.schema.add_field(Field(name='referee', type='string'))
+    self.schema.add_field(Field(name='club_home_pretty_name', type='string'))
+    self.schema.add_field(Field(name='club_away_pretty_name', type='string'))
     self.schema.add_field(Field(
         name='url',
         type='string',
@@ -50,12 +53,32 @@ class CurGamesAsset(Asset):
 
   def build(self, base_games: BaseGamesAsset, base_clubs: BaseClubsAsset):
 
-    self.prep_df = base_games.prep_df.merge(
-        base_clubs.prep_df,
-        how="left",
-        left_on="home_club_id",
-        right_on="club_id",
-        suffixes=[None, "_club_home"]
+    games = base_games.prep_df
+
+    clubs = base_clubs.prep_df[
+      ["club_id", "pretty_name"]
+    ]
+
+    with_home_attributes = games.merge(
+      clubs.rename(columns={"pretty_name": "club_home_pretty_name"}, errors="raise"),
+      how="left",
+      left_on="home_club_id",
+      right_on="club_id"
     )
-    
-    self.prep_df = base_games.prep_df
+    del with_home_attributes["club_id"]
+
+    with_away_attributes = with_home_attributes.merge(
+      clubs.rename(columns={"pretty_name": "club_away_pretty_name"}, errors="raise"),
+      how="left",
+      left_on="away_club_id",
+      right_on="club_id"
+    )
+    del with_away_attributes["club_id"]
+
+    with_away_attributes["aggregate"] = (
+      with_away_attributes["home_club_goals"].astype("string") + 
+      ":" + 
+      with_away_attributes["away_club_goals"].astype("string")
+    )
+
+    self.prep_df = with_away_attributes

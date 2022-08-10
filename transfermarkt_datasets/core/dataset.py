@@ -70,6 +70,10 @@ class Dataset:
       asset = class_()
       self.assets[asset.name] = asset
 
+  def load_assets(self):
+    for asset_name, asset in self.assets.items():
+      asset.load_from_stage()
+
   def get_asset_def(self, asset_name):
     class_name = inflection.camelize(asset_name) + "Asset"
     module = importlib.import_module(f"{self.assets_module}.{asset_name}")
