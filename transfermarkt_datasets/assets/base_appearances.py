@@ -16,6 +16,7 @@ class BaseAppearancesAsset(RawAsset):
   name = "base_appearances"
   description = "Appearances for `players`. One row per appearance."
   file_name = "base_appearances.csv"
+  public = False
 
   def __init__(self, *args, **kwargs) -> None:
     super().__init__(*args, **kwargs)
