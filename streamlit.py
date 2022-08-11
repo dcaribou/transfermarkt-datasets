@@ -26,12 +26,6 @@ def load_asset(name : str) -> pd.DataFrame:
     df = td.assets[name].prep_df
     return df
 
-def sidebar_header(header_text: str):
-    h1 = st.header(header_text)
-    dasherized = dasherize(header_text)
-    st.sidebar.markdown(f"[{header_text}](#{dasherized})", unsafe_allow_html=True)
-    return h1
-
 main_leagues = [
     "GB1", "ES1", "IT1", "L1", "FR1"
 ]
@@ -58,7 +52,9 @@ st.markdown(hide_dataframe_row_index, unsafe_allow_html=True)
 
 st.title("Transfermartk Datasets :soccer:")
 
-sidebar_header("Match Data")
+st.markdown(intro_markdown, unsafe_allow_html=True)
+
+st.header("Match Data")
 left_col, right_col = st.columns(2)
 
 latest_games = games.sort_values(
@@ -85,7 +81,7 @@ right_col.table(
     latest_appearances[["date", "player_pretty_name", "minutes_played"]]
 )
 
-sidebar_header("Market Value Data")
+st.header("Market Value Data")
 left_col, right_col = st.columns(2)
 
 player_valuation_stock = (
