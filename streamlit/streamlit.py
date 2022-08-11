@@ -5,15 +5,11 @@ Here's our first attempt at using data to create a table:
 
 import streamlit as st
 import pandas as pd
-import numpy as np
 import os
-
-from inflection import dasherize
 
 from transfermarkt_datasets.core.dataset import Dataset
 
 st.set_page_config(layout="wide")
-
 
 @st.cache
 def load_asset(name : str) -> pd.DataFrame:
@@ -51,8 +47,6 @@ hide_dataframe_row_index = """
 st.markdown(hide_dataframe_row_index, unsafe_allow_html=True)
 
 st.title("Transfermartk Datasets :soccer:")
-
-st.markdown(intro_markdown, unsafe_allow_html=True)
 
 st.header("Match Data")
 left_col, right_col = st.columns(2)
