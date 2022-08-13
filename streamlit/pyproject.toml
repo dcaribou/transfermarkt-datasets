@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "transfermarkt-datasets-streamlit"
+version = "0.1.0"
+description = "Streamlit app for transfermarkt-datasets"
+authors = ["dcaribou <davidcereijo@live.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+frictionless = "^4.31.0"
+pandas = "^1.4.2"
+streamlit = "^1.11.1"
+dvc = {extras = ["s3"], version = "^2.17.0"}
+inflection = "^0.5.1"
+watchdog = "^2.1.9"
+dagster = "^0.14.13"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

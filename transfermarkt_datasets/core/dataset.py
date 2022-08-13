@@ -155,6 +155,14 @@ class Dataset:
     return False
 
   def as_dagster_job(self, resource_defs={}) -> JobDefinition:
+    """Render dataset assets build as a dagster  JobDefinition
+
+    Args:
+        resource_defs (dict, optional): Optional dagster resources. Defaults to {}.
+
+    Returns:
+        JobDefinition: A dagster JobDefinition
+    """
     build_ops = [asset.as_build_dagster_op() for asset in self.assets.values()]
     validate_ops = [
       asset.as_validate_dagster_op()
