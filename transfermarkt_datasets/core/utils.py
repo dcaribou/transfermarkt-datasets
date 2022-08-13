@@ -1,6 +1,9 @@
 import re
 import yaml
-from typing import Dict
+from typing import Dict, Tuple
+
+from geopy.geocoders import Nominatim
+from geopy.extra.rate_limiter import RateLimiter
 
 def read_config(config_file="config.yml") -> Dict:
   with open(config_file) as config_file:
@@ -45,3 +48,20 @@ def cast_minutes_played(minutes_played):
 		return int(numeric)
 	else:
 		return 0
+
+def geocode(place: str) -> Tuple:
+	"""Get coordinates from a place's name.
+
+	Args:
+		place (str): A string that describes the place.
+
+	Returns:
+		Tuple: A tuple with the coordinates (latitude, longitude)
+	"""
+
+	geolocator = Nominatim(user_agent="transfermarkt-datasets")
+	geocode = RateLimiter(geolocator.geocode, min_delay_seconds=1)
+
+	output = geocode(place)
+
+	return (output.latitude, output.longitude)

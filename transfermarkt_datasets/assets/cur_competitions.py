@@ -2,16 +2,18 @@ from frictionless.field import Field
 from frictionless.schema import Schema
 from frictionless import checks
 
-import pandas
+import pandas as pd
 
 from transfermarkt_datasets.core.asset import RawAsset
+from transfermarkt_datasets.core.utils import geocode
 
-class BaseCompetitionsAsset(RawAsset):
+from transfermarkt_datasets.assets.base_competitions import BaseCompetitionsAsset
 
-  name = "base_competitions"
+class CurCompetitionsAsset(RawAsset):
+
+  name = "cur_competitions"
   description = "Competitions in Europe confederation. One row per league."
   file_name = "competitions.csv"
-  public = False
 
   def __init__(self, *args, **kwargs) -> None:
     super().__init__(*args, **kwargs)
@@ -23,6 +25,8 @@ class BaseCompetitionsAsset(RawAsset):
     self.schema.add_field(Field(name='type', type='string'))
     self.schema.add_field(Field(name='country_id', type='integer'))
     self.schema.add_field(Field(name='country_name', type='string'))
+    self.schema.add_field(Field(name='country_latitude', type='number'))
+    self.schema.add_field(Field(name='country_longitude', type='number'))
     self.schema.add_field(Field(name='domestic_league_code', type='string'))
     self.schema.add_field(Field(name='confederation', type='string'))
     self.schema.add_field(Field(
@@ -38,29 +42,15 @@ class BaseCompetitionsAsset(RawAsset):
       checks.table_dimensions(min_rows=40)
     ]
 
-  def build(self):
+  def build(self, base_competitions: BaseCompetitionsAsset):
 
-    self.load_raw()
-    
-    prep_df = pandas.DataFrame()
+    competitions = base_competitions.prep_df
 
-    json_normalized = pandas.json_normalize(self.raw_df.to_dict(orient='records'))
+    geocodes = competitions["country_name"].apply(geocode)
+    geocodes = geocodes.apply(pd.Series)
+    geocodes.columns = ["latitude", "longitude"]
 
-    league_href_parts = json_normalized['href'].str.split('/', 5, True)
-    confederation_href_parts = json_normalized['parent.href'].str.split('/', 5, True)
+    competitions["country_latitude"] = geocodes["latitude"]
+    competitions["country_longitude"] = geocodes["longitude"]
 
-    prep_df['competition_id'] = league_href_parts[4]
-    prep_df['name'] = league_href_parts[1]
-    prep_df['type'] = json_normalized['competition_type']
-    prep_df['country_id'] = json_normalized['country_id'].fillna(-1).astype('int32')
-    prep_df['country_name'] = json_normalized['country_name']
-    prep_df['domestic_league_code'] = json_normalized['country_code']
-    
-    prep_df['confederation'] = confederation_href_parts[2]
-    prep_df['url'] = 'https://www.transfermarkt.co.uk' + json_normalized['href']
-
-    self.prep_df = prep_df
-
-    self.drop_duplicates()
-
-    return prep_df
+    self.prep_df = competitions

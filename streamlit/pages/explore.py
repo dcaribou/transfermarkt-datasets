@@ -6,7 +6,7 @@ from utils import load_asset
 games = load_asset("cur_games").copy()
 clubs = load_asset("base_clubs").copy()
 appearances = load_asset("cur_appearances").copy()
-players = load_asset("base_players").copy()
+players = load_asset("cur_players").copy()
 player_valuations = load_asset("cur_player_valuations").copy()
 player_valuations["dateweek"] = pd.to_datetime(player_valuations["dateweek"])
 

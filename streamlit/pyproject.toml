@@ -13,6 +13,7 @@ dvc = {extras = ["s3"], version = "^2.17.0"}
 inflection = "^0.5.1"
 watchdog = "^2.1.9"
 dagster = "^0.14.13"
+geopy = "^2.2.0"
 
 [tool.poetry.dev-dependencies]
 
