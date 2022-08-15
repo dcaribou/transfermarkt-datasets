@@ -4,6 +4,7 @@ from pathlib import Path
 import pandas as pd
 
 from transfermarkt_datasets.core.dataset import Dataset
+from transfermarkt_datasets.core.asset import Asset
 
 @st.cache
 def load_asset(name : str) -> pd.DataFrame:
@@ -35,3 +36,19 @@ def read_file_contents(markdown_file: str):
         str: The contents of the file as a string.
     """
     return Path("streamlit/" + markdown_file).read_text()
+
+def st_td_asset_summary(asset_name: str) -> None:
+    """Draw a transfermarkt-dataset asset summary
+
+    Args:
+        asset_name (str): Name of the asset
+    """
+
+    td = Dataset()
+    td.discover_assets()
+
+    asset = td.assets[asset_name]
+
+    description = asset.description
+
+    st.markdown(description)

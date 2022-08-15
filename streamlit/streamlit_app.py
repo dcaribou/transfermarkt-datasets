@@ -20,7 +20,8 @@ st.set_page_config(layout="wide")
 hide_dataframe_row_index = read_file_contents("markdown_blocks/css.html")
 st.markdown(hide_dataframe_row_index, unsafe_allow_html=True)
 
-st.image("streamlit/images/cover.jpg")
+set_background_image = read_file_contents("images/css.html")
+st.markdown(set_background_image, unsafe_allow_html=True)
 
 st.title("Transfermartk Datasets :soccer:")
 

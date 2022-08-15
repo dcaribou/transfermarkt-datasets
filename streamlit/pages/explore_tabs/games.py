@@ -1,12 +1,14 @@
 import streamlit as st
-from utils import load_asset
 
-
+from utils import load_asset,st_td_asset_summary
 
 def games_tab():
-    st.header("Games")
 
-    games = load_asset("cur_games").copy()
+    asset_name = "cur_games"
+
+    st_td_asset_summary(asset_name)
+    games = load_asset(asset_name).copy()
+
 
     latest_games = games.sort_values(
         by="date",
