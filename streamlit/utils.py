@@ -7,15 +7,7 @@ from transfermarkt_datasets.core.dataset import Dataset
 from transfermarkt_datasets.core.asset import Asset
 
 @st.cache
-def load_asset(name : str) -> pd.DataFrame:
-    """Load a transfermarkt dataset from disk.
-
-    Args:
-        name (str): The name of the asset to be loaded.
-
-    Returns:
-        pd.DataFrame: The asset as a dataframe.
-    """
+def load_td() -> Dataset:
 
     if os.environ["STREAMLIT"] == "cloud":
         os.system("dvc pull")
@@ -23,8 +15,8 @@ def load_asset(name : str) -> pd.DataFrame:
     td = Dataset()
     td.discover_assets()
     td.load_assets()
-    df = td.assets[name].prep_df
-    return df
+
+    return td
 
 def read_file_contents(markdown_file: str):
     """Read a markdown file in disk as a string.
@@ -37,18 +29,26 @@ def read_file_contents(markdown_file: str):
     """
     return Path("streamlit/" + markdown_file).read_text()
 
-def st_td_asset_summary(asset_name: str) -> None:
+def draw_asset(asset: Asset) -> None:
     """Draw a transfermarkt-dataset asset summary
 
     Args:
         asset_name (str): Name of the asset
     """
 
-    td = Dataset()
-    td.discover_assets()
+    st.header(asset.name)
 
-    asset = td.assets[asset_name]
+    info_tab, schema_tab, data_tab = (
+        st.tabs([
+            "Info", "Schema", "Data"
+        ])
+    )
 
-    description = asset.description
+    with info_tab:
+        st.markdown(asset.description)
 
-    st.markdown(description)
+    with schema_tab:
+        st.dataframe(asset.schema_as_dataframe())
+
+    with data_tab:
+        st.dataframe(asset.prep_df.head(10))

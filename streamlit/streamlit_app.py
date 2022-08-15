@@ -8,7 +8,7 @@ import pandas as pd
 import altair as alt
 
 from utils import (
-    load_asset,
+    load_td,
     read_file_contents
 )
 
@@ -25,8 +25,9 @@ st.markdown(set_background_image, unsafe_allow_html=True)
 
 st.title("Transfermartk Datasets :soccer:")
 
-players = load_asset("cur_players").copy()
-games = load_asset("cur_games").copy()
+td = load_td()
+players = td.assets["cur_players"].prep_df.copy()
+games = td.assets["cur_games"].prep_df.copy()
 
 st.download_button(
      label="Download player data as CSV",

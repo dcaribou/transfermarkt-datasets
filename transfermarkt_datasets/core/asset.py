@@ -134,6 +134,22 @@ class Asset:
     table = summary.values.tolist()
     return tabulate(table, headers=summary.columns, floatfmt=".2f")
 
+  def schema_as_dataframe(self) -> pd.DataFrame:
+
+    fields = [field.name for field in  self.schema["fields"]]
+    types = [field.type for field in  self.schema["fields"]]
+    descriptions = [field.description for field in  self.schema["fields"]]
+
+    df = pd.DataFrame(
+      data=dict(
+        description=descriptions,
+        type=types
+      ),
+      index=fields
+    )
+    
+    return df
+
   def as_frictionless_resource(self) -> Resource:
     detector = Detector(schema_sync=True)
     resource = Resource(
