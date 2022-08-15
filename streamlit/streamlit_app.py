@@ -43,11 +43,11 @@ st.markdown(
 left_col, right_col = st.columns(2)
 
 left_col.subheader(
-    "Average attendance series"
+    "Average stadium attendance by period"
 )
 # https://pandas.pydata.org/docs/user_guide/timeseries.html#offset-aliases
 option_date = left_col.selectbox(
-    "By period",
+    "Period",
     ("M", "Y", "W")
 )
 games["date_agg"] = pd.to_datetime(games["date"]).dt.to_period(option_date).dt.to_timestamp()
@@ -60,10 +60,10 @@ left_col.altair_chart(
 )
 
 right_col.subheader(
-    "National leagues by total player value"
+    "Total player value by"
 )
 option_agg = right_col.selectbox(
-    "By agg",
+    "By",
     ("M", "Y", "W")
 )
 right_col.altair_chart(
