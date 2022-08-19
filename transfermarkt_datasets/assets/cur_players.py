@@ -20,7 +20,12 @@ class CurPlayersAsset(RawAsset):
   name = "cur_players"
   file_name = "players.csv"
   
-  description = "Players in `clubs`. One row per player."
+  description = """
+  The `players` asset contains one row per player in the dataset.
+  All `players` are either currently part of a club in `clubs` or they have been at some point in the past.
+  """
+  
+  "Players in `clubs`. One row per player."
 
   def __init__(self, *args, **kwargs) -> None:
     super().__init__(*args, **kwargs)

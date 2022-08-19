@@ -12,7 +12,10 @@ from transfermarkt_datasets.assets.base_clubs import BaseClubsAsset
 class CurPlayerValuationsAsset(Asset):
 
   name = "cur_player_valuations"
-  description = "Games in `competitions`. One row per game."
+  description = """
+  The `player_valuations` asset contains one row per player value record.
+  Player value records appear as the result of change in the player market value.
+  """
   file_name = "player_valuations.csv"
 
   def __init__(self, *args, **kwargs) -> None:

@@ -12,7 +12,10 @@ from transfermarkt_datasets.assets.base_players import BasePlayersAsset
 class CurAppearancesAsset(Asset):
 
   name = "cur_appearances"
-  description = "Games in `competitions`. One row per game."
+  description = """
+  The `appearances` asset contains one records per player appearance. That is: one record per player per game played.
+  All `appearances` are bound to one particular `player`. 
+  """
   file_name = "appearances.csv"
 
   def __init__(self, *args, **kwargs) -> None:

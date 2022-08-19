@@ -13,7 +13,10 @@ from transfermarkt_datasets.assets.base_clubs import BaseClubsAsset
 class CurGamesAsset(Asset):
 
   name = "cur_games"
-  description = "Games in `competitions`. One row per game."
+  description = """
+  The `games` asset contains one row per game in the dataset.
+  All games are tied to one particular `competition`.
+  """
   file_name = "games.csv"
 
   def __init__(self, *args, **kwargs) -> None:

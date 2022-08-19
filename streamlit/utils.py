@@ -1,7 +1,10 @@
+from turtle import right
 import streamlit as st
 import os
 from pathlib import Path
 import pandas as pd
+from inflection import titleize
+from datetime import datetime, timedelta
 
 from transfermarkt_datasets.core.dataset import Dataset
 from transfermarkt_datasets.core.asset import Asset
@@ -10,7 +13,7 @@ from transfermarkt_datasets.core.asset import Asset
 def load_td() -> Dataset:
 
     if os.environ["STREAMLIT"] == "cloud":
-        os.system("dvc pull")
+        os.system("dvc pull data/prep")
 
     td = Dataset()
     td.discover_assets()
@@ -36,19 +39,37 @@ def draw_asset(asset: Asset) -> None:
         asset_name (str): Name of the asset
     """
 
-    st.header(asset.name)
+    st.subheader(titleize(asset.frictionless_resource_name))
 
     info_tab, schema_tab, data_tab = (
         st.tabs([
-            "Info", "Schema", "Data"
+            "Info", "Fields", "Data"
         ])
     )
 
     with info_tab:
-        st.markdown(asset.description)
+        left_col, right_col = st.columns(2)
+        left_col.markdown(asset.description)
+        delta = get_records_delta(asset)
+        right_col.metric(
+            label="# of records",
+            value=len(asset.prep_df),
+            delta=delta,
+            help="Total number of records in the asset / New records in the past 15 days"
+        )
 
     with schema_tab:
         st.dataframe(asset.schema_as_dataframe())
 
     with data_tab:
         st.dataframe(asset.prep_df.head(10))
+
+def get_records_delta(asset: Asset, offset: int = 15) -> int:
+    df = asset.prep_df
+
+    if "date" in df.columns:
+        dt = pd.to_datetime(df["date"])
+        delta = len(df[dt > (datetime.now() - timedelta(days=offset))])
+        return delta
+    else:
+        return None

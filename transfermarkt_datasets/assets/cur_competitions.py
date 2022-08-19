@@ -12,7 +12,9 @@ from transfermarkt_datasets.assets.base_competitions import BaseCompetitionsAsse
 class CurCompetitionsAsset(RawAsset):
 
   name = "cur_competitions"
-  description = "Competitions in Europe confederation. One row per league."
+  description = """
+  The `competitions` asset contains one row per competition in the dataset, including national leagues, cups and international tournaments. 
+  """
   file_name = "competitions.csv"
 
   def __init__(self, *args, **kwargs) -> None:

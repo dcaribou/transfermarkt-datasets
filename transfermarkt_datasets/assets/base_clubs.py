@@ -11,7 +11,10 @@ from transfermarkt_datasets.core.asset import RawAsset
 class BaseClubsAsset(RawAsset):
 
   name = "base_clubs"
-  description = "Clubs in `competitions`. One row per club."
+  description = """
+  The `clubs` asset contains one row per club in the dataset.
+  All `clubs` belong in a certain `competition`.
+  """
   file_name = "clubs.csv"
 
   def __init__(self, *args, **kwargs) -> None:
