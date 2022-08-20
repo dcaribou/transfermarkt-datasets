@@ -1,4 +1,5 @@
 from turtle import right
+from typing import List
 import streamlit as st
 import os
 from pathlib import Path
@@ -55,7 +56,7 @@ def draw_asset(asset: Asset) -> None:
             label="# of records",
             value=len(asset.prep_df),
             delta=delta,
-            help="Total number of records in the asset / New records in the past 15 days"
+            help="Total number of records in the asset / New records in the past week"
         )
 
     with schema_tab:
@@ -64,7 +65,33 @@ def draw_asset(asset: Asset) -> None:
     with data_tab:
         st.dataframe(asset.prep_df.head(10))
 
+def draw_asset_explore(asset: Asset, columns: List[str]) -> None:
+    """Draw dataframe together with dynamic filters for exploration.
+
+    Args:
+        asset (Asset): The asset to draw the explore for.
+        columns (List[str]): The list of columns to create a filter on.
+    """
+    st_cols = st.columns(len(columns))
+    df = asset.prep_df.copy()
+
+    for st_col, at_col in zip(st_cols, columns):
+        options = df[at_col].unique()
+        selected = st_col.selectbox(label=at_col, options=options)
+        df = df[df[at_col] == selected]
+
+    st.dataframe(df)
+
 def get_records_delta(asset: Asset, offset: int = 7) -> int:
+    """Get an asset records' delta (number of new records in last n days).
+
+    Args:
+        asset (Asset): The asset to be calculating the delta from.
+        offset (int, optional): Number in days to be consider for the delta calculation. Defaults to 7.
+
+    Returns:
+        int: Number of records.
+    """
     df = asset.prep_df
 
     if "date" in df.columns:

@@ -114,7 +114,7 @@ class BasePlayersAsset(RawAsset):
           'Goalkeeper'
       ]
     )
-    prep_df['sub_position'] = sub_position
+    prep_df['sub_position'] = sub_position.str.split(" - ", 2, True)[1]
 
     prep_df['foot'] = (
       json_normalized['foot']

@@ -48,7 +48,7 @@ class CurPlayersAsset(RawAsset):
     self.schema.add_field(Field(name='highest_market_value_in_gbp', type='number'))
     self.schema.add_field(Field(name='agent_name', type='string'))
     self.schema.add_field(Field(name='domestic_competition_id', type='string'))
-    self.schema.primary_key = ['player_id']
+    self.schema.add_field(Field(name='club_name', type='string'))
     self.schema.add_field(Field(
       name='image_url',
       type='string',
@@ -61,7 +61,8 @@ class CurPlayersAsset(RawAsset):
       format='uri'
       )
     )
-   
+
+    self.schema.primary_key = ['player_id']
     self.schema.foreign_keys = [
       {"fields": "current_club_id", "reference": {"resource": "clubs", "fields": "club_id"}},
       {"fields": "domestic_competition_id", "reference": {"resource": "competition", "fields": "competition_id"}},
@@ -81,11 +82,17 @@ class CurPlayersAsset(RawAsset):
 
     players = base_players.prep_df
     clubs = base_clubs.prep_df[
-      ["club_id", "domestic_competition_id"]
+      ["club_id", "domestic_competition_id", "name", "pretty_name"]
     ]
 
     with_club_attributes = players.merge(
-      clubs,
+      clubs.rename(columns={
+          "club_id": "club_id",
+          "domestic_competition_id": "domestic_competition_id",
+          "name": "club_name",
+          "pretty_name": "club_pretty_name"
+        }
+      ),
       how="left",
       left_on="current_club_id",
       right_on="club_id"

@@ -53,3 +53,6 @@ sync :
 streamlit_local :
 	cd streamlit && poetry shell && cd .. && \
 	PYTHONPATH=$(PYTHONPATH):`pwd`/. streamlit run streamlit/about.py
+
+dagit_local :
+	dagit -f transfermarkt_datasets/dagster/jobs.py
