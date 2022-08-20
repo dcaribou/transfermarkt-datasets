@@ -26,12 +26,19 @@ st.markdown(set_background_image, unsafe_allow_html=True)
 st.title("Transfermartk Datasets :soccer:")
 
 td = load_td()
-players = td.assets["cur_players"].prep_df.copy()
 games = td.assets["cur_games"].prep_df.copy()
 
 st.header("About")
-st.markdown(
+left_col, right_col = st.columns(2)
+left_col.markdown(
     read_file_contents("markdown_blocks/about.md")
+)
+right_col.altair_chart(
+    altair_chart=alt.Chart(games).mark_line().encode(
+        x="yearmonth(date)",
+        y="mean(attendance)"
+    ),
+    use_container_width=True
 )
 
 st.header("How to use")

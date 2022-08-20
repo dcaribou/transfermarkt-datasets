@@ -64,7 +64,7 @@ def draw_asset(asset: Asset) -> None:
     with data_tab:
         st.dataframe(asset.prep_df.head(10))
 
-def get_records_delta(asset: Asset, offset: int = 15) -> int:
+def get_records_delta(asset: Asset, offset: int = 7) -> int:
     df = asset.prep_df
 
     if "date" in df.columns:
