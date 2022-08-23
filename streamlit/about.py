@@ -7,6 +7,8 @@ from utils import (
     read_file_contents
 )
 
+st.set_page_config(layout="wide")
+
 td = load_td()
 games = td.assets["cur_games"].prep_df.copy()
 players = td.assets["cur_players"].prep_df.copy()

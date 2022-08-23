@@ -1,4 +1,3 @@
-from turtle import right
 from typing import List
 import streamlit as st
 import os
@@ -7,8 +6,14 @@ import pandas as pd
 from inflection import titleize
 from datetime import datetime, timedelta
 
+import sys
+cwd = os.getcwd()
+print(cwd)
+sys.path.insert(0, cwd)
+
 from transfermarkt_datasets.core.dataset import Dataset
 from transfermarkt_datasets.core.asset import Asset
+
 
 @st.cache
 def load_td() -> Dataset:
