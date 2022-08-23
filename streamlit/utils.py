@@ -8,7 +8,6 @@ from datetime import datetime, timedelta
 
 import sys
 cwd = os.getcwd()
-print(cwd)
 sys.path.insert(0, cwd)
 
 from transfermarkt_datasets.core.dataset import Dataset
