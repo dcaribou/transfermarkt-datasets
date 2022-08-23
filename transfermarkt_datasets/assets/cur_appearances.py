@@ -13,7 +13,7 @@ class CurAppearancesAsset(Asset):
 
   name = "cur_appearances"
   description = """
-  The `appearances` asset contains one records per player appearance. That is: one record per player per game played.
+  The `appearances` asset contains one records per player appearance. That is, one record per player per game played.
   All `appearances` are bound to one particular `player`. 
   """
   file_name = "appearances.csv"

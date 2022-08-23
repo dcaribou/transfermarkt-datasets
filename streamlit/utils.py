@@ -40,38 +40,34 @@ def draw_asset(asset: Asset) -> None:
         asset_name (str): Name of the asset
     """
 
-    st.subheader(titleize(asset.frictionless_resource_name))
+    left_col, right_col = st.columns([5,1])
 
-    info_tab, schema_tab, data_tab = (
-        st.tabs([
-            "Info", "Fields", "Data"
-        ])
+    left_col.subheader(titleize(asset.frictionless_resource_name))
+
+    left_col.markdown(asset.description)
+    delta = get_records_delta(asset)
+    right_col.metric(
+        label="# of records",
+        value=len(asset.prep_df),
+        delta=delta,
+        help="Total number of records in the asset / New records in the past week"
     )
 
-    with info_tab:
-        left_col, right_col = st.columns(2)
-        left_col.markdown(asset.description)
-        delta = get_records_delta(asset)
-        right_col.metric(
-            label="# of records",
-            value=len(asset.prep_df),
-            delta=delta,
-            help="Total number of records in the asset / New records in the past week"
-        )
+    with st.expander("Explore"):
+        draw_asset_explore(asset)
 
-    with schema_tab:
-        st.dataframe(asset.schema_as_dataframe())
+    st.markdown("---")
 
-    with data_tab:
-        st.dataframe(asset.prep_df.head(10))
-
-def draw_asset_explore(asset: Asset, columns: List[str]) -> None:
+def draw_asset_explore(asset: Asset, columns: List[str] = None) -> None:
     """Draw dataframe together with dynamic filters for exploration.
 
     Args:
         asset (Asset): The asset to draw the explore for.
         columns (List[str]): The list of columns to create a filter on.
     """
+    if columns is None:
+        columns = asset.prep_df.columns[:4]
+
     st_cols = st.columns(len(columns))
     df = asset.prep_df.copy()
 

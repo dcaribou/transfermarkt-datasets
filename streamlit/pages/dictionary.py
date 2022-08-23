@@ -7,28 +7,23 @@ from inflection import dasherize
 td = load_td()
 
 st.title("Dictionary :mag_right:")
-st.markdown(
-    read_file_contents("markdown_blocks/explore__intro.md")
+st.markdown("""
+The dataset is composed of multiple CSV files with information on competitions, games, clubs, players and appearances that is automatically updated **once a week**.
+Each file contains the attributes of the entity and the IDs that can be used to join them together.
+"""
 )
-# st.image("resources/diagram.png")
+st.image("resources/diagram.svg")
+st.markdown("""
+For example, the `appearances` file contains **one row per player appearance**, i.e. one row per player per game played.
+For each appearance you will find attributes such as `goals`, `assists` or `yellow_cards` and IDs referencing other entities within the dataset, such as `player_id` and `game_id`.
+"""
+)
 
-# asset_list_md = []
-# for asset_name, asset in td.assets.items():
-#     if not asset.public:
-#         continue
-    
-#     asset_list_md.append(f"* [{asset_name}](#{dasherize(asset_name)})")
+st.markdown("""
 
-# st.markdown("\n".join(asset_list_md), unsafe_allow_html=True)
+""")
 
-players = td.assets["cur_players"].prep_df
-
-st.download_button(
-     label="Download player data as CSV",
-     data=players.to_csv(),
-     file_name='large_df.csv',
-     mime='text/csv',
- )
+st.markdown("----")
 
 
 for asset_name, asset in td.assets.items():
