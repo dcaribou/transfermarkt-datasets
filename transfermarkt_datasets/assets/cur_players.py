@@ -69,7 +69,7 @@ class CurPlayersAsset(RawAsset):
     ]
 
     self.checks = [
-      checks.row_constraint(formula="position in 'Attack,Defender,Midfield,Goalkeeper'"),
+      checks.row_constraint(formula="position in 'Attack,Defender,Midfield,Goalkeeper,Missing'"),
       too_many_missings(field_name="market_value_in_gbp", tolerance=0.30),
       checks.table_dimensions(min_rows=22000)
 

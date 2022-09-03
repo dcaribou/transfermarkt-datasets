@@ -57,7 +57,7 @@ class BasePlayersAsset(RawAsset):
     ]
 
     self.checks = [
-      checks.row_constraint(formula="position in 'Attack,Defender,Midfield,Goalkeeper'"),
+      checks.row_constraint(formula="position in 'Attack,Defender,Midfield,Goalkeeper,Missing'"),
       too_many_missings(field_name="market_value_in_gbp", tolerance=0.30),
       checks.table_dimensions(min_rows=22000)
 
@@ -91,7 +91,7 @@ class BasePlayersAsset(RawAsset):
 
     sub_position = json_normalized['position']
     prep_df['position'] = numpy.select(
-      [
+      condlist=[
           sub_position.str.contains(
             "|".join(['Centre-Forward', 'Left Winger', 'Right Winger', 'Second Striker', 'Attack']),
             case=False
@@ -107,12 +107,13 @@ class BasePlayersAsset(RawAsset):
           ),
           sub_position.str.contains("Goalkeeper", case=False)
       ], 
-      [
+      choicelist=[
           'Attack', 
           'Defender',
           'Midfield',
           'Goalkeeper'
-      ]
+      ],
+      default="Missing"
     )
     prep_df['sub_position'] = sub_position.str.split(" - ", 2, True)[1]
 
