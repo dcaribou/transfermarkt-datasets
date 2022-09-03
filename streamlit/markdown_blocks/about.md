@@ -19,6 +19,4 @@ As a data consumer you have number of options to explore, query and download the
 * [Kaggle](https://www.kaggle.com/datasets/davidcariboo/player-scores)
 * [Streamlit](link)
 ### As a contributor
-The source code for the project, including this streamlit app, is [in Github](https://github.com/dcaribou/transfermarkt-datasets), and bugfixes and enhancements are most welcome.
-
-If you want to contribute, the best way to start is by opening a new issue or picking an existing one from the [`Issues`](https://github.com/dcaribou/transfermarkt-datasets/issues) section.
+The source code for the project, including this streamlit app, is [in Github](https://github.com/dcaribou/transfermarkt-datasets), and bugfixes and enhancements are most welcome. If you want to contribute, the best way to start is by opening a new issue or picking an existing one from the [`Issues`](https://github.com/dcaribou/transfermarkt-datasets/issues) section.

@@ -82,7 +82,7 @@ fileWatcherType = "auto"
 
 # Symmetric key used to produce signed cookies. If deploying on multiple replicas, this should be set to the same value across all replicas to ensure they all share the same secret.
 # Default: randomly generated secret key.
-cookieSecret =
+# cookieSecret =
 
 # If false, will attempt to open a browser window on start.
 # Default: false unless (1) we are on a Linux box where DISPLAY is unset, or (2) we are running in the Streamlit Atom plugin.
@@ -165,7 +165,7 @@ showPyplotGlobalUse = true
 [theme]
 
 # The preset Streamlit theme that your custom theme inherits from. One of "light" or "dark".
-# base =
+base = "dark"
 
 # Primary accent color for interactive elements.
 # primaryColor =
@@ -180,4 +180,4 @@ showPyplotGlobalUse = true
 # textColor =
 
 # Font family for all text in the app, except code blocks. One of "sans serif", "serif", or "monospace".
-# font =
+font = "monospace"
