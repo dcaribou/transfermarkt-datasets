@@ -1,16 +1,21 @@
 # transfermarkt-datasets
 
+| ![diagram](resources/diagram.svg) | 
+|:--:| 
+| *High level data model for transfermarkt-datasets* |
+
+Checkout this dataset also in: :white_check_mark: [Kaggle](https://www.kaggle.com/davidcariboo/player-scores) | :white_check_mark: [data.world](https://data.world/dcereijo/player-scores) | 
+:white_check_mark: [streamlit](https://transfermarkt-datasets.herokuapp.com/)
+
+------
+
 In an nutshell, this project aims for three things:
 
 1. Acquire data from transfermarkt website using the [trasfermarkt-scraper](https://github.com/dcaribou/transfermarkt-scraper).
 2. Build a **clean, public football (soccer) dataset** using data in 1.
 3. Automatate 1 and 2 to **keep these assets up to date** and publicly available on some well-known data catalogs.
 
-Checkout this dataset also in: :white_check_mark: [Kaggle](https://www.kaggle.com/davidcariboo/player-scores) | :white_check_mark: [data.world](https://data.world/dcereijo/player-scores)
-
-| ![diagram](resources/diagram.svg) | 
-|:--:| 
-| *High level data model for transfermarkt-datasets* |
+Continue on this `README` to learn about the different components of this project and how you can setup your environment for to run it locally.
 
 - [setup](#setup)
 - [data storage](#data-storage)
@@ -21,6 +26,8 @@ Checkout this dataset also in: :white_check_mark: [Kaggle](https://www.kaggle.co
   - [python api](#python-api)
 - [infra](#infra)
 - [contributing :pray:](#contributing-pray)
+
+------
 
 ## setup
 Setup your local environment to run the project with `poetry`.
