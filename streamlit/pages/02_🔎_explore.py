@@ -6,7 +6,7 @@ from inflection import dasherize
 
 td = load_td()
 
-st.title("Dictionary :mag_right:")
+st.title("Explore :mag_right:")
 st.image("resources/diagram.svg")
 st.markdown(
     read_file_contents("streamlit/markdown_blocks/dictionary/intro.md")

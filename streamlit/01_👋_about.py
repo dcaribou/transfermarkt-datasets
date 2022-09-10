@@ -7,7 +7,11 @@ from utils import (
     read_file_contents
 )
 
-st.set_page_config(layout="wide")
+st.set_page_config(
+    layout="wide",
+    page_title="About",
+    page_icon="👋"
+)
 
 td = load_td()
 games = td.assets["cur_games"].prep_df.copy()
