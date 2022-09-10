@@ -66,7 +66,7 @@ def submit_batch_job_and_wait(
 		jobQueue=job_queue,
 		jobDefinition=f"{job_definition}:{revision}",
 		containerOverrides={
-			'command': [branch, message, script, "local"] + additional_args,
+			'command': [" ".join(["./bootstrap.sh", branch, f"'{message}'", script, "local"] + additional_args)],
 			'resourceRequirements': [
 				{'value': str(vcpus), 'type': 'VCPU'},
 				{'value': str(memory), 'type': 'MEMORY'}

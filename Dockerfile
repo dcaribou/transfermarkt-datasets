@@ -19,7 +19,8 @@ RUN git config --global user.email "transfermarkt-datasets-ci@transfermark-datas
     git config --global user.name "CI Job" && \
     git config --global core.sshCommand "ssh -o StrictHostKeyChecking=no"
 
-# Creating folders, and files for a project:
+# Creating folders, and files for the project
+
 COPY bootstrap.sh /app/
 COPY Makefile /app/
 
