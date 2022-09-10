@@ -45,10 +45,10 @@ poetry install
 ## data storage
 > :information_source: Read access to the S3 [DVC remote storage](https://dvc.org/doc/command-reference/remote#description) for the project is required to successfully run `dvc pull`. Contributors should feel free to grant themselves access by adding their AWS IAM user ARN to [this whitelist](https://github.com/dcaribou/transfermarkt-datasets/blob/6b6dd6572f582b2c40039913a65ba99d10fd1f44/infra/main.tf#L16).
 
-All project data assets are kept inside the `data` folder. This is a [DVC](https://dvc.org/) repository and all files a therefore all files can be pulled from the remote storage with the `dvc pull` command.
+All project data assets are kept inside the `data` folder. This is a [DVC](https://dvc.org/) repository and therefore all files can be pulled from the remote storage with the `dvc pull` command.
 
 * `data/raw`: contains raw data per season as acquired with [trasfermarkt-scraper](https://github.com/dcaribou/transfermarkt-scraper) (check [acquire](#acquire))
-* `data/prep`: contains the prepared datasets as produced by `transfermarkt_datasets` module (check [prepare](#prepare))
+* `data/prep`: contains the prepared datasets as produced by `transfermarkt_datasets` module (check [prepare](#data-preparation))
 
 ## data acquisition
 In the scope of this project, "acquiring" is the process of collecting "raw data", as it is produced by [trasfermarkt-scraper](https://github.com/dcaribou/transfermarkt-scraper). Acquired data lives in the `data/raw` folder and it can be created or updated for a particular season using the `1_acquire.py` script.
