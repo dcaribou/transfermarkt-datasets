@@ -8,7 +8,7 @@ In an nutshell, this project aims for three things:
 
 Checkout this dataset also in: :white_check_mark: [Kaggle](https://www.kaggle.com/davidcariboo/player-scores) | :white_check_mark: [data.world](https://data.world/dcereijo/player-scores)
 
-| ![diagram](resources/diagram.png) | 
+| ![diagram](resources/diagram.svg) | 
 |:--:| 
 | *High level data model for transfermarkt-datasets* |
 

@@ -22,11 +22,19 @@ RUN git config --global user.email "transfermarkt-datasets-ci@transfermark-datas
 # Creating folders, and files for a project:
 COPY bootstrap.sh /app/
 COPY Makefile /app/
+
 COPY streamlit/ /app/streamlit/
 COPY .streamlit/ /app/.streamlit/
+COPY resources /app/resources
+
 COPY transfermarkt_datasets/ /app/transfermarkt_datasets/
+COPY config.yml /app/config.yml
 
-ENTRYPOINT [ "/bin/sh" ]
-CMD ["make" "streamlit_cloud"]
+COPY .dvc/config /app/.dvc/config
+COPY data/prep.dvc /app/data/prep.dvc
 
+COPY .git /app/.git
 
+# ENTRYPOINT [ "/usr/bin/make" ]
+# CMD [ "echo", "hello", "world" ]
+CMD make streamlit_cloud
