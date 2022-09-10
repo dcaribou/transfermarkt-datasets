@@ -21,7 +21,7 @@ dataFrameSerialization = "arrow"
 
 # Level of logging: 'error', 'warning', 'info', or 'debug'.
 # Default: 'info'
-level = "info"
+level = "debug"
 
 # String format for logging messages. If logger.datetimeFormat is set, logger messages will default to `%(asctime)s.%(msecs)03d %(message)s`. See [Python's documentation](https://docs.python.org/2.6/library/logging.html#formatter-objects) for available attributes.
 # Default: "%(asctime)s %(message)s"
@@ -86,7 +86,7 @@ fileWatcherType = "auto"
 
 # If false, will attempt to open a browser window on start.
 # Default: false unless (1) we are on a Linux box where DISPLAY is unset, or (2) we are running in the Streamlit Atom plugin.
-headless = false
+headless = true
 
 # Automatically rerun script when the file is modified on disk.
 # Default: false
@@ -98,21 +98,21 @@ runOnSave = false
 
 # The port where the server will listen for browser connections.
 # Default: 8501
-port = 8501
+port = 8080
 
 # The base path for the URL where Streamlit should be served from.
 # Default: ""
-baseUrlPath = ""
+baseUrlPath = "/"
 
 # Enables support for Cross-Origin Request Sharing (CORS) protection, for added security.
 # Due to conflicts between CORS and XSRF, if `server.enableXsrfProtection` is on and `server.enableCORS` is off at the same time, we will prioritize `server.enableXsrfProtection`.
 # Default: true
-enableCORS = true
+enableCORS = false
 
 # Enables support for Cross-Site Request Forgery (XSRF) protection, for added security.
 # Due to conflicts between CORS and XSRF, if `server.enableXsrfProtection` is on and `server.enableCORS` is off at the same time, we will prioritize `server.enableXsrfProtection`.
 # Default: true
-enableXsrfProtection = true
+enableXsrfProtection = false
 
 # Max size, in megabytes, for files uploaded with the file_uploader.
 # Default: 200
@@ -132,7 +132,7 @@ enableWebsocketCompression = false
 # Internet address where users should point their browsers in order to connect to the app. Can be IP address or DNS name and path.
 # This is used to: - Set the correct URL for CORS and XSRF protection purposes. - Show the URL on the terminal - Open the browser
 # Default: 'localhost'
-serverAddress = "localhost"
+serverAddress = "s5cvh8kjjh.eu-west-1.awsapprunner.com"
 
 # Whether to send usage statistics to Streamlit.
 # Default: true
@@ -141,7 +141,7 @@ gatherUsageStats = true
 # Port where users should point their browsers in order to connect to the app.
 # This is used to: - Set the correct URL for CORS and XSRF protection purposes. - Show the URL on the terminal - Open the browser
 # Default: whatever value is set in server.port.
-serverPort = 8501
+serverPort = 8080
 
 
 [mapbox]
@@ -165,7 +165,7 @@ showPyplotGlobalUse = true
 [theme]
 
 # The preset Streamlit theme that your custom theme inherits from. One of "light" or "dark".
-base = "dark"
+base = "light"
 
 # Primary accent color for interactive elements.
 # primaryColor =
