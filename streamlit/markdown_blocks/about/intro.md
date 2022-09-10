@@ -17,6 +17,6 @@ Explore the dataset documentation to know more about the different assets, their
 As a data consumer you have number of options to explore, query and download the dataset
 * [data.world](https://data.world/dcereijo/player-scores)
 * [Kaggle](https://www.kaggle.com/datasets/davidcariboo/player-scores)
-* [Streamlit](link)
+* [Streamlit](https://transfermarkt-datasets.herokuapp.com/explore)
 ### As a contributor
 The source code for the project, including this streamlit app, is [in Github](https://github.com/dcaribou/transfermarkt-datasets), and bugfixes and enhancements are most welcome. If you want to contribute, the best way to start is by opening a new issue or picking an existing one from the [`Issues`](https://github.com/dcaribou/transfermarkt-datasets/issues) section.

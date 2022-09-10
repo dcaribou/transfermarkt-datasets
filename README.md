@@ -24,6 +24,8 @@ Continue on this `README` to learn about the different components of this projec
   - [dagster](#dagster)
   - [configuration](#configuration)
   - [python api](#python-api)
+- [data publication](#data-publication)
+- [streamlit 🎈](#streamlit-)
 - [infra](#infra)
 - [contributing :pray:](#contributing-pray)
 
@@ -43,7 +45,7 @@ poetry install
 ```
 
 ## data storage
-> :information_source: Read access to the S3 [DVC remote storage](https://dvc.org/doc/command-reference/remote#description) for the project is required to successfully run `dvc pull`. Contributors should feel free to grant themselves access by adding their AWS IAM user ARN to [this whitelist](https://github.com/dcaribou/transfermarkt-datasets/blob/6b6dd6572f582b2c40039913a65ba99d10fd1f44/infra/main.tf#L16).
+> :information_source: Read access to the S3 [DVC remote storage](https://dvc.org/doc/command-reference/remote#description) for the project is required to successfully run `dvc pull`. Contributors can grant themselves access by adding their AWS IAM user ARN to [this whitelist](https://github.com/dcaribou/transfermarkt-datasets/blob/6b6dd6572f582b2c40039913a65ba99d10fd1f44/infra/main.tf#L16).
 
 All project data assets are kept inside the `data` folder. This is a [DVC](https://dvc.org/) repository and therefore all files can be pulled from the remote storage with the `dvc pull` command.
 
@@ -91,6 +93,8 @@ td = Dataset()
 # build the datasets from raw data
 td.discover_assets()
 td.build_datasets()
+# if perpared files already exist in data/prep, you can just load them
+# > td.load_assets()
 
 # inspect the results
 td.asset_names # ["games", "players"...]
@@ -99,6 +103,18 @@ td.assets["games"].load_raw() # get the raw data in a dataframe
 td.assets["games"].raw_df # get raw data in a dataframe
 ```
 For more examples on using `transfermark_datasets`, checkout the sample [notebooks](notebooks).
+
+## data publication
+Prepared data is published to a couple of popular dataset websites (Kaggle and data.world). This is done in the `3_sync.py` script.
+
+## streamlit 🎈
+There is a [streamlit](https://streamlit.io/) app for the project with documentation, a data catalog and sample analyisis. The app in hosted in Heroku, you can check it out [here](https://transfermarkt-datasets.herokuapp.com/).
+
+For local development, you can also run the app in your machine. Provided you've done the [setup](#setup), run the following to spin up a local instance of the app
+```console
+make streamlit_local
+```
+> :warning: Note the the app expects prepared data to exist in `data/prep`. Check out [data storage](#data-storage) for instructions about how to populate that folder.
 
 ## [infra](infra)
 Define all the necessary infrastructure for the project in the cloud with Terraform.
