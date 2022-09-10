@@ -107,12 +107,12 @@ baseUrlPath = ""
 # Enables support for Cross-Origin Request Sharing (CORS) protection, for added security.
 # Due to conflicts between CORS and XSRF, if `server.enableXsrfProtection` is on and `server.enableCORS` is off at the same time, we will prioritize `server.enableXsrfProtection`.
 # Default: true
-enableCORS = false
+enableCORS = true
 
 # Enables support for Cross-Site Request Forgery (XSRF) protection, for added security.
 # Due to conflicts between CORS and XSRF, if `server.enableXsrfProtection` is on and `server.enableCORS` is off at the same time, we will prioritize `server.enableXsrfProtection`.
 # Default: true
-enableXsrfProtection = false
+enableXsrfProtection = true
 
 # Max size, in megabytes, for files uploaded with the file_uploader.
 # Default: 200
@@ -124,7 +124,7 @@ maxMessageSize = 200
 
 # Enables support for websocket compression.
 # Default: false
-enableWebsocketCompression = false
+enableWebsocketCompression = true
 
 
 [browser]
@@ -132,7 +132,7 @@ enableWebsocketCompression = false
 # Internet address where users should point their browsers in order to connect to the app. Can be IP address or DNS name and path.
 # This is used to: - Set the correct URL for CORS and XSRF protection purposes. - Show the URL on the terminal - Open the browser
 # Default: 'localhost'
-serverAddress = "s5cvh8kjjh.eu-west-1.awsapprunner.com"
+serverAddress = "localhost"
 
 # Whether to send usage statistics to Streamlit.
 # Default: true

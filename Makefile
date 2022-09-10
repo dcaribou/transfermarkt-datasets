@@ -68,9 +68,6 @@ streamlit_local :
 streamlit_cloud :
 	streamlit run \
 		--server.port ${PORT} \
-		--server.enableCORS=false \
-		--server.enableXsrfProtection=false \
-		--server.enableWebsocketCompression=false \
 		streamlit/about.py
 
 dagit_local :
