@@ -35,6 +35,5 @@ COPY data/prep.dvc /app/data/prep.dvc
 
 COPY .git /app/.git
 
-# ENTRYPOINT [ "/usr/bin/make" ]
-# CMD [ "echo", "hello", "world" ]
+ENTRYPOINT [ "/bin/sh", "-c" ]
 CMD make streamlit_cloud
