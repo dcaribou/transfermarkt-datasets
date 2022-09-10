@@ -2,17 +2,15 @@ PLATFORM = linux/arm64 # linux/amd64
 BRANCH = $(shell git rev-parse --abbrev-ref HEAD)
 JOB_NAME = on-cli
 
-ecr_login :
-	aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin 272181418418.dkr.ecr.eu-west-1.amazonaws.com
-
 build :
-	docker build --platform=$(PLATFORM) -t transfermarkt-datasets-streamlit .
+	docker build \
+		--platform=$(PLATFORM) \
+		--tag dcaribou/transfermarkt-datasets:dev \
+		--tag registry.heroku.com/transfermarkt-datasets/web \
+		.
 
 push :
-	docker tag \
-		transfermarkt-datasets-streamlit:latest \
-		272181418418.dkr.ecr.eu-west-1.amazonaws.com/transfermarkt-datasets-streamlit:latest && \
-	docker push 272181418418.dkr.ecr.eu-west-1.amazonaws.com/transfermarkt-datasets-streamlit:latest
+	docker push dcaribou/transfermarkt-datasets:dev
 
 acquire_local :
 	python 1_acquire.py local $(ARGS)
@@ -57,12 +55,10 @@ sync :
 	python 3_sync.py --message "$(MESSAGE)" --season 2022
 
 streamlit_deploy :
-	docker tag transfermarkt-datasets-streamlit registry.heroku.com/transfermarkt-datasets/web && \
 	docker push registry.heroku.com/transfermarkt-datasets/web && \
 	heroku container:release web
 
 streamlit_local :
-	cd streamlit && poetry shell && cd .. && \
 	streamlit run streamlit/about.py
 
 streamlit_cloud :
