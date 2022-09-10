@@ -100,7 +100,7 @@ def publish_to_dataworld(folder):
     dw_files.append(
       {
         'name': resource['title'],
-        'description': resource['description'],
+        'description': (resource['description'])[0:120],
         'labels': ['clean data'],
         'source': {
           'url': presigned_url
