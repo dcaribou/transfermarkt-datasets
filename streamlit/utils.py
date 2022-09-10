@@ -26,7 +26,7 @@ def load_td() -> Dataset:
 
     return td
 
-def read_file_contents(markdown_file: str):
+def read_file_contents(file_path: str):
     """Read a markdown file in disk as a string.
 
     Args:
@@ -35,7 +35,7 @@ def read_file_contents(markdown_file: str):
     Returns:
         str: The contents of the file as a string.
     """
-    return Path("streamlit/" + markdown_file).read_text()
+    return Path(file_path).read_text()
 
 def draw_asset(asset: Asset) -> None:
     """Draw a transfermarkt-dataset asset summary

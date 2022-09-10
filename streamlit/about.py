@@ -31,5 +31,5 @@ right_col.altair_chart(
 )
 
 left_col.markdown(
-    read_file_contents("markdown_blocks/about.md")
+    read_file_contents("streamlit/markdown_blocks/about/intro.md")
 )
