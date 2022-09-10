@@ -105,6 +105,8 @@ class Asset:
     self.log.info("Finished processing asset %s\n%s", self.name, self.output_summary())
 
   def load_from_prep(self):
+    """Load prepared dataset from the local to a pandas dataframe.
+    """
     self.prep_df = pd.read_csv(
       filepath_or_buffer=self.prep_path
     )
@@ -135,6 +137,11 @@ class Asset:
     return tabulate(table, headers=summary.columns, floatfmt=".2f")
 
   def schema_as_dataframe(self) -> pd.DataFrame:
+    """Render the asset schema as a pandas dataframe.
+
+    Returns:
+        pd.DataFrame: A pandas dataframe representing the asset schema.
+    """
 
     fields = [field.name for field in  self.schema["fields"]]
     types = [field.type for field in  self.schema["fields"]]

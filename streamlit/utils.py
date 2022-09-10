@@ -16,6 +16,11 @@ from transfermarkt_datasets.core.asset import Asset
 
 @st.cache
 def load_td() -> Dataset:
+    """Instantiate and initialise a Dataset, so it can be used in the app.
+
+    Returns:
+        Dataset: A transfermark_datasets.core.Dataset that is initialised and ready to be used.
+    """
 
     if os.environ["STREAMLIT"] == "cloud":
         os.system("dvc pull data/prep")

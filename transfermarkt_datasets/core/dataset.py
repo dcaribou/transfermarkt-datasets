@@ -71,6 +71,8 @@ class Dataset:
       self.assets[asset.name] = asset
 
   def load_assets(self):
+    """Load all assets in the dataset from local.
+    """
     for asset_name, asset in self.assets.items():
       if asset.public:
         asset.load_from_prep()
