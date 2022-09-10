@@ -41,6 +41,8 @@ class Asset:
       self.log = logging.getLogger("main")
 
       self.stage_location = "transfermarkt_datasets/stage"
+      self.prep_location = "data/prep"
+
       self.datapackage_descriptor_path = f"{self.stage_location}/dataset-metadata.json"
 
       if not self.file_name:
@@ -59,6 +61,10 @@ class Asset:
   @property
   def stage_path(self) -> str:
     return f"{self.stage_location}/{self.file_name}"
+  
+  @property
+  def prep_path(self) -> str:
+    return f"{self.prep_location}/{self.file_name}"
 
   @property
   def dagster_build_task_name(self) -> str:
@@ -98,6 +104,13 @@ class Asset:
 
     self.log.info("Finished processing asset %s\n%s", self.name, self.output_summary())
 
+  def load_from_prep(self):
+    """Load prepared dataset from the local to a pandas dataframe.
+    """
+    self.prep_df = pd.read_csv(
+      filepath_or_buffer=self.prep_path
+    )
+
   def load_from_stage(self):
     self.prep_df = pd.read_csv(
       filepath_or_buffer=self.stage_path
@@ -122,6 +135,27 @@ class Asset:
     summary.insert(0, 'metric', summary.index)
     table = summary.values.tolist()
     return tabulate(table, headers=summary.columns, floatfmt=".2f")
+
+  def schema_as_dataframe(self) -> pd.DataFrame:
+    """Render the asset schema as a pandas dataframe.
+
+    Returns:
+        pd.DataFrame: A pandas dataframe representing the asset schema.
+    """
+
+    fields = [field.name for field in  self.schema["fields"]]
+    types = [field.type for field in  self.schema["fields"]]
+    descriptions = [field.description for field in  self.schema["fields"]]
+
+    df = pd.DataFrame(
+      data=dict(
+        description=descriptions,
+        type=types
+      ),
+      index=fields
+    )
+    
+    return df
 
   def as_frictionless_resource(self) -> Resource:
     detector = Detector(schema_sync=True)

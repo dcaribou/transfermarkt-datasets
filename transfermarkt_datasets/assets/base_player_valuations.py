@@ -12,7 +12,8 @@ class BasePlayerValuationsAsset(RawAsset):
 
   name = "base_player_valuations"
   raw_file_name = "players.json"
-  file_name = "player_valuations.csv"
+  file_name = "base_player_valuations.csv"
+  public = False
 
   description = "Historical player market valuations. One row per market valuation record."
 

@@ -106,6 +106,12 @@ resource "aws_iam_user" "user" {
   tags = var.tags
 }
 
+resource "aws_iam_user" "user_streamlit" {
+  name = "${var.name}-streamlit"
+  tags = var.tags
+}
+
+
 resource "aws_iam_policy" "policy" {
   name        = "${var.name}-batch-access-policy"
   policy      = <<EOF

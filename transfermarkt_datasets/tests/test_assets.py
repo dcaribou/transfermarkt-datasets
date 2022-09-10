@@ -2,13 +2,15 @@
 import unittest
 
 from dagster import DependencyDefinition
-from transfermarkt_datasets.core.asset import Asset, RawAsset
 
-from frictionless.resource import Resource
 from frictionless.schema import Schema
 from frictionless.field import Field
 
 import inspect
+
+import pandas as pd
+
+from transfermarkt_datasets.core.asset import Asset, RawAsset
 
 class TestAsset(unittest.TestCase):
 
@@ -104,3 +106,31 @@ class TestAsset(unittest.TestCase):
 
         self.assertEqual(rs.name, at.frictionless_resource_name)
         self.assertEqual(rs.path, at.file_name)
+
+    def test_schema_as_dataframe(self):
+
+        class TestAsset(Asset):
+            def __init__(self, settings: dict = None) -> None:
+                super().__init__(settings)
+
+                self.schema = Schema()
+                self.schema.add_field(
+                    Field(name="some_field", type="string")
+                )
+                self.schema.add_field(
+                    Field(name="some_other_field", type="integer")
+                )
+        
+        at = TestAsset()
+        df = at.schema_as_dataframe()
+
+        df_expected = pd.DataFrame(
+            data={
+                "description": ["", ""],
+                "type": ["string", "integer"]
+            },
+            index=["some_field", "some_other_field"]
+        )
+
+        self.assertTrue(df.equals(df_expected))
+

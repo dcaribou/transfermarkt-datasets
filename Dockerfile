@@ -19,6 +19,22 @@ RUN git config --global user.email "transfermarkt-datasets-ci@transfermark-datas
     git config --global user.name "CI Job" && \
     git config --global core.sshCommand "ssh -o StrictHostKeyChecking=no"
 
-COPY bootstrap.sh /app/
+# Creating folders, and files for the project
 
-ENTRYPOINT ["/bin/bash", "bootstrap.sh"]
+COPY bootstrap.sh /app/
+COPY Makefile /app/
+
+COPY streamlit/ /app/streamlit/
+COPY .streamlit/ /app/.streamlit/
+COPY resources /app/resources
+
+COPY transfermarkt_datasets/ /app/transfermarkt_datasets/
+COPY config.yml /app/config.yml
+
+COPY .dvc/config /app/.dvc/config
+COPY data/prep.dvc /app/data/prep.dvc
+
+COPY .git /app/.git
+
+ENTRYPOINT [ "/bin/sh", "-c" ]
+CMD make streamlit_cloud

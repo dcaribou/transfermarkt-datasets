@@ -45,7 +45,7 @@ def prepare_on_cloud(
   job_definition, branch, message, args,
   func):
 
-  from cloud_lib import submit_batch_job_and_wait
+  from transfermarkt_datasets.core.utils import submit_batch_job_and_wait
 
   submit_batch_job_and_wait(
     job_name=job_name,

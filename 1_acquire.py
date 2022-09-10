@@ -22,7 +22,7 @@ from scrapy.crawler import CrawlerRunner
 from scrapy.utils.project import get_project_settings
 from scrapy.utils.log import configure_logging
 
-from cloud_lib import submit_batch_job_and_wait
+from transfermarkt_datasets.core.utils import submit_batch_job_and_wait
 
 class Asset():
   """A wrapper for the asset to be acquired.

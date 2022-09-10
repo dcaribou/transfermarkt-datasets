@@ -70,6 +70,13 @@ class Dataset:
       asset = class_()
       self.assets[asset.name] = asset
 
+  def load_assets(self):
+    """Load all assets in the dataset from local.
+    """
+    for asset_name, asset in self.assets.items():
+      if asset.public:
+        asset.load_from_prep()
+
   def get_asset_def(self, asset_name):
     class_name = inflection.camelize(asset_name) + "Asset"
     module = importlib.import_module(f"{self.assets_module}.{asset_name}")
@@ -150,6 +157,14 @@ class Dataset:
     return False
 
   def as_dagster_job(self, resource_defs={}) -> JobDefinition:
+    """Render dataset assets build as a dagster  JobDefinition
+
+    Args:
+        resource_defs (dict, optional): Optional dagster resources. Defaults to {}.
+
+    Returns:
+        JobDefinition: A dagster JobDefinition
+    """
     build_ops = [asset.as_build_dagster_op() for asset in self.assets.values()]
     validate_ops = [
       asset.as_validate_dagster_op()

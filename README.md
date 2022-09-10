@@ -1,16 +1,21 @@
 # transfermarkt-datasets
 
+| ![diagram](resources/diagram.svg) | 
+|:--:| 
+| *High level data model for transfermarkt-datasets* |
+
+Checkout this dataset also in: :white_check_mark: [Kaggle](https://www.kaggle.com/davidcariboo/player-scores) | :white_check_mark: [data.world](https://data.world/dcereijo/player-scores) | 
+:white_check_mark: [streamlit](https://transfermarkt-datasets.herokuapp.com/)
+
+------
+
 In an nutshell, this project aims for three things:
 
 1. Acquire data from transfermarkt website using the [trasfermarkt-scraper](https://github.com/dcaribou/transfermarkt-scraper).
 2. Build a **clean, public football (soccer) dataset** using data in 1.
 3. Automatate 1 and 2 to **keep these assets up to date** and publicly available on some well-known data catalogs.
 
-Checkout this dataset also in: :white_check_mark: [Kaggle](https://www.kaggle.com/davidcariboo/player-scores) | :white_check_mark: [data.world](https://data.world/dcereijo/player-scores)
-
-| ![diagram](resources/diagram.png) | 
-|:--:| 
-| *High level data model for transfermarkt-datasets* |
+Continue on this `README` to learn about the different components of this project and how you can setup your environment for to run it locally.
 
 - [setup](#setup)
 - [data storage](#data-storage)
@@ -21,6 +26,8 @@ Checkout this dataset also in: :white_check_mark: [Kaggle](https://www.kaggle.co
   - [python api](#python-api)
 - [infra](#infra)
 - [contributing :pray:](#contributing-pray)
+
+------
 
 ## setup
 Setup your local environment to run the project with `poetry`.
@@ -38,10 +45,10 @@ poetry install
 ## data storage
 > :information_source: Read access to the S3 [DVC remote storage](https://dvc.org/doc/command-reference/remote#description) for the project is required to successfully run `dvc pull`. Contributors should feel free to grant themselves access by adding their AWS IAM user ARN to [this whitelist](https://github.com/dcaribou/transfermarkt-datasets/blob/6b6dd6572f582b2c40039913a65ba99d10fd1f44/infra/main.tf#L16).
 
-All project data assets are kept inside the `data` folder. This is a [DVC](https://dvc.org/) repository and all files a therefore all files can be pulled from the remote storage with the `dvc pull` command.
+All project data assets are kept inside the `data` folder. This is a [DVC](https://dvc.org/) repository and therefore all files can be pulled from the remote storage with the `dvc pull` command.
 
 * `data/raw`: contains raw data per season as acquired with [trasfermarkt-scraper](https://github.com/dcaribou/transfermarkt-scraper) (check [acquire](#acquire))
-* `data/prep`: contains the prepared datasets as produced by `transfermarkt_datasets` module (check [prepare](#prepare))
+* `data/prep`: contains the prepared datasets as produced by `transfermarkt_datasets` module (check [prepare](#data-preparation))
 
 ## data acquisition
 In the scope of this project, "acquiring" is the process of collecting "raw data", as it is produced by [trasfermarkt-scraper](https://github.com/dcaribou/transfermarkt-scraper). Acquired data lives in the `data/raw` folder and it can be created or updated for a particular season using the `1_acquire.py` script.

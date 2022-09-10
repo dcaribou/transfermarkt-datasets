@@ -15,7 +15,8 @@ class BaseAppearancesAsset(RawAsset):
 
   name = "base_appearances"
   description = "Appearances for `players`. One row per appearance."
-  file_name = "appearances.csv"
+  file_name = "base_appearances.csv"
+  public = False
 
   def __init__(self, *args, **kwargs) -> None:
     super().__init__(*args, **kwargs)
@@ -73,6 +74,7 @@ class BaseAppearancesAsset(RawAsset):
       (json_normalized['second_yellow_cards'].str.len() > 0).astype('int32')
     )
     prep_df['red_cards'] = (json_normalized['red_cards'].str.len() > 0).astype('int32')
+    prep_df['game_id'] = prep_df['game_id'].fillna(-1)
 
     self.prep_df = prep_df
 
