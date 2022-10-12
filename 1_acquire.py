@@ -16,6 +16,7 @@ import os
 import pathlib
 
 import argparse
+from typing import List
 
 from twisted.internet import reactor, defer
 from scrapy.crawler import CrawlerRunner
@@ -72,56 +73,95 @@ class Asset():
     return assets
 
 
-def acquire_on_local(asset, season, func):
+def acquire_on_local(asset, seasons, func):
 
-  # identify this scraping jobs accordinly by setting a nice user agent
-  USER_AGENT = 'transfermarkt-datasets/1.0 (https://github.com/dcaribou/transfermarkt-datasets)'
+  def seasons_list(seasons: str) -> List[str]:
+    """Generate a list of seasons to acquire based on the "seasons" string. For example,
+    for "2012-2014", it should return [2012, 2013, 2014].
 
-  if asset == 'all':
-    assets = Asset.all(season)
-  else:
-    asset_obj = Asset(
-        name=asset,
-        season=season
-      )
-    asset_obj.set_parent()
-    assets = [asset_obj]
+    Args:
+        seasons (str): A string representing a data or range of dates to acquire.
 
-  season_path = pathlib.Path(f"data/raw/{season}")
-  if not season_path.exists():
-    season_path.mkdir()
+    Returns:
+        List[str]: The expanded list of seasons to acquire.
+    """
+    parts = seasons.split("-")
+    
+    if len(parts) == 0:
+      raise Exception("Empty string provided for seasons")
+
+    elif len(parts) == 1: # single season string
+      return [int(seasons)]
+
+    elif len(parts) == 2: # range of seasons
+      start, end = parts
+      season_range = list(range(int(start), int(end)))
+
+      if len(season_range) > 20:
+        raise Exception("The range is too high")
+      else:
+        return season_range
+
+    else:
+      raise Exception(f"Invalid string: {seasons}")
+
+  def acquire_on_local_season(asset, season, func):
+
+    print(f"Aquiring season {season}")
+
+    # identify this scraping jobs accordinly by setting a nice user agent
+    USER_AGENT = 'transfermarkt-datasets/1.0 (https://github.com/dcaribou/transfermarkt-datasets)'
+
+    if asset == 'all':
+      assets = Asset.all(season)
+    else:
+      asset_obj = Asset(
+          name=asset,
+          season=season
+        )
+      asset_obj.set_parent()
+      assets = [asset_obj]
+
+    season_path = pathlib.Path(f"data/raw/{season}")
+    if not season_path.exists():
+      season_path.mkdir()
 
 
-  os.chdir("transfermarkt-scraper")
+    os.chdir("transfermarkt-scraper")
 
-  settings = get_project_settings()
+    settings = get_project_settings()
 
-  settings.set("USER_AGENT", USER_AGENT)
-  settings.set("SEASON", season)
-  settings.set("FEED_URI", f"../data/raw/{season}/%(name)s.json" )
-  settings.set("LOG_LEVEL", "INFO")
+    settings.set("USER_AGENT", USER_AGENT)
+    settings.set("SEASON", season)
+    settings.set("FEED_URI", f"../data/raw/{season}/%(name)s.json" )
+    settings.set("LOG_LEVEL", "INFO")
 
-  configure_logging(settings)
+    configure_logging(settings)
 
-  # https://docs.scrapy.org/en/latest/topics/practices.html#running-multiple-spiders-in-the-same-process
+    # https://docs.scrapy.org/en/latest/topics/practices.html#running-multiple-spiders-in-the-same-process
 
-  runner = CrawlerRunner(settings)
+    runner = CrawlerRunner(settings)
 
-  # https://twistedmatrix.com/documents/13.2.0/api/twisted.internet.defer.inlineCallbacks.html
-  @defer.inlineCallbacks
-  def crawl():
-    for asset_obj in assets:
-      # TODO: ideally, let transfermark-scraper handle destination file truncation via a setting instead of doing it here
-      # checkout https://foroayuda.es/scrapy-sobrescribe-los-archivos-json-en-lugar-de-agregar-el-archivo/
-      file_path = pathlib.Path(f"../data/raw/{season}/{asset_obj.name}.json")
-      if file_path.exists():
-        os.remove(str(file_path))
-      print(f"Schedule {asset_obj.name}")
-      yield runner.crawl(asset_obj.name, parents=asset_obj.parent.file_full_path)
-    reactor.stop()
-  
-  crawl()
-  reactor.run()
+    # https://twistedmatrix.com/documents/13.2.0/api/twisted.internet.defer.inlineCallbacks.html
+    @defer.inlineCallbacks
+    def crawl():
+      for asset_obj in assets:
+        # TODO: ideally, let transfermark-scraper handle destination file truncation via a setting instead of doing it here
+        # checkout https://foroayuda.es/scrapy-sobrescribe-los-archivos-json-en-lugar-de-agregar-el-archivo/
+        file_path = pathlib.Path(f"../data/raw/{season}/{asset_obj.name}.json")
+        if file_path.exists():
+          os.remove(str(file_path))
+        print(f"Schedule {asset_obj.name}")
+        yield runner.crawl(asset_obj.name, parents=asset_obj.parent.file_full_path)
+      reactor.stop()
+    
+    crawl()
+    reactor.run()
+
+  expanded_seasons = seasons_list(seasons)
+
+  for season in expanded_seasons:
+    acquire_on_local_season(asset, season, func)
 
 def acquire_on_cloud(job_name, job_queue, job_definition, branch, message, args, func):
 
@@ -152,9 +192,10 @@ local_parser.add_argument(
   required=True
 )
 local_parser.add_argument(
-  '--season',
+  '--seasons',
   help="Season to be acquired. This is passed to the scraper as the SEASON argument",
-  default=2020
+  default="2020",
+  type=str
 )
 local_parser.set_defaults(func=acquire_on_local)
 

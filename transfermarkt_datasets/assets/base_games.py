@@ -7,6 +7,7 @@ from datetime import datetime
 import pandas as pd
 
 from transfermarkt_datasets.core.asset import RawAsset
+from transfermarkt_datasets.core.checks import too_many_missings
 
 class BaseGamesAsset(RawAsset):
 
@@ -46,7 +47,9 @@ class BaseGamesAsset(RawAsset):
     self.schema.primary_key = ['game_id']
     
     self.checks = [
-      checks.table_dimensions(min_rows=55000)
+      checks.table_dimensions(min_rows=55000),
+      too_many_missings(field_name="home_manager_name", tolerance=0.30),
+      too_many_missings(field_name="away_manager_name", tolerance=0.30)
     ]
 
   def build(self):
