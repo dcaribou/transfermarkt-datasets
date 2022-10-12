@@ -158,6 +158,8 @@ def acquire_on_local(asset, seasons, func):
     crawl()
     reactor.run()
 
+    os.chdir("..")
+
   expanded_seasons = seasons_list(seasons)
 
   for season in expanded_seasons:
