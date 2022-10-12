@@ -31,6 +31,8 @@ class BaseGamesAsset(RawAsset):
     self.schema.add_field(Field(name='away_club_goals', type='integer'))
     self.schema.add_field(Field(name='home_club_position', type='integer'))
     self.schema.add_field(Field(name='away_club_position', type='integer'))
+    self.schema.add_field(Field(name='home_manager_name', type='string'))
+    self.schema.add_field(Field(name='away_manager_name', type='string'))
     self.schema.add_field(Field(name='stadium', type='string'))
     self.schema.add_field(Field(name='attendance', type='integer'))
     self.schema.add_field(Field(name='referee', type='string'))
@@ -89,17 +91,24 @@ class BaseGamesAsset(RawAsset):
     prep_df['home_club_id'] = home_club_href_parts[4]
     prep_df['away_club_id'] = away_club_href_parts[4]
     prep_df[['home_club_goals', 'away_club_goals']] = parse_aggregate(json_normalized['result'])
-    prep_df['home_club_position'] = json_normalized['home_club_position'].str.split(' ', 2, True)[2].str.strip()
-    prep_df['away_club_position'] = json_normalized['away_club_position'].str.split(' ', 2, True)[2].str.strip()
+    prep_df['home_club_position'] = (
+      json_normalized['home_club_position'].str.split(' ', 2, True)[2].str.strip()
+        .fillna(-1).astype('int32')
+    )
+    prep_df['away_club_position'] = (
+      json_normalized['away_club_position'].str.split(' ', 2, True)[2].str.strip()
+        .fillna(-1).astype('int32')
+    )
+    prep_df['home_manager_name'] = json_normalized['home_manager.name']
+    prep_df['away_manager_name'] = json_normalized['away_manager.name']
     prep_df['stadium'] = json_normalized['stadium']
     prep_df['attendance'] = (
       json_normalized['attendance'].str.split(' ', 2, True)[1]
         .str.replace('.', '', regex=False).str.strip()
+        .fillna(0).astype('int32')
     )
     prep_df['referee'] = json_normalized['referee']
     prep_df['url'] = 'https://www.transfermarkt.co.uk' + json_normalized['href']
-
-    prep_df.fillna(-1, inplace=True)
 
     self.prep_df = prep_df
 
