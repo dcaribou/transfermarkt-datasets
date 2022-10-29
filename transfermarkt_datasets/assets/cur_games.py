@@ -25,7 +25,7 @@ class CurGamesAsset(Asset):
     self.schema = Schema()
 
     self.schema.add_field(Field(name='game_id', type='integer'))
-    self.schema.add_field(Field(name='competition_code', type='string'))
+    self.schema.add_field(Field(name='competition_id', type='string'))
     self.schema.add_field(Field(name='season', type='integer'))
     self.schema.add_field(Field(name='round', type='string'))
     self.schema.add_field(Field(name='date', type='date'))

@@ -22,7 +22,7 @@ class BaseGamesAsset(RawAsset):
     self.schema = Schema()
 
     self.schema.add_field(Field(name='game_id', type='integer'))
-    self.schema.add_field(Field(name='competition_code', type='string'))
+    self.schema.add_field(Field(name='competition_id', type='string'))
     self.schema.add_field(Field(name='season', type='integer'))
     self.schema.add_field(Field(name='round', type='string'))
     self.schema.add_field(Field(name='date', type='date'))
@@ -87,7 +87,7 @@ class BaseGamesAsset(RawAsset):
     away_club_href_parts = json_normalized['away_club.href'].str.split('/', 5, True)
 
     prep_df['game_id'] = href_parts[4]
-    prep_df['competition_code'] = parent_href_parts[4]
+    prep_df['competition_id'] = parent_href_parts[4]
     prep_df['season'] = infer_season(json_normalized['date']).fillna(-1).astype('int32')
     prep_df['round'] = json_normalized['matchday']
     prep_df['date'] = json_normalized['date']
