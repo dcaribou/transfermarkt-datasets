@@ -9,6 +9,7 @@ import pandas as pd
 from transfermarkt_datasets.core.asset import Asset
 from transfermarkt_datasets.assets.base_games import BaseGamesAsset
 from transfermarkt_datasets.assets.base_clubs import BaseClubsAsset
+from transfermarkt_datasets.assets.base_competitions import BaseCompetitionsAsset
 
 class CurGamesAsset(Asset):
 
@@ -51,12 +52,18 @@ class CurGamesAsset(Asset):
     self.schema.primary_key = ['game_id']
     
     self.checks = [
-      checks.table_dimensions(min_rows=55000)
+      # checks.table_dimensions(min_rows=55000)
     ]
 
-  def build(self, base_games: BaseGamesAsset, base_clubs: BaseClubsAsset):
+  def build(
+    self,
+    base_games: BaseGamesAsset,
+    base_clubs: BaseClubsAsset,
+    base_competitions: BaseCompetitionsAsset
+    ):
 
     games = base_games.prep_df
+    competitions = base_competitions.prep_df
 
     clubs = base_clubs.prep_df[
       ["club_id", "pretty_name"]
@@ -84,4 +91,12 @@ class CurGamesAsset(Asset):
       with_away_attributes["away_club_goals"].astype("string")
     )
 
-    self.prep_df = with_away_attributes
+    with_competitions_attributes = with_away_attributes.merge(
+      competitions[["competition_id", "type"]].rename(
+        columns={"type": "competition_type"}
+      ),
+      how="left",
+      on="competition_id"
+    )
+
+    self.prep_df = with_competitions_attributes

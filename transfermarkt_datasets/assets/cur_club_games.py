@@ -30,6 +30,12 @@ class CurClubGamesAsset(Asset):
     self.schema.add_field(Field(name='date', type='date'))
     self.schema.add_field(Field(name='own_goals', type='integer'))
     self.schema.add_field(Field(name='own_position', type='integer'))
+    self.schema.add_field(Field(name='own_manager_name', type='integer'))
+    self.schema.add_field(Field(
+      name="is_win",
+      type="integer",
+      description="`1` if the club won the game and `0` otherwise."
+    ))
 
     self.schema.primary_key = ["club_id", "game_id"]
 
@@ -65,5 +71,19 @@ class CurClubGamesAsset(Asset):
     club_games = pd.concat(
       [game_home_full, games_away_full]
     )
+
+    is_win = np.select(
+      condlist=[
+        club_games["own_goals"] > club_games["opponent_goals"],
+        club_games["own_goals"] < club_games["opponent_goals"]
+      ],
+      choicelist=[
+        1,
+        0
+      ],
+      default=0
+    )
+
+    club_games["is_win"] = is_win
 
     self.prep_df = club_games.rename(columns={"own_id": "club_id"})
