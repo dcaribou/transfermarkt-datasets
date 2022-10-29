@@ -32,8 +32,8 @@ class BaseGamesAsset(RawAsset):
     self.schema.add_field(Field(name='away_club_goals', type='integer'))
     self.schema.add_field(Field(name='home_club_position', type='integer'))
     self.schema.add_field(Field(name='away_club_position', type='integer'))
-    self.schema.add_field(Field(name='home_manager_name', type='string'))
-    self.schema.add_field(Field(name='away_manager_name', type='string'))
+    self.schema.add_field(Field(name='home_club_manager_name', type='string'))
+    self.schema.add_field(Field(name='away_club_manager_name', type='string'))
     self.schema.add_field(Field(name='stadium', type='string'))
     self.schema.add_field(Field(name='attendance', type='integer'))
     self.schema.add_field(Field(name='referee', type='string'))
@@ -48,8 +48,8 @@ class BaseGamesAsset(RawAsset):
     
     self.checks = [
       checks.table_dimensions(min_rows=55000),
-      too_many_missings(field_name="home_manager_name", tolerance=0.30),
-      too_many_missings(field_name="away_manager_name", tolerance=0.30)
+      # too_many_missings(field_name="home_manager_name", tolerance=0.30),
+      # too_many_missings(field_name="away_manager_name", tolerance=0.30)
     ]
 
   def build(self):
@@ -102,8 +102,8 @@ class BaseGamesAsset(RawAsset):
       json_normalized['away_club_position'].str.split(' ', 2, True)[2].str.strip()
         .fillna(-1).astype('int32')
     )
-    prep_df['home_manager_name'] = json_normalized['home_manager.name']
-    prep_df['away_manager_name'] = json_normalized['away_manager.name']
+    prep_df['home_club_manager_name'] = json_normalized['home_manager.name']
+    prep_df['away_club_manager_name'] = json_normalized['away_manager.name']
     prep_df['stadium'] = json_normalized['stadium']
     prep_df['attendance'] = (
       json_normalized['attendance'].str.split(' ', 2, True)[1]
