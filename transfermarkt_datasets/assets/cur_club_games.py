@@ -30,7 +30,7 @@ class CurClubGamesAsset(Asset):
     self.schema.add_field(Field(name='date', type='date'))
     self.schema.add_field(Field(name='own_goals', type='integer'))
     self.schema.add_field(Field(name='own_position', type='integer'))
-    self.schema.add_field(Field(name='own_manager_name', type='integer'))
+    self.schema.add_field(Field(name='own_manager_name', type="string"))
     self.schema.add_field(Field(
       name="is_win",
       type="integer",

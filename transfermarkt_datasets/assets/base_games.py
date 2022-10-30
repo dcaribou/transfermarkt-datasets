@@ -48,8 +48,8 @@ class BaseGamesAsset(RawAsset):
     
     self.checks = [
       checks.table_dimensions(min_rows=55000),
-      too_many_missings(field_name="home_manager_name", tolerance=0.30),
-      too_many_missings(field_name="away_manager_name", tolerance=0.30)
+      too_many_missings(field_name="home_club_manager_name", tolerance=1.00),
+      too_many_missings(field_name="home_club_manager_name", tolerance=1.00)
     ]
 
   def build(self):

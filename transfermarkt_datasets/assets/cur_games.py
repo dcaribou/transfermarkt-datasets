@@ -52,7 +52,7 @@ class CurGamesAsset(Asset):
     self.schema.primary_key = ['game_id']
     
     self.checks = [
-      # checks.table_dimensions(min_rows=55000)
+      checks.table_dimensions(min_rows=55000)
     ]
 
   def build(
