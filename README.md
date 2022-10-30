@@ -15,7 +15,8 @@ In an nutshell, this project aims for three things:
 3. Automatate 1 and 2 to **keep these assets up to date** and publicly available on some well-known data catalogs.
 
 Checkout this dataset also in: :white_check_mark: [Kaggle](https://www.kaggle.com/davidcariboo/player-scores) | :white_check_mark: [data.world](https://data.world/dcereijo/player-scores) | 
-:white_check_mark: [streamlit](https://transfermarkt-datasets.herokuapp.com/)
+:white_check_mark: [streamlit](https://transfermarkt-datasets.herokuapp.com/) |
+:white_check_mark: [awesome-public-datasets](https://github.com/awesomedata/apd-core/blob/master/core/Sports/Transfermarkt-Datasets.yml)
 
 ------
 
@@ -60,7 +61,7 @@ All project data assets are kept inside the `data` folder. This is a [DVC](https
 In the scope of this project, "acquiring" is the process of collecting "raw data", as it is produced by [trasfermarkt-scraper](https://github.com/dcaribou/transfermarkt-scraper). Acquired data lives in the `data/raw` folder and it can be created or updated for a particular season using the `1_acquire.py` script.
 
 ```console
-python 1_acquire.py local --asset all --season 2022
+python 1_acquire.py local --asset all --seasons 2022
 ```
 
 This dependency on [trasfermarkt-scraper](https://github.com/dcaribou/transfermarkt-scraper) is the reason why it exists as a sub-module in this project. The `1_acquire.py` is simply a helper script that runs the scraper with a set of parameters and collects the output in `data/raw`.
@@ -114,7 +115,7 @@ For more examples on using `transfermark_datasets`, checkout the sample [noteboo
 Prepared data is published to a couple of popular dataset websites (Kaggle and data.world). This is done in the `3_sync.py` script.
 
 ## streamlit 🎈
-There is a [streamlit](https://streamlit.io/) app for the project with documentation, a data catalog and sample analyisis. The app in hosted in Heroku, you can check it out [here](https://transfermarkt-datasets.herokuapp.com/).
+There is a [streamlit](https://streamlit.io/) app for the project with documentation, a data catalog and sample analyisis. The app is hosted in Heroku, you can check it out [here](https://transfermarkt-datasets.herokuapp.com/).
 
 For local development, you can also run the app in your machine. Provided you've done the [setup](#setup), run the following to spin up a local instance of the app
 ```console

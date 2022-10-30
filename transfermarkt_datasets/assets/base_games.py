@@ -7,6 +7,7 @@ from datetime import datetime
 import pandas as pd
 
 from transfermarkt_datasets.core.asset import RawAsset
+from transfermarkt_datasets.core.checks import too_many_missings
 
 class BaseGamesAsset(RawAsset):
 
@@ -21,7 +22,7 @@ class BaseGamesAsset(RawAsset):
     self.schema = Schema()
 
     self.schema.add_field(Field(name='game_id', type='integer'))
-    self.schema.add_field(Field(name='competition_code', type='string'))
+    self.schema.add_field(Field(name='competition_id', type='string'))
     self.schema.add_field(Field(name='season', type='integer'))
     self.schema.add_field(Field(name='round', type='string'))
     self.schema.add_field(Field(name='date', type='date'))
@@ -31,6 +32,8 @@ class BaseGamesAsset(RawAsset):
     self.schema.add_field(Field(name='away_club_goals', type='integer'))
     self.schema.add_field(Field(name='home_club_position', type='integer'))
     self.schema.add_field(Field(name='away_club_position', type='integer'))
+    self.schema.add_field(Field(name='home_club_manager_name', type='string'))
+    self.schema.add_field(Field(name='away_club_manager_name', type='string'))
     self.schema.add_field(Field(name='stadium', type='string'))
     self.schema.add_field(Field(name='attendance', type='integer'))
     self.schema.add_field(Field(name='referee', type='string'))
@@ -44,7 +47,9 @@ class BaseGamesAsset(RawAsset):
     self.schema.primary_key = ['game_id']
     
     self.checks = [
-      checks.table_dimensions(min_rows=55000)
+      checks.table_dimensions(min_rows=55000),
+      too_many_missings(field_name="home_club_manager_name", tolerance=1.00),
+      too_many_missings(field_name="home_club_manager_name", tolerance=1.00)
     ]
 
   def build(self):
@@ -82,24 +87,31 @@ class BaseGamesAsset(RawAsset):
     away_club_href_parts = json_normalized['away_club.href'].str.split('/', 5, True)
 
     prep_df['game_id'] = href_parts[4]
-    prep_df['competition_code'] = parent_href_parts[4]
+    prep_df['competition_id'] = parent_href_parts[4]
     prep_df['season'] = infer_season(json_normalized['date']).fillna(-1).astype('int32')
     prep_df['round'] = json_normalized['matchday']
     prep_df['date'] = json_normalized['date']
     prep_df['home_club_id'] = home_club_href_parts[4]
     prep_df['away_club_id'] = away_club_href_parts[4]
     prep_df[['home_club_goals', 'away_club_goals']] = parse_aggregate(json_normalized['result'])
-    prep_df['home_club_position'] = json_normalized['home_club_position'].str.split(' ', 2, True)[2].str.strip()
-    prep_df['away_club_position'] = json_normalized['away_club_position'].str.split(' ', 2, True)[2].str.strip()
+    prep_df['home_club_position'] = (
+      json_normalized['home_club_position'].str.split(' ', 2, True)[2].str.strip()
+        .fillna(-1).astype('int32')
+    )
+    prep_df['away_club_position'] = (
+      json_normalized['away_club_position'].str.split(' ', 2, True)[2].str.strip()
+        .fillna(-1).astype('int32')
+    )
+    prep_df['home_club_manager_name'] = json_normalized['home_manager.name']
+    prep_df['away_club_manager_name'] = json_normalized['away_manager.name']
     prep_df['stadium'] = json_normalized['stadium']
     prep_df['attendance'] = (
       json_normalized['attendance'].str.split(' ', 2, True)[1]
         .str.replace('.', '', regex=False).str.strip()
+        .fillna(0).astype('int32')
     )
     prep_df['referee'] = json_normalized['referee']
     prep_df['url'] = 'https://www.transfermarkt.co.uk' + json_normalized['href']
-
-    prep_df.fillna(-1, inplace=True)
 
     self.prep_df = prep_df
 

@@ -15,7 +15,8 @@ class BaseClubsAsset(RawAsset):
   The `clubs` asset contains one row per club in the dataset.
   All `clubs` belong in a certain `competition`.
   """
-  file_name = "clubs.csv"
+  file_name = "base_clubs.csv"
+  public = False
 
   def __init__(self, *args, **kwargs) -> None:
     super().__init__(*args, **kwargs)

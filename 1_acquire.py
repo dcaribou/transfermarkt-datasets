@@ -16,6 +16,7 @@ import os
 import pathlib
 
 import argparse
+from typing import List
 
 from twisted.internet import reactor, defer
 from scrapy.crawler import CrawlerRunner
@@ -36,29 +37,24 @@ class Asset():
       'appearances': 'players'
     }
   
-  def __init__(self, name, season) -> None:
-    import pathlib
+  def __init__(self, name) -> None:
 
     self.name = name
-    self.season = season
-    if name == 'competitions':
-      self.path = pathlib.Path(f"data/competitions.json")
-    else:
-      self.path = pathlib.Path(f"data/raw/{season}/{name}.json")
-
-    self.file_full_path = str(self.path.absolute())
     self.parent = None
 
   def set_parent(self):
     """Get the parent of this asset as a new Asset"""
 
-    self.parent = Asset(
-      self.asset_parents[self.name],
-      self.season
-    )
-
-  def file_name(self):
-    return self.path.name
+    self.parent = Asset(self.asset_parents[self.name])
+  
+  def file_path(self, season):
+    if self.name == 'competitions':
+      return pathlib.Path(f"../data/competitions.json")
+    else:
+      return pathlib.Path(f"../data/raw/{season}/{self.name}.json")
+  
+  def file_full_path(self, season):
+    return str(self.file_path(season).absolute())
 
   @classmethod
   def all(self, season):
@@ -72,56 +68,123 @@ class Asset():
     return assets
 
 
-def acquire_on_local(asset, season, func):
+def acquire_on_local(asset, seasons, func):
 
+  def seasons_list(seasons: str) -> List[str]:
+    """Generate a list of seasons to acquire based on the "seasons" string. For example,
+    for "2012-2014", it should return [2012, 2013, 2014].
+
+    Args:
+        seasons (str): A string representing a date or range of dates to acquire.
+
+    Returns:
+        List[str]: The expanded list of seasons to acquire.
+    """
+    parts = seasons.split("-")
+    
+    if len(parts) == 0:
+      raise Exception("Empty string provided for seasons")
+
+    elif len(parts) == 1: # single season string
+      return [int(seasons)]
+
+    elif len(parts) == 2: # range of seasons
+      start, end = parts
+      season_range = list(range(int(start), int(end) + 1))
+
+      if len(season_range) > 20:
+        raise Exception("The range is too high")
+      else:
+        return season_range
+
+    else:
+      raise Exception(f"Invalid string: {seasons}")
+
+  def assets_list(assets: str) -> List[Asset]:
+    """Generate the ordered list of Assets to be scraped based on the provided string.
+
+    Args:
+        assets (str): A string representing the assets to be scraped.
+
+    Returns:
+        List[Asset]: The ordered list of assets to be scraped.
+    """
+
+    if asset == 'all':
+      assets = Asset.all()
+    else:
+      asset_obj = Asset(name=asset)
+      asset_obj.set_parent()
+      assets = [asset_obj]
+    
+    return assets
+
+  def issue_crawlers_and_wait(assets, seasons, settings):
+    """Create and submit scrapy crawlers to the reactor, and block until they've completed.
+
+    Args:
+        assets (List[Asset]): List of assets to be scraped.
+        seasons (List[int]): List of season to be scraped.
+        settings (dict): Crawler setting.
+    """
+
+    # https://docs.scrapy.org/en/latest/topics/practices.html#running-multiple-spiders-in-the-same-process
+
+    runner = CrawlerRunner(settings)
+
+    # https://twistedmatrix.com/documents/13.2.0/api/twisted.internet.defer.inlineCallbacks.html
+    @defer.inlineCallbacks
+    def crawl():
+      for season in seasons:
+        # if there's no path created yet for this season create one
+        season_path = pathlib.Path(f"../data/raw/{season}")
+        if not season_path.exists():
+          season_path.mkdir()
+
+        for asset_obj in assets:
+          # TODO: ideally, let transfermark-scraper handle destination file truncation via a setting instead of doing it here
+          # checkout https://foroayuda.es/scrapy-sobrescribe-los-archivos-json-en-lugar-de-agregar-el-archivo/
+          file_path = asset_obj.file_path(season)
+          if file_path.exists():
+            os.remove(str(file_path))
+          print(f"Schedule {asset_obj.name} for season {season}")
+          yield runner.crawl(
+            asset_obj.name,
+            parents=asset_obj.parent.file_full_path(season),
+            season=season
+          )
+
+      reactor.stop()
+    
+    crawl()
+    reactor.run()
+  
   # identify this scraping jobs accordinly by setting a nice user agent
   USER_AGENT = 'transfermarkt-datasets/1.0 (https://github.com/dcaribou/transfermarkt-datasets)'
 
-  if asset == 'all':
-    assets = Asset.all(season)
-  else:
-    asset_obj = Asset(
-        name=asset,
-        season=season
-      )
-    asset_obj.set_parent()
-    assets = [asset_obj]
-
-  season_path = pathlib.Path(f"data/raw/{season}")
-  if not season_path.exists():
-    season_path.mkdir()
-
+  # get seasons and assets list
+  expanded_seasons = seasons_list(seasons)
+  expanded_assets = assets_list(asset)
 
   os.chdir("transfermarkt-scraper")
 
+  # define crawler settings
   settings = get_project_settings()
-
-  settings.set("USER_AGENT", USER_AGENT)
-  settings.set("SEASON", season)
-  settings.set("FEED_URI", f"../data/raw/{season}/%(name)s.json" )
+  
+  settings.set("USER_AGENT", USER_AGENT)  
+  settings.set("FEED_URI", None)
+  settings.set("FEED_URI_PARAMS", "tfmkt.utils.uri_params")
+  settings.set("FEEDS",{
+    "../data/raw/%(season)s/%(name)s.json": {
+      "format": "jsonlines"
+    }
+  })
   settings.set("LOG_LEVEL", "INFO")
 
-  configure_logging(settings)
+  # create crawlers and wait until they complete
+  issue_crawlers_and_wait(expanded_assets, expanded_seasons, settings)
 
-  # https://docs.scrapy.org/en/latest/topics/practices.html#running-multiple-spiders-in-the-same-process
-
-  runner = CrawlerRunner(settings)
-
-  # https://twistedmatrix.com/documents/13.2.0/api/twisted.internet.defer.inlineCallbacks.html
-  @defer.inlineCallbacks
-  def crawl():
-    for asset_obj in assets:
-      # TODO: ideally, let transfermark-scraper handle destination file truncation via a setting instead of doing it here
-      # checkout https://foroayuda.es/scrapy-sobrescribe-los-archivos-json-en-lugar-de-agregar-el-archivo/
-      file_path = pathlib.Path(f"../data/raw/{season}/{asset_obj.name}.json")
-      if file_path.exists():
-        os.remove(str(file_path))
-      print(f"Schedule {asset_obj.name}")
-      yield runner.crawl(asset_obj.name, parents=asset_obj.parent.file_full_path)
-    reactor.stop()
-  
-  crawl()
-  reactor.run()
+  os.chdir("..")
 
 def acquire_on_cloud(job_name, job_queue, job_definition, branch, message, args, func):
 
@@ -152,9 +215,10 @@ local_parser.add_argument(
   required=True
 )
 local_parser.add_argument(
-  '--season',
+  '--seasons',
   help="Season to be acquired. This is passed to the scraper as the SEASON argument",
-  default=2020
+  default="2020",
+  type=str
 )
 local_parser.set_defaults(func=acquire_on_local)
 
