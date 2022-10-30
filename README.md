@@ -15,7 +15,8 @@ In an nutshell, this project aims for three things:
 3. Automatate 1 and 2 to **keep these assets up to date** and publicly available on some well-known data catalogs.
 
 Checkout this dataset also in: :white_check_mark: [Kaggle](https://www.kaggle.com/davidcariboo/player-scores) | :white_check_mark: [data.world](https://data.world/dcereijo/player-scores) | 
-:white_check_mark: [streamlit](https://transfermarkt-datasets.herokuapp.com/)
+:white_check_mark: [streamlit](https://transfermarkt-datasets.herokuapp.com/) |
+:white_check_mark: [awesome-public-datasets](https://github.com/awesomedata/apd-core/blob/master/core/Sports/Transfermarkt-Datasets.yml)
 
 ------
 
