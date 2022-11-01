@@ -122,12 +122,22 @@ class TestAsset(unittest.TestCase):
                 )
         
         at = TestAsset()
+        at.prep_df = pd.DataFrame(
+            data={
+                "some_field": [1, 2],
+                "some_other_field": ["b", "c"],
+            }
+        )
         df = at.schema_as_dataframe()
 
         df_expected = pd.DataFrame(
             data={
                 "description": ["", ""],
-                "type": ["string", "integer"]
+                "type": ["string", "integer"],
+                "sample_values": [
+                    [1,2],
+                    ["b", "c"]
+                ]
             },
             index=["some_field", "some_other_field"]
         )
