@@ -52,7 +52,7 @@ class CurClubsAsset(Asset):
 
     self.schema.primary_key = ['club_id']
     self.schema.foreign_keys = [
-      {"fields": "domestic_competition_id", "reference": {"resource": "competitions", "fields": "competition_id"}}
+      {"fields": "domestic_competition_id", "reference": {"resource": "cur_competitions", "fields": "competition_id"}}
     ]
 
     self.checks = [

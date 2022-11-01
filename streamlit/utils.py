@@ -1,3 +1,4 @@
+from cProfile import label
 from typing import List
 import streamlit as st
 import os
@@ -13,6 +14,9 @@ sys.path.insert(0, cwd)
 from transfermarkt_datasets.core.dataset import Dataset
 from transfermarkt_datasets.core.asset import Asset
 
+# community components
+from streamlit_agraph import agraph, Node, Edge, Config
+from st_aggrid import AgGrid
 
 @st.cache
 def load_td() -> Dataset:
@@ -82,10 +86,40 @@ def draw_asset_explore(asset: Asset, columns: List[str] = None) -> None:
 
     for st_col, at_col in zip(st_cols, columns):
         options = df[at_col].unique()
-        selected = st_col.selectbox(label=at_col, options=options)
+        selected = st_col.selectbox(label=at_col, options=options, key=(asset.name + "-" + at_col))
         df = df[df[at_col] == selected]
-
+    
     st.dataframe(df)
+
+def draw_dataset_er_diagram(td: Dataset) -> None:
+    nodes = []
+    edges = []
+
+    for asset_name, asset in td.assets.items():
+        if asset.public:
+            nodes.append(
+                Node(
+                    id=asset_name,
+                    label=asset_name,
+                    shape="box"
+                )
+            )
+    
+    for relationship in td.get_relationships():
+        edges.append(
+            Edge(
+                source=relationship["from"],
+                target=relationship["to"],
+                label=relationship["on"]["source"][0]
+            )
+        )
+
+    config = Config(
+        width=1000, 
+        height=500
+    )
+
+    agraph(nodes=nodes, edges=edges, config=config)
 
 def get_records_delta(asset: Asset, offset: int = 7) -> int:
     """Get an asset records' delta (number of new records in last n days).

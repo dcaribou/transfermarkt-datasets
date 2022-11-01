@@ -53,7 +53,7 @@ class BasePlayersAsset(RawAsset):
     )
    
     self.schema.foreign_keys = [
-      {"fields": "current_club_id", "reference": {"resource": "clubs", "fields": "club_id"}}
+      {"fields": "current_club_id", "reference": {"resource": "base_clubs", "fields": "club_id"}}
     ]
 
     self.checks = [

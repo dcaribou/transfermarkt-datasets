@@ -32,7 +32,7 @@ class CurPlayerValuationsAsset(Asset):
 
     self.schema.primary_key = ['player_id', 'date']
     self.schema.foreign_keys = [
-      {"fields": "player_id", "reference": {"resource": "players", "fields": "player_id"}}
+      {"fields": "player_id", "reference": {"resource": "cur_players", "fields": "player_id"}}
     ]
 
     self.checks = [

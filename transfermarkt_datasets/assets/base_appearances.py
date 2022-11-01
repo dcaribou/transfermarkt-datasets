@@ -37,7 +37,7 @@ class BaseAppearancesAsset(RawAsset):
     self.schema.primary_key = ['appearance_id']
     
     self.schema.foreign_keys = [
-      {"fields": "game_id", "reference": {"resource": "games", "fields": "game_id"}}
+      {"fields": "game_id", "reference": {"resource": "base_games", "fields": "game_id"}}
     ]
 
     self.checks = [

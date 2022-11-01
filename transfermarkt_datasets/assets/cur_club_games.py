@@ -39,8 +39,13 @@ class CurClubGamesAsset(Asset):
 
     self.schema.primary_key = ["club_id", "game_id"]
 
+    self.schema.foreign_keys = [
+      {"fields": "club_id", "reference": {"resource": "cur_clubs", "fields": "club_id"}},
+      {"fields": "game_id", "reference": {"resource": "cur_games", "fields": "game_id"}}
+    ]
+
     self.checks = [
-      checks.table_dimensions(min_rows=58028*2)
+      checks.table_dimensions(min_rows=58000*2)
     ]
 
   def build(self, base_games: BaseGamesAsset):

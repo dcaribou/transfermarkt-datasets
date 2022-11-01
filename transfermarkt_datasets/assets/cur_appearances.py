@@ -29,6 +29,10 @@ class CurAppearancesAsset(Asset):
     self.schema.add_field(Field(name="player_pretty_name", type="string"))
 
     self.schema.primary_key = ["appearance_id"]
+
+    self.schema.foreign_keys = [
+      {"fields": "game_id", "reference": {"resource": "cur_games", "fields": "game_id"}}
+    ]
     
     self.checks = [
       checks.table_dimensions(min_rows=1000000)

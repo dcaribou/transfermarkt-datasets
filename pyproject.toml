@@ -19,6 +19,7 @@ kaggle = "^1.5.12"
 Scrapy = "^2.6.2"
 streamlit = "^1.11.1"
 geopy = "^2.2.0"
+streamlit-agraph = "^0.0.42"
 
 [tool.poetry.dev-dependencies]
 jupyter = "^1.0.0"

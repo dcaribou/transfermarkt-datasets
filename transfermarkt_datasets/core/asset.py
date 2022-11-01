@@ -8,6 +8,7 @@ import logging.config
 
 from frictionless.package import Package
 from frictionless import validate
+from frictionless.schema import Schema
 
 import json
 import inspect
@@ -49,7 +50,7 @@ class Asset:
         file_name = self.name.replace("base_", "")
         self.file_name = file_name + ".csv"
 
-      self.schema = None
+      self.schema = Schema()
 
   def __str__(self) -> str:
       return f'Asset(name={self.name})'

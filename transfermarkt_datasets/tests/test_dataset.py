@@ -1,13 +1,14 @@
 
 import pathlib
 import unittest
-from dagster import DependencyDefinition, GraphDefinition
+from dagster import DependencyDefinition
 import pytest
-from transfermarkt_datasets.core.dataset import Dataset, AssetNotFound
+from transfermarkt_datasets.core.dataset import Dataset
 from transfermarkt_datasets.core.asset import Asset
+
 from frictionless.package import Package
 
-import shutil, tempfile
+import tempfile
 
 import sys
 from os import path
@@ -33,6 +34,18 @@ class TestDataset(unittest.TestCase):
         class BaseSomethingAssetA(Asset):
             name = "base_something_a"
             file_name = "file1.csv"
+
+            def __init__(self, settings: dict = None) -> None:
+                super().__init__(settings)
+                self.schema.foreign_keys = [
+                    {
+                        "fields": "some_id",
+                        "reference": {
+                            "resource": "base_something_b",
+                            "fields": "some_other_id"
+                            }
+                    }
+                ]
 
         class BaseSomethingAssetB(Asset):
             name = "base_something_b"
@@ -136,4 +149,24 @@ class BaseSomethingAsset(Asset):
             ["file1"]
         )
 
+    def test_get_relationships(self):
+
+        td = self.dataset
+        rel = td.get_relationships()
+
+        self.assertEqual(
+            len(rel),
+            1
+        )
+        self.assertEqual(
+            rel[0],
+            {
+                "from": "base_something_a",
+                "to": "base_something_b",
+                "on": {
+                    "source": ["some_id"],
+                    "target": ["some_other_id"]
+                }
+            }
+        )
        
