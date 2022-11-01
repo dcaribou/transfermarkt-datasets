@@ -14,9 +14,6 @@ sys.path.insert(0, cwd)
 from transfermarkt_datasets.core.dataset import Dataset
 from transfermarkt_datasets.core.asset import Asset
 
-# community components
-from streamlit_agraph import agraph, Node, Edge, Config
-
 @st.cache
 def load_td() -> Dataset:
     """Instantiate and initialise a Dataset, so it can be used in the app.
