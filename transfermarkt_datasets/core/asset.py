@@ -1,21 +1,27 @@
 from typing import Dict, List
-from dagster import DependencyDefinition, InputDefinition, OpDefinition, Output, OutputDefinition
+from dagster import (
+  DependencyDefinition,
+  InputDefinition,
+  OpDefinition,
+  Output,
+  OutputDefinition
+)
 from frictionless import Detector
 from frictionless.resource import Resource
 import pandas as pd
 import logging
 import logging.config
 
-from frictionless.package import Package
 from frictionless import validate
 from frictionless.schema import Schema
 
 import json
 import inspect
 
-import public
-
-from transfermarkt_datasets.core.utils import read_config
+from transfermarkt_datasets.core.utils import (
+  read_config,
+  get_sample_values
+)
 
 class FailedAssetValidation(Exception):
   pass
@@ -147,11 +153,16 @@ class Asset:
     fields = [field.name for field in  self.schema["fields"]]
     types = [field.type for field in  self.schema["fields"]]
     descriptions = [field.description for field in  self.schema["fields"]]
+    sample_values = [
+      get_sample_values(self.prep_df, field.name, 3)
+      for field in self.schema["fields"]
+    ]
 
     df = pd.DataFrame(
       data=dict(
         description=descriptions,
-        type=types
+        type=types,
+        sample_values=sample_values
       ),
       index=fields
     )

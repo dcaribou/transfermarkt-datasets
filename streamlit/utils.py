@@ -16,7 +16,6 @@ from transfermarkt_datasets.core.asset import Asset
 
 # community components
 from streamlit_agraph import agraph, Node, Edge, Config
-from st_aggrid import AgGrid
 
 @st.cache
 def load_td() -> Dataset:
@@ -66,6 +65,9 @@ def draw_asset(asset: Asset) -> None:
         help="Total number of records in the asset / New records in the past week"
     )
 
+    with st.expander("Schema"):
+        draw_asset_schema(asset)
+
     with st.expander("Explore"):
         draw_asset_explore(asset)
 
@@ -90,6 +92,13 @@ def draw_asset_explore(asset: Asset, columns: List[str] = None) -> None:
         df = df[df[at_col] == selected]
     
     st.dataframe(df)
+
+
+def draw_asset_schema(asset: Asset) -> None:
+    st.dataframe(
+        asset.schema_as_dataframe(),
+        use_container_width=True
+    )
 
 def draw_dataset_er_diagram(td: Dataset) -> None:
     nodes = []

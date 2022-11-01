@@ -2,8 +2,9 @@
 """
 
 import re
+from pandas import DataFrame
 import yaml
-from typing import Dict, Tuple
+from typing import Dict, Tuple, List
 
 import boto3
 from time import sleep
@@ -156,3 +157,6 @@ def geocode(place: str) -> Tuple:
 	output = geocode(place)
 
 	return (output.latitude, output.longitude)
+
+def get_sample_values(df: DataFrame, column: str, n: int) -> List[object]:
+	return list(df[column].unique())[:3]
