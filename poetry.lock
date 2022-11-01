@@ -2610,26 +2610,6 @@ optional = false
 python-versions = ">=3.5"
 
 [[package]]
-name = "rdflib"
-version = "6.2.0"
-description = "RDFLib is a Python library for working with RDF, a simple yet powerful language for representing information."
-category = "main"
-optional = false
-python-versions = ">=3.7"
-
-[package.dependencies]
-isodate = "*"
-pyparsing = "*"
-
-[package.extras]
-berkeleydb = ["berkeleydb"]
-dev = ["black (==22.6.0)", "flake8", "isort", "mypy", "pep8-naming", "types-setuptools", "flakeheaven"]
-docs = ["myst-parser", "sphinx (<6)", "sphinxcontrib-apidoc", "sphinxcontrib-kroki", "sphinx-autodoc-typehints"]
-html = ["html5lib"]
-networkx = ["networkx"]
-tests = ["html5lib", "pytest", "pytest-cov"]
-
-[[package]]
 name = "requests"
 version = "2.28.1"
 description = "Python HTTP for Humans."
@@ -3017,19 +2997,6 @@ typing-extensions = ">=3.10.0.0"
 tzlocal = ">=1.1"
 validators = ">=0.2"
 watchdog = {version = "*", markers = "platform_system != \"Darwin\""}
-
-[[package]]
-name = "streamlit-agraph"
-version = "0.0.42"
-description = "Interactive Graph Vis for Streamlit."
-category = "main"
-optional = false
-python-versions = ">=3.6"
-
-[package.dependencies]
-networkx = ">=2.5"
-rdflib = ">=6.0.2"
-streamlit = ">=0.63"
 
 [[package]]
 name = "stringcase"
@@ -3493,7 +3460,7 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.8, <3.11, !=3.9.7"
-content-hash = "76deb32885d209cd34a46008587e2291199c628e8e492d65c7b92d6303b63395"
+content-hash = "abcac3af162fc32c45f72361454bd1b204d7105b7fc1928f36224451f9ea1fa6"
 
 [metadata.files]
 aiobotocore = []
@@ -4081,7 +4048,6 @@ queuelib = [
     {file = "queuelib-1.6.2-py2.py3-none-any.whl", hash = "sha256:4b96d48f650a814c6fb2fd11b968f9c46178b683aad96d68f930fe13a8574d19"},
     {file = "queuelib-1.6.2.tar.gz", hash = "sha256:4b207267f2642a8699a1f806045c56eb7ad1a85a10c0e249884580d139c2fcd2"},
 ]
-rdflib = []
 requests = []
 requests-file = [
     {file = "requests-file-1.5.1.tar.gz", hash = "sha256:07d74208d3389d01c38ab89ef403af0cfec63957d53a0081d8eca738d0247d8e"},
@@ -4165,7 +4131,6 @@ sqlalchemy = []
 stack-data = []
 starlette = []
 streamlit = []
-streamlit-agraph = []
 stringcase = [
     {file = "stringcase-1.2.0.tar.gz", hash = "sha256:48a06980661908efe8d9d34eab2b6c13aefa2163b3ced26972902e3bdfd87008"},
 ]
