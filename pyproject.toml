@@ -20,6 +20,7 @@ Scrapy = "^2.6.2"
 streamlit = "1.14.0"
 geopy = "^2.2.0"
 plotly = "^5.11.0"
+streamlit-agraph = "^0.0.42"
 
 [tool.poetry.dev-dependencies]
 jupyter = "^1.0.0"

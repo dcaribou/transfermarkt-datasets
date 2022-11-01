@@ -37,6 +37,7 @@ DEFAULT_MANAGERS = ["Jürgen Klopp", "Pep Guardiola"]
 DEFAULT_COMPETITION_TYPES = [
     "domestic_cup", "domestic_league", "international_cup"
 ]
+DEFAULT_MIN_GAMES = 1
 
 with st.expander("Baseline Filters"):
 
@@ -65,7 +66,7 @@ with st.expander("Baseline Filters"):
     )
 
     minimun_number_of_games_played = (
-        col2.number_input('Minimum number of games played in a season', value=5)
+        col2.number_input('Minimum number of games played in a season', value=DEFAULT_MIN_GAMES)
     )
 
 # create a data mart with all required measures and dimensions
