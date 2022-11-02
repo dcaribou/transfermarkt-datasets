@@ -1,5 +1,3 @@
-from frictionless.field import Field
-from frictionless.schema import Schema
 from frictionless import checks
 
 from inflection import titleize
@@ -8,6 +6,7 @@ import pandas
 import numpy
 
 from transfermarkt_datasets.core.asset import RawAsset
+from transfermarkt_datasets.core.schema import Schema, Field
 from transfermarkt_datasets.core.utils import parse_market_value
 from transfermarkt_datasets.core.checks import too_many_missings
 
@@ -52,13 +51,13 @@ class CurPlayersAsset(RawAsset):
     self.schema.add_field(Field(
       name='image_url',
       type='string',
-      format='uri'
+      form='uri'
       )
     )
     self.schema.add_field(Field(
       name='url',
       type='string',
-      format='uri'
+      form='uri'
       )
     )
 

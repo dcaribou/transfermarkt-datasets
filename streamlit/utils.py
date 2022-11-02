@@ -4,7 +4,7 @@ import streamlit as st
 import os
 from pathlib import Path
 import pandas as pd
-from inflection import titleize
+from inflection import dasherize, titleize
 from datetime import datetime, timedelta
 
 import sys
@@ -54,7 +54,13 @@ def draw_asset(asset: Asset) -> None:
 
     left_col, right_col = st.columns([5,1])
 
-    left_col.subheader(titleize(asset.frictionless_resource_name))
+    title = titleize(asset.frictionless_resource_name)
+    anchor = dasherize(asset.frictionless_resource_name)
+
+    left_col.subheader(title)
+    st.sidebar.markdown(
+        f"[{title}](#{anchor})"
+    )
 
     left_col.markdown(asset.description)
     delta = get_records_delta(asset)
@@ -65,7 +71,7 @@ def draw_asset(asset: Asset) -> None:
         help="Total number of records in the asset / New records in the past week"
     )
 
-    with st.expander("Schema"):
+    with st.expander("Attributes"):
         draw_asset_schema(asset)
 
     with st.expander("Explore"):

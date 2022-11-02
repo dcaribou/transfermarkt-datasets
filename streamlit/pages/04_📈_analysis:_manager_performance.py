@@ -1,7 +1,5 @@
-from altair.vegalite.v4.api import value
 import streamlit as st
 import pandas as pd
-from traitlets import default
 
 from utils import read_file_contents, load_td
 

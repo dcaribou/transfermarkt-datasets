@@ -3,8 +3,7 @@ import unittest
 
 from dagster import DependencyDefinition
 
-from frictionless.schema import Schema
-from frictionless.field import Field
+from transfermarkt_datasets.core.schema import Schema, Field
 
 import inspect
 
@@ -132,7 +131,7 @@ class TestAsset(unittest.TestCase):
 
         df_expected = pd.DataFrame(
             data={
-                "description": ["", ""],
+                "description": [None, None],
                 "type": ["string", "integer"],
                 "sample_values": [
                     [1,2],

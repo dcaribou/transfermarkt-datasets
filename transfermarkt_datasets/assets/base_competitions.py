@@ -1,11 +1,10 @@
-from frictionless.field import Field
-from frictionless.schema import Schema
 from frictionless import checks
 
 import pandas as pd
 import numpy as np
 
 from transfermarkt_datasets.core.asset import RawAsset
+from transfermarkt_datasets.core.schema import Schema, Field
 
 class BaseCompetitionsAsset(RawAsset):
 
@@ -30,7 +29,7 @@ class BaseCompetitionsAsset(RawAsset):
     self.schema.add_field(Field(
         name='url',
         type='string',
-        format='uri'
+        form='uri'
       )
     )
 

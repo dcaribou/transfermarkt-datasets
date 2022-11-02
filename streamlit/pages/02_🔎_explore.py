@@ -20,7 +20,10 @@ st.markdown(
 
 st.info("""
 There is no support yet for downloading assets from the streamlit app.
-For downloading the data, use the data.world or Kaggle datasets for now.""", 
+For downloading the data, may use the equivalent [data.world](https://data.world/dcereijo/player-scores) 
+or [Kaggle](https://www.kaggle.com/datasets/davidcariboo/player-scores) 
+datasets for now.
+""", 
 icon="ℹ️")
 
 st.markdown("""

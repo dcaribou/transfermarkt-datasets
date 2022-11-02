@@ -1,6 +1,4 @@
 from typing import List
-from frictionless.field import Field
-from frictionless.schema import Schema
 from frictionless import checks
 
 from datetime import datetime
@@ -9,6 +7,7 @@ import pandas as pd
 import numpy as np
 
 from transfermarkt_datasets.core.asset import Asset
+from transfermarkt_datasets.core.schema import Schema, Field
 from transfermarkt_datasets.assets.base_games import BaseGamesAsset
 
 class CurClubGamesAsset(Asset):

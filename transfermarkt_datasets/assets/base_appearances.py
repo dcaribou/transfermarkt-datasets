@@ -1,10 +1,10 @@
 import numpy
 import pandas
-from frictionless.schema import Schema
-from frictionless.field import Field
+
 from frictionless import checks
 
 from transfermarkt_datasets.core.asset import RawAsset
+from transfermarkt_datasets.core.schema import Schema, Field
 from transfermarkt_datasets.core.utils import (
   cast_metric, cast_minutes_played,
   read_config

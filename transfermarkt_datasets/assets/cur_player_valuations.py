@@ -1,10 +1,9 @@
-from frictionless.field import Field
-from frictionless.schema import Schema
 from frictionless import checks
 
 import pandas as pd
 
 from transfermarkt_datasets.core.asset import Asset
+from transfermarkt_datasets.core.schema import Schema, Field
 from transfermarkt_datasets.assets.base_player_valuations import BasePlayerValuationsAsset
 from transfermarkt_datasets.assets.base_players import BasePlayersAsset
 from transfermarkt_datasets.assets.base_clubs import BaseClubsAsset

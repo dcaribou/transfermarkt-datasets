@@ -1,10 +1,9 @@
-from frictionless.field import Field
-from frictionless.schema import Schema
 from frictionless import checks
 
 import pandas as pd
 
 from transfermarkt_datasets.core.asset import RawAsset
+from transfermarkt_datasets.core.schema import Schema, Field
 from transfermarkt_datasets.core.utils import geocode
 
 from transfermarkt_datasets.assets.base_competitions import BaseCompetitionsAsset
@@ -34,7 +33,7 @@ class CurCompetitionsAsset(RawAsset):
     self.schema.add_field(Field(
         name='url',
         type='string',
-        format='uri'
+        form='uri'
       )
     )
 

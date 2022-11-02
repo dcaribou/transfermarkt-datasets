@@ -1,5 +1,3 @@
-from frictionless.field import Field
-from frictionless.schema import Schema
 from frictionless import checks
 
 from datetime import datetime
@@ -7,6 +5,7 @@ from datetime import datetime
 import pandas as pd
 
 from transfermarkt_datasets.core.asset import RawAsset
+from transfermarkt_datasets.core.schema import Schema, Field
 from transfermarkt_datasets.core.checks import too_many_missings
 
 class BaseGamesAsset(RawAsset):
@@ -40,7 +39,7 @@ class BaseGamesAsset(RawAsset):
     self.schema.add_field(Field(
         name='url',
         type='string',
-        format='uri'
+        form='uri'
       )
     )
 

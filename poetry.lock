@@ -3493,7 +3493,7 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.8, <3.11, !=3.9.7"
-content-hash = "76deb32885d209cd34a46008587e2291199c628e8e492d65c7b92d6303b63395"
+content-hash = "86c8f3747822b07d0b271994921a9f401920bd44daa96599a4bab7b1bd22627b"
 
 [metadata.files]
 aiobotocore = []

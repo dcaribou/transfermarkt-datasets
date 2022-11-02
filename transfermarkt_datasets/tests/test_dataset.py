@@ -164,8 +164,8 @@ class BaseSomethingAsset(Asset):
                 "from": "base_something_a",
                 "to": "base_something_b",
                 "on": {
-                    "source": ["some_id"],
-                    "target": ["some_other_id"]
+                    "source": "some_id",
+                    "target": "some_other_id"
                 }
             }
         )

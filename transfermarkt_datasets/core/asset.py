@@ -1,4 +1,4 @@
-from typing import Dict, List
+from typing import Dict
 from dagster import (
   DependencyDefinition,
   InputDefinition,
@@ -13,7 +13,7 @@ import logging
 import logging.config
 
 from frictionless import validate
-from frictionless.schema import Schema
+from transfermarkt_datasets.core.schema import Schema, Field
 
 import json
 import inspect
@@ -150,12 +150,12 @@ class Asset:
         pd.DataFrame: A pandas dataframe representing the asset schema.
     """
 
-    fields = [field.name for field in  self.schema["fields"]]
-    types = [field.type for field in  self.schema["fields"]]
-    descriptions = [field.description for field in  self.schema["fields"]]
+    fields = [field.name for field in  self.schema.fields]
+    types = [field.type for field in  self.schema.fields]
+    descriptions = [field.description for field in  self.schema.fields]
     sample_values = [
       get_sample_values(self.prep_df, field.name, 3)
-      for field in self.schema["fields"]
+      for field in self.schema.fields
     ]
 
     df = pd.DataFrame(
@@ -179,7 +179,7 @@ class Asset:
       description=self.description,
       basepath="transfermarkt_datasets/stage"
     )
-    resource.schema = self.schema
+    resource.schema = self.schema.as_frictionless_schema()
     return resource
 
   def as_build_dagster_op(self) -> OpDefinition:
