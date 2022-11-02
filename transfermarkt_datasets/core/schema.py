@@ -38,11 +38,12 @@ class Schema:
 
     def as_frictionless_schema(self) -> frictionless.Schema:
 
-        fl_schema = frictionless.Schema()
-        for field in self.fields:
-            fl_schema.add_field(
-                field.as_frictionless_field()
-            )
+        fl_fields = [field.as_frictionless_field()
+            for field in self.fields
+        ]
+        fl_schema = frictionless.Schema(
+            fields=fl_fields
+        )
         
         return fl_schema
 

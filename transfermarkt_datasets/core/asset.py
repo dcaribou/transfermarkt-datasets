@@ -170,6 +170,7 @@ class Asset:
     return df
 
   def as_frictionless_resource(self) -> Resource:
+
     detector = Detector(schema_sync=True)
     resource = Resource(
       title=self.frictionless_resource_name,
@@ -177,9 +178,10 @@ class Asset:
       trusted=True,
       detector=detector,
       description=self.description,
-      basepath="transfermarkt_datasets/stage"
+      basepath="transfermarkt_datasets/stage",
+      schema=self.schema.as_frictionless_schema()
     )
-    resource.schema = self.schema.as_frictionless_schema()
+
     return resource
 
   def as_build_dagster_op(self) -> OpDefinition:
