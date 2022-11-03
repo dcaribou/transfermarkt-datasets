@@ -79,23 +79,50 @@ def draw_asset(asset: Asset) -> None:
 
     st.markdown("---")
 
-def draw_asset_explore(asset: Asset, columns: List[str] = None) -> None:
+def draw_asset_explore(asset: Asset) -> None:
     """Draw dataframe together with dynamic filters for exploration.
 
     Args:
         asset (Asset): The asset to draw the explore for.
-        columns (List[str]): The list of columns to create a filter on.
     """
-    if columns is None:
-        columns = asset.prep_df.columns[:4]
+    
+    tagged_columns = [
+        field.name
+        for field in asset.schema.get_fields_by_tag("explore")
+    ]
+    defaul_columns = list(asset.prep_df.columns[:4].values)
 
-    st_cols = st.columns(len(columns))
+    if len(tagged_columns) > 0:
+        columns = tagged_columns
+    else:
+        columns = defaul_columns
+
+    columns
+
+    filter_columns = st.multiselect(
+        label="Filters",
+        options=asset.prep_df.columns,
+        default=defaul_columns
+    )
+
+    st_cols = st.columns(len(filter_columns))
+
     df = asset.prep_df.copy()
 
-    for st_col, at_col in zip(st_cols, columns):
-        options = df[at_col].unique()
-        selected = st_col.selectbox(label=at_col, options=options, key=(asset.name + "-" + at_col))
-        df = df[df[at_col] == selected]
+    for st_col, at_col in zip(st_cols, filter_columns):
+        
+        options = list(df[at_col].unique())
+ 
+        selected = st_col.selectbox(
+            label=at_col,
+            options=options,
+            key=(asset.name + "-" + at_col)
+        )
+        if selected:
+            df = df[df[at_col] == selected]
+
+    if len(df) > 40:
+        df = df.head(40)
     
     st.dataframe(df)
 

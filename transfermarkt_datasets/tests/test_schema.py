@@ -2,7 +2,8 @@ import unittest
 
 from transfermarkt_datasets.core.schema import Schema, Field
 
-import frictionless
+from frictionless.schema import Schema as FLSchema
+from frictionless.field import Field as FLField
 
 class TestSchema(unittest.TestCase):
 
@@ -36,16 +37,31 @@ class TestSchema(unittest.TestCase):
 
         self.assertIsInstance(
             schema.as_frictionless_schema(),
-            frictionless.Schema
+            FLSchema
         )
 
-        fl_schema = frictionless.Schema()
-        fl_schema.add_field(frictionless.Field(
+        fl_schema = FLSchema()
+        fl_schema.add_field(FLField(
             name="some_name",
             type="some_type"
         ))
         
+        as_fl_schema = schema.as_frictionless_schema()
         self.assertEqual(
-            schema.as_frictionless_schema(),
+            as_fl_schema,
             fl_schema
+        )
+
+    def test_get_fiedls_by_tag(self):
+
+        schema = Schema(
+            fields=[
+                Field(name="f1", type="t1", tags=["t1"]),
+                Field(name="f2", type="t1", tags=["t2"]),
+            ]
+        )
+
+        self.assertEqual(
+            schema.get_fields_by_tag("t2"),
+            [Field(name="f2", type="t1", tags=["t1"])]
         )
