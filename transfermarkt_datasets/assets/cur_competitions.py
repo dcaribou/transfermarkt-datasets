@@ -29,7 +29,7 @@ class CurCompetitionsAsset(RawAsset):
     self.schema.add_field(Field(name='country_latitude', type='number'))
     self.schema.add_field(Field(name='country_longitude', type='number'))
     self.schema.add_field(Field(name='domestic_league_code', type='string'))
-    self.schema.add_field(Field(name='confederation', type='string'))
+    self.schema.add_field(Field(name='confederation', type='string', tags=["explore"]))
     self.schema.add_field(Field(
         name='url',
         type='string',

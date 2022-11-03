@@ -33,21 +33,21 @@ class CurPlayersAsset(RawAsset):
 
     self.schema.add_field(Field(name='player_id', type='integer'))
     self.schema.add_field(Field(name='last_season', type='integer'))
-    self.schema.add_field(Field(name='current_club_id', type='integer'))
+    self.schema.add_field(Field(name='current_club_id', type='integer', tags=["explore"]))
     self.schema.add_field(Field(name='name', type='string'))
     self.schema.add_field(Field(name='pretty_name', type='string'))
-    self.schema.add_field(Field(name='country_of_birth', type='string'))
+    self.schema.add_field(Field(name='country_of_birth', type='string', tags=["explore"]))
     self.schema.add_field(Field(name='country_of_citizenship', type='string'))
     self.schema.add_field(Field(name='date_of_birth', type='date'))
-    self.schema.add_field(Field(name='position', type='string'))
-    self.schema.add_field(Field(name='sub_position', type='string'))
-    self.schema.add_field(Field(name='foot', type='string'))
+    self.schema.add_field(Field(name='position', type='string', tags=["explore"]))
+    self.schema.add_field(Field(name='sub_position', type='string', tags=["explore"]))
+    self.schema.add_field(Field(name='foot', type='string', tags=["explore"]))
     self.schema.add_field(Field(name='height_in_cm', type='integer'))
     self.schema.add_field(Field(name='market_value_in_gbp', type='number'))
     self.schema.add_field(Field(name='highest_market_value_in_gbp', type='number'))
     self.schema.add_field(Field(name='agent_name', type='string'))
     self.schema.add_field(Field(name='domestic_competition_id', type='string'))
-    self.schema.add_field(Field(name='club_name', type='string'))
+    self.schema.add_field(Field(name='club_name', type='string', tags=["explore"]))
     self.schema.add_field(Field(
       name='image_url',
       type='string',

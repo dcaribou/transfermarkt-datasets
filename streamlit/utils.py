@@ -54,7 +54,7 @@ def draw_asset(asset: Asset) -> None:
 
     left_col, right_col = st.columns([5,1])
 
-    title = titleize(asset.frictionless_resource_name)
+    title = titleize(asset.frictionless_resource_name).lower()
     anchor = dasherize(asset.frictionless_resource_name)
 
     left_col.subheader(title)
@@ -90,19 +90,17 @@ def draw_asset_explore(asset: Asset) -> None:
         field.name
         for field in asset.schema.get_fields_by_tag("explore")
     ]
-    defaul_columns = list(asset.prep_df.columns[:4].values)
+    default_columns = list(asset.prep_df.columns[:4].values)
 
     if len(tagged_columns) > 0:
         columns = tagged_columns
     else:
-        columns = defaul_columns
-
-    columns
+        columns = default_columns
 
     filter_columns = st.multiselect(
         label="Filters",
         options=asset.prep_df.columns,
-        default=defaul_columns
+        default=columns
     )
 
     st_cols = st.columns(len(filter_columns))
@@ -110,7 +108,7 @@ def draw_asset_explore(asset: Asset) -> None:
     df = asset.prep_df.copy()
 
     for st_col, at_col in zip(st_cols, filter_columns):
-        
+
         options = list(df[at_col].unique())
  
         selected = st_col.selectbox(
@@ -121,10 +119,19 @@ def draw_asset_explore(asset: Asset) -> None:
         if selected:
             df = df[df[at_col] == selected]
 
-    if len(df) > 40:
-        df = df.head(40)
-    
-    st.dataframe(df)
+    MAX_DF_LENGTH = 20
+
+    df_length = len(df)
+    if df_length > MAX_DF_LENGTH:
+        st.dataframe(
+            df.head(MAX_DF_LENGTH)
+        )
+        st.warning(f"""
+        The dataframe size ({df_length}) exceeded the maximum and has been truncated. 
+        """)
+
+    else:
+        st.dataframe(df)
 
 
 def draw_asset_schema(asset: Asset) -> None:
@@ -152,7 +159,7 @@ def draw_dataset_er_diagram(td: Dataset) -> None:
             Edge(
                 source=relationship["from"],
                 target=relationship["to"],
-                label=relationship["on"]["source"][0]
+                label=relationship["on"]["source"]
             )
         )
 

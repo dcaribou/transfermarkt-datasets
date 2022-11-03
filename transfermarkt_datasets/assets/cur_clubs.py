@@ -26,7 +26,7 @@ class CurClubsAsset(Asset):
     self.schema.add_field(Field(name='club_id', type='integer'))
     self.schema.add_field(Field(name='name', type='string'))
     self.schema.add_field(Field(name='pretty_name', type='string'))
-    self.schema.add_field(Field(name='domestic_competition_id', type='string'))
+    self.schema.add_field(Field(name='domestic_competition_id', type='string', tags=["explore"]))
     self.schema.add_field(Field(
         name='total_market_value',
         type='number',

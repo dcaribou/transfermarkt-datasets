@@ -33,7 +33,7 @@ class CurGamesAsset(Asset):
     self.schema.add_field(Field(name='home_club_position', type='integer'))
     self.schema.add_field(Field(name='away_club_position', type='integer'))
     self.schema.add_field(Field(name='stadium', type='string'))
-    self.schema.add_field(Field(name='attendance', type='integer', tags=["explore"]))
+    self.schema.add_field(Field(name='attendance', type='integer'))
     self.schema.add_field(Field(name='referee', type='string'))
     self.schema.add_field(Field(name='club_home_pretty_name', type='string', tags=["explore"]))
     self.schema.add_field(Field(name='club_away_pretty_name', type='string', tags=["explore"]))

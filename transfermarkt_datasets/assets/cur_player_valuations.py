@@ -27,7 +27,11 @@ class CurPlayerValuationsAsset(Asset):
     self.schema.add_field(Field(name='dateweek', type='date'))
     self.schema.add_field(Field(name='player_id', type='integer'))
     self.schema.add_field(Field(name='market_value', type='number'))
-    self.schema.add_field(Field(name='player_club_domestic_competition_id', type='string'))
+    self.schema.add_field(Field(
+      name='player_club_domestic_competition_id',
+      type='string',
+      tags=["explore"]
+    ))
 
     self.schema.primary_key = ['player_id', 'date']
     self.schema.foreign_keys = [

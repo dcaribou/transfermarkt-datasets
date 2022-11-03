@@ -12,7 +12,8 @@ td = load_td()
 
 st.title("Explore :mag_right:")
 
-draw_dataset_er_diagram(td)
+# i'm not convinced by this
+# draw_dataset_er_diagram(td)
 
 st.markdown(
     read_file_contents("streamlit/markdown_blocks/explore/intro.md")

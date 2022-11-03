@@ -24,8 +24,8 @@ class CurAppearancesAsset(Asset):
 
     self.schema.add_field(Field(name="appearance_id", type="integer"))
     self.schema.add_field(Field(name="game_id", type="integer"))
-    self.schema.add_field(Field(name="date", type="date"))
-    self.schema.add_field(Field(name="player_pretty_name", type="string"))
+    self.schema.add_field(Field(name="date", type="date", tags=["explore"]))
+    self.schema.add_field(Field(name="player_pretty_name", type="string", tags=["explore"]))
 
     self.schema.primary_key = ["appearance_id"]
 
