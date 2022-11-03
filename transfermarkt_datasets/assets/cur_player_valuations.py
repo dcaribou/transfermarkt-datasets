@@ -1,10 +1,9 @@
-from frictionless.field import Field
-from frictionless.schema import Schema
 from frictionless import checks
 
 import pandas as pd
 
 from transfermarkt_datasets.core.asset import Asset
+from transfermarkt_datasets.core.schema import Schema, Field
 from transfermarkt_datasets.assets.base_player_valuations import BasePlayerValuationsAsset
 from transfermarkt_datasets.assets.base_players import BasePlayersAsset
 from transfermarkt_datasets.assets.base_clubs import BaseClubsAsset
@@ -28,11 +27,15 @@ class CurPlayerValuationsAsset(Asset):
     self.schema.add_field(Field(name='dateweek', type='date'))
     self.schema.add_field(Field(name='player_id', type='integer'))
     self.schema.add_field(Field(name='market_value', type='number'))
-    self.schema.add_field(Field(name='player_club_domestic_competition_id', type='string'))
+    self.schema.add_field(Field(
+      name='player_club_domestic_competition_id',
+      type='string',
+      tags=["explore"]
+    ))
 
     self.schema.primary_key = ['player_id', 'date']
     self.schema.foreign_keys = [
-      {"fields": "player_id", "reference": {"resource": "players", "fields": "player_id"}}
+      {"fields": "player_id", "reference": {"resource": "cur_players", "fields": "player_id"}}
     ]
 
     self.checks = [

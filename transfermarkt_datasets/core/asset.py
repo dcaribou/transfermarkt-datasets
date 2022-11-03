@@ -1,20 +1,27 @@
-from typing import Dict, List
-from dagster import DependencyDefinition, InputDefinition, OpDefinition, Output, OutputDefinition
+from typing import Dict
+from dagster import (
+  DependencyDefinition,
+  InputDefinition,
+  OpDefinition,
+  Output,
+  OutputDefinition
+)
 from frictionless import Detector
 from frictionless.resource import Resource
 import pandas as pd
 import logging
 import logging.config
 
-from frictionless.package import Package
 from frictionless import validate
+from transfermarkt_datasets.core.schema import Schema, Field
 
 import json
 import inspect
 
-import public
-
-from transfermarkt_datasets.core.utils import read_config
+from transfermarkt_datasets.core.utils import (
+  read_config,
+  get_sample_values
+)
 
 class FailedAssetValidation(Exception):
   pass
@@ -49,7 +56,7 @@ class Asset:
         file_name = self.name.replace("base_", "")
         self.file_name = file_name + ".csv"
 
-      self.schema = None
+      self.schema = Schema()
 
   def __str__(self) -> str:
       return f'Asset(name={self.name})'
@@ -143,14 +150,19 @@ class Asset:
         pd.DataFrame: A pandas dataframe representing the asset schema.
     """
 
-    fields = [field.name for field in  self.schema["fields"]]
-    types = [field.type for field in  self.schema["fields"]]
-    descriptions = [field.description for field in  self.schema["fields"]]
+    fields = [field.name for field in  self.schema.fields]
+    types = [field.type for field in  self.schema.fields]
+    descriptions = [field.description for field in  self.schema.fields]
+    sample_values = [
+      get_sample_values(self.prep_df, field.name, 3)
+      for field in self.schema.fields
+    ]
 
     df = pd.DataFrame(
       data=dict(
         description=descriptions,
-        type=types
+        type=types,
+        sample_values=sample_values
       ),
       index=fields
     )
@@ -158,6 +170,7 @@ class Asset:
     return df
 
   def as_frictionless_resource(self) -> Resource:
+
     detector = Detector(schema_sync=True)
     resource = Resource(
       title=self.frictionless_resource_name,
@@ -165,9 +178,10 @@ class Asset:
       trusted=True,
       detector=detector,
       description=self.description,
-      basepath="transfermarkt_datasets/stage"
+      basepath="transfermarkt_datasets/stage",
+      schema=self.schema.as_frictionless_schema()
     )
-    resource.schema = self.schema
+
     return resource
 
   def as_build_dagster_op(self) -> OpDefinition:

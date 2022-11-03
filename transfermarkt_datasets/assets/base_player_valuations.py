@@ -1,11 +1,10 @@
-from frictionless.field import Field
-from frictionless.schema import Schema
 from frictionless import checks
 from inflection import titleize
 
 import pandas
 
 from transfermarkt_datasets.core.asset import RawAsset
+from transfermarkt_datasets.core.schema import Schema, Field
 from transfermarkt_datasets.core.utils import parse_market_value
 
 class BasePlayerValuationsAsset(RawAsset):

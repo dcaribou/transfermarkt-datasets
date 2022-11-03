@@ -1,6 +1,4 @@
 from typing import List
-from frictionless.field import Field
-from frictionless.schema import Schema
 from frictionless import checks
 
 from datetime import datetime
@@ -9,6 +7,7 @@ import pandas as pd
 import numpy as np
 
 from transfermarkt_datasets.core.asset import Asset
+from transfermarkt_datasets.core.schema import Schema, Field
 from transfermarkt_datasets.assets.base_games import BaseGamesAsset
 
 class CurClubGamesAsset(Asset):
@@ -27,10 +26,9 @@ class CurClubGamesAsset(Asset):
 
     self.schema.add_field(Field(name='club_id', type='integer'))
     self.schema.add_field(Field(name='game_id', type='integer'))
-    self.schema.add_field(Field(name='date', type='date'))
     self.schema.add_field(Field(name='own_goals', type='integer'))
     self.schema.add_field(Field(name='own_position', type='integer'))
-    self.schema.add_field(Field(name='own_manager_name', type="string"))
+    self.schema.add_field(Field(name='own_manager_name', type="string", tags=["explore"]))
     self.schema.add_field(Field(
       name="is_win",
       type="integer",
@@ -39,8 +37,13 @@ class CurClubGamesAsset(Asset):
 
     self.schema.primary_key = ["club_id", "game_id"]
 
+    self.schema.foreign_keys = [
+      {"fields": "club_id", "reference": {"resource": "cur_clubs", "fields": "club_id"}},
+      {"fields": "game_id", "reference": {"resource": "cur_games", "fields": "game_id"}}
+    ]
+
     self.checks = [
-      checks.table_dimensions(min_rows=58028*2)
+      checks.table_dimensions(min_rows=58000*2)
     ]
 
   def build(self, base_games: BaseGamesAsset):

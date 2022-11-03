@@ -1,9 +1,11 @@
 import pathlib
-from typing import Dict
+from typing import Dict, List
+
 from dagster import DependencyDefinition, GraphDefinition, JobDefinition
+
 from frictionless.package import Package
 from frictionless import validate
-import json
+
 import importlib
 import inflection
 import os
@@ -83,12 +85,45 @@ class Dataset:
     class_ = getattr(module, class_name)
     return class_
 
-  def get_dependencies(self):
+  def get_dependencies(self) -> Dict:
+    """Get assets build dependencies.
+    Dependencies are defined by asset's "build" method parameters.
+
+    Returns:
+        Dict: A dictionary that represents the build dependencies for each asset.
+    """
     dependencies = {}
     for asset in self.assets.values():
       dependencies[asset.name] = asset.as_dagster_deps()
 
     return dependencies
+  
+  def get_relationships(self) -> List[Dict]:
+    """Get assets relationships.
+    Relationships are defined by the assets set of foreign keys.
+
+    Returns:
+        List[Dict]: A list of relationships (source -> target)
+    """
+    relationships = []
+
+    for asset_name, asset in self.assets.items():
+      if asset.schema.foreign_keys:
+        for foreign_key in asset.schema.foreign_keys:
+          reference = foreign_key["reference"]
+          relationship = {
+            "from": asset_name,
+            "to": reference["resource"],
+            "on": {
+              "source": foreign_key["fields"],
+              "target": reference["fields"]
+            }
+          }
+          relationships.append(
+            relationship
+          )
+
+    return relationships
 
   def build_assets(self):
     """Run transfromation (a.k.a. "build") all assets in the dataset.

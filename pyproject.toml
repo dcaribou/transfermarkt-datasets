@@ -5,8 +5,8 @@ description = "Extract, prepare, publish and update Transfermarkt datasets."
 authors = ["dcaribou <davidcereijo@live.com>"]
 
 [tool.poetry.dependencies]
-python = ">=3.8, <3.11"
-frictionless = "^4.31.0"
+python = ">=3.8, <3.11, !=3.9.7"
+frictionless = "4.40.8"
 pandas = "^1.4.2"
 boto3 = "^1.0.4"
 inflection = "^0.5.1"
@@ -17,8 +17,10 @@ dvc = {extras = ["s3"], version = "^2.17.0"}
 scipy = "^1.8.0"
 kaggle = "^1.5.12"
 Scrapy = "^2.6.2"
-streamlit = "^1.11.1"
+streamlit = "1.14.0"
 geopy = "^2.2.0"
+plotly = "^5.11.0"
+streamlit-agraph = "^0.0.42"
 
 [tool.poetry.dev-dependencies]
 jupyter = "^1.0.0"

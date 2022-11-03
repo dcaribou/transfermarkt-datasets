@@ -1,12 +1,7 @@
-from frictionless.field import Field
-from frictionless.schema import Schema
 from frictionless import checks
 
-from datetime import datetime
-
-import pandas as pd
-
 from transfermarkt_datasets.core.asset import Asset
+from transfermarkt_datasets.core.schema import Schema, Field
 from transfermarkt_datasets.assets.base_games import BaseGamesAsset
 from transfermarkt_datasets.assets.base_clubs import BaseClubsAsset
 from transfermarkt_datasets.assets.base_competitions import BaseCompetitionsAsset
@@ -26,10 +21,10 @@ class CurGamesAsset(Asset):
     self.schema = Schema()
 
     self.schema.add_field(Field(name='game_id', type='integer'))
-    self.schema.add_field(Field(name='competition_id', type='string'))
-    self.schema.add_field(Field(name='season', type='integer'))
-    self.schema.add_field(Field(name='round', type='string'))
-    self.schema.add_field(Field(name='date', type='date'))
+    self.schema.add_field(Field(name='competition_id', type='string', tags=["explore"]))
+    self.schema.add_field(Field(name='season', type='integer', tags=["explore"]))
+    self.schema.add_field(Field(name='round', type='string', tags=["explore"]))
+    self.schema.add_field(Field(name='date', type='date', tags=["explore"]))
     self.schema.add_field(Field(name='home_club_id', type='integer'))
     self.schema.add_field(Field(name='away_club_id', type='integer'))
     self.schema.add_field(Field(name='home_club_goals', type='integer'))
@@ -40,12 +35,12 @@ class CurGamesAsset(Asset):
     self.schema.add_field(Field(name='stadium', type='string'))
     self.schema.add_field(Field(name='attendance', type='integer'))
     self.schema.add_field(Field(name='referee', type='string'))
-    self.schema.add_field(Field(name='club_home_pretty_name', type='string'))
-    self.schema.add_field(Field(name='club_away_pretty_name', type='string'))
+    self.schema.add_field(Field(name='club_home_pretty_name', type='string', tags=["explore"]))
+    self.schema.add_field(Field(name='club_away_pretty_name', type='string', tags=["explore"]))
     self.schema.add_field(Field(
         name='url',
         type='string',
-        format='uri'
+        form='uri'
       )
     )
 

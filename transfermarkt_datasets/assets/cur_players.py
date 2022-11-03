@@ -1,5 +1,3 @@
-from frictionless.field import Field
-from frictionless.schema import Schema
 from frictionless import checks
 
 from inflection import titleize
@@ -8,6 +6,7 @@ import pandas
 import numpy
 
 from transfermarkt_datasets.core.asset import RawAsset
+from transfermarkt_datasets.core.schema import Schema, Field
 from transfermarkt_datasets.core.utils import parse_market_value
 from transfermarkt_datasets.core.checks import too_many_missings
 
@@ -34,38 +33,38 @@ class CurPlayersAsset(RawAsset):
 
     self.schema.add_field(Field(name='player_id', type='integer'))
     self.schema.add_field(Field(name='last_season', type='integer'))
-    self.schema.add_field(Field(name='current_club_id', type='integer'))
+    self.schema.add_field(Field(name='current_club_id', type='integer', tags=["explore"]))
     self.schema.add_field(Field(name='name', type='string'))
     self.schema.add_field(Field(name='pretty_name', type='string'))
-    self.schema.add_field(Field(name='country_of_birth', type='string'))
+    self.schema.add_field(Field(name='country_of_birth', type='string', tags=["explore"]))
     self.schema.add_field(Field(name='country_of_citizenship', type='string'))
     self.schema.add_field(Field(name='date_of_birth', type='date'))
-    self.schema.add_field(Field(name='position', type='string'))
-    self.schema.add_field(Field(name='sub_position', type='string'))
-    self.schema.add_field(Field(name='foot', type='string'))
+    self.schema.add_field(Field(name='position', type='string', tags=["explore"]))
+    self.schema.add_field(Field(name='sub_position', type='string', tags=["explore"]))
+    self.schema.add_field(Field(name='foot', type='string', tags=["explore"]))
     self.schema.add_field(Field(name='height_in_cm', type='integer'))
     self.schema.add_field(Field(name='market_value_in_gbp', type='number'))
     self.schema.add_field(Field(name='highest_market_value_in_gbp', type='number'))
     self.schema.add_field(Field(name='agent_name', type='string'))
     self.schema.add_field(Field(name='domestic_competition_id', type='string'))
-    self.schema.add_field(Field(name='club_name', type='string'))
+    self.schema.add_field(Field(name='club_name', type='string', tags=["explore"]))
     self.schema.add_field(Field(
       name='image_url',
       type='string',
-      format='uri'
+      form='uri'
       )
     )
     self.schema.add_field(Field(
       name='url',
       type='string',
-      format='uri'
+      form='uri'
       )
     )
 
     self.schema.primary_key = ['player_id']
     self.schema.foreign_keys = [
-      {"fields": "current_club_id", "reference": {"resource": "clubs", "fields": "club_id"}},
-      {"fields": "domestic_competition_id", "reference": {"resource": "competition", "fields": "competition_id"}},
+      {"fields": "current_club_id", "reference": {"resource": "cur_clubs", "fields": "club_id"}},
+      {"fields": "domestic_competition_id", "reference": {"resource": "cur_competition", "fields": "competition_id"}},
     ]
 
     self.checks = [

@@ -1,10 +1,9 @@
-from frictionless.field import Field
-from frictionless.schema import Schema
 from frictionless import checks
 
 import pandas as pd
 
 from transfermarkt_datasets.core.asset import Asset
+from transfermarkt_datasets.core.schema import Schema, Field
 from transfermarkt_datasets.assets.base_games import BaseGamesAsset
 from transfermarkt_datasets.assets.base_appearances import BaseAppearancesAsset
 from transfermarkt_datasets.assets.base_players import BasePlayersAsset
@@ -25,10 +24,14 @@ class CurAppearancesAsset(Asset):
 
     self.schema.add_field(Field(name="appearance_id", type="integer"))
     self.schema.add_field(Field(name="game_id", type="integer"))
-    self.schema.add_field(Field(name="date", type="date"))
-    self.schema.add_field(Field(name="player_pretty_name", type="string"))
+    self.schema.add_field(Field(name="date", type="date", tags=["explore"]))
+    self.schema.add_field(Field(name="player_pretty_name", type="string", tags=["explore"]))
 
     self.schema.primary_key = ["appearance_id"]
+
+    self.schema.foreign_keys = [
+      {"fields": "game_id", "reference": {"resource": "cur_games", "fields": "game_id"}}
+    ]
     
     self.checks = [
       checks.table_dimensions(min_rows=1000000)

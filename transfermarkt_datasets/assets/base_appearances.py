@@ -1,10 +1,10 @@
 import numpy
 import pandas
-from frictionless.schema import Schema
-from frictionless.field import Field
+
 from frictionless import checks
 
 from transfermarkt_datasets.core.asset import RawAsset
+from transfermarkt_datasets.core.schema import Schema, Field
 from transfermarkt_datasets.core.utils import (
   cast_metric, cast_minutes_played,
   read_config
@@ -37,7 +37,7 @@ class BaseAppearancesAsset(RawAsset):
     self.schema.primary_key = ['appearance_id']
     
     self.schema.foreign_keys = [
-      {"fields": "game_id", "reference": {"resource": "games", "fields": "game_id"}}
+      {"fields": "game_id", "reference": {"resource": "base_games", "fields": "game_id"}}
     ]
 
     self.checks = [
