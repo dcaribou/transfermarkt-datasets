@@ -98,10 +98,12 @@ def draw_asset_explore(asset: Asset) -> None:
         columns = default_columns
 
     filter_columns = st.multiselect(
-        label="Filters",
+        label="Search by",
         options=asset.prep_df.columns,
         default=columns
     )
+    if len(filter_columns) == 0:
+        filter_columns = columns
 
     st_cols = st.columns(len(filter_columns))
 

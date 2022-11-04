@@ -3,13 +3,14 @@ import unittest
 
 from dagster import DependencyDefinition
 
-from transfermarkt_datasets.core.schema import Schema, Field
-
-import inspect
-
 import pandas as pd
 
-from transfermarkt_datasets.core.asset import Asset, RawAsset
+from transfermarkt_datasets.core.asset import (
+    Asset,
+    RawAsset,
+    InvalidPreparedDF
+)
+from transfermarkt_datasets.core.schema import Schema, Field
 
 class TestAsset(unittest.TestCase):
 
@@ -51,14 +52,43 @@ class TestAsset(unittest.TestCase):
 
         at = SomeTestAsset()
         
-        s = inspect.signature(at.build)
-
         self.assertEqual(
             at.as_dagster_deps(),
             {
                 "test_asset_a": DependencyDefinition("build_asset_a"),
                 "test_asset_b": DependencyDefinition("build_asset_b")
             }
+        )
+
+    def test_df_assignment(self):
+
+        class TestAsset(Asset):
+            def __init__(self, settings: dict = None) -> None:
+                super().__init__(settings)
+
+                self.schema = Schema(
+                    fields=[
+                        Field(name="col1", type="type1"),
+                        Field(name="col2", type="type1"),
+                        Field(name="col3", type="type1")
+                    ]
+                )
+
+            def build(self) -> None:
+                self.prep_df = pd.DataFrame(
+                    data={
+                        "col2": [1, 2],
+                        "col1": ["a", "b"],
+                        "col3": [0.2, 0.4],
+                    }
+                )
+
+        at = TestAsset()
+        at.build()
+
+        self.assertEqual(
+            list(at.prep_df.columns.values),
+            ["col1", "col2", "col3"]
         )
 
     def test_asset_file_name(self):

@@ -26,6 +26,9 @@ from transfermarkt_datasets.core.utils import (
 class FailedAssetValidation(Exception):
   pass
 
+class InvalidPreparedDF(Exception):
+  pass
+
 class Asset:
 
   description = None
@@ -37,7 +40,7 @@ class Asset:
     self,
     settings: dict = None) -> None:
 
-      self.prep_df = None
+      self._prep_df = None
       self.validations = None
       self.validation_report = None
       self.errors_tolerance = 0
@@ -60,6 +63,31 @@ class Asset:
 
   def __str__(self) -> str:
       return f'Asset(name={self.name})'
+
+  @property
+  def prep_df(self):
+    return self._prep_df
+
+  @prep_df.setter
+  def prep_df(self, df):
+
+    df_type = type(df)
+    if df_type != pd.DataFrame:
+      raise InvalidPreparedDF(f"Invalid df type: {df_type}")
+    else:
+      df_cols = list(df.columns.values)
+      df_cols_set = set(df_cols)
+      schema_cols_set = set(self.schema.field_names)
+      set_difference = (df_cols_set - schema_cols_set).union(
+        schema_cols_set - df_cols_set
+      )
+      if set_difference != set():
+        raise InvalidPreparedDF(
+          f"{self.name}: fields do not match provided schema: {set_difference}"
+        )
+
+    field_names = self.schema.field_names
+    self._prep_df = df[field_names]
 
   @property
   def file_name(self) -> str:

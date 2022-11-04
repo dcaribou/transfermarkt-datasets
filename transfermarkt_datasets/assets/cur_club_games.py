@@ -29,10 +29,19 @@ class CurClubGamesAsset(Asset):
     self.schema.add_field(Field(name='own_goals', type='integer'))
     self.schema.add_field(Field(name='own_position', type='integer'))
     self.schema.add_field(Field(name='own_manager_name', type="string", tags=["explore"]))
+    self.schema.add_field(Field(name='opponent_id', type='integer'))
+    self.schema.add_field(Field(name='opponent_goals', type='integer'))
+    self.schema.add_field(Field(name='opponent_position', type='integer'))
+    self.schema.add_field(Field(name='opponent_manager_name', type='string'))
+    self.schema.add_field(Field(
+      name="hosting",
+      type="string",
+      description="'Home' if the game took place at the club home stadium and 'Away' if at its opponent stadium"
+    ))
     self.schema.add_field(Field(
       name="is_win",
       type="integer",
-      description="`1` if the club won the game and `0` otherwise."
+      description="'1' if the club won the game and '0' otherwise."
     ))
 
     self.schema.primary_key = ["club_id", "game_id"]

@@ -46,6 +46,10 @@ class Schema:
         self.fields = fields or []
         self.primary_key = primary_key or []
         self.foreign_keys = foreign_keys or []
+
+    @property
+    def field_names(self):
+        return [field.name for field in self.fields]
     
     def add_field(self, field: Field) -> None:
         self.fields.append(
