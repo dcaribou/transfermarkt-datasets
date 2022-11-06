@@ -11,29 +11,37 @@ st.set_page_config(
     page_icon="👋"
 )
 
+col1, col2 = st.columns([2, 1])
+col2.markdown("""
+[![GitHub Repo stars](https://img.shields.io/github/stars/dcaribou/transfermarkt-datasets?style=social)](https://github.com/dcaribou/transfermarkt-datasets)
+[![Kaggle](https://kaggle.com/static/images/open-in-kaggle.svg)](https://www.kaggle.com/datasets/davidcariboo/player-scores)
+[<img src="https://assets.data.world/assets/logo-sparkle-noscircle.befdc9e044ded0c2756c24b3bff43b1c.png" alt="drawing" width="19"/>
+[data.world](https://data.world/dcereijo/player-scores)]
+""",
+unsafe_allow_html=True
+)
 
-
-
-st.title("transfermarkt-datasets")
+st.title("""transfermarkt-datasets""")
 st.markdown("""
 [transfermarkt-datasets](https://github.com/dcaribou/transfermarkt-datasets) is a clean, structured and **automatically updated** football dataset scraped from [Transfermarkt](https://www.transfermarkt.co.uk/).
 The dataset is composed of multiple files (also called "assets") with a bunch of useful information on professional football competitions.
-""")
+""",
+
+)
 
 st.info(
     """For a thorough list of assets in this dataset and their contents head out to the [explore](explore) page.""",
     icon="🔎"
 )
 
-st.header("How do I use it?")
+st.subheader("How do I use it?")
 st.markdown("""
-Access to this dataset is provided through some of its various [frontends](https://github.com/dcaribou/transfermarkt-datasets#data-publication).
+Access to this dataset is provided through some of its various [frontends](https://github.com/dcaribou/transfermarkt-datasets#data-publication), you can use any of those to start playing with the data. 
 
-Additionally, the source code for the project, including this streamlit app, is available [in Github](https://github.com/dcaribou/transfermarkt-datasets).
-You are most welcome to contribute by opening a new issue or picking an existing one from the [`Issues`](https://github.com/dcaribou/transfermarkt-datasets/issues) section.
+For advance users, the source code for the project is available [in Github](https://github.com/dcaribou/transfermarkt-datasets), together with instructions for setting up you local environment to run it. 
 """)
 
-st.header("What can I do with it?")
+st.subheader("What can I do with it?")
 st.markdown("""
 That very much depends on you, but below are a few simple examples that may inspire you.
 """)
