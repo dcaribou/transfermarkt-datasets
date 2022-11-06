@@ -20,12 +20,22 @@ class CurAppearancesAsset(Asset):
   def __init__(self, *args, **kwargs) -> None:
     super().__init__(*args, **kwargs)
 
-    self.schema = Schema()
-
-    self.schema.add_field(Field(name="appearance_id", type="integer"))
-    self.schema.add_field(Field(name="game_id", type="integer"))
-    self.schema.add_field(Field(name="date", type="date", tags=["explore"]))
-    self.schema.add_field(Field(name="player_pretty_name", type="string", tags=["explore"]))
+    self.schema = Schema(
+      fields=[
+        Field(name="appearance_id", type="integer"),
+        Field(name="game_id", type="integer"),
+        Field(name="player_id", type="integer"),
+        Field(name="player_club_id", type="integer"),
+        Field(name="date", type="date", tags=["explore"]),
+        Field(name="player_pretty_name", type="string", tags=["explore"]),
+        Field(name="competition_id", type="string"),
+        Field(name="yellow_cards", type="integer"),
+        Field(name="red_cards", type="integer"),
+        Field(name="goals", type="integer"),
+        Field(name="assists", type="integer"),
+        Field(name="minutes_played", type="integer")
+      ]
+    )
 
     self.schema.primary_key = ["appearance_id"]
 

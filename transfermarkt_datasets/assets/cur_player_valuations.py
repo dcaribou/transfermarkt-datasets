@@ -20,18 +20,21 @@ class CurPlayerValuationsAsset(Asset):
   def __init__(self, *args, **kwargs) -> None:
     super().__init__(*args, **kwargs)
 
-    self.schema = Schema()
-
-    self.schema.add_field(Field(name='date', type='date'))
-    self.schema.add_field(Field(name='datetime', type='date'))
-    self.schema.add_field(Field(name='dateweek', type='date'))
-    self.schema.add_field(Field(name='player_id', type='integer'))
-    self.schema.add_field(Field(name='market_value', type='number'))
-    self.schema.add_field(Field(
-      name='player_club_domestic_competition_id',
-      type='string',
-      tags=["explore"]
-    ))
+    self.schema = Schema(
+      fields=[
+        Field(name='date', type='date'),
+        Field(name='datetime', type='date'),
+        Field(name='dateweek', type='date'),
+        Field(name='player_id', type='integer'),
+        Field(name='current_club_id', type='integer'),
+        Field(name='market_value', type='number'),
+        Field(
+          name='player_club_domestic_competition_id',
+          type='string',
+          tags=["explore"]
+        )
+      ]
+    )
 
     self.schema.primary_key = ['player_id', 'date']
     self.schema.foreign_keys = [

@@ -45,6 +45,23 @@ def read_file_contents(file_path: str):
     """
     return Path(file_path).read_text()
 
+def draw_dataset_index(td: Dataset) -> None:
+
+    md_index_lines = []
+
+    for asset_name, asset in td.assets.items():
+        if asset.public:
+            titelized_asset_name = titleize(asset.frictionless_resource_name).lower()
+            asset_anchor = dasherize(asset.frictionless_resource_name).lower()
+            md_index_line = f"* [{titelized_asset_name}](#{asset_anchor})"
+            md_index_lines.append(
+                md_index_line
+            )
+
+    st.sidebar.markdown(
+        "\n".join(md_index_lines)
+    )
+
 def draw_asset(asset: Asset) -> None:
     """Draw a transfermarkt-dataset asset summary
 
@@ -55,12 +72,7 @@ def draw_asset(asset: Asset) -> None:
     left_col, right_col = st.columns([5,1])
 
     title = titleize(asset.frictionless_resource_name).lower()
-    anchor = dasherize(asset.frictionless_resource_name)
-
     left_col.subheader(title)
-    st.sidebar.markdown(
-        f"[{title}](#{anchor})"
-    )
 
     left_col.markdown(asset.description)
     delta = get_records_delta(asset)
@@ -98,10 +110,12 @@ def draw_asset_explore(asset: Asset) -> None:
         columns = default_columns
 
     filter_columns = st.multiselect(
-        label="Filters",
+        label="Search by",
         options=asset.prep_df.columns,
         default=columns
     )
+    if len(filter_columns) == 0:
+        filter_columns = columns
 
     st_cols = st.columns(len(filter_columns))
 

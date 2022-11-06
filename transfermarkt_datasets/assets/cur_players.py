@@ -29,36 +29,39 @@ class CurPlayersAsset(RawAsset):
   def __init__(self, *args, **kwargs) -> None:
     super().__init__(*args, **kwargs)
 
-    self.schema = Schema()
-
-    self.schema.add_field(Field(name='player_id', type='integer'))
-    self.schema.add_field(Field(name='last_season', type='integer'))
-    self.schema.add_field(Field(name='current_club_id', type='integer', tags=["explore"]))
-    self.schema.add_field(Field(name='name', type='string'))
-    self.schema.add_field(Field(name='pretty_name', type='string'))
-    self.schema.add_field(Field(name='country_of_birth', type='string', tags=["explore"]))
-    self.schema.add_field(Field(name='country_of_citizenship', type='string'))
-    self.schema.add_field(Field(name='date_of_birth', type='date'))
-    self.schema.add_field(Field(name='position', type='string', tags=["explore"]))
-    self.schema.add_field(Field(name='sub_position', type='string', tags=["explore"]))
-    self.schema.add_field(Field(name='foot', type='string', tags=["explore"]))
-    self.schema.add_field(Field(name='height_in_cm', type='integer'))
-    self.schema.add_field(Field(name='market_value_in_gbp', type='number'))
-    self.schema.add_field(Field(name='highest_market_value_in_gbp', type='number'))
-    self.schema.add_field(Field(name='agent_name', type='string'))
-    self.schema.add_field(Field(name='domestic_competition_id', type='string'))
-    self.schema.add_field(Field(name='club_name', type='string', tags=["explore"]))
-    self.schema.add_field(Field(
-      name='image_url',
-      type='string',
-      form='uri'
-      )
-    )
-    self.schema.add_field(Field(
-      name='url',
-      type='string',
-      form='uri'
-      )
+    self.schema = Schema(
+      fields=[
+        Field(name='player_id', type='integer'),
+        Field(name='pretty_name', type='string'),
+        Field(name='club_id', type='integer'),
+        Field(name='club_pretty_name', type='string', tags=["explore"]),
+        Field(name='current_club_id', type='integer'),
+        Field(name='country_of_citizenship', type='string'),
+        Field(name='country_of_birth', type='string'),
+        Field(name='date_of_birth', type='date'),
+        Field(name='position', type='string'),
+        Field(name='sub_position', type='string'),
+        Field(name='name', type='string'),
+        Field(name='foot', type='string'),
+        Field(name='height_in_cm', type='integer'),
+        Field(name='market_value_in_gbp', type='number'),
+        Field(name='highest_market_value_in_gbp', type='number'),
+        Field(name='agent_name', type='string'),
+        Field(name='domestic_competition_id', type='string'),
+        Field(name='club_name', type='string'),
+        
+        Field(
+          name='image_url',
+          type='string',
+          form='uri'
+        ),
+        Field(name='last_season', type='integer'),
+        Field(
+          name='url',
+          type='string',
+          form='uri'
+        )
+      ]
     )
 
     self.schema.primary_key = ['player_id']

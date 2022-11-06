@@ -18,30 +18,34 @@ class CurGamesAsset(Asset):
   def __init__(self, *args, **kwargs) -> None:
     super().__init__(*args, **kwargs)
 
-    self.schema = Schema()
-
-    self.schema.add_field(Field(name='game_id', type='integer'))
-    self.schema.add_field(Field(name='competition_id', type='string', tags=["explore"]))
-    self.schema.add_field(Field(name='season', type='integer', tags=["explore"]))
-    self.schema.add_field(Field(name='round', type='string', tags=["explore"]))
-    self.schema.add_field(Field(name='date', type='date', tags=["explore"]))
-    self.schema.add_field(Field(name='home_club_id', type='integer'))
-    self.schema.add_field(Field(name='away_club_id', type='integer'))
-    self.schema.add_field(Field(name='home_club_goals', type='integer'))
-    self.schema.add_field(Field(name='away_club_goals', type='integer'))
-    self.schema.add_field(Field(name='aggregate', type='string'))
-    self.schema.add_field(Field(name='home_club_position', type='integer'))
-    self.schema.add_field(Field(name='away_club_position', type='integer'))
-    self.schema.add_field(Field(name='stadium', type='string'))
-    self.schema.add_field(Field(name='attendance', type='integer'))
-    self.schema.add_field(Field(name='referee', type='string'))
-    self.schema.add_field(Field(name='club_home_pretty_name', type='string', tags=["explore"]))
-    self.schema.add_field(Field(name='club_away_pretty_name', type='string', tags=["explore"]))
-    self.schema.add_field(Field(
-        name='url',
-        type='string',
-        form='uri'
-      )
+    self.schema = Schema(
+      fields=[
+        Field(name='game_id', type='integer'),
+        Field(name='competition_id', type='string', tags=["explore"]),
+        Field(name='competition_type', type='string'),
+        Field(name='season', type='integer', tags=["explore"]),
+        Field(name='round', type='string', tags=["explore"]),
+        Field(name='date', type='date', tags=["explore"]),
+        Field(name='home_club_id', type='integer'),
+        Field(name='away_club_id', type='integer'),
+        Field(name='home_club_goals', type='integer'),
+        Field(name='away_club_goals', type='integer'),
+        Field(name='aggregate', type='string'),
+        Field(name='home_club_position', type='integer'),
+        Field(name='away_club_position', type='integer'),
+        Field(name='club_home_pretty_name', type='string', tags=["explore"]),
+        Field(name='club_away_pretty_name', type='string', tags=["explore"]),
+        Field(name='home_club_manager_name', type='string'),
+        Field(name='away_club_manager_name', type='string'),
+        Field(name='stadium', type='string'),
+        Field(name='attendance', type='integer'),
+        Field(name='referee', type='string'),
+        Field(
+          name='url',
+          type='string',
+          form='uri'
+        )
+      ]
     )
 
     self.schema.primary_key = ['game_id']

@@ -112,7 +112,10 @@ td.assets["games"].raw_df
 For more examples on using `transfermark_datasets`, checkout the sample [notebooks](notebooks).
 
 ## data publication
-Prepared data is published to a couple of popular dataset websites (Kaggle and data.world). This is done in the `3_sync.py` script.
+Prepared data is published to a couple of popular dataset websites. This is done in the `3_sync.py` script, which runs weekly as part of the data pipeline.
+
+* [Kaggle](https://www.kaggle.com/datasets/davidcariboo/player-scores)
+* [data.world](https://data.world/dcereijo/player-scores)
 
 ## streamlit 🎈
 There is a [streamlit](https://streamlit.io/) app for the project with documentation, a data catalog and sample analyisis. The app is hosted in Heroku, you can check it out [here](https://transfermarkt-datasets.herokuapp.com/).
