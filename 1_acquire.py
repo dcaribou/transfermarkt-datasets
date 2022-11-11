@@ -57,12 +57,12 @@ class Asset():
     return str(self.file_path(season).absolute())
 
   @classmethod
-  def all(self, season):
+  def all(self):
     """Get an ordered list of assets to be acquired.
     Asset acquisition have dependecies between each other. This list returns the right order for asset
     acquisition steps to run.
     """
-    assets = [Asset(name, season) for name in self.asset_parents if name != 'competitions']
+    assets = [Asset(name) for name in self.asset_parents if name != 'competitions']
     for asset in assets:
       asset.set_parent()
     return assets
