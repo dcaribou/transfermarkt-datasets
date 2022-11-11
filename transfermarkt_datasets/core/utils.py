@@ -108,17 +108,17 @@ def parse_market_value(market_value):
 	"""
 
 	if market_value is not None:
-		match = re.search('£([0-9\.]+)(Th|m)', str(market_value))
+		match = re.search('(£|€)([0-9\.]+)(Th|k|m|M)', str(market_value))
 		if match:
-			factor = match.group(2)
-			if factor == 'Th':
+			factor = match.group(3)
+			if factor in ["Th", "k"]:
 				numeric_factor = 1000
-			elif factor == 'm':
+			elif factor in ["m", "M"]:
 				numeric_factor = 1000000
 			else:
 				return None
 
-			value = match.group(1)
+			value = match.group(2)
 			return int(float(value)*numeric_factor)
 		else:
 			return None
