@@ -22,35 +22,37 @@ class BasePlayersAsset(RawAsset):
 
     self.schema = Schema()
 
-    self.schema.add_field(Field(name='player_id', type='integer'))
-    self.schema.add_field(Field(name='last_season', type='integer'))
-    self.schema.add_field(Field(name='current_club_id', type='integer'))
-    self.schema.add_field(Field(name='name', type='string'))
-    self.schema.add_field(Field(name='pretty_name', type='string'))
-    self.schema.add_field(Field(name='country_of_birth', type='string'))
-    self.schema.add_field(Field(name='country_of_citizenship', type='string'))
-    self.schema.add_field(Field(name='date_of_birth', type='date'))
-    self.schema.add_field(Field(name='position', type='string'))
-    self.schema.add_field(Field(name='sub_position', type='string'))
-    self.schema.add_field(Field(name='foot', type='string'))
-    self.schema.add_field(Field(name='height_in_cm', type='integer'))
-    self.schema.add_field(Field(name='market_value_in_gbp', type='number'))
-    self.schema.add_field(Field(name='highest_market_value_in_gbp', type='number'))
-    self.schema.add_field(Field(name='agent_name', type='string'))
+    self.schema = Schema(
+      fields=[
+        Field(name='player_id', type='integer'),
+        Field(name='pretty_name', type='string'),
+        Field(name='current_club_id', type='integer'),
+        Field(name='last_season', type='integer'),
+        Field(name='name', type='string'),
+        Field(name='country_of_birth', type='string'),
+        Field(name='country_of_citizenship', type='string'),
+        Field(name='date_of_birth', type='date'),
+        Field(name='position', type='string'),
+        Field(name='sub_position', type='string'),
+        Field(name='foot', type='string'),
+        Field(name='height_in_cm', type='integer'),
+        Field(name='market_value_in_gbp', type='number'),
+        Field(name='highest_market_value_in_gbp', type='number'),
+        Field(name='contract_expiration_date', type='date'),
+        Field(name='agent_name', type='string'),
+        Field(
+          name='image_url',
+          type='string',
+          form='uri'
+        ),
+        Field(
+          name='url',
+          type='string',
+          form='uri'
+        )
+      ])
+
     self.schema.primary_key = ['player_id']
-    self.schema.add_field(Field(
-      name='image_url',
-      type='string',
-      form='uri'
-      )
-    )
-    self.schema.add_field(Field(
-      name='url',
-      type='string',
-      form='uri'
-      )
-    )
-   
     self.schema.foreign_keys = [
       {"fields": "current_club_id", "reference": {"resource": "base_clubs", "fields": "club_id"}}
     ]
@@ -58,6 +60,7 @@ class BasePlayersAsset(RawAsset):
     self.checks = [
       checks.row_constraint(formula="position in 'Attack,Defender,Midfield,Goalkeeper,Missing'"),
       too_many_missings(field_name="market_value_in_gbp", tolerance=0.30),
+      too_many_missings(field_name="contract_expiration_date", tolerance=0.35),
       checks.table_dimensions(min_rows=22000)
 
     ]
@@ -138,6 +141,13 @@ class BasePlayersAsset(RawAsset):
     )
 
     prep_df['agent_name'] = json_normalized["player_agent.name"]
+    prep_df['contract_expiration_date'] = (
+      pandas
+        .to_datetime(
+          arg=json_normalized['contract_expires'],
+          errors='coerce'
+        )
+    )
     prep_df['image_url'] = json_normalized.get("image_url", pandas.NaT)
     prep_df['url'] = self.url_prepend(json_normalized['href'])
 
