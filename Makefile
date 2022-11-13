@@ -2,6 +2,9 @@ PLATFORM = linux/arm64 # linux/amd64
 BRANCH = $(shell git rev-parse --abbrev-ref HEAD)
 JOB_NAME = on-cli
 
+test :
+	pytest -k "not build_all"
+
 build :
 	docker build \
 		--platform=$(PLATFORM) \

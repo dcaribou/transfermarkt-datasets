@@ -47,9 +47,9 @@ class CurPlayersAsset(RawAsset):
         Field(name='market_value_in_gbp', type='number'),
         Field(name='highest_market_value_in_gbp', type='number'),
         Field(name='agent_name', type='string'),
+        Field(name='contract_expiration_date', type='date'),
         Field(name='domestic_competition_id', type='string'),
         Field(name='club_name', type='string'),
-        
         Field(
           name='image_url',
           type='string',
@@ -71,10 +71,7 @@ class CurPlayersAsset(RawAsset):
     ]
 
     self.checks = [
-      checks.row_constraint(formula="position in 'Attack,Defender,Midfield,Goalkeeper,Missing'"),
-      too_many_missings(field_name="market_value_in_gbp", tolerance=0.30),
       checks.table_dimensions(min_rows=22000)
-
     ]
 
   def build(
