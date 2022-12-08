@@ -38,6 +38,7 @@ class CurPlayersAsset(RawAsset):
         Field(name='current_club_id', type='integer'),
         Field(name='country_of_citizenship', type='string'),
         Field(name='country_of_birth', type='string'),
+        Field(name='city_of_birth', type='string'),
         Field(name='date_of_birth', type='date'),
         Field(name='position', type='string'),
         Field(name='sub_position', type='string'),
