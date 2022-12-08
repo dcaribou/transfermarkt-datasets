@@ -30,6 +30,7 @@ class BasePlayersAsset(RawAsset):
         Field(name='last_season', type='integer'),
         Field(name='name', type='string'),
         Field(name='country_of_birth', type='string'),
+        Field(name='city_of_birth', type='string'),
         Field(name='country_of_citizenship', type='string'),
         Field(name='date_of_birth', type='date'),
         Field(name='position', type='string'),
@@ -81,7 +82,8 @@ class BasePlayersAsset(RawAsset):
     prep_df['current_club_id'] = parent_href_parts[4]
     prep_df['name'] = self.url_unquote(href_parts[1])
     prep_df['pretty_name'] = prep_df['name'].apply(lambda x: titleize(x))
-    prep_df['country_of_birth'] = json_normalized['place_of_birth.country'].str.replace('Heute: ', '', regex=False)
+    prep_df['country_of_birth'] = json_normalized['place_of_birth.country']
+    prep_df['city_of_birth'] = json_normalized['place_of_birth.city']
     prep_df['country_of_citizenship'] = json_normalized['citizenship']
     prep_df['date_of_birth'] = (
       pandas
