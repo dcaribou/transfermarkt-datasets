@@ -27,6 +27,8 @@ COPY .streamlit/ /app/.streamlit/
 COPY transfermarkt_datasets/ /app/transfermarkt_datasets/
 COPY config.yml /app/
 COPY .dvc/config /app/.dvc/
+COPY data/prep.dvc /app/data/prep.dvc
+COPY .git /app/.git
 
 ENTRYPOINT make streamlit_cloud
 # CMD streamlit_cloud
