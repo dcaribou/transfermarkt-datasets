@@ -32,7 +32,7 @@ acquire_docker :
 				python 1_acquire.py local $(ARGS)
 
 acquire_cloud : JOB_DEFINITION_NAME = transfermarkt-datasets-batch-job-definition-dev
-acquire_cloud : ARGS = --asset all --season 2022
+acquire_cloud : ARGS = --asset all --seasons 2022
 acquire_cloud :
 	python 1_acquire.py cloud \
 		--branch $(BRANCH) \
@@ -68,20 +68,14 @@ streamlit_deploy :
 	heroku container:release web
 
 streamlit_local :
-	cd streamlit && poetry shell && cd .. && \
-	streamlit run streamlit/about.py
+	streamlit run streamlit/01_👋_about.py
 
 streamlit_docker :
 	docker run -ti -e PORT=8085 \
 		transfermarkt-datasets-streamlit:linux-arm64
 
 streamlit_cloud :
-	streamlit run \
-		--server.port 8080 \
-		--server.enableCORS=false \
-		--server.enableXsrfProtection=false \
-		--server.enableWebsocketCompression=false \
-		streamlit/about.py
+	streamlit run streamlit/01_👋_about.py
 
 dagit_local :
 	dagit -f transfermarkt_datasets/dagster/jobs.py

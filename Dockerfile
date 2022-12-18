@@ -25,6 +25,8 @@ COPY Makefile /app/
 COPY streamlit/ /app/streamlit/
 COPY .streamlit/ /app/.streamlit/
 COPY transfermarkt_datasets/ /app/transfermarkt_datasets/
+COPY config.yml /app/
+COPY .dvc/config /app/.dvc/
 
 ENTRYPOINT make streamlit_cloud
 # CMD streamlit_cloud
