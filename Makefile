@@ -2,18 +2,23 @@ PLATFORM = linux/arm64 # linux/amd64
 BRANCH = $(shell git rev-parse --abbrev-ref HEAD)
 JOB_NAME = on-cli
 
-test :
-	pytest -k "not build_all"
+DASH:= -
+SLASH:= /
+
+# replace . with -
+PLATFORM_TAG = $(subst $(SLASH),$(DASH),$(PLATFORM))
+
+ecr_login :
+	aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin 272181418418.dkr.ecr.eu-west-1.amazonaws.com
 
 build :
-	docker build \
-		--platform=$(PLATFORM) \
-		--tag dcaribou/transfermarkt-datasets:dev \
-		--tag registry.heroku.com/transfermarkt-datasets/web \
-		.
+	docker build --platform=$(PLATFORM) -t transfermarkt-datasets-streamlit:$(PLATFORM_TAG) .
 
 push :
-	docker push dcaribou/transfermarkt-datasets:dev
+	docker tag \
+		transfermarkt-datasets-streamlit:linux-amd64 \
+		registry.fly.io/transfermarkt-datasets:linux-amd64 && \
+	docker push registry.fly.io/transfermarkt-datasets:linux-amd64
 
 acquire_local :
 	python 1_acquire.py local $(ARGS)
@@ -27,7 +32,7 @@ acquire_docker :
 				python 1_acquire.py local $(ARGS)
 
 acquire_cloud : JOB_DEFINITION_NAME = transfermarkt-datasets-batch-job-definition-dev
-acquire_cloud : ARGS = --asset all --seasons 2022
+acquire_cloud : ARGS = --asset all --season 2022
 acquire_cloud :
 	python 1_acquire.py cloud \
 		--branch $(BRANCH) \
@@ -58,16 +63,25 @@ sync :
 	python 3_sync.py --message "$(MESSAGE)" --season 2022
 
 streamlit_deploy :
+	docker tag transfermarkt-datasets-streamlit registry.heroku.com/transfermarkt-datasets/web && \
 	docker push registry.heroku.com/transfermarkt-datasets/web && \
 	heroku container:release web
 
 streamlit_local :
-	streamlit run streamlit/01_👋_about.py
+	cd streamlit && poetry shell && cd .. && \
+	streamlit run streamlit/about.py
+
+streamlit_docker :
+	docker run -ti -e PORT=8085 \
+		transfermarkt-datasets-streamlit:linux-arm64
 
 streamlit_cloud :
 	streamlit run \
-		--server.port ${PORT} \
-		streamlit/01_👋_about.py
+		--server.port 8080 \
+		--server.enableCORS=false \
+		--server.enableXsrfProtection=false \
+		--server.enableWebsocketCompression=false \
+		streamlit/about.py
 
 dagit_local :
 	dagit -f transfermarkt_datasets/dagster/jobs.py
