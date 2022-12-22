@@ -2,46 +2,48 @@ PLATFORM = linux/arm64 # linux/amd64
 BRANCH = $(shell git rev-parse --abbrev-ref HEAD)
 JOB_NAME = on-cli
 ARGS = --asset all --seasons 2022
+MESSAGE = some message
+TAG = dev
 
 DASH:= -
 SLASH:= /
 
 # replace . with -
-PLATFORM_TAG = $(subst $(SLASH),$(DASH),$(PLATFORM))
+IMAGE_TAG = $(subst $(SLASH),$(DASH),$(PLATFORM))-${TAG}
 
 docker_login_ecr :
 	aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin 272181418418.dkr.ecr.eu-west-1.amazonaws.com
 
 docker_login_dockerhub:
-	docker login
+	echo ${DOCKERHUB_TOKEN} | docker login --username dcaribou --password-stdin
 
 docker_login_flyio :
 	fly auth docker
 
 docker_build :
 	docker build --platform=$(PLATFORM) \
-		-t dcaribou/transfermarkt-datasets:$(PLATFORM_TAG) \
-		-t registry.fly.io/transfermarkt-datasets:$(PLATFORM_TAG) \
+		-t dcaribou/transfermarkt-datasets:$(IMAGE_TAG) \
+		-t registry.fly.io/transfermarkt-datasets:$(IMAGE_TAG) \
 		.
 
 docker_push_dockerhub : docker_login_dockerhub
-	docker push dcaribou/transfermarkt-datasets:$(PLATFORM_TAG)
+	docker push dcaribou/transfermarkt-datasets:$(IMAGE_TAG)
 
 docker_push_flyio : docker_login_flyio
-	docker push registry.fly.io/transfermarkt-datasets:$(PLATFORM_TAG)
+	docker push registry.fly.io/transfermarkt-datasets:$(IMAGE_TAG)
 
 dvc_pull:
 	dvc pull
 
 stash_and_commit :
 	dvc commit -f && git add data \
-    git diff-index --quiet HEAD data || git commit -m "some_message" && \
+    git diff-index --quiet HEAD data || git commit -m "$(MESSAGE)" && \
     git push && dvc push
 
 acquire_local :
 	python 1_acquire.py local $(ARGS)
 
-acquire_docker : 
+acquire_docker :
 	docker run -ti \
 			--env-file .env \
 			-v `pwd`/.:/app/transfermarkt-datasets/ \
@@ -55,7 +57,7 @@ acquire_cloud :
 		--branch $(BRANCH) \
 		--job-name $(JOB_NAME) \
 		--job-definition $(JOB_DEFINITION_NAME) \
-		"ARGS='$(ARGS)'"
+		ARGS='$(ARGS)' MESSAGE='$(MESSAGE)'
 
 prepare_local :
 	python -Wignore 2_prepare.py local $(ARGS)
@@ -67,13 +69,14 @@ prepare_docker :
 			--memory=4g  \
 			dcaribou/transfermarkt-datasets:dev \
 				$(BRANCH) "prepared from local" 2_prepare.py local $(ARGS)
+
 prepare_cloud : JOB_DEFINITION_NAME = transfermarkt-datasets-batch-job-definition-dev
 prepare_cloud : 
 	python 2_prepare.py cloud \
 		--branch $(BRANCH) \
 		--job-name $(JOB_NAME) \
 		--job-definition $(JOB_DEFINITION_NAME) \
-		""
+		MESSAGE='$(MESSAGE)'
 
 sync : MESSAGE = Manual sync
 sync :

@@ -55,7 +55,9 @@ def prepare_on_cloud(
       branch,
       "make",
       "dvc_pull",
-      "prepare_local"
+      "prepare_local",
+      "stash_and_commit",
+      args
     ],
     vcpus=4,
     memory=30720

@@ -55,10 +55,7 @@ jobs:
           fi
 
           # build and push
-
-          docker build -t dcaribou/transfermarkt-datasets:$TAG .
-          echo $DOCKERHUB_TOKEN | docker login --username dcaribou --password-stdin
-          docker push dcaribou/transfermarkt-datasets:$TAG
+          make docker_build docker_push_dockerhub TAG=$TAG
 
       - name: run prep
         env:
