@@ -83,10 +83,8 @@ sync : MESSAGE = Manual sync
 sync :
 	python 3_sync.py --message "$(MESSAGE)" --season 2022
 
-streamlit_deploy :
-	docker tag transfermarkt-datasets-streamlit registry.heroku.com/transfermarkt-datasets/web && \
-	docker push registry.heroku.com/transfermarkt-datasets/web && \
-	heroku container:release web
+streamlit_deploy : docker_push_flyio
+	fly deploy
 
 streamlit_local :
 	streamlit run streamlit/01_👋_about.py
@@ -94,8 +92,8 @@ streamlit_local :
 streamlit_docker :
 	docker run -ti \
 		--env-file .env \
-		transfermarkt-datasets-streamlit:linux-arm64 \
-		flyio-app-v2 make streamlit_local
+		dcaribou/transfermarkt-datasets:linux-amd64-${TAG} \
+		${BRANCH} make streamlit_local
 
 streamlit_cloud :
 	streamlit run streamlit/01_👋_about.py
