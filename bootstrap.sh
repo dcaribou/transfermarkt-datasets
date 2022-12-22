@@ -4,7 +4,8 @@ set -ex
 
 PROJECT_HOME=/app/transfermarkt-datasets
 BRANCH=$1
-MESSAGE=$2
+COMMAND=$2
+
 shift 2
 
 if ! [ -d $PROJECT_HOME ]; then
@@ -13,7 +14,7 @@ if ! [ -d $PROJECT_HOME ]; then
         eval `ssh-agent -s`
         ssh-add - <<< $(aws --region eu-west-1 secretsmanager get-secret-value --secret-id /ssh/transfermarkt-datasets/deploy-keys | jq -r '.SecretString')
         git clone --recursive --branch $BRANCH git@github.com:dcaribou/transfermarkt-datasets.git
-        cd $PROJECT_HOME && dvc pull
+        cd $PROJECT_HOME
     else
         echo "BRANCH is required to bootstrap the environment"
         exit 1
@@ -21,10 +22,9 @@ if ! [ -d $PROJECT_HOME ]; then
 fi
 
 cd $PROJECT_HOME
-if python "$@" ; then
-    dvc commit -f && git add data
-    git diff-index --quiet HEAD data || git commit -m "$MESSAGE"
-    git push && dvc push
+if $COMMAND "$@" ; then
+    echo "Job succeeded"
+    exit 0
 else
     echo "Job failed"
     exit 1

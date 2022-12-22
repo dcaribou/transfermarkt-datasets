@@ -23,6 +23,11 @@ push :
 acquire_local :
 	python 1_acquire.py local $(ARGS)
 
+stash_and_commit :
+	dvc commit -f && git add data \
+    git diff-index --quiet HEAD data || git commit -m "some_message" && \
+    git push && dvc push
+
 acquire_docker : 
 	docker run -ti \
 			--env-file .env \
@@ -71,8 +76,10 @@ streamlit_local :
 	streamlit run streamlit/01_👋_about.py
 
 streamlit_docker :
-	docker run -ti -e PORT=8085 \
-		transfermarkt-datasets-streamlit:linux-arm64
+	docker run -ti \
+		--env-file .env \
+		transfermarkt-datasets-streamlit:linux-arm64 \
+		flyio-app-v2 make streamlit_local
 
 streamlit_cloud :
 	streamlit run streamlit/01_👋_about.py

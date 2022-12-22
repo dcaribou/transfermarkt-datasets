@@ -51,9 +51,11 @@ def prepare_on_cloud(
     job_name=job_name,
     job_queue=job_queue,
     job_definition=job_definition,
-    branch=branch,
-    message=message,
-    script="2_prepare.py",
+    cmd=[
+      branch,
+      "make",
+      "prepare_local"
+    ],
     args=args,
     vcpus=4,
     memory=30720
