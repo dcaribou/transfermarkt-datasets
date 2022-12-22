@@ -55,7 +55,7 @@ jobs:
           fi
 
           # build and push
-          make docker_build docker_push_dockerhub TAG=$TAG
+          make docker_build docker_push_dockerhub TAG=$TAG PLATFORM=linux/amd64
 
       - name: run prep
         env:

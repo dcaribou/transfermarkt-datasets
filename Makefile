@@ -15,8 +15,9 @@ IMAGE_TAG = $(subst $(SLASH),$(DASH),$(PLATFORM))-${TAG}
 docker_login_ecr :
 	aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin 272181418418.dkr.ecr.eu-west-1.amazonaws.com
 
+# echo ${DOCKERHUB_TOKEN} | docker login --username dcaribou --password-stdin
 docker_login_dockerhub:
-	echo ${DOCKERHUB_TOKEN} | docker login --username dcaribou --password-stdin
+	docker login --username dcaribou
 
 docker_login_flyio :
 	fly auth docker
@@ -37,7 +38,7 @@ dvc_pull:
 	dvc pull
 
 stash_and_commit :
-	dvc commit -f && git add data \
+	dvc commit -f && git add data && \
     git diff-index --quiet HEAD data || git commit -m "$(MESSAGE)" && \
     git push && dvc push
 
