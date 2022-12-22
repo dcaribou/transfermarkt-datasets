@@ -15,9 +15,8 @@ IMAGE_TAG = $(subst $(SLASH),$(DASH),$(PLATFORM))-${TAG}
 docker_login_ecr :
 	aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin 272181418418.dkr.ecr.eu-west-1.amazonaws.com
 
-# echo ${DOCKERHUB_TOKEN} | docker login --username dcaribou --password-stdin
 docker_login_dockerhub:
-	docker login --username dcaribou
+	@echo ${DOCKERHUB_TOKEN} | docker login --username dcaribou --password-stdin
 
 docker_login_flyio :
 	fly auth docker
@@ -62,7 +61,7 @@ acquire_cloud :
 		ARGS='$(ARGS)' MESSAGE='$(MESSAGE)'
 
 prepare_local :
-	python -Wignore 2_prepare.py local $(ARGS)
+	python -Wignore 2_prepare.py local
 
 prepare_docker :
 	docker run -ti \
