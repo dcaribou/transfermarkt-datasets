@@ -8,20 +8,32 @@ SLASH:= /
 # replace . with -
 PLATFORM_TAG = $(subst $(SLASH),$(DASH),$(PLATFORM))
 
-ecr_login :
+docker_login_ecr :
 	aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin 272181418418.dkr.ecr.eu-west-1.amazonaws.com
 
-build :
-	docker build --platform=$(PLATFORM) -t transfermarkt-datasets-streamlit:$(PLATFORM_TAG) .
+docker_login_dockerhub:
+	docker login
 
-push :
-	docker tag \
-		transfermarkt-datasets-streamlit:linux-amd64 \
-		registry.fly.io/transfermarkt-datasets:linux-amd64 && \
-	docker push registry.fly.io/transfermarkt-datasets:linux-amd64
+docker_login_flyio :
+	fly auth docker
+
+docker_build :
+	docker build --platform=$(PLATFORM) \
+		-t dcaribou/transfermarkt-datasets:$(PLATFORM_TAG) \
+		-t registry.fly.io/transfermarkt-datasets:$(PLATFORM_TAG) \
+		.
+
+docker_push_dockerhub : docker_login_dockerhub
+	docker push dcaribou/transfermarkt-datasets:$(PLATFORM_TAG)
+
+docker_push_flyio : docker_login_flyio
+	docker push registry.fly.io/transfermarkt-datasets:$(PLATFORM_TAG)
 
 acquire_local :
 	python 1_acquire.py local $(ARGS)
+
+dvc_pull:
+	dvc pull
 
 stash_and_commit :
 	dvc commit -f && git add data \

@@ -54,9 +54,9 @@ def prepare_on_cloud(
     cmd=[
       branch,
       "make",
+      "dvc_pull",
       "prepare_local"
     ],
-    args=args,
     vcpus=4,
     memory=30720
   )
