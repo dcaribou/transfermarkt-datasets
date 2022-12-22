@@ -192,10 +192,14 @@ def acquire_on_cloud(job_name, job_queue, job_definition, branch, message, args,
     job_name=job_name,
     job_queue=job_queue,
     job_definition=job_definition,
-    branch=branch,
-    message=message,
-    script="1_acquire.py",
-    args=args,
+    cmd=[
+      branch,
+      "make",
+      "dvc_pull",
+      "acquire_local",
+      "stash_and_commit",
+      args
+    ],
     vcpus=1.0,
     memory=3072,
     timeout=5

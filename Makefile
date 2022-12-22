@@ -1,6 +1,7 @@
 PLATFORM = linux/arm64 # linux/amd64
 BRANCH = $(shell git rev-parse --abbrev-ref HEAD)
 JOB_NAME = on-cli
+ARGS = --asset all --seasons 2022
 
 DASH:= -
 SLASH:= /
@@ -29,9 +30,6 @@ docker_push_dockerhub : docker_login_dockerhub
 docker_push_flyio : docker_login_flyio
 	docker push registry.fly.io/transfermarkt-datasets:$(PLATFORM_TAG)
 
-acquire_local :
-	python 1_acquire.py local $(ARGS)
-
 dvc_pull:
 	dvc pull
 
@@ -39,6 +37,9 @@ stash_and_commit :
 	dvc commit -f && git add data \
     git diff-index --quiet HEAD data || git commit -m "some_message" && \
     git push && dvc push
+
+acquire_local :
+	python 1_acquire.py local $(ARGS)
 
 acquire_docker : 
 	docker run -ti \
@@ -49,13 +50,12 @@ acquire_docker :
 				python 1_acquire.py local $(ARGS)
 
 acquire_cloud : JOB_DEFINITION_NAME = transfermarkt-datasets-batch-job-definition-dev
-acquire_cloud : ARGS = --asset all --seasons 2022
 acquire_cloud :
 	python 1_acquire.py cloud \
 		--branch $(BRANCH) \
 		--job-name $(JOB_NAME) \
 		--job-definition $(JOB_DEFINITION_NAME) \
-		"$(ARGS)"
+		"ARGS='$(ARGS)'"
 
 prepare_local :
 	python -Wignore 2_prepare.py local $(ARGS)

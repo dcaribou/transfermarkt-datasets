@@ -32,10 +32,6 @@ def submit_batch_job_and_wait(
 	job_queue: str,
 	job_definition: str,
 	cmd: List[str],
-	# branch: str,
-	# message: str,
-	# script: str,
-	# args: str,
 	vcpus: float,
 	memory: int,
 	timeout: int = 4  # in hours
@@ -57,11 +53,6 @@ def submit_batch_job_and_wait(
 		raise Exception(f"Unable to extract job definition revisions")
 
 	revision = max(revisions)
-
-	# if len(args) > 0:
-	# 	additional_args = args.split(" ")
-	# else:
-	# 	additional_args = []
 
 	submited_job = client.submit_job(
 		jobName=job_name,
