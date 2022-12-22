@@ -1,4 +1,5 @@
-PLATFORM = linux/arm64 # linux/amd64
+# linux/amd64 is intel and linux/arm64 is mac M1
+PLATFORM = linux/arm64
 BRANCH = $(shell git rev-parse --abbrev-ref HEAD)
 JOB_NAME = on-cli
 ARGS = --asset all --seasons 2022
