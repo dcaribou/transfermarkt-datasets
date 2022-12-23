@@ -14,8 +14,13 @@ In an nutshell, this project aims for three things:
 2. Build a **clean, public football (soccer) dataset** using data in 1.
 3. Automatate 1 and 2 to **keep these assets up to date** and publicly available on some well-known data catalogs.
 
+[![GitHub Repo stars](https://img.shields.io/github/stars/dcaribou/transfermarkt-datasets?style=social)](https://github.com/dcaribou/transfermarkt-datasets)
+[![Kaggle](https://kaggle.com/static/images/open-in-kaggle.svg)](https://www.kaggle.com/datasets/davidcariboo/player-scores)
+[<img src="https://assets.data.world/assets/logo-sparkle-noscircle.befdc9e044ded0c2756c24b3bff43b1c.png" alt="drawing" width="19"/>
+[data.world](https://data.world/dcereijo/player-scores)]
+
 Checkout this dataset also in: :white_check_mark: [Kaggle](https://www.kaggle.com/davidcariboo/player-scores) | :white_check_mark: [data.world](https://data.world/dcereijo/player-scores) | 
-:white_check_mark: [streamlit](https://transfermarkt-datasets.herokuapp.com/) |
+:white_check_mark: [streamlit](transfermarkt-datasets.fly.dev) |
 :white_check_mark: [awesome-public-datasets](https://github.com/awesomedata/apd-core/blob/master/core/Sports/Transfermarkt-Datasets.yml)
 
 ------
@@ -118,7 +123,7 @@ Prepared data is published to a couple of popular dataset websites. This is done
 * [data.world](https://data.world/dcereijo/player-scores)
 
 ## streamlit 🎈
-There is a [streamlit](https://streamlit.io/) app for the project with documentation, a data catalog and sample analyisis. The app is hosted in Heroku, you can check it out [here](https://transfermarkt-datasets.herokuapp.com/).
+There is a [streamlit](https://streamlit.io/) app for the project with documentation, a data catalog and sample analyisis. The app is hosted in fly.io, you can check it out [here](transfermarkt-datasets.fly.dev).
 
 For local development, you can also run the app in your machine. Provided you've done the [setup](#setup), run the following to spin up a local instance of the app
 ```console
