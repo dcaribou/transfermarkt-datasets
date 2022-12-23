@@ -1,4 +1,4 @@
-name: Tansfermarkt Datasets Data Pipeline (On Push)
+name: Build
 
 on:
   push:
