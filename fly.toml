@@ -12,7 +12,7 @@ processes = []
   auto_rollback = true
 
 [build]
-  image = "registry.fly.io/transfermarkt-datasets:linux-amd64"
+  image = "registry.fly.io/transfermarkt-datasets:linux-amd64-master"
 
 [[services]]
   http_checks = []
