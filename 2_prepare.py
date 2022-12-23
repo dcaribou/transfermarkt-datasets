@@ -51,10 +51,14 @@ def prepare_on_cloud(
     job_name=job_name,
     job_queue=job_queue,
     job_definition=job_definition,
-    branch=branch,
-    message=message,
-    script="2_prepare.py",
-    args=args,
+    cmd=[
+      branch,
+      "make",
+      "dvc_pull",
+      "prepare_local",
+      "stash_and_commit",
+      args
+    ],
     vcpus=4,
     memory=30720
   )

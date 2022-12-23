@@ -62,7 +62,7 @@ resource "aws_batch_job_definition" "job_definitions" {
   container_properties = <<CONTAINER_PROPERTIES
 {
   "command": ["/app/prepare_on_batch.sh"],
-  "image": "dcaribou/transfermarkt-datasets:${each.key}",
+  "image": "dcaribou/transfermarkt-datasets:linux-arm64-${each.key}",
   "fargatePlatformConfiguration": {
     "platformVersion": "LATEST"
   },

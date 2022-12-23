@@ -31,10 +31,7 @@ def submit_batch_job_and_wait(
 	job_name: str,
 	job_queue: str,
 	job_definition: str,
-	branch: str,
-	message: str,
-	script: str,
-	args: str,
+	cmd: List[str],
 	vcpus: float,
 	memory: int,
 	timeout: int = 4  # in hours
@@ -57,17 +54,12 @@ def submit_batch_job_and_wait(
 
 	revision = max(revisions)
 
-	if len(args) > 0:
-		additional_args = args.split(" ")
-	else:
-		additional_args = []
-
 	submited_job = client.submit_job(
 		jobName=job_name,
 		jobQueue=job_queue,
 		jobDefinition=f"{job_definition}:{revision}",
 		containerOverrides={
-			'command': [" ".join(["./bootstrap.sh", branch, f"'{message}'", script, "local"] + additional_args)],
+			'command': cmd,
 			'resourceRequirements': [
 				{'value': str(vcpus), 'type': 'VCPU'},
 				{'value': str(memory), 'type': 'MEMORY'}

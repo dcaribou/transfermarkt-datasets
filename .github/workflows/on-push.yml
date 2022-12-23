@@ -1,4 +1,4 @@
-name: Tansfermarkt Datasets Data Pipeline (On Push)
+name: Build
 
 on:
   push:
@@ -55,10 +55,7 @@ jobs:
           fi
 
           # build and push
-
-          docker build -t dcaribou/transfermarkt-datasets:$TAG .
-          echo $DOCKERHUB_TOKEN | docker login --username dcaribou --password-stdin
-          docker push dcaribou/transfermarkt-datasets:$TAG
+          make docker_build docker_push_dockerhub TAG=$TAG PLATFORM=linux/amd64
 
       - name: run prep
         env:
