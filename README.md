@@ -1,3 +1,7 @@
+![Build Status](https://github.com/dcaribou/transfermarkt-datasets/actions/workflows/on-push.yml/badge.svg)
+![Pipeline Status](https://github.com/dcaribou/transfermarkt-datasets/actions/workflows/on-schedule.yml/badge.svg)
+![Visitors](https://visitor-badge.glitch.me/badge?page_id=dcaribou.transfermarkt-datasets&left_color=green&right_color=red)
+
 # transfermarkt-datasets
 
 In an nutshell, this project aims for three things:
@@ -6,13 +10,10 @@ In an nutshell, this project aims for three things:
 2. Build a **clean, public football (soccer) dataset** using data in 1.
 3. Automatate 1 and 2 to **keep these assets up to date** and publicly available on some well-known data catalogs.
 
-![visitors](https://visitor-badge.glitch.me/badge?page_id=dcaribou.transfermarkt-datasets&left_color=green&right_color=red)
+[![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://transfermarkt-datasets.fly.dev/)
 [![Kaggle](https://kaggle.com/static/images/open-in-kaggle.svg)](https://www.kaggle.com/datasets/davidcariboo/player-scores)
 [<img src="https://assets.data.world/assets/logo-sparkle-noscircle.befdc9e044ded0c2756c24b3bff43b1c.png" alt="drawing" width="19"/>
-[data.world](https://data.world/dcereijo/player-scores)]
-![example workflow](https://github.com/dcaribou/transfermarkt-datasets/actions/workflows/on-push.yml/badge.svg)
-![example workflow](https://github.com/dcaribou/transfermarkt-datasets/actions/workflows/on-schedule.yml/badge.svg)
-[![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](transfermarkt-datasets.fly.dev)
+Open in [data.world](https://data.world/dcereijo/player-scores)]
 
 ------
 
@@ -106,7 +107,7 @@ td.assets["games"].raw_df
 For more examples on using `transfermark_datasets`, checkout the sample [notebooks](notebooks).
 
 ## data publication
-Prepared data is published to a couple of popular dataset websites. This is done in the `3_sync.py` script, which runs weekly as part of the data pipeline.
+Prepared data is published to a couple of popular dataset websites. This is done in the `3_sync.py` script, which runs weekly as part of the [data pipeline](.github/workflows/on-schedule.yml).
 
 * [Kaggle](https://www.kaggle.com/datasets/davidcariboo/player-scores)
 * [data.world](https://data.world/dcereijo/player-scores)
