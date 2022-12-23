@@ -197,9 +197,8 @@ def acquire_on_cloud(job_name, job_queue, job_definition, branch, message, args,
       "make",
       "dvc_pull",
       "acquire_local",
-      "stash_and_commit",
-      args
-    ],
+      "stash_and_commit"
+    ] + args,
     vcpus=1.0,
     memory=3072,
     timeout=5
@@ -248,7 +247,8 @@ cloud_parser.add_argument(
   default="🤖 updated raw dataset files"
 )
 cloud_parser.add_argument(
-  "args"
+  "args",
+  nargs="*"
 )
 cloud_parser.set_defaults(func=acquire_on_cloud)
 
