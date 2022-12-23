@@ -14,6 +14,8 @@ In an nutshell, this project aims for three things:
 2. Build a **clean, public football (soccer) dataset** using data in 1.
 3. Automatate 1 and 2 to **keep these assets up to date** and publicly available on some well-known data catalogs.
 
+![visitors](https://visitor-badge.glitch.me/badge?page_id=dcaribou.transfermarkt-datasets&left_color=green&right_color=red)
+
 [![GitHub Repo stars](https://img.shields.io/github/stars/dcaribou/transfermarkt-datasets?style=social)](https://github.com/dcaribou/transfermarkt-datasets)
 [![Kaggle](https://kaggle.com/static/images/open-in-kaggle.svg)](https://www.kaggle.com/datasets/davidcariboo/player-scores)
 [<img src="https://assets.data.world/assets/logo-sparkle-noscircle.befdc9e044ded0c2756c24b3bff43b1c.png" alt="drawing" width="19"/>
