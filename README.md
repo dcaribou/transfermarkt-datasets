@@ -57,8 +57,7 @@ In the scope of this project, "acquiring" is the process of collecting "raw data
 ```console
 python 1_acquire.py local --asset all --seasons 2022
 ```
-
-This dependency on [trasfermarkt-scraper](https://github.com/dcaribou/transfermarkt-scraper) is the reason why it exists as a sub-module in this project. The `1_acquire.py` is simply a helper script that runs the scraper with a set of parameters and collects the output in `data/raw`.
+The `1_acquire.py` is a helper script that runs the scraper with a set of parameters and collects the output in `data/raw`.
 
 ## data preparation
 In the scope of this project, "preparing" is the process of transforming raw data to create a high quality dataset that can be conveniently consumed by analysts of all kinds. The `transfermark_datasets` module contains the preparation logic, which can be executed using the `2_prepare.py` script.
@@ -125,8 +124,8 @@ Define all the necessary infrastructure for the project in the cloud with Terraf
 
 ## contributing :pray:
 Contributions to `transfermarkt-datasets` are most welcome. If you want to contribute new fields or assets to this dataset, instructions are quite simple:
-1. [Fork the repo](https://github.com/dcaribou/transfermarkt-datasets/fork) (make sure to initialize sub-modules as well with `git submodule update --init --recursive`)
+1. [Fork the repo](https://github.com/dcaribou/transfermarkt-datasets/fork)
 2. Set up your [local environment](##setup)
 3. Pull the raw data by either running `dvc pull` ([requesting access is needed](#dvc)) or using the `1_acquire.py` script (no access request needed)
-4. Start modifying assets or creating a new one in `transfermarkt_datasets/assets`. You can use `2_prepare.py` to run and test your changes.
+4. Start modifying assets or creating new ones in `transfermarkt_datasets/assets`. You can use `2_prepare.py` to run and test your changes.
 5. If it's all looking good, create a pull request with your changes :rocket:
