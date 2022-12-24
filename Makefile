@@ -42,7 +42,7 @@ stash_and_commit :
     git push && dvc push
 
 acquire_local :
-	python 1_acquire.py local $(ARGS)
+	PYTHONPATH=$(PYTHONPATH):`pwd`/. python scripts/acquire.py local $(ARGS)
 
 acquire_docker :
 	docker run -ti \
@@ -50,18 +50,18 @@ acquire_docker :
 			-v `pwd`/.:/app/transfermarkt-datasets/ \
 			--memory=4g  \
 			dcaribou/transfermarkt-datasets:dev \
-				python 1_acquire.py local $(ARGS)
+				HEAD make prepare_local $(ARGS)
 
 acquire_cloud : JOB_DEFINITION_NAME = transfermarkt-datasets-batch-job-definition-dev
 acquire_cloud :
-	python 1_acquire.py cloud \
+	PYTHONPATH=$(PYTHONPATH):`pwd`/. python scripts/acquire.py cloud \
 		--branch $(BRANCH) \
 		--job-name $(JOB_NAME) \
 		--job-definition $(JOB_DEFINITION_NAME) \
 		ARGS='$(ARGS)' MESSAGE='$(MESSAGE)'
 
 prepare_local :
-	python -Wignore 2_prepare.py local
+	PYTHONPATH=$(PYTHONPATH):`pwd`/. python -Wignore scripts/prepare.py local
 
 prepare_docker :
 	docker run -ti \
@@ -69,11 +69,11 @@ prepare_docker :
 			-v `pwd`/.:/app/transfermarkt-datasets/ \
 			--memory=4g  \
 			dcaribou/transfermarkt-datasets:dev \
-				$(BRANCH) "prepared from local" 2_prepare.py local $(ARGS)
+				$(BRANCH) "prepared from local" prepare.py local $(ARGS)
 
 prepare_cloud : JOB_DEFINITION_NAME = transfermarkt-datasets-batch-job-definition-dev
 prepare_cloud : 
-	python 2_prepare.py cloud \
+	PYTHONPATH=$(PYTHONPATH):`pwd`/. python scripts/prepare.py cloud \
 		--branch $(BRANCH) \
 		--job-name $(JOB_NAME) \
 		--job-definition $(JOB_DEFINITION_NAME) \
@@ -81,7 +81,7 @@ prepare_cloud :
 
 sync : MESSAGE = Manual sync
 sync :
-	python 3_sync.py --message "$(MESSAGE)" --season 2022
+	PYTHONPATH=$(PYTHONPATH):`pwd`/. python scripts/sync.py --message "$(MESSAGE)" --season 2022
 
 streamlit_deploy : docker_push_flyio
 	fly deploy
