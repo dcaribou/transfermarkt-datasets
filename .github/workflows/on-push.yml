@@ -84,7 +84,8 @@ jobs:
             prepare_cloud \
               JOB_DEFINITION_NAME=$JOB_DEFINITION_NAME \
               JOB_NAME=$JOB_NAME \
-              BRANCH=$BRANCH
+              BRANCH=$BRANCH \
+              MESSAGE="🤖 updated prepared dataset files"
               
       - name: run sync
         # only sync when there is push to master
