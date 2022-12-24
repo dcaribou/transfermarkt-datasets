@@ -49,9 +49,9 @@ class Asset():
   
   def file_path(self, season):
     if self.name == 'competitions':
-      return pathlib.Path(f"../data/competitions.json")
+      return pathlib.Path(f"data/competitions.json")
     else:
-      return pathlib.Path(f"../data/raw/{season}/{self.name}.json")
+      return pathlib.Path(f"data/raw/{season}/{self.name}.json")
   
   def file_full_path(self, season):
     return str(self.file_path(season).absolute())
@@ -137,7 +137,7 @@ def acquire_on_local(asset, seasons, func):
     def crawl():
       for season in seasons:
         # if there's no path created yet for this season create one
-        season_path = pathlib.Path(f"../data/raw/{season}")
+        season_path = pathlib.Path(f"data/raw/{season}")
         if not season_path.exists():
           season_path.mkdir()
 
@@ -166,8 +166,6 @@ def acquire_on_local(asset, seasons, func):
   expanded_seasons = seasons_list(seasons)
   expanded_assets = assets_list(asset)
 
-  os.chdir("transfermarkt-scraper")
-
   # define crawler settings
   settings = get_project_settings()
   
@@ -175,16 +173,15 @@ def acquire_on_local(asset, seasons, func):
   settings.set("FEED_URI", None)
   settings.set("FEED_URI_PARAMS", "tfmkt.utils.uri_params")
   settings.set("FEEDS",{
-    "../data/raw/%(season)s/%(name)s.json": {
+    "data/raw/%(season)s/%(name)s.json": {
       "format": "jsonlines"
     }
   })
   settings.set("LOG_LEVEL", "INFO")
+  settings.set("SPIDER_MODULES", ["tfmkt"])
 
   # create crawlers and wait until they complete
   issue_crawlers_and_wait(expanded_assets, expanded_seasons, settings)
-
-  os.chdir("..")
 
 def acquire_on_cloud(job_name, job_queue, job_definition, branch, message, args, func):
 
