@@ -55,7 +55,6 @@ jobs:
           DAY=$(date +"%Y-%m-%d")
           if [ $BRANCH = master ]; then
             JOB_DEFINITION_NAME=transfermarkt-datasets-batch-job-definition-master
-            ARGS="--asset all --seasons 2022"
           else
             JOB_DEFINITION_NAME=transfermarkt-datasets-batch-job-definition-dev
           fi
