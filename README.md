@@ -35,7 +35,7 @@ Setup your local environment to run the project with `poetry`.
 1. Install [poetry](https://python-poetry.org/docs/)
 2. Clone the repo
 ```console
-git clone --recursive git@github.com:dcaribou/transfermarkt-datasets.git
+git clone git@github.com:dcaribou/transfermarkt-datasets.git
 ```
 3. Install project dependencies in a virtual environment
 ```console
