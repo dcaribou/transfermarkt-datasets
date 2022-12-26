@@ -14,22 +14,6 @@ In an nutshell, this project aims for three things:
 [![Kaggle](https://kaggle.com/static/images/open-in-kaggle.svg)](https://www.kaggle.com/datasets/davidcariboo/player-scores)
 [![data.world](https://img.shields.io/badge/-Open%20in%20data.world-blue?style=appveyor)](https://data.world/dcereijo/player-scores)
 
-------
-
-- [setup](#setup)
-- [data storage](#data-storage)
-- [data acquisition](#data-acquisition)
-- [data preparation](#data-preparation)
-  - [dagster](#dagster)
-  - [configuration](#configuration)
-  - [python api](#python-api)
-- [data publication](#data-publication)
-- [streamlit 🎈](#streamlit-)
-- [infra](#infra)
-- [contributing :pray:](#contributing-pray)
-
-------
-
 ```mermaid
 classDiagram
 direction LR
@@ -68,6 +52,21 @@ class appearances {
     game_id
 }
 ```
+------
+
+- [setup](#setup)
+- [data storage](#data-storage)
+- [data acquisition](#data-acquisition)
+- [data preparation](#data-preparation)
+  - [dagster](#dagster)
+  - [configuration](#configuration)
+  - [python api](#python-api)
+- [data publication](#data-publication)
+- [streamlit 🎈](#streamlit-)
+- [infra](#infra)
+- [contributing :pray:](#contributing-pray)
+
+------
 
 ## setup
 Setup your local environment to run the project with `poetry`.
