@@ -30,6 +30,17 @@ In an nutshell, this project aims for three things:
 
 ------
 
+```mermaid
+erDiagram
+    competitions ||--|{ games : competition_id
+    competitions ||--|{ clubs : domestic_competition_id
+    clubs ||--|{ players : club_id
+    clubs ||--|{ club_games : club_id
+    players ||--|{ appearances : player_id
+    games ||--|{ appearances : game_id
+    games ||--|{ clubs : away_club_id
+```
+
 ## setup
 Setup your local environment to run the project with `poetry`.
 1. Install [poetry](https://python-poetry.org/docs/)
