@@ -27,10 +27,10 @@ docker_build :
 		-t registry.fly.io/transfermarkt-datasets:$(IMAGE_TAG) \
 		.
 
-docker_push_dockerhub : docker_login_dockerhub
+docker_push_dockerhub : docker_build docker_login_dockerhub
 	docker push dcaribou/transfermarkt-datasets:$(IMAGE_TAG)
 
-docker_push_flyio : docker_login_flyio
+docker_push_flyio : docker_build docker_login_flyio
 	docker push registry.fly.io/transfermarkt-datasets:$(IMAGE_TAG)
 
 dvc_pull:
