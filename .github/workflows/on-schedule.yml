@@ -52,6 +52,9 @@ jobs:
         run: |
           # trigger prep job in aws batch
 
+          DEFAULT_ARGS="--asset all --seasons 2022"
+          EFFECTIVE_ARGS=${ARGS:-${DEFAULT_ARGS}}
+
           DAY=$(date +"%Y-%m-%d")
           if [ $BRANCH = master ]; then
             JOB_DEFINITION_NAME=transfermarkt-datasets-batch-job-definition-master
@@ -66,5 +69,5 @@ jobs:
               JOB_DEFINITION_NAME=$JOB_DEFINITION_NAME \
               JOB_NAME=on-schedule-$DAY \
               BRANCH=$BRANCH \
-              ARGS="$ARGS" \
+              ARGS="$EFFECTIVE_ARGS" \
               MESSAGE="🤖 updated raw dataset files"
