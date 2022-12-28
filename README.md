@@ -14,6 +14,7 @@ In an nutshell, this project aims for three things:
 [![Kaggle](https://kaggle.com/static/images/open-in-kaggle.svg)](https://www.kaggle.com/datasets/davidcariboo/player-scores)
 [![data.world](https://img.shields.io/badge/-Open%20in%20data.world-blue?style=appveyor)](https://data.world/dcereijo/player-scores)
 
+------
 ```mermaid
 classDiagram
 direction LR
@@ -83,10 +84,10 @@ poetry install
 ```
 
 ### make
-The `Makefile` in the root defines a set of useful targets that will help you building the different parts of the project. Some examples are
+The `Makefile` in the root defines a set of useful targets that will help you run the different parts of the project. Some examples are
 ```console
 dvc_pull                       pull data from the cloud (aws s3)
-docker_build                   build the project docker image and label it accordingly
+docker_build                   build the project docker image and tag accordingly
 acquire_local                  run the acquiring process locally (refreshes data/raw)
 prepare_local                  run the prep process locally (refreshes data/prep)
 sync                           run the sync process (refreshes data frontends)
@@ -100,8 +101,10 @@ Run `make help` to see the full list.
 
 All project data assets are kept inside the `data` folder. This is a [DVC](https://dvc.org/) repository, all files can be pulled from the remote storage with the `make dvc_pull`.
 
-* `data/raw`: contains raw data per season as acquired with [trasfermarkt-scraper](https://github.com/dcaribou/transfermarkt-scraper) (check [acquire](#data-acquisition))
-* `data/prep`: contains prepared datasets as produced by `transfermarkt_datasets` module (check [prepare](#data-preparation))
+path | description
+-|-
+`data/raw` | contains raw data per season as acquired with [trasfermarkt-scraper](https://github.com/dcaribou/transfermarkt-scraper) (check [acquire](#data-acquisition))
+`data/prep` | contains prepared datasets as produced by `transfermarkt_datasets` module (check [prepare](#data-preparation))
 
 ## data acquisition
 In the scope of this project, "acquiring" is the process of collecting "raw data", as it is produced by [trasfermarkt-scraper](https://github.com/dcaribou/transfermarkt-scraper). Acquired data lives in the `data/raw` folder and it can be created or updated for a particular season by running `make acquire_local`
@@ -112,19 +115,21 @@ make acquire_local ARGS="--asset all --season 2022"
 This runs the scraper with a set of parameters and collects the output in `data/raw`.
 
 ## data preparation
-In the scope of this project, "preparing" is the process of transforming raw data to create a high quality dataset that can be conveniently consumed by analysts of all kinds. The `transfermark_datasets` module contains the preparation logic, which can be executed by running `make prepare_local`.
+In the scope of this project, "preparing" is the process of transforming raw data to create a high quality dataset that can be conveniently consumed by analysts of all kinds. The `transfermark_datasets` module deals with the data preparation.
+
+path | description
+-|-
+`transfermark_datasets/core` | core classes and utils that are used to work with the dataset
+`transfermark_datasets/tests` | unit tests for core classes
+`transfermark_datasets/assets` | perpared asset definitions: one python file per asset
+`transfermark_datasets/dagster` | dagster job definitions
+`transfermark_datasets/stage` | temporary location for asset generation
 
 ### dagster
-The dataset preparation steps are rendered as a [dagster](https://dagster.io/) job and run either in `dagit` or with the `dagster` command.
+The dataset preparation steps are rendered as a [dagster](https://dagster.io/) job.
+* `make prepare_local` runs the dagster preparation job in process
+* `make dagit_local` spins up a `dagit` UI where the execution can be visualised
 
-```console
-dagster job execute -f transfermarkt_datasets/dagster/jobs.py
-```
-
-In order to see and run the job from dagster UI
-```console
-dagit -f transfermarkt_datasets/dagster/jobs.py
-```
 ![dagster](resources/dagster.png)
 
 ### configuration
@@ -157,13 +162,13 @@ td.assets["games"].raw_df
 For more examples on using `transfermark_datasets`, checkout the sample [notebooks](notebooks).
 
 ## data publication
-Prepared data is published to a couple of popular dataset websites. This is done in the `3_sync.py` script, which runs weekly as part of the [data pipeline](.github/workflows/on-schedule.yml).
+Prepared data is published to a couple of popular dataset websites. This is done running `make sync`, which runs weekly as part of the [data pipeline](.github/workflows/on-schedule.yml).
 
 * [Kaggle](https://www.kaggle.com/datasets/davidcariboo/player-scores)
 * [data.world](https://data.world/dcereijo/player-scores)
 
 ## streamlit 🎈
-There is a [streamlit](https://streamlit.io/) app for the project with documentation, a data catalog and sample analyisis. The app is currently hosted in fly.io, you can check it out [here](transfermarkt-datasets.fly.dev).
+There is a [streamlit](https://streamlit.io/) app for the project with documentation, a data catalog and sample analyisis. The app is currently hosted in fly.io, you can check it out [here](https://transfermarkt-datasets.fly.dev/).
 
 For local development, you can also run the app in your machine. Provided you've done the [setup](#setup), run the following to spin up a local instance of the app
 ```console
@@ -178,6 +183,6 @@ Define all the necessary infrastructure for the project in the cloud with Terraf
 Contributions to `transfermarkt-datasets` are most welcome. If you want to contribute new fields or assets to this dataset, instructions are quite simple:
 1. [Fork the repo](https://github.com/dcaribou/transfermarkt-datasets/fork)
 2. Set up your [local environment](##setup)
-3. Pull the raw data by either running `dvc pull` ([requesting access is needed](#dvc)) or using the `1_acquire.py` script (no access request needed)
-4. Start modifying assets or creating new ones in `transfermarkt_datasets/assets`. You can use `2_prepare.py` to run and test your changes.
+3. Pull the raw data by either running `dvc pull` ([requesting access is needed](#dvc)) or using `make acquire_local` script (no access request needed)
+4. Start modifying assets or creating new ones in `transfermarkt_datasets/assets`. You can use `make prepare_local` to run and test your changes.
 5. If it's all looking good, create a pull request with your changes :rocket:
