@@ -20,7 +20,7 @@ RUN git config --global user.email "transfermarkt-datasets-ci@transfermark-datas
     git config --global core.sshCommand "ssh -o StrictHostKeyChecking=no"
 
 # Creating folders, and files for a project:
-COPY bootstrap.sh /app/
+COPY scripts/bootstrap.sh /app/
 
 ENTRYPOINT ["/bin/bash", "bootstrap.sh"]
 CMD ["master", "make", "streamlit_local"]

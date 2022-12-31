@@ -9,12 +9,21 @@ class BaseGameEventsAsset(RawAsset):
 
   name = "base_game_events"
   raw_file_name = "games.json"
-  file_name = "base_game_events.csv"
-  public = False
+  file_name = "game_events.csv"
+  public = True
 
-  # TODO
   description = """
-  Game events are records of...
+  `game_events` are records of different actions that can happen during a game.
+  You can check out [directly in the website](https://www.transfermarkt.co.uk/fc-copenhagen_lyngby-bk/index/spielbericht/3828503) some examples for the types of event that get captured,
+  from which a subset of events and fields are supported (summarised below).
+  
+  Event type    | `game_id`           | `player_id`         | `minute`            | `player_in_id`      | `description`       | Supported
+  -|-|-|-|-|-|-
+  Goals         | :white_check_mark:  | :white_check_mark:  | :white_check_mark:  | :x:                 | :white_check_mark:  | :white_check_mark:
+  Substitutions | :white_check_mark:  | :white_check_mark:  | :white_check_mark:  | :white_check_mark:  | :x:                 | :white_check_mark:
+  Cards         | :white_check_mark:  | :white_check_mark:  | :white_check_mark:  | :x:                 | :x:                 | :x:
+
+  &nbsp;
   """
 
   def __init__(self, *args, **kwargs) -> None:
@@ -26,9 +35,13 @@ class BaseGameEventsAsset(RawAsset):
         Field(name="minute", type="integer"),
         Field(name="type", type="string"),
         Field(name="club_id", type="integer"),
-        Field(name="player_id", type="integer"),
+        Field(name="player_id", type="integer",
+          description="The ID of the player that participates in the event. For goals, the player who scores the goal. For substitutions, the player who gets substituted out."
+        ),
         Field(name="description", type="string"),
-        Field(name="player_in_id", type="integer")
+        Field(name="player_in_id", type="integer",
+          description="The ID of the player that gets substituted in."
+        )
       ]
     )
 
@@ -39,10 +52,8 @@ class BaseGameEventsAsset(RawAsset):
       {"fields": "player_id", "reference": {"resource": "players", "fields": "player_id"}},
     ]
 
-    # TODO
     self.checks = [
-      checks.forbidden_value(field_name="minute", values=[None]),
-      # checks.table_dimensions(min_rows=250000)
+      checks.forbidden_value(field_name="minute", values=[None])
     ]
 
   def build(self):
@@ -73,6 +84,6 @@ class BaseGameEventsAsset(RawAsset):
 
     self.prep_df = prep_df
 
-    # self.drop_duplicates()
+    self.drop_duplicates()
 
     return prep_df
