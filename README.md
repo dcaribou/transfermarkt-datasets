@@ -22,8 +22,11 @@ competitions --|> games : competition_id
 competitions --|> clubs : domestic_competition_id
 clubs --|> players : current_club_id
 clubs --|> club_games : opponent/club_id
+clubs --|> game_events : club_id
 players --|> appearances : player_id
+players --|> game_events : player_id
 games --|> appearances : game_id
+games --|> game_events : game_id
 games --|> clubs : home/away_club_id
 games --|> club_games : game_id
 class competitions {
@@ -33,6 +36,10 @@ class games {
     game_id
     home/away_club_id
     competition_id
+}
+class game_events {
+    game_id
+    player_id
 }
 class clubs {
     club_id
