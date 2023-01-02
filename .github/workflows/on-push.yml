@@ -37,8 +37,8 @@ jobs:
           AWS_EC2_METADATA_DISABLED: true # https://github.com/aws/aws-cli/issues/5262
         run: |
         
-          poetry run dvc pull
-          poetry run pytest -k "not build_all"
+          poetry run dvc pull data/prep
+          poetry run pytest -k "not build_all and not load"
 
       - name: image build
         env:
@@ -101,7 +101,7 @@ jobs:
           AWS_EC2_METADATA_DISABLED: true # https://github.com/aws/aws-cli/issues/5262
         run: |
           source .venv/bin/activate
-          dvc pull
+          dvc pull data/prep
           make \
             sync \
               MESSAGE="${{ github.event.head_commit.message }}"
