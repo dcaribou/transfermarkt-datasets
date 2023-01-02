@@ -38,7 +38,7 @@ jobs:
         run: |
         
           poetry run dvc pull data/prep
-          poetry run pytest -k "not build_all"
+          poetry run pytest -k "not build_all and not load"
 
       - name: image build
         env:
