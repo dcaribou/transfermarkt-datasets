@@ -16,7 +16,7 @@ import os
 import argparse
 
 
-def prepare_on_local(refresh_metadata, func):
+def prepare_on_local(refresh_metadata, asset, func):
   from transfermarkt_datasets.core.dataset import Dataset
 
   td = Dataset()
@@ -27,7 +27,7 @@ def prepare_on_local(refresh_metadata, func):
   else:
     # generate prepared data assets in 'stage' folder
     td.discover_assets()
-    td.build_assets()
+    td.build_assets(asset=asset)
 
     pkg = td.as_frictionless_package(exclude_private=True)
     pkg.to_json("data/prep/dataset-metadata.json")
@@ -71,6 +71,7 @@ subparsers = parser.add_subparsers()
 
 local_parser = subparsers.add_parser('local', help='Run the acquiring step locally')
 local_parser.add_argument('--refresh-metadata', action='store_const', const=True, required=False, default=False)
+local_parser.add_argument('--asset', help="Limit...", required=False, default=None)
 local_parser.set_defaults(func=prepare_on_local)
 
 cloud_parser = subparsers.add_parser('cloud', help='Run the acquiring step in the cloud')

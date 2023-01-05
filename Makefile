@@ -63,8 +63,11 @@ acquire_cloud:
 		--job-definition $(JOB_DEFINITION_NAME) \
 		ARGS='$(ARGS)' MESSAGE='$(MESSAGE)'
 
+
 prepare_local: ## run the prep process locally (refreshes data/prep)
-	PYTHONPATH=$(PYTHONPATH):`pwd`/. python -Wignore scripts/prepare.py local
+prepare_local: ARGS = ""
+prepare_local:
+	PYTHONPATH=$(PYTHONPATH):`pwd`/. python -Wignore scripts/prepare.py local $(ARGS)
 
 prepare_docker: ## run the prep process in a local docker
 	docker run -ti \
