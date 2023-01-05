@@ -28,7 +28,7 @@ class CurAppearancesAsset(Asset):
         Field(name="player_id", type="integer"),
         Field(name="player_club_id", type="integer"),
         Field(name="date", type="date", tags=["explore"]),
-        Field(name="player_pretty_name", type="string", tags=["explore"]),
+        Field(name="player_name", type="string", tags=["explore"]),
         Field(name="competition_id", type="string"),
         Field(name="yellow_cards", type="integer"),
         Field(name="red_cards", type="integer"),
@@ -71,7 +71,7 @@ class CurAppearancesAsset(Asset):
     ]
 
     player_attributes = base_players.prep_df[
-      ["player_id", "pretty_name"]
+      ["player_id", "name"]
     ]
 
     with_game_attributes = appearances.merge(
@@ -81,7 +81,7 @@ class CurAppearancesAsset(Asset):
     )
 
     with_player_attributes = with_game_attributes.merge(
-      player_attributes.rename(columns={"pretty_name": "player_pretty_name"}),
+      player_attributes.rename(columns={"name": "player_name"}),
       how="left",
       on="player_id"
     ).merge(

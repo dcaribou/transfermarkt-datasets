@@ -22,7 +22,8 @@ class CurCompetitionsAsset(RawAsset):
     self.schema = Schema()
 
     self.schema.add_field(Field(name='competition_id', type='string'))
-    self.schema.add_field(Field(name='pretty_name', type='string'))
+    self.schema.add_field(Field(name='competition_code', type='string'))
+    self.schema.add_field(Field(name='name', type='string'))
     self.schema.add_field(Field(name='type', type='string'))
     self.schema.add_field(Field(name='sub_type', type='string'))
     self.schema.add_field(Field(name='country_id', type='integer'))

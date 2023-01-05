@@ -10,7 +10,7 @@ import plotly.express as px
 def top_n_players(df: pd.DataFrame, n: int) -> List[str]:
     return (df
         .sort_values(by="market_value_in_gbp", ascending=False)
-        .head(n)["pretty_name"]
+        .head(n)["name"]
         .values
     )
 
@@ -35,8 +35,6 @@ player_valuations: pd.DataFrame = td.assets["cur_player_valuations"].prep_df
 
 # define define values for script arguments
 
-DEFAULT_PLAYER_PRETTY_NAMES = ["Kylian Mbappe"]
-
 with st.expander("Baseline Filters"):
 
     top_n = st.number_input(
@@ -46,9 +44,9 @@ with st.expander("Baseline Filters"):
         value=10
     )
 
-    player_pretty_names = st.multiselect(
+    player_names = st.multiselect(
         label="Player name",
-        options=players["pretty_name"].unique(),
+        options=players["name"].unique(),
         default=top_n_players(players, top_n)
     )
 
@@ -56,13 +54,13 @@ with st.expander("Baseline Filters"):
 # for the base mart we use a "player valuation" granularity
 
 mart = player_valuations.merge(
-    players[["player_id", "pretty_name"]],
+    players[["player_id", "name"]],
     how="left",
     on="player_id"
 )
 
 baselined_mart = mart[
-    (mart["pretty_name"].isin(player_pretty_names))
+    (mart["name"].isin(player_names))
 ]
 
 # most valuesd players
@@ -73,17 +71,17 @@ st.header("Most valued Players")
 most_valued_players = (
     baselined_mart
         .sort_values(by="date")
-        .groupby("pretty_name")
+        .groupby("name")
         .tail(1)
         .sort_values(by="market_value", ascending=False)
         .head(top_n)
-)[["pretty_name", "market_value"]]
+)[["name", "market_value"]]
 
 fig = px.bar(
     most_valued_players,
-    x="pretty_name",
+    x="name",
     y="market_value",
-    color="pretty_name"
+    color="name"
 )
 st.plotly_chart(
     figure_or_data=fig,
@@ -95,10 +93,10 @@ st.plotly_chart(
 st.header("Time progression")
 
 fig = px.line(
-    mart[mart["pretty_name"].isin(player_pretty_names)],
+    mart[mart["name"].isin(player_names)],
     x="date",
     y="market_value",
-    color="pretty_name"
+    color="name"
 )
 st.plotly_chart(
     figure_or_data=fig,

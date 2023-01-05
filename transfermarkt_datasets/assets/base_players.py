@@ -27,6 +27,7 @@ class BasePlayersAsset(RawAsset):
         Field(name="player_id", type="integer"),
         Field(name="player_code", type="string"),
         Field(name="name", type="string"),
+        Field(name="first_name", type="string"),
         Field(name="last_name", type="string"),
         Field(name="current_club_id", type="integer"),
         Field(name="last_season", type="integer"),
@@ -79,12 +80,12 @@ class BasePlayersAsset(RawAsset):
     parent_href_parts = json_normalized['parent.href'].str.split('/', 5, True)
 
     prep_df["player_id"] = href_parts[4]
-    prep_df["name"] = json_normalized["name"]
+    prep_df["name"] = json_normalized["name_in_home_country"]
+    prep_df["first_name"] = json_normalized["name"]
     prep_df["last_name"] = json_normalized["last_name"]
     prep_df["last_season"] = json_normalized["season"]
     prep_df["current_club_id"] = parent_href_parts[4]
-    prep_df["name"] = self.url_unquote(href_parts[1])
-    prep_df["pretty_name"] = prep_df["name"].apply(lambda x: titleize(x))
+    prep_df["player_code"] = self.url_unquote(href_parts[1])
     prep_df["country_of_birth"] = json_normalized['place_of_birth.country']
     prep_df["city_of_birth"] = json_normalized['place_of_birth.city']
     prep_df["country_of_citizenship"] = json_normalized["citizenship"]

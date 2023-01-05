@@ -23,8 +23,8 @@ class BaseClubsAsset(RawAsset):
     self.schema = Schema()
 
     self.schema.add_field(Field(name='club_id', type='integer'))
+    self.schema.add_field(Field(name='club_code', type='string'))
     self.schema.add_field(Field(name='name', type='string'))
-    self.schema.add_field(Field(name='pretty_name', type='string'))
     self.schema.add_field(Field(name='domestic_competition_id', type='string'))
     self.schema.add_field(Field(
         name='total_market_value',
@@ -69,8 +69,8 @@ class BaseClubsAsset(RawAsset):
     league_href_parts = json_normalized['parent.href'].str.split('/', 5, True)
 
     prep_df['club_id'] = club_href_parts[4]
-    prep_df['name'] = self.url_unquote(club_href_parts[1])
-    prep_df['pretty_name'] = prep_df['name'].apply(lambda x: titleize(x))
+    prep_df['club_code'] = self.url_unquote(club_href_parts[1])
+    prep_df['name'] = prep_df['name'].apply(lambda x: titleize(x))
     prep_df['domestic_competition_id'] = league_href_parts[4]
     prep_df['total_market_value'] = pandas.to_numeric(json_normalized['total_market_value'])
     prep_df['squad_size'] = json_normalized['squad_size'].astype('int32')

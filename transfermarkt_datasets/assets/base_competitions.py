@@ -21,8 +21,8 @@ class BaseCompetitionsAsset(RawAsset):
     self.schema = Schema()
 
     self.schema.add_field(Field(name='competition_id', type='string'))
+    self.schema.add_field(Field(name='competition_code', type='string'))
     self.schema.add_field(Field(name='name', type='string'))
-    self.schema.add_field(Field(name='pretty_name', type='string'))
     self.schema.add_field(Field(name='type', type='string'))
     self.schema.add_field(Field(name='sub_type', type='string'))
     self.schema.add_field(Field(name='country_id', type='integer'))
@@ -54,8 +54,8 @@ class BaseCompetitionsAsset(RawAsset):
     confederation_href_parts = json_normalized['parent.href'].str.split('/', 5, True)
 
     prep_df['competition_id'] = league_href_parts[4]
-    prep_df['name'] = league_href_parts[1]
-    prep_df['pretty_name'] = prep_df['name'].apply(lambda x: titleize(x))
+    prep_df['competition_code'] = league_href_parts[1]
+    prep_df['name'] = prep_df['name'].apply(lambda x: titleize(x))
     prep_df['sub_type'] = json_normalized['competition_type']
 
     competition_type = np.select(
