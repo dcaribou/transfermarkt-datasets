@@ -1,18 +1,13 @@
 from frictionless import checks
 
-from inflection import titleize
-
-import pandas
-import numpy
+import pandas as pd
+import numpy as np
 
 from transfermarkt_datasets.core.asset import RawAsset
 from transfermarkt_datasets.core.schema import Schema, Field
-from transfermarkt_datasets.core.utils import parse_market_value
-from transfermarkt_datasets.core.checks import too_many_missings
 
 from transfermarkt_datasets.assets.base_players import BasePlayersAsset
 from transfermarkt_datasets.assets.base_clubs import BaseClubsAsset
-from transfermarkt_datasets.assets.cur_competitions import CurCompetitionsAsset
 
 class CurPlayersAsset(RawAsset):
 
@@ -33,9 +28,8 @@ class CurPlayersAsset(RawAsset):
       fields=[
         Field(name='player_id', type='integer'),
         Field(name='pretty_name', type='string'),
-        Field(name='club_id', type='integer'),
-        Field(name='club_pretty_name', type='string', tags=["explore"]),
         Field(name='current_club_id', type='integer'),
+        Field(name='club_pretty_name', type='string', tags=["explore"]),
         Field(name='country_of_citizenship', type='string'),
         Field(name='country_of_birth', type='string'),
         Field(name='city_of_birth', type='string'),
@@ -72,7 +66,7 @@ class CurPlayersAsset(RawAsset):
     ]
 
     self.checks = [
-      checks.table_dimensions(min_rows=22000)
+      checks.table_dimensions(min_rows=25000)
     ]
 
   def build(
@@ -87,15 +81,14 @@ class CurPlayersAsset(RawAsset):
 
     with_club_attributes = players.merge(
       clubs.rename(columns={
-          "club_id": "club_id",
-          "domestic_competition_id": "domestic_competition_id",
-          "name": "club_name",
-          "pretty_name": "club_pretty_name"
+          "club_id": "current_club_id",
+          "domestic_competition_id": "current_club_domestic_competition_id",
+          "name": "current_club_name",
+          "pretty_name": "current_club_pretty_name"
         }
       ),
       how="left",
-      left_on="current_club_id",
-      right_on="club_id"
+      on="current_club_id"
     )
 
     self.prep_df = with_club_attributes
