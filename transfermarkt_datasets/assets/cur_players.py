@@ -27,10 +27,7 @@ class CurPlayersAsset(RawAsset):
     self.schema = Schema(
       fields=[
         Field(name="player_id", type="integer"),
-        Field(name="player_code", type="integer"),
         Field(name="name", type="string"),
-        Field(name="first_name", type="string"),
-        Field(name="last_name", type="string"),
         Field(name="current_club_id", type="integer"),
         Field(name="current_club_name", type="string", tags=["explore"]),
         Field(name="country_of_citizenship", type="string"),
@@ -46,6 +43,9 @@ class CurPlayersAsset(RawAsset):
         Field(name="agent_name", type="string"),
         Field(name="contract_expiration_date", type="date"),
         Field(name="current_club_domestic_competition_id", type="string"),
+        Field(name="first_name", type="string"),
+        Field(name="last_name", type="string"),
+        Field(name="player_code", type="string"),
         Field(
           name="image_url",
           type="string",

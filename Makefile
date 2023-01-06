@@ -65,7 +65,7 @@ acquire_cloud:
 
 
 prepare_local: ## run the prep process locally (refreshes data/prep)
-prepare_local: ARGS = ""
+prepare_local: ARGS =
 prepare_local:
 	PYTHONPATH=$(PYTHONPATH):`pwd`/. python -Wignore scripts/prepare.py local $(ARGS)
 
