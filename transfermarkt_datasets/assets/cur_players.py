@@ -7,6 +7,7 @@ from transfermarkt_datasets.core.asset import RawAsset
 from transfermarkt_datasets.core.schema import Schema, Field
 
 from transfermarkt_datasets.assets.base_players import BasePlayersAsset
+from transfermarkt_datasets.assets.base_player_valuations import BasePlayerValuationsAsset
 from transfermarkt_datasets.assets.base_clubs import BaseClubsAsset
 
 class CurPlayersAsset(RawAsset):
@@ -73,12 +74,19 @@ class CurPlayersAsset(RawAsset):
   def build(
     self,
     base_players: BasePlayersAsset,
+    base_player_valuations: BasePlayerValuationsAsset,
     base_clubs: BaseClubsAsset):
 
     players = base_players.prep_df
+    player_valuations = base_player_valuations.prep_df
+
     clubs = base_clubs.prep_df[
       ["club_id", "domestic_competition_id", "name"]
     ]
+    last_known_market_value = (
+      (player_valuations.groupby(["player_id"]).last().reset_index())[["player_id", "market_value"]]
+    )
+    last_known_market_value.index = last_known_market_value["player_id"]
 
     with_club_attributes = players.merge(
       clubs.rename(columns={
@@ -89,6 +97,12 @@ class CurPlayersAsset(RawAsset):
       ),
       how="left",
       on="current_club_id"
+    )
+
+    with_club_attributes["market_value_in_gbp"] = (
+      with_club_attributes["market_value_in_gbp"].combine_first(
+        last_known_market_value["market_value"]
+      )
     )
 
     self.prep_df = with_club_attributes
