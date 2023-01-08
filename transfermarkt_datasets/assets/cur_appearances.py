@@ -87,4 +87,8 @@ class CurAppearancesAsset(Asset):
       on="player_id"
     )
 
+    with_player_attributes["player_current_club_id"] = (
+      with_player_attributes["player_current_club_id"].fillna(-1).astype("int32")
+    )
+
     self.prep_df = with_player_attributes

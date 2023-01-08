@@ -107,7 +107,7 @@ class BasePlayersAsset(RawAsset):
     prep_df["last_name"] = json_normalized["last_name"].str.strip().replace("", None)
     prep_df["name"] = build_name(prep_df["first_name"], prep_df["last_name"])
     prep_df["last_season"] = json_normalized["season"]
-    prep_df["current_club_id"] = parent_href_parts[4]
+    prep_df["current_club_id"] = parent_href_parts[4].fillna(-1).astype("int32")
     prep_df["player_code"] = self.url_unquote(href_parts[1])
     prep_df["country_of_birth"] = json_normalized['place_of_birth.country']
     prep_df["city_of_birth"] = json_normalized['place_of_birth.city']
