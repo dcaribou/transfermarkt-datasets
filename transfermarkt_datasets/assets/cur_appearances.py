@@ -26,7 +26,16 @@ class CurAppearancesAsset(Asset):
         Field(name="appearance_id", type="integer"),
         Field(name="game_id", type="integer"),
         Field(name="player_id", type="integer"),
-        Field(name="player_club_id", type="integer"),
+        Field(
+          name="player_club_id",
+          type="integer",
+          description="ID of the club that the player belonged to at the time of the game."
+        ),
+        Field(
+          name="player_current_club_id",
+          type="integer",
+          description="ID of the club that the player currently belongs to."
+        ),
         Field(name="date", type="date", tags=["explore"]),
         Field(name="player_name", type="string", tags=["explore"]),
         Field(name="competition_id", type="string"),
@@ -53,25 +62,16 @@ class CurAppearancesAsset(Asset):
     self,
     base_appearances: BaseAppearancesAsset,
     base_games: BaseGamesAsset,
-    base_game_events: BaseGameEventsAsset,
     base_players: BasePlayersAsset):
 
     appearances = base_appearances.prep_df
-    game_events = base_game_events.prep_df
-
-    substitutions = game_events[game_events["type"] == "Substitutions"]
-
-    # the in_starting_lineup flag is a calculation that is based on subsitition events
-    # if a player has an appearance, but has not been subtituted in he must be in the
-    # starting lineup
-    substitutions_in = game_events.groupby(["game_id", "player_in_id"]).size().reset_index()
 
     game_attributes = base_games.prep_df[
       ["game_id", "date"]
     ]
 
     player_attributes = base_players.prep_df[
-      ["player_id", "name"]
+      ["player_id", "name", "current_club_id"]
     ]
 
     with_game_attributes = appearances.merge(
@@ -81,18 +81,11 @@ class CurAppearancesAsset(Asset):
     )
 
     with_player_attributes = with_game_attributes.merge(
-      player_attributes.rename(columns={"name": "player_name"}),
+      player_attributes.rename(
+        columns={"name": "player_name", "current_club_id": "player_current_club_id"}
+        ),
       how="left",
       on="player_id"
-    ).merge(
-      substitutions_in[["player_in_id", "game_id"]],
-      how="left",
-      left_on = ["game_id", "player_id"],
-      right_on = ["game_id", "player_in_id"]
     )
-
-    with_player_attributes["in_starting_lineup"] = with_player_attributes["player_in_id"].isna()
-
-    del with_player_attributes["player_in_id"]
 
     self.prep_df = with_player_attributes
