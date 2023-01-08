@@ -43,8 +43,7 @@ class CurAppearancesAsset(Asset):
         Field(name="red_cards", type="integer"),
         Field(name="goals", type="integer"),
         Field(name="assists", type="integer"),
-        Field(name="minutes_played", type="integer"),
-        Field(name="in_starting_lineup", type="boolean")
+        Field(name="minutes_played", type="integer")
       ]
     )
 
