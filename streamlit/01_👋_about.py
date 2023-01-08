@@ -69,14 +69,14 @@ left_col.plotly_chart(
 
 fig = px.bar(
     data_frame=(
-        players.groupby("domestic_competition_id")["market_value_in_gbp"]
+        players.groupby("current_club_domestic_competition_id")["market_value_in_gbp"]
         .sum()
         .reset_index()
         .sort_values(["market_value_in_gbp"], ascending=False)
     ),
-    x="domestic_competition_id",
+    x="current_club_domestic_competition_id",
     y="market_value_in_gbp",
-    color="domestic_competition_id",
+    color="current_club_domestic_competition_id",
     title="Total player market value in GBP"
 )
 fig.update_layout(showlegend=False)

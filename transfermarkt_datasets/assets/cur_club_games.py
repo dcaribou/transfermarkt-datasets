@@ -16,6 +16,20 @@ class CurClubGamesAsset(Asset):
   description = """
   The `club_games` asset is an alternative representation of a season games from the clubs point of view.
   For each game in the `games` asset the `club_games` contains two rows, one for the home club and another for the away club.
+
+  game_id | home_club_id   | home_club_name | away_club_id | away_club_name | aggregate
+  --------|----------------|----------------|--------------|----------------|---------
+  1       | 1              | Real Madrid    | 100          | Barcelona      | 1:2
+  
+  _A game as represented in the `games` asset_
+  
+  game_id | club_id | own_goals | opponent_id
+  --------|---------|-----------|------------
+  1       | 1       | 1         | 100
+  2       | 100     | 2         | 1
+  
+  _The same game represented in the `club_games` asset_
+
   """
   file_name = "club_games.csv"
 

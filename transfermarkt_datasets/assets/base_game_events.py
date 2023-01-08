@@ -40,7 +40,7 @@ class BaseGameEventsAsset(RawAsset):
         ),
         Field(name="description", type="string"),
         Field(name="player_in_id", type="integer",
-          description="The ID of the player that gets substituted in."
+          description="The ID of the player that gets substituted in. '-1' if it does not apply."
         )
       ]
     )
@@ -80,7 +80,7 @@ class BaseGameEventsAsset(RawAsset):
     prep_df["club_id"] = club_href_parts[4]
     prep_df["player_id"] = player_href_parts[4]
     prep_df["description"] = json_normalized["action.description"]
-    prep_df["player_in_id"] = player_in_href_parts[4]
+    prep_df["player_in_id"] = player_in_href_parts[4].fillna(-1).astype("int")
 
     self.prep_df = prep_df
 

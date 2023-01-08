@@ -33,8 +33,8 @@ class CurGamesAsset(Asset):
         Field(name='aggregate', type='string'),
         Field(name='home_club_position', type='integer'),
         Field(name='away_club_position', type='integer'),
-        Field(name='club_home_pretty_name', type='string', tags=["explore"]),
-        Field(name='club_away_pretty_name', type='string', tags=["explore"]),
+        Field(name='club_home_name', type='string', tags=["explore"]),
+        Field(name='club_away_name', type='string', tags=["explore"]),
         Field(name='home_club_manager_name', type='string'),
         Field(name='away_club_manager_name', type='string'),
         Field(name='stadium', type='string'),
@@ -65,11 +65,11 @@ class CurGamesAsset(Asset):
     competitions = base_competitions.prep_df
 
     clubs = base_clubs.prep_df[
-      ["club_id", "pretty_name"]
+      ["club_id", "name"]
     ]
 
     with_home_attributes = games.merge(
-      clubs.rename(columns={"pretty_name": "club_home_pretty_name"}, errors="raise"),
+      clubs.rename(columns={"name": "club_home_name"}, errors="raise"),
       how="left",
       left_on="home_club_id",
       right_on="club_id"
@@ -77,7 +77,7 @@ class CurGamesAsset(Asset):
     del with_home_attributes["club_id"]
 
     with_away_attributes = with_home_attributes.merge(
-      clubs.rename(columns={"pretty_name": "club_away_pretty_name"}, errors="raise"),
+      clubs.rename(columns={"name": "club_away_name"}, errors="raise"),
       how="left",
       left_on="away_club_id",
       right_on="club_id"

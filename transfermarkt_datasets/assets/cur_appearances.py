@@ -5,6 +5,7 @@ import pandas as pd
 from transfermarkt_datasets.core.asset import Asset
 from transfermarkt_datasets.core.schema import Schema, Field
 from transfermarkt_datasets.assets.base_games import BaseGamesAsset
+from transfermarkt_datasets.assets.base_game_events import BaseGameEventsAsset
 from transfermarkt_datasets.assets.base_appearances import BaseAppearancesAsset
 from transfermarkt_datasets.assets.base_players import BasePlayersAsset
 
@@ -25,9 +26,18 @@ class CurAppearancesAsset(Asset):
         Field(name="appearance_id", type="integer"),
         Field(name="game_id", type="integer"),
         Field(name="player_id", type="integer"),
-        Field(name="player_club_id", type="integer"),
+        Field(
+          name="player_club_id",
+          type="integer",
+          description="ID of the club that the player belonged to at the time of the game."
+        ),
+        Field(
+          name="player_current_club_id",
+          type="integer",
+          description="ID of the club that the player currently belongs to."
+        ),
         Field(name="date", type="date", tags=["explore"]),
-        Field(name="player_pretty_name", type="string", tags=["explore"]),
+        Field(name="player_name", type="string", tags=["explore"]),
         Field(name="competition_id", type="string"),
         Field(name="yellow_cards", type="integer"),
         Field(name="red_cards", type="integer"),
@@ -60,7 +70,7 @@ class CurAppearancesAsset(Asset):
     ]
 
     player_attributes = base_players.prep_df[
-      ["player_id", "pretty_name"]
+      ["player_id", "name", "current_club_id"]
     ]
 
     with_game_attributes = appearances.merge(
@@ -70,9 +80,15 @@ class CurAppearancesAsset(Asset):
     )
 
     with_player_attributes = with_game_attributes.merge(
-      player_attributes.rename(columns={"pretty_name": "player_pretty_name"}),
+      player_attributes.rename(
+        columns={"name": "player_name", "current_club_id": "player_current_club_id"}
+        ),
       how="left",
       on="player_id"
+    )
+
+    with_player_attributes["player_current_club_id"] = (
+      with_player_attributes["player_current_club_id"].fillna(-1).astype("int32")
     )
 
     self.prep_df = with_player_attributes

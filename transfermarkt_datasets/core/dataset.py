@@ -125,7 +125,7 @@ class Dataset:
 
     return relationships
 
-  def build_assets(self):
+  def build_assets(self, asset=None):
     """Run transfromation (a.k.a. "build") all assets in the dataset.
     Built assets are stored as dataframes in the underlying assets[<asset>] objects.
 
@@ -138,7 +138,13 @@ class Dataset:
     from transfermarkt_datasets.dagster.jobs import build_job
     self.log.info("Start processing assets")
 
-    result = build_job.execute_in_process()
+    if not asset:
+      result = build_job.execute_in_process()
+    else:
+      op_name = self.assets[asset].dagster_build_task_name
+      result = build_job.execute_in_process(
+        op_selection=[f"*{op_name}"]
+      )
 
     nodes = result._node_def.ensure_graph_def().node_dict.keys()
     for node in nodes:

@@ -2,6 +2,9 @@
 import unittest
 
 from transfermarkt_datasets.core.utils import parse_market_value
+from transfermarkt_datasets.assets.base_players import build_name
+
+import pandas as pd
 
 class TestUtils(unittest.TestCase):
 
@@ -29,4 +32,17 @@ class TestUtils(unittest.TestCase):
         self.assertEqual(
             parsed_values,
             expected
+        )
+
+    def test_build_name(self):
+        
+        real = build_name(
+            pd.Series(["Lionel", None]),
+            pd.Series(["Messi", "Messi"])
+        )
+
+        exp = pd.Series(["Lionel Messi", "Messi"])
+        
+        pd.testing.assert_series_equal(
+            real, exp
         )

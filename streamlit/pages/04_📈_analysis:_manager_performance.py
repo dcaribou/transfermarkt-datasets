@@ -77,9 +77,9 @@ mart = club_games.merge(
         how="left",
         on="game_id"
     ).merge(
-        clubs[["club_id", "pretty_name", "domestic_competition_id"]].rename(
+        clubs[["club_id", "name", "domestic_competition_id"]].rename(
             columns={
-                "pretty_name": "club_pretty_name",
+                "name": "club_name",
                 "domestic_competition_id": "club_domestic_competition_id"
             }
         ),
@@ -100,7 +100,7 @@ baselined_mart = mart[
 managers_win_pct_per_season = (
     baselined_mart
         .groupby(by=[
-                "club_pretty_name", "season", "own_manager_name", "competition_type"
+                "club_name", "season", "own_manager_name", "competition_type"
             ])["is_win"]
         .agg(func=["count", "sum"])
         .reset_index()
@@ -158,7 +158,7 @@ st.subheader(
 
 managers_win_pct_perf_by_season = (
     managers_win_pct_per_season.groupby(
-        ["season", "own_manager_name", "club_pretty_name"]
+        ["season", "own_manager_name", "club_name"]
     )["total_games", "total_wins"].sum()
     .reset_index()
 )
@@ -175,7 +175,7 @@ st.altair_chart(
             shorthand="pct_win",
             scale=alt.Scale(range=["red", "green"])
         ),
-        tooltip="club_pretty_name:N"
+        tooltip="club_name:N"
     ),
     use_container_width=True
 )
