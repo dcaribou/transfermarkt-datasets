@@ -39,8 +39,16 @@ class CurPlayersAsset(RawAsset):
         Field(name="sub_position", type="string"),
         Field(name="foot", type="string"),
         Field(name="height_in_cm", type="integer"),
-        Field(name="market_value_in_gbp", type="number"),
-        Field(name="highest_market_value_in_gbp", type="number"),
+        Field(
+          name="market_value_in_eur",
+          type="number",
+          description="The player's current market value in EUR."
+        ),
+        Field(
+          name="highest_market_value_in_eur",
+          type="number",
+          description="The player's historically highest market value in EUR."
+        ),
         Field(name="agent_name", type="string"),
         Field(name="contract_expiration_date", type="date"),
         Field(name="current_club_domestic_competition_id", type="string"),
@@ -84,7 +92,7 @@ class CurPlayersAsset(RawAsset):
       ["club_id", "domestic_competition_id", "name"]
     ]
     last_known_market_value = (
-      (player_valuations.groupby(["player_id"]).last().reset_index())[["player_id", "market_value"]]
+      (player_valuations.groupby(["player_id"]).last().reset_index())[["player_id", "market_value_in_eur"]]
     )
     last_known_market_value.index = last_known_market_value["player_id"]
 
@@ -99,9 +107,9 @@ class CurPlayersAsset(RawAsset):
       on="current_club_id"
     )
 
-    with_club_attributes["market_value_in_gbp"] = (
-      with_club_attributes["market_value_in_gbp"].combine_first(
-        last_known_market_value["market_value"]
+    with_club_attributes["market_value_in_eur"] = (
+      with_club_attributes["market_value_in_eur"].combine_first(
+        last_known_market_value["market_value_in_eur"]
       )
     )
 

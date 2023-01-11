@@ -92,11 +92,11 @@ def submit_batch_job_and_wait(
 
 
 def parse_market_value(market_value):
-	"""Parse a "market value" string into an integer number representing a GBP (british pounds) amount,
-	such as "£240Th." or "£34.3m".
+	"""Parse a "market value" string into an integer number representing a GBP (british pounds) or EUR amount,
+	such as "£240Th." or "€34.3m".
 
-	:market_value: "Market value" string
-	:return: An integer number representing a GBP amount
+	:market_value: "Market value" string.
+	:return: An integer number representing either GBP or EUR amount.
 	"""
 
 	if market_value is not None:
