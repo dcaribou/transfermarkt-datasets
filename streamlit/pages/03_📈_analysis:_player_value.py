@@ -9,7 +9,7 @@ import plotly.express as px
 
 def top_n_players(df: pd.DataFrame, n: int) -> List[str]:
     return (df
-        .sort_values(by="market_value_in_gbp", ascending=False)
+        .sort_values(by="market_value_in_eur", ascending=False)
         .head(n)["name"]
         .values
     )
@@ -73,14 +73,14 @@ most_valued_players = (
         .sort_values(by="date")
         .groupby("name")
         .tail(1)
-        .sort_values(by="market_value", ascending=False)
+        .sort_values(by="market_value_in_eur", ascending=False)
         .head(top_n)
-)[["name", "market_value"]]
+)[["name", "market_value_in_eur"]]
 
 fig = px.bar(
     most_valued_players,
     x="name",
-    y="market_value",
+    y="market_value_in_eur",
     color="name"
 )
 st.plotly_chart(
@@ -95,7 +95,7 @@ st.header("Time progression")
 fig = px.line(
     mart[mart["name"].isin(player_names)],
     x="date",
-    y="market_value",
+    y="market_value_in_eur",
     color="name"
 )
 st.plotly_chart(

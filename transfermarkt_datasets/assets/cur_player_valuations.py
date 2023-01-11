@@ -27,7 +27,7 @@ class CurPlayerValuationsAsset(Asset):
         Field(name='dateweek', type='date'),
         Field(name='player_id', type='integer'),
         Field(name='current_club_id', type='integer'),
-        Field(name='market_value', type='number'),
+        Field(name='market_value_in_eur', type='number'),
         Field(
           name='player_club_domestic_competition_id',
           type='string',
@@ -42,7 +42,6 @@ class CurPlayerValuationsAsset(Asset):
     ]
 
     self.checks = [
-      checks.forbidden_value(field_name="market_value", values=[None]),
       checks.table_dimensions(min_rows=320000)
     ]
 

@@ -57,8 +57,8 @@ class BasePlayersAsset(RawAsset):
         Field(name="sub_position", type="string"),
         Field(name="foot", type="string"),
         Field(name="height_in_cm", type="integer"),
-        Field(name="market_value_in_gbp", type="number"),
-        Field(name="highest_market_value_in_gbp", type="number"),
+        Field(name="market_value_in_eur", type="number"),
+        Field(name="highest_market_value_in_eur", type="number"),
         Field(name="contract_expiration_date", type="date"),
         Field(name="agent_name", type="string"),
         Field(name="player_code", type="string"),
@@ -85,7 +85,7 @@ class BasePlayersAsset(RawAsset):
     self.checks = [
       checks.row_constraint(formula="position in 'Attack,Defender,Midfield,Goalkeeper,Missing'"),
       checks.forbidden_value(field_name="name", values=[None]),
-      too_many_missings(field_name="market_value_in_gbp", tolerance=0.35),
+      too_many_missings(field_name="market_value_in_eur", tolerance=0.35),
       too_many_missings(field_name="contract_expiration_date", tolerance=0.40),
       checks.table_dimensions(min_rows=25000)
 
@@ -162,10 +162,10 @@ class BasePlayersAsset(RawAsset):
       ).fillna(0).astype(int)
     )
 
-    prep_df["market_value_in_gbp"] = (
+    prep_df["market_value_in_eur"] = (
       json_normalized["current_market_value"].apply(parse_market_value)
     )
-    prep_df["highest_market_value_in_gbp"] = (
+    prep_df["highest_market_value_in_eur"] = (
       json_normalized["highest_market_value"].apply(parse_market_value)
     )
 
