@@ -25,6 +25,7 @@ clubs --|> club_games : opponent/club_id
 clubs --|> game_events : club_id
 players --|> appearances : player_id
 players --|> game_events : player_id
+players --|> player_valuations : player_id
 games --|> appearances : game_id
 games --|> game_events : game_id
 games --|> clubs : home/away_club_id
@@ -53,6 +54,9 @@ class club_games {
 class players {
     player_id
     current_club_id
+}
+class player_valuations{
+    player_id
 }
 class appearances {
     appearance_id
