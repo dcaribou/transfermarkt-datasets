@@ -7,15 +7,14 @@ import pandas as pd
 from inflection import dasherize, titleize
 from datetime import datetime, timedelta
 
+import base64
+
 import sys
 cwd = os.getcwd()
 sys.path.insert(0, cwd)
 
 from transfermarkt_datasets.core.dataset import Dataset
 from transfermarkt_datasets.core.asset import Asset
-
-# community components
-from streamlit_agraph import agraph, Node, Edge, Config
 
 @st.cache
 def load_td() -> Dataset:
@@ -154,35 +153,44 @@ def draw_asset_schema(asset: Asset) -> None:
         use_container_width=True
     )
 
-def draw_dataset_er_diagram(td: Dataset) -> None:
-    nodes = []
-    edges = []
-
-    for asset_name, asset in td.assets.items():
-        if asset.public:
-            nodes.append(
-                Node(
-                    id=asset_name,
-                    label=asset_name,
-                    shape="box"
-                )
-            )
+# https://gist.github.com/treuille/8b9cbfec270f7cda44c5fc398361b3b1#file-render_svg-py-L12
+def render_svg(svg, caption):
+    """Renders the given svg string."""
+    b64 = base64.b64encode(svg.encode('utf-8')).decode("utf-8")
+    html_style = """
+    <style>
+        figure {
+            border: 1px #cccccc solid;
+            padding: 4px;
+            margin: auto;
+        }
+        figcaption {
+            background-color: black;
+            color: white;
+            font-style: italic;
+            padding: 2px;
+            text-align: center;
+        }
+    </style>
+    """
+    html_image = r'<img src="data:image/svg+xml;base64,%s"/>' % b64
+    html_caption = f"<figcaption>{caption}</figcaption>"
+    html_figure = f"""
+    {html_style}
+    <figure>
+    {html_image}
+    {html_caption}
+    </figure>
     
-    for relationship in td.get_relationships():
-        edges.append(
-            Edge(
-                source=relationship["from"],
-                target=relationship["to"],
-                label=relationship["on"]["source"]
-            )
-        )
+    &nbsp;
+    """
+    st.write(html_figure, unsafe_allow_html=True)
 
-    config = Config(
-        width=1000, 
-        height=500
-    )
+def draw_dataset_er_diagram(image, caption) -> None:
+    with open(image) as image:
+        svg_string = "".join(image.readlines())
 
-    agraph(nodes=nodes, edges=edges, config=config)
+    render_svg(svg_string, caption)
 
 def get_records_delta(asset: Asset, offset: int = 7) -> int:
     """Get an asset records' delta (number of new records in last n days).
