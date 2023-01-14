@@ -18,7 +18,6 @@ kaggle = "^1.5.12"
 streamlit = "1.15.2"
 geopy = "^2.2.0"
 plotly = "^5.11.0"
-streamlit-agraph = "^0.0.42"
 transfermarkt-scraper = {git = "https://github.com/dcaribou/transfermarkt-scraper.git", branch = "main"}
 
 [tool.poetry.dev-dependencies]
