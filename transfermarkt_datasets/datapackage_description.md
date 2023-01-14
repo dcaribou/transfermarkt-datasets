@@ -1,10 +1,12 @@
 ### TL;DR
 > Clean, structured and **automatically updated** football data from [Transfermarkt](https://www.transfermarkt.co.uk/), including
-> * `55,000+` games from many seasons on all major competitions
+> * `60,000+` games from many seasons on all major competitions
 > * `400+` clubs from those competitions
-> * `20,000+` players from those clubs
+> * `28,000+` players from those clubs
 > * `300,000+` player market valuations historical records
 > * `1,000,000+` player appearance records from all games
+> 
+> and more!
 
 ### What does it contain?
 The dataset is composed of multiple CSV files with information on competitions, games, clubs, players and appearances that is automatically updated **once a week**. Each file contains the attributes of the entity and the IDs that can be used to join them together.

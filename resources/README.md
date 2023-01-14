@@ -1,4 +1,4 @@
-Use the [mermaid-cli](https://github.com/mermaid-js/mermaid-cli) to refresh the image 
+Use the [mermaid-cli](https://github.com/mermaid-js/mermaid-cli) to refresh the image file
 
 ```shell
 mmdc \
