@@ -154,17 +154,43 @@ def draw_asset_schema(asset: Asset) -> None:
     )
 
 # https://gist.github.com/treuille/8b9cbfec270f7cda44c5fc398361b3b1#file-render_svg-py-L12
-def render_svg(svg):
+def render_svg(svg, caption):
     """Renders the given svg string."""
     b64 = base64.b64encode(svg.encode('utf-8')).decode("utf-8")
-    html = r'<img src="data:image/svg+xml;base64,%s"/>' % b64
-    st.write(html, unsafe_allow_html=True)
+    html_style = """
+    <style>
+        figure {
+            border: 1px #cccccc solid;
+            padding: 4px;
+            margin: auto;
+        }
+        figcaption {
+            background-color: black;
+            color: white;
+            font-style: italic;
+            padding: 2px;
+            text-align: center;
+        }
+    </style>
+    """
+    html_image = r'<img src="data:image/svg+xml;base64,%s"/>' % b64
+    html_caption = f"<figcaption>{caption}</figcaption>"
+    html_figure = f"""
+    {html_style}
+    <figure>
+    {html_image}
+    {html_caption}
+    </figure>
+    
+    &nbsp;
+    """
+    st.write(html_figure, unsafe_allow_html=True)
 
-def draw_dataset_er_diagram() -> None:
-    with open("resources/diagram.svg") as image:
+def draw_dataset_er_diagram(image, caption) -> None:
+    with open(image) as image:
         svg_string = "".join(image.readlines())
 
-    render_svg(svg_string)
+    render_svg(svg_string, caption)
 
 def get_records_delta(asset: Asset, offset: int = 7) -> int:
     """Get an asset records' delta (number of new records in last n days).

@@ -13,10 +13,13 @@ td = load_td()
 st.title("Explore :mag_right:")
 
 st.markdown("""
-The dataset is composed of multiple assets with information on competitions, games, clubs, players and appearances that is automatically updated **once a week**.
+The dataset is composed of multiple assets or file that are automatically updated **once a week**.
 Each file contains the attributes of the entity and the IDs that can be used to join them together.""")
 
-draw_dataset_er_diagram()
+draw_dataset_er_diagram(
+    image="resources/diagram.svg",
+    caption="Data model."
+)
 
 st.markdown("""
 For example, the `appearances` file contains **one row per player appearance**, i.e. one row per player per game played.
