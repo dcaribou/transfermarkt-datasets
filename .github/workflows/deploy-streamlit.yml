@@ -1,18 +1,14 @@
 name: deploy-streamlit
 
-# on:
-#   on:
-#   workflow_run:
-#     workflows: [build]
-#     types: [completed]
-#     branches: [master]
-
 on:
-  push:
-    branches: [flyio-autodeploy]
+  on:
+  workflow_run:
+    workflows: [build]
+    types: [completed]
+    branches: [master]
 
 jobs:
-  build:
+  deploy-streamlit:
 
     runs-on: ubuntu-latest
     defaults:

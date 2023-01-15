@@ -105,7 +105,8 @@ streamlit_docker: ## run streamlit app in a local docker
 
 streamlit_deploy: ## deploy streamlit to app hosting service (fly.io)
 streamlit_deploy: docker_push_flyio
-	flyctl deploy
+	flyctl deploy \
+	fly apps restart transfermarkt-datasets
 
 dagit_local: ## run dagit locally
 	dagit -f transfermarkt_datasets/dagster/jobs.py
