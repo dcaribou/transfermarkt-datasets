@@ -6,7 +6,8 @@
       'NL1', 'NLP', 'NLSC', 'BESC', 'DFB', 'POSU', 'POCP',
       'CGB', 'UKRP', 'RUP', 'GBCS', 'SUC', 'DFL', 'CDR',
       'RUSS', 'GRP', 'SFA', 'CIT', 'DKP', 'FRCH', 'UKRS',
-      'SCI', 'CL', 'EL', 'KLUB', 'ECLQ', 'CLQ', 'ELQ', 'USC'
+      'SCI', 'CL', 'EL', 'KLUB', 'ECLQ', 'CLQ', 'ELQ', 'USC',
+      'FAC',
     ]
   logging:
     version: 1
