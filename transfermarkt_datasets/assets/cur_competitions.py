@@ -42,7 +42,7 @@ class CurCompetitionsAsset(RawAsset):
     self.schema.primary_key = ["competition_id"]
 
     self.checks = [
-      checks.table_dimensions(min_rows=40)
+      checks.table_dimensions(min_rows=43)
     ]
 
   def build(self, base_competitions: BaseCompetitionsAsset):
