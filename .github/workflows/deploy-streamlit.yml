@@ -1,0 +1,30 @@
+name: deploy-streamlit
+
+# on:
+#   on:
+#   workflow_run:
+#     workflows: [build]
+#     types: [completed]
+#     branches: [master]
+
+on:
+  push:
+    branches: [flyio-autodeploy]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash -l {0}
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+        with:
+          ssh-key: ${{ secrets.DEPLOY_KEY_PRIVATE }}
+      - uses: superfly/flyctl-actions/setup-flyctl@master
+      - run: flyctl deploy --remote-only
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
