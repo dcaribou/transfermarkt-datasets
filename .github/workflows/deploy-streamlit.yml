@@ -1,7 +1,6 @@
 name: deploy-streamlit
 
 on:
-  on:
   workflow_run:
     workflows: [build]
     types: [completed]
@@ -33,4 +32,4 @@ jobs:
         run: |
           export PATH="$FLYCTL_INSTALL/bin:$PATH"
 
-          make streamlit_deploy
+          make streamlit_deploy PLATFORM=linux/amd64 TAG=master
