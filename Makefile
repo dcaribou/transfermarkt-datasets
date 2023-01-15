@@ -40,11 +40,11 @@ docker_push_dockerhub : docker_build docker_login_dockerhub
 	docker push dcaribou/transfermarkt-datasets:$(IMAGE_TAG)
 
 docker_push_flyio: docker_login_flyio
-	@docker pull dcaribou/transfermarkt-datasets:$(IMAGE_TAG)
-	@docker tag \
+	docker pull dcaribou/transfermarkt-datasets:$(IMAGE_TAG)
+	docker tag \
 		dcaribou/transfermarkt-datasets:$(IMAGE_TAG) \
 		registry.fly.io/transfermarkt-datasets:$(IMAGE_TAG)
-	@docker push registry.fly.io/transfermarkt-datasets:$(IMAGE_TAG)
+	docker push registry.fly.io/transfermarkt-datasets:$(IMAGE_TAG)
 
 acquire_local: ## run the acquiring process locally (refreshes data/raw)
 	PYTHONPATH=$(PYTHONPATH):`pwd`/. python scripts/acquire.py local $(ARGS)
@@ -105,8 +105,8 @@ streamlit_docker: ## run streamlit app in a local docker
 
 streamlit_deploy: ## deploy streamlit to app hosting service (fly.io)
 streamlit_deploy: docker_push_flyio
-	flyctl deploy \
-	fly apps restart transfermarkt-datasets
+	flyctl deploy
+	flyctl apps restart transfermarkt-datasets
 
 dagit_local: ## run dagit locally
 	dagit -f transfermarkt_datasets/dagster/jobs.py
