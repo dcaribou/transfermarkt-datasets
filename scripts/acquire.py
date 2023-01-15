@@ -20,33 +20,10 @@ from typing import List
 
 from twisted.internet import reactor, defer
 from scrapy.crawler import CrawlerRunner
-
 from scrapy.utils.project import get_project_settings
 from scrapy.utils.log import configure_logging
-from scrapy.settings import Settings
 
-from transfermarkt_datasets.core.utils import read_config
 from transfermarkt_datasets.core.utils import submit_batch_job_and_wait
-
-import logging
-
-logging.config.dictConfig(
-  read_config()["logging"]
-)
-
-def scrapy_config() -> Settings:
-  """Instantiate scrappy settings for the acquiring run.
-
-  Returns:
-      Settings: The default scrapy settings instance + overrides in config.yml
-  """
-  # https://github.com/scrapy/scrapy/blob/master/scrapy/utils/project.py#L61
-  default_settings = get_project_settings()
-  overrides = read_config()["acquiring"]["scrapy_config"]
-
-  default_settings.setdict(overrides)
-    
-  return default_settings
 
 class Asset():
   """A wrapper for the asset to be acquired.
@@ -170,9 +147,7 @@ def acquire_on_local(asset, seasons, func):
           file_path = asset_obj.file_path(season)
           if file_path.exists():
             os.remove(str(file_path))
-          logging.info(
-            f"Schedule {asset_obj.name} for season {season}"
-          )
+          print(f"Schedule {asset_obj.name} for season {season}")
           yield runner.crawl(
             asset_obj.name,
             parents=asset_obj.parent.file_full_path(season),
@@ -184,13 +159,27 @@ def acquire_on_local(asset, seasons, func):
     crawl()
     reactor.run()
   
+  # identify this scraping jobs accordinly by setting a nice user agent
+  USER_AGENT = 'transfermarkt-datasets/1.0 (https://github.com/dcaribou/transfermarkt-datasets)'
+
   # get seasons and assets list
   expanded_seasons = seasons_list(seasons)
   expanded_assets = assets_list(asset)
 
   # define crawler settings
-  settings = scrapy_config()
+  settings = get_project_settings()
   
+  settings.set("USER_AGENT", USER_AGENT)  
+  settings.set("FEED_URI", None)
+  settings.set("FEED_URI_PARAMS", "tfmkt.utils.uri_params")
+  settings.set("FEEDS",{
+    "data/raw/%(season)s/%(name)s.json": {
+      "format": "jsonlines"
+    }
+  })
+  settings.set("LOG_LEVEL", "INFO")
+  settings.set("SPIDER_MODULES", ["tfmkt"])
+
   # create crawlers and wait until they complete
   issue_crawlers_and_wait(expanded_assets, expanded_seasons, settings)
 

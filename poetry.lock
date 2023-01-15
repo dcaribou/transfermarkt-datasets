@@ -2659,7 +2659,7 @@ python-versions = ">=3.7"
 
 [[package]]
 name = "pytest"
-version = "7.2.1"
+version = "7.2.0"
 description = "pytest: simple powerful testing with Python"
 category = "main"
 optional = false
@@ -2731,7 +2731,7 @@ unidecode = ["Unidecode (>=1.1.1)"]
 
 [[package]]
 name = "pytz"
-version = "2022.7.1"
+version = "2022.7"
 description = "World timezone definitions, modern and historical"
 category = "main"
 optional = false
@@ -3210,7 +3210,7 @@ full = ["httpx (>=0.22.0)", "itsdangerous", "jinja2", "python-multipart", "pyyam
 
 [[package]]
 name = "streamlit"
-version = "1.17.0"
+version = "1.15.2"
 description = "The fastest way to build data apps in Python"
 category = "main"
 optional = false
@@ -3241,9 +3241,6 @@ typing-extensions = ">=3.10.0.0"
 tzlocal = ">=1.1"
 validators = ">=0.2"
 watchdog = {version = "*", markers = "platform_system != \"Darwin\""}
-
-[package.extras]
-snowflake = ["snowflake-snowpark-python"]
 
 [[package]]
 name = "stringcase"
@@ -3419,13 +3416,13 @@ develop = false
 inflection = "^0.5.1"
 Protego = "^0.2.1"
 python-dateutil = "^2.8.2"
-Scrapy = "2.7.1"
+scrapy = "^2.4.1"
 
 [package.source]
 type = "git"
 url = "https://github.com/dcaribou/transfermarkt-scraper.git"
 reference = "main"
-resolved_reference = "a2a4396ec5a7d85d128c8902ceab025ab6bee2e6"
+resolved_reference = "e066db0328f1116c2ce30a8eca78cddeaabf53e0"
 
 [[package]]
 name = "twisted"
@@ -3762,7 +3759,7 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.8, <3.11, !=3.9.7"
-content-hash = "0481d394a4e773898fb8afc33129cdf78820951469860132d850e12ca21b718a"
+content-hash = "8575aa213e38bed74e1a184ed4ac66b873ae362ec4a5c2477d40ae2a07924cde"
 
 [metadata.files]
 aiobotocore = []
@@ -4435,10 +4432,7 @@ pyrsistent = [
     {file = "pyrsistent-0.19.3-py3-none-any.whl", hash = "sha256:ccf0d6bd208f8111179f0c26fdf84ed7c3891982f2edaeae7422575f47e66b64"},
     {file = "pyrsistent-0.19.3.tar.gz", hash = "sha256:1a2994773706bbb4995c31a97bc94f1418314923bd1048c6d964837040376440"},
 ]
-pytest = [
-    {file = "pytest-7.2.1-py3-none-any.whl", hash = "sha256:c7c6ca206e93355074ae32f7403e8ea12163b1163c976fee7d4d84027c162be5"},
-    {file = "pytest-7.2.1.tar.gz", hash = "sha256:d45e0952f3727241918b8fd0f376f5ff6b301cc0777c6f9a556935c92d8a7d42"},
-]
+pytest = []
 python-dateutil = [
     {file = "python-dateutil-2.8.2.tar.gz", hash = "sha256:0123cacc1627ae19ddf3c27a5de5bd67ee4586fbdd6440d9748f8abb483d3e86"},
     {file = "python_dateutil-2.8.2-py2.py3-none-any.whl", hash = "sha256:961d03dc3453ebbc59dbdea9e4e11c5651520a876d0f4db161e8674aae935da9"},
@@ -4453,10 +4447,7 @@ python-editor = [
 ]
 python-json-logger = []
 python-slugify = []
-pytz = [
-    {file = "pytz-2022.7.1-py2.py3-none-any.whl", hash = "sha256:78f4f37d8198e0627c5f1143240bb0206b8691d8d7ac6d78fee88b78733f8c4a"},
-    {file = "pytz-2022.7.1.tar.gz", hash = "sha256:01a0681c4b9684a28304615eba55d1ab31ae00bf68ec157ec3708a8182dbbcd0"},
-]
+pytz = []
 pytz-deprecation-shim = []
 pytzdata = [
     {file = "pytzdata-2020.1-py2.py3-none-any.whl", hash = "sha256:e1e14750bcf95016381e4d472bad004eef710f2d6417240904070b3d6654485f"},
@@ -4719,10 +4710,7 @@ sqlalchemy = [
 ]
 stack-data = []
 starlette = []
-streamlit = [
-    {file = "streamlit-1.17.0-py2.py3-none-any.whl", hash = "sha256:0b3a9539e6ebcb8e5d57d16a846c3488143e1954174d7f1b2b40bf3e919302cc"},
-    {file = "streamlit-1.17.0.tar.gz", hash = "sha256:8cdd61059971fd88ae0af507c07685a32fe08ba30ebd04b1d8d2b54160658b5b"},
-]
+streamlit = []
 stringcase = [
     {file = "stringcase-1.2.0.tar.gz", hash = "sha256:48a06980661908efe8d9d34eab2b6c13aefa2163b3ced26972902e3bdfd87008"},
 ]
