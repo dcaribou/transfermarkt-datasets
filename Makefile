@@ -29,7 +29,7 @@ docker_login_dockerhub :
 	@echo ${DOCKERHUB_TOKEN} | docker login --username dcaribou --password-stdin
 
 docker_login_flyio :
-	fly auth docker
+	flyctl auth docker
 
 docker_build: ## build the project docker image and label it accordingly
 	docker build --platform=$(PLATFORM) \
@@ -105,7 +105,7 @@ streamlit_docker: ## run streamlit app in a local docker
 
 streamlit_deploy: ## deploy streamlit to app hosting service (fly.io)
 streamlit_deploy: docker_push_flyio
-	fly deploy
+	flyctl deploy
 
 dagit_local: ## run dagit locally
 	dagit -f transfermarkt_datasets/dagster/jobs.py
