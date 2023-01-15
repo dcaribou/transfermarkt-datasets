@@ -34,14 +34,17 @@ docker_login_flyio :
 docker_build: ## build the project docker image and label it accordingly
 	docker build --platform=$(PLATFORM) \
 		-t dcaribou/transfermarkt-datasets:$(IMAGE_TAG) \
-		-t registry.fly.io/transfermarkt-datasets:$(IMAGE_TAG) \
 		.
 
 docker_push_dockerhub : docker_build docker_login_dockerhub
 	docker push dcaribou/transfermarkt-datasets:$(IMAGE_TAG)
 
-docker_push_flyio : docker_build docker_login_flyio
-	docker push registry.fly.io/transfermarkt-datasets:$(IMAGE_TAG)
+docker_push_flyio: docker_login_flyio
+	@docker pull dcaribou/transfermarkt-datasets:$(IMAGE_TAG)
+	@docker tag \
+		dcaribou/transfermarkt-datasets:$(IMAGE_TAG) \
+		registry.fly.io/transfermarkt-datasets:$(IMAGE_TAG)
+	@docker push registry.fly.io/transfermarkt-datasets:$(IMAGE_TAG)
 
 acquire_local: ## run the acquiring process locally (refreshes data/raw)
 	PYTHONPATH=$(PYTHONPATH):`pwd`/. python scripts/acquire.py local $(ARGS)
