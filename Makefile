@@ -29,18 +29,21 @@ docker_login_dockerhub :
 	@echo ${DOCKERHUB_TOKEN} | docker login --username dcaribou --password-stdin
 
 docker_login_flyio :
-	fly auth docker
+	flyctl auth docker
 
 docker_build: ## build the project docker image and label it accordingly
 	docker build --platform=$(PLATFORM) \
 		-t dcaribou/transfermarkt-datasets:$(IMAGE_TAG) \
-		-t registry.fly.io/transfermarkt-datasets:$(IMAGE_TAG) \
 		.
 
 docker_push_dockerhub : docker_build docker_login_dockerhub
 	docker push dcaribou/transfermarkt-datasets:$(IMAGE_TAG)
 
-docker_push_flyio : docker_build docker_login_flyio
+docker_push_flyio: docker_login_flyio
+	docker pull dcaribou/transfermarkt-datasets:$(IMAGE_TAG)
+	docker tag \
+		dcaribou/transfermarkt-datasets:$(IMAGE_TAG) \
+		registry.fly.io/transfermarkt-datasets:$(IMAGE_TAG)
 	docker push registry.fly.io/transfermarkt-datasets:$(IMAGE_TAG)
 
 acquire_local: ## run the acquiring process locally (refreshes data/raw)
@@ -102,7 +105,8 @@ streamlit_docker: ## run streamlit app in a local docker
 
 streamlit_deploy: ## deploy streamlit to app hosting service (fly.io)
 streamlit_deploy: docker_push_flyio
-	fly deploy
+	flyctl deploy
+	flyctl apps restart transfermarkt-datasets
 
 dagit_local: ## run dagit locally
 	dagit -f transfermarkt_datasets/dagster/jobs.py
