@@ -9,18 +9,48 @@
       'SCI', 'CL', 'EL', 'KLUB', 'ECLQ', 'CLQ', 'ELQ', 'USC',
       'FAC',
     ]
+  acquiring:
+    scrapy_config:
+      USER_AGENT: >
+        transfermarkt-datasets/1.0 (https://github.com/dcaribou/transfermarkt-datasets)"
+      FEED_URI_PARAMS: tfmkt.utils.uri_params
+      FEEDS:
+        "data/raw/%(season)s/%(name)s.json":
+          format: jsonlines
+      SPIDER_MODULES: ['tfmkt']
+      REQUEST_FINGERPRINTER_IMPLEMENTATION: '2.7'
+      HTTPCACHE_ENABLED: True
   logging:
     version: 1
+    disable_existing_loggers: False
     loggers:
-      main:
-        handlers: [console]
+      "": # root logger
+        handlers: [console, file]
         level: DEBUG
+      # from https://docs.scrapy.org/en/latest/_modules/scrapy/utils/log.html#configure_logging
+      hpack:
+        level: ERROR
+        handlers: [console, file]
+      scrapy:
+        level: DEBUG
+        handlers: [file]
+      twisted:
+        level: ERROR
+        handlers: [console, file]
     handlers:
       console:
         class: logging.StreamHandler
-        level: DEBUG
+        level: INFO
         stream: ext://sys.stdout
-        formatter: main
+        formatter: console
+      file:
+        class: logging.FileHandler
+        level: DEBUG
+        filename: logs/scrapy.log
+        mode: w
+        formatter: file
     formatters:
-      main:
-        format: '%(module)s - %(message)s'
+      console:
+        format: '%(asctime)s [%(levelname)s]: %(message)s'
+      file:
+        format: '%(asctime)s [%(levelname)s] %(pathname)s: %(message)s'
