@@ -30,8 +30,10 @@ from transfermarkt_datasets.core.utils import submit_batch_job_and_wait
 
 import logging
 
+acquire_config = read_config()["acquire"]
+
 logging.config.dictConfig(
-  read_config()["logging"]
+  acquire_config["logging"]
 )
 
 def scrapy_config() -> Settings:
@@ -42,7 +44,7 @@ def scrapy_config() -> Settings:
   """
   # https://github.com/scrapy/scrapy/blob/master/scrapy/utils/project.py#L61
   default_settings = get_project_settings()
-  overrides = read_config()["acquiring"]["scrapy_config"]
+  overrides = acquire_config["scrapy_config"]
 
   default_settings.setdict(overrides)
     
@@ -89,7 +91,6 @@ class Asset():
     for asset in assets:
       asset.set_parent()
     return assets
-
 
 def acquire_on_local(asset, seasons, func):
 

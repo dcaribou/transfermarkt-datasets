@@ -37,18 +37,17 @@ class Dataset:
       self.assets_root = assets_root
       self.assets_relative_path = assets_relative_path
 
-      self.config = config or read_config(config_file)
+      self.config = config or read_config(config_file)["prepare"]
 
       self.prep_folder_path = 'transfermarkt_datasets/stage'
       self.assets = {}
       self.validation_report = None
 
-      if self.config.get("logging"):
-        logging.config.dictConfig(self.config["logging"])
-      else:
-        logging.basicConfig()
+      logging.config.dictConfig(
+        self.config["logging"]
+      )
 
-      self.log = logging.getLogger("main")
+      self.log = logging.getLogger()
 
       self.run_result = None
 

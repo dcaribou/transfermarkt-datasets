@@ -55,7 +55,7 @@ class BaseAppearancesAsset(RawAsset):
 
     json_normalized = pandas.json_normalize(self.raw_df.to_dict(orient="records"))
 
-    applicable_competitions = read_config()["competition_codes"]
+    applicable_competitions = read_config()["prepare"]["transfermarkt_datasets"]["competition_codes"]
 
     json_normalized = json_normalized[json_normalized["competition_code"].isin(applicable_competitions)]
   
