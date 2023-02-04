@@ -32,6 +32,7 @@ class CurClubGamesAsset(Asset):
 
   """
   file_name = "club_games.csv"
+  validated = False
 
   def __init__(self, *args, **kwargs) -> None:
     super().__init__(*args, **kwargs)

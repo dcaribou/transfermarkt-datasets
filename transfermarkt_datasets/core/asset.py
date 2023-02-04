@@ -35,6 +35,7 @@ class Asset:
   name = "generic"
   file_name = None
   public = True
+  validated = True
 
   def __init__(
     self,
@@ -260,6 +261,9 @@ class Asset:
 
 
   def validate(self, asset=None):
+
+    if not self.validated:
+      return None
 
     resource = self.as_frictionless_resource()
     validation_report = validate(resource, limit_memory=30000, checks=self.checks)
