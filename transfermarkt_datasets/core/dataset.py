@@ -146,13 +146,8 @@ class Dataset:
         op_selection=[f"*{op_name}"]
       )
 
-    nodes = result._node_def.ensure_graph_def().node_dict.keys()
-    for node in nodes:
-      if not node.startswith("build_"):
-        continue
-
-      asset_name = node.replace("build_", "")
-      self.assets[asset_name].load_from_stage()
+    for asset_name, asset in self.assets.items():
+      asset.load_from_stage()
 
   def as_frictionless_package(self, basepath=None, exclude_private=False) -> None:
     """Create an save to local a file descriptor tha defines a "datapackage" for this dataset.
