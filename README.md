@@ -84,11 +84,7 @@ class appearances {
 ## setup
 Setup your local environment to run the project with `poetry`.
 1. Install [poetry](https://python-poetry.org/docs/)
-2. Clone the repo
-```console
-git clone git@github.com:dcaribou/transfermarkt-datasets.git
-```
-3. Install project dependencies in a virtual environment
+2. Install python dependencies (poetry will create a virtual environment for you)
 ```console
 cd transfermarkt-datasets
 poetry install
@@ -106,6 +102,8 @@ streamlit_local                run streamlit app locally
 dagit_local                    run dagit locally
 ```
 Run `make help` to see the full list.
+
+Once you've completed the setup, you should be able to run most of these from your machine.
 
 ## data storage
 > :information_source: Read access to the S3 [DVC remote storage](https://dvc.org/doc/command-reference/remote#description) for the project is required to successfully run `dvc pull`. Contributors can grant themselves access by adding their AWS IAM user ARN to [this whitelist](https://github.com/dcaribou/transfermarkt-datasets/blob/655fe130974905591ff80bb57813bedd01ec7d6c/infra/main.tf#L17).

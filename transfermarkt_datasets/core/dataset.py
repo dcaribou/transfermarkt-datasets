@@ -1,7 +1,7 @@
 import pathlib
 from typing import Dict, List
 
-from dagster import DependencyDefinition, GraphDefinition, JobDefinition
+from dagster import DependencyDefinition, GraphDefinition, JobDefinition, OpDefinition
 
 from frictionless.package import Package
 from frictionless import validate
@@ -146,13 +146,8 @@ class Dataset:
         op_selection=[f"*{op_name}"]
       )
 
-    nodes = result._node_def.ensure_graph_def().node_dict.keys()
-    for node in nodes:
-      if not node.startswith("build_"):
-        continue
-
-      asset_name = node.replace("build_", "")
-      self.assets[asset_name].load_from_stage()
+    for asset_name, asset in self.assets.items():
+      asset.load_from_stage()
 
   def as_frictionless_package(self, basepath=None, exclude_private=False) -> None:
     """Create an save to local a file descriptor tha defines a "datapackage" for this dataset.
@@ -197,6 +192,29 @@ class Dataset:
     self.log.info("All validations have passed!")
     return False
 
+  def get_dagster_ops(self) -> List[OpDefinition]:
+    build_ops = [asset.as_build_dagster_op() for asset in self.assets.values()]
+    if self.config["validation_enabled"]:
+      validate_ops = [
+        asset.as_validate_dagster_op()
+        for asset in self.assets.values()
+        if asset.as_frictionless_resource() is not None
+      ]
+    else:
+      validate_ops = []
+
+    return build_ops + validate_ops
+
+  def get_dagster_deps(self) -> Dict:
+    deps = {}
+    for asset in self.assets.values():
+      deps[asset.dagster_build_task_name] = asset.as_dagster_deps()
+      if asset.as_frictionless_resource() and self.config["validation_enabled"]:
+        deps[asset.dagster_validate_task_name] = {
+          "asset": DependencyDefinition(asset.dagster_build_task_name)
+        }
+    return deps
+
   def as_dagster_job(self, resource_defs={}) -> JobDefinition:
     """Render dataset assets build as a dagster  JobDefinition
 
@@ -206,23 +224,12 @@ class Dataset:
     Returns:
         JobDefinition: A dagster JobDefinition
     """
-    build_ops = [asset.as_build_dagster_op() for asset in self.assets.values()]
-    validate_ops = [
-      asset.as_validate_dagster_op()
-      for asset in self.assets.values()
-      if asset.as_frictionless_resource() is not None
-    ]
-    
-    deps = {}
-    for asset in self.assets.values():
-      deps[asset.dagster_build_task_name] = asset.as_dagster_deps()
-      if asset.as_frictionless_resource():
-        deps[asset.dagster_validate_task_name] = {
-          "asset": DependencyDefinition(asset.dagster_build_task_name)
-        }
+
+    ops = self.get_dagster_ops()
+    deps = self.get_dagster_deps()
 
     graph = GraphDefinition(name="build_transfermark_datasets",
-      node_defs=build_ops + validate_ops,
+      node_defs=ops,
       dependencies=deps
     )
 
