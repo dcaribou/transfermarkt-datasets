@@ -6,6 +6,7 @@ RUN apt-get update && \
     apt-get -y install gcc python3-dev jq awscli
 
 COPY pyproject.toml /app
+COPY poetry.lock /app
 
 ENV PYTHONPATH=${PYTHONPATH}:${PWD}
 
