@@ -9,6 +9,7 @@
       'SCI', 'CL', 'EL', 'KLUB', 'ECLQ', 'CLQ', 'ELQ', 'USC',
       'FAC',
     ]
+  validation_enabled: false
   logging:
     version: 1
     loggers:
