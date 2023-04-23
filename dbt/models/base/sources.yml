@@ -1,0 +1,29 @@
+version: 2
+
+sources:
+  - name: raw_tfmkt
+    tables:
+      - name: appearances
+        meta:
+          external_location: >
+            read_csv(
+              '../data/raw/*/appearances.json',
+              header=False,
+              columns=struct_pack(value := 'VARCHAR'), delim='\1', quote='\0'
+            )
+      - name: games
+        meta:
+          external_location: >
+            read_csv(
+              '../data/raw/*/games.json',
+              header=False,
+              columns=struct_pack(value := 'VARCHAR'), delim='\1', quote='\0'
+            )
+      - name: players
+        meta:
+          external_location: >
+            read_csv(
+              '../data/raw/*/players.json',
+              header=False,
+              columns=struct_pack(value := 'VARCHAR'), delim='\1', quote='\0'
+            )

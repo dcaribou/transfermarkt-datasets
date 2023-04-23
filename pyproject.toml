@@ -19,11 +19,13 @@ streamlit = "1.15.2"
 geopy = "^2.2.0"
 plotly = "^5.11.0"
 transfermarkt-scraper = {git = "https://github.com/dcaribou/transfermarkt-scraper.git", branch = "main"}
+dbt-duckdb = "^1.4.1"
 
 [tool.poetry.group.dev.dependencies]
 dagit = "0.15.10"
 jupyter = "^1.0.0"
 autopep8 = "^1.7.0"
+shandy-sqlfmt = {extras = ["jinjafmt"], version = "^0.18.0"}
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

@@ -56,3 +56,8 @@ terraform.rc
 *.pyc
 
 tmp*
+
+# dbt
+dbt/logs
+dbt/.user.yml
+dbt/target
