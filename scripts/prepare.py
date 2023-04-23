@@ -60,7 +60,7 @@ def prepare_on_cloud(
       args
     ],
     vcpus=4,
-    memory=30720
+    memory=8192
   )
 
 # main

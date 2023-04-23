@@ -1,5 +1,5 @@
-{% macro export_table(model_name) %}
+{% macro export_table(model) %}
   {% call statement(name, fetch_result=True) %}
-    COPY {{ ref(model_name) }} TO '../data/prep/appearances.csv' (HEADER, DELIMITER ',')
+    COPY {{ model.name }} TO '../data/prep/{{ model.name }}.csv' (HEADER, DELIMITER ',')
   {% endcall %}
 {% endmacro %}
