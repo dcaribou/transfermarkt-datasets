@@ -2,5 +2,5 @@ transfermarkt_datasets:
   outputs:
    dev:
      type: duckdb
-     path: ../data/stage/duck.db
+     path: ":memory:"
   target: dev

@@ -23,5 +23,11 @@ RUN git config --global user.email "transfermarkt-datasets-ci@transfermark-datas
 # Creating folders, and files for a project:
 COPY scripts/bootstrap.sh /app/
 
+# Install duckdb
+RUN \
+    wget https://github.com/duckdb/duckdb/releases/download/v0.7.1/duckdb_cli-linux-amd64.zip && \
+    unzip duckdb_cli-linux-amd64.zip && \
+    mv duckdb /usr/bin
+
 ENTRYPOINT ["/bin/bash", "bootstrap.sh"]
 CMD ["master", "make", "streamlit_local"]

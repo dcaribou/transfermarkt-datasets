@@ -70,15 +70,15 @@ acquire_cloud:
 prepare_local: ## run the prep process locally (refreshes data/prep)
 prepare_local: ARGS =
 prepare_local:
-	PYTHONPATH=$(PYTHONPATH):`pwd`/. python -Wignore scripts/prepare.py local $(ARGS)
+	cd dbt && dbt run -m +cur_appearances
 
 prepare_docker: ## run the prep process in a local docker
 	docker run -ti \
 			--env-file .env \
 			-v `pwd`/.:/app/transfermarkt-datasets/ \
 			--memory=4g  \
-			dcaribou/transfermarkt-datasets:dev \
-				$(BRANCH) "prepared from local" prepare.py local $(ARGS)
+			dcaribou/transfermarkt-datasets:$(IMAGE_TAG) \
+				$(BRANCH) make prepare_local
 
 prepare_cloud: ## run the prep process in the cloud (aws batch)
 prepare_cloud: JOB_DEFINITION_NAME = transfermarkt-datasets-batch-job-definition-dev
