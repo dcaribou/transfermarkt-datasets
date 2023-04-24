@@ -1,0 +1,8 @@
+version: 2
+
+models:
+  - name: appearances
+    tests:
+      - dbt_expectations.expect_table_columns_to_contain_set:
+          column_list: ["col_a", "col_b"]
+          transform: upper # (Optional)

@@ -34,7 +34,7 @@ clean-targets:         # directories to be removed by `dbt clean`
 models:
   transfermarkt_datasets:
     # Config indicated by + and applies to all files under models/example/
-    +materialized: ephemeral
+    +materialized: table
     curated:
       +materialized: table
       +post-hook:

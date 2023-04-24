@@ -61,3 +61,6 @@ tmp*
 dbt/logs
 dbt/.user.yml
 dbt/target
+dbt/dbt_packages
+
+duck.db

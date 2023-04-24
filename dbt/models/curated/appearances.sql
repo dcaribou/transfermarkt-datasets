@@ -23,3 +23,5 @@ select
 from appearances_cte
 left join games_cte using(game_id)
 left join players_cte using(player_id)
+
+order by games_cte."date", appearances_cte.appearance_id
