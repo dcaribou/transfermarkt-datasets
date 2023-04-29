@@ -15,11 +15,20 @@ players_cte as (
 )
 
 select
-    appearances_cte.*,
-    games_cte.*,
+    appearances_cte.appearance_id,
+    appearances_cte.game_id,
+    appearances_cte.player_id,
+    appearances_cte.player_club_id,
+    players_cte.current_club_id as player_current_club_id,
+    games_cte.date,
     players_cte.name as player_name,
-    players_cte.current_club_id as player_current_club_id
-
+    appearances_cte.competition_id,
+    appearances_cte.yellow_cards,
+    appearances_cte.red_cards,
+    appearances_cte.goals,
+    appearances_cte.assists,
+    appearances_cte.minutes_played
+    
 from appearances_cte
 left join games_cte using(game_id)
 left join players_cte using(player_id)

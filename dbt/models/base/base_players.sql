@@ -1,13 +1,19 @@
 with
     json_players as (
 
-        select json(value) as json_row from {{ source("raw_tfmkt", "players") }}
+        select
+            json(value) as json_row,
+            (str_split(json_extract_string(json_row, '$.href'), '/')[5])::integer as player_id,
+            row_number() over (partition by player_id order by 1) as n
+        
+        from {{ source("raw_tfmkt", "players") }}
+        
 
     )
 
 select
 
-    (str_split(json_extract_string(json_row, '$.href'), '/')[5])::integer as player_id,
+    player_id,
     case
         when len(trim(json_extract_string(json_row, '$.name'))) = 0
         then null
@@ -102,3 +108,5 @@ select
     'https://www.transfermarkt.co.uk' || json_extract_string(json_row, '$.href') as url
 
 from json_players
+
+where n = 1

@@ -1,12 +1,17 @@
 with
     json_games as (
 
-        select json(value) as json_row from {{ source("raw_tfmkt", "games") }}
+        select
+            json(value) as json_row,
+            (str_split(json_extract_string(json_row, '$.href'), '/')[5]) as game_id,
+            row_number() over (partition by game_id order by 1) as n
+
+        from {{ source("raw_tfmkt", "games") }}
 
     )
 
 select
-    (str_split(json_extract_string(json_row, '$.href'), '/')[5])::integer as game_id,
+    game_id,
     (str_split(json_extract_string(json_row, '$.parent.href'), '/')[5]) as competition_id,
     {# coalesce(
         infer_season(json_extract_string(json_row, '$.date'))::date, -1
@@ -50,3 +55,5 @@ select
     ) as url
 
 from json_games
+
+where n = 1

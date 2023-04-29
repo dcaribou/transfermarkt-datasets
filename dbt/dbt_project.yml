@@ -39,3 +39,14 @@ models:
       +materialized: table
       +post-hook:
         - "{{ export_table(this) }}"
+
+vars:
+  competition_codes: [
+      'ES1', 'GB1', 'L1', 'IT1', 'FR1', 'GR1', 'PO1', 
+      'BE1', 'UKR1', 'BE1', 'RU1', 'DK1', 'SC1', 'TR1',
+      'NL1', 'NLP', 'NLSC', 'BESC', 'DFB', 'POSU', 'POCP',
+      'CGB', 'UKRP', 'RUP', 'GBCS', 'SUC', 'DFL', 'CDR',
+      'RUSS', 'GRP', 'SFA', 'CIT', 'DKP', 'FRCH', 'UKRS',
+      'SCI', 'CL', 'EL', 'KLUB', 'ECLQ', 'CLQ', 'ELQ', 'USC',
+      'FAC',
+    ]
