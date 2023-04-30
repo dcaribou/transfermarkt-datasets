@@ -15,7 +15,7 @@ with
                 )::integer,
                 -1
             ) as game_id,
-            (player_id || '_' || game_id) as appearance_id,
+            (game_id || '_' || player_id) as appearance_id,
             json_extract_string(json_row, '$.competition_code') as competition_id,
             (str_split(json_extract_string(json_row, '$.for.href'), '/')[5])::integer
             as player_club_id,
@@ -34,16 +34,11 @@ with
                 then 0
                 else (json_extract_string(json_row, '$.minutes_played')[:-1])::integer
             end as minutes_played,
-            case
-                when
-                    (
-                        len(json_extract_string(json_row, '$.yellow_cards')) > 0
-                        or len(json_extract_string(json_row, '$.second_yellow_cards'))
-                        > 0
-                    )
-                then 1
-                else 0
-            end as yellow_cards,
+            (
+                (len(json_extract_string(json_row, '$.yellow_cards')) > 0)::integer + (
+                    len(json_extract_string(json_row, '$.second_yellow_cards')) > 0
+                )::integer
+            ) as yellow_cards,
             case
                 when len(json_extract_string(json_row, '$.red_cards')) > 0 then 1 else 0
             end as red_cards
@@ -57,4 +52,6 @@ with
         from all_appearances
     )
 
-select * from with_n where n = 1
+select *
+from with_n
+where n = 1

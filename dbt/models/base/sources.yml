@@ -9,7 +9,8 @@ sources:
             read_csv(
               '../data/raw/*/appearances.json',
               header=False,
-              columns=struct_pack(value := 'VARCHAR'), delim='\1', quote='\0'
+              columns=struct_pack(value := 'VARCHAR'), delim='\1', quote='\0',
+              filename=True
             )
       - name: games
         meta:
@@ -17,7 +18,8 @@ sources:
             read_csv(
               '../data/raw/*/games.json',
               header=False,
-              columns=struct_pack(value := 'VARCHAR'), delim='\1', quote='\0'
+              columns=struct_pack(value := 'VARCHAR'), delim='\1', quote='\0',
+              filename=True
             )
       - name: players
         meta:
@@ -25,5 +27,6 @@ sources:
             read_csv(
               '../data/raw/*/players.json',
               header=False,
-              columns=struct_pack(value := 'VARCHAR'), delim='\1', quote='\0'
+              columns=struct_pack(value := 'VARCHAR'), delim='\1', quote='\0',
+              filename=True
             )

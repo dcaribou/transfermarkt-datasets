@@ -11,6 +11,9 @@ models:
       - name: game_id
         tests:
           - unique
+      - name: date
+        tests:
+          - not_null
 
   - name: base_players
     columns:

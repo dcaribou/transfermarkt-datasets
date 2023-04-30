@@ -27,6 +27,10 @@ jupyter = "^1.0.0"
 autopep8 = "^1.7.0"
 shandy-sqlfmt = {extras = ["jinjafmt"], version = "^0.18.0"}
 
+
+[tool.poetry.group.dev-dependencies.dependencies]
+datacompy = "^0.8.4"
+
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
