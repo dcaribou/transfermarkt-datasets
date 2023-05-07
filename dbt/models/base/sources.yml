@@ -30,3 +30,12 @@ sources:
               columns=struct_pack(value := 'VARCHAR'), delim='\1', quote='\0',
               filename=True
             )
+      - name: clubs
+        meta:
+          external_location: >
+            read_csv(
+              '../data/raw/*/clubs.json',
+              header=False,
+              columns=struct_pack(value := 'VARCHAR'), delim='\1', quote='\0',
+              filename=True
+            )

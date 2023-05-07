@@ -22,3 +22,23 @@ models:
       - name: appearance_id
         tests:
           - unique
+  - name: clubs
+    tests:
+      - dbt_expectations.expect_table_columns_to_contain_set:
+          column_list:
+            - club_id
+            - club_code
+            - name
+            - domestic_competition_id
+            - total_market_value
+            - squad_size
+            - average_age
+            - foreigners_number
+            - foreigners_percentage
+            - national_team_players
+            - stadium_name
+            - stadium_seats
+            - net_transfer_record
+            - coach_name
+            - url
+            - club_id
