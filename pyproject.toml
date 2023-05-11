@@ -19,7 +19,7 @@ streamlit = "1.15.2"
 geopy = "^2.2.0"
 plotly = "^5.11.0"
 transfermarkt-scraper = {git = "https://github.com/dcaribou/transfermarkt-scraper.git", branch = "main"}
-dbt-duckdb = "^1.4.1"
+dbt-duckdb = "1.5.1"
 
 [tool.poetry.group.dev.dependencies]
 dagit = "0.15.10"

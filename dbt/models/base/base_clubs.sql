@@ -9,13 +9,8 @@ with
 
         from {{ source("raw_tfmkt", "clubs") }}
 
-    ),
-    url_char_mapping as (
-
-        select * from {{ ref('url_encoding') }}
-
     )
-
+    
 select
     club_id,
     json_extract_string(json_row, '$.code') as club_code,

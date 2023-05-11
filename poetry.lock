@@ -595,24 +595,6 @@ html5lib = ["html5lib"]
 lxml = ["lxml"]
 
 [[package]]
-name = "betterproto"
-version = "1.2.5"
-description = "A better Protobuf / gRPC generator & library"
-category = "main"
-optional = false
-python-versions = ">=3.6"
-files = [
-    {file = "betterproto-1.2.5.tar.gz", hash = "sha256:74a3ab34646054f674d236d1229ba8182dc2eae86feb249b8590ef496ce9803d"},
-]
-
-[package.dependencies]
-grpclib = "*"
-stringcase = "*"
-
-[package.extras]
-compiler = ["black", "jinja2", "protobuf"]
-
-[[package]]
 name = "billiard"
 version = "3.6.4.0"
 description = "Python multiprocessing fork with improvements and bugfixes"
@@ -1272,19 +1254,18 @@ tests = ["pytest", "pytest-cov", "pytest-spark"]
 
 [[package]]
 name = "dbt-core"
-version = "1.4.6"
+version = "1.5.0"
 description = "With dbt, data analysts and engineers can build analytics the way engineers build applications."
 category = "main"
 optional = false
 python-versions = ">=3.7.2"
 files = [
-    {file = "dbt-core-1.4.6.tar.gz", hash = "sha256:2cf0388530d6fae724b64447c1e93682cb4fe4cd27d170472c983c19a3395cf9"},
-    {file = "dbt_core-1.4.6-py3-none-any.whl", hash = "sha256:836a63ea5026fec207b4f083f851fc8b9bb79f6d7965ccb7dc5b022b68a96742"},
+    {file = "dbt-core-1.5.0.tar.gz", hash = "sha256:d6d43b7ff0f12765e7e85559c1a109eaa23a7536b26b3f963d0c19263f69b3c4"},
+    {file = "dbt_core-1.5.0-py3-none-any.whl", hash = "sha256:0761fb8287830d7c8990517340238c62c0085e8b8351952440fe03fdd30ee817"},
 ]
 
 [package.dependencies]
 agate = ">=1.6,<1.7.1"
-betterproto = "1.2.5"
 cffi = ">=1.9,<2.0.0"
 click = ">=7.0,<9"
 colorama = ">=0.3.9,<0.4.7"
@@ -1294,11 +1275,12 @@ idna = ">=2.5,<4"
 isodate = ">=0.6,<0.7"
 Jinja2 = "3.1.2"
 logbook = ">=1.5,<1.6"
-mashumaro = {version = "3.3.1", extras = ["msgpack"]}
+mashumaro = {version = "3.6", extras = ["msgpack"]}
 minimal-snowplow-tracker = "0.0.2"
 networkx = {version = ">=2.3,<3", markers = "python_version >= \"3.8\""}
 packaging = ">20.9"
-pathspec = ">=0.9,<0.11"
+pathspec = ">=0.9,<0.12"
+protobuf = ">=3.18.3"
 pytz = ">=2015.7"
 pyyaml = ">=6.0"
 requests = "<3.0.0"
@@ -1308,18 +1290,18 @@ werkzeug = ">=1,<3"
 
 [[package]]
 name = "dbt-duckdb"
-version = "1.4.1"
+version = "1.5.1"
 description = "The duckdb adapter plugin for dbt (data build tool)"
 category = "main"
 optional = false
 python-versions = "*"
 files = [
-    {file = "dbt-duckdb-1.4.1.tar.gz", hash = "sha256:889f6dc39c33c6efbfe370f98163887f49fbaf3f42dcf0fb5e59dfbd939f4f78"},
-    {file = "dbt_duckdb-1.4.1-py3-none-any.whl", hash = "sha256:3f460fd59b043126218368eefe040e6800c8a7dd0b2e76140123e5c5e13b0d82"},
+    {file = "dbt-duckdb-1.5.1.tar.gz", hash = "sha256:00bd9ed7338a9ec9d6a1c6f5f146447a89b07d46b7dd19c54d7f2f8150b43818"},
+    {file = "dbt_duckdb-1.5.1-py3-none-any.whl", hash = "sha256:6204309b2bd343bbd3df0c8dc673c968c9f4fc373e4537687dabd11c54f941da"},
 ]
 
 [package.dependencies]
-dbt-core = ">=1.4.0,<1.5.0"
+dbt-core = ">=1.5.0,<1.6.0"
 duckdb = ">=0.5.0"
 
 [package.extras]
@@ -2493,24 +2475,6 @@ grpcio = ">=1.43.0"
 protobuf = ">=3.6.0"
 
 [[package]]
-name = "grpclib"
-version = "0.4.3"
-description = "Pure-Python gRPC implementation for asyncio"
-category = "main"
-optional = false
-python-versions = ">=3.7"
-files = [
-    {file = "grpclib-0.4.3.tar.gz", hash = "sha256:eadf2002fc5a25158b707c0338a6c0b96dd7fbdc6df66f7e515e7f041d56a940"},
-]
-
-[package.dependencies]
-h2 = ">=3.1.0,<5"
-multidict = "*"
-
-[package.extras]
-protobuf = ["protobuf (>=3.15.0)"]
-
-[[package]]
 name = "h11"
 version = "0.14.0"
 description = "A pure-Python, bring-your-own-I/O implementation of HTTP/1.1"
@@ -2521,22 +2485,6 @@ files = [
     {file = "h11-0.14.0-py3-none-any.whl", hash = "sha256:e3fe4ac4b851c468cc8363d500db52c2ead036020723024a109d37346efaa761"},
     {file = "h11-0.14.0.tar.gz", hash = "sha256:8f19fbbe99e72420ff35c00b27a34cb9937e902a8b810e2c88300c6f0a3b699d"},
 ]
-
-[[package]]
-name = "h2"
-version = "4.1.0"
-description = "HTTP/2 State-Machine based protocol implementation"
-category = "main"
-optional = false
-python-versions = ">=3.6.1"
-files = [
-    {file = "h2-4.1.0-py3-none-any.whl", hash = "sha256:03a46bcf682256c95b5fd9e9a99c1323584c3eec6440d379b9903d709476bc6d"},
-    {file = "h2-4.1.0.tar.gz", hash = "sha256:a83aca08fbe7aacb79fec788c9c0bac936343560ed9ec18b82a13a12c28d2abb"},
-]
-
-[package.dependencies]
-hpack = ">=4.0,<5"
-hyperframe = ">=6.0,<7"
 
 [[package]]
 name = "hologram"
@@ -2553,18 +2501,6 @@ files = [
 [package.dependencies]
 jsonschema = ">=3.0"
 python-dateutil = ">=2.8,<2.9"
-
-[[package]]
-name = "hpack"
-version = "4.0.0"
-description = "Pure-Python HPACK header compression"
-category = "main"
-optional = false
-python-versions = ">=3.6.1"
-files = [
-    {file = "hpack-4.0.0-py3-none-any.whl", hash = "sha256:84a076fad3dc9a9f8063ccb8041ef100867b1878b25ef0ee63847a5d53818a6c"},
-    {file = "hpack-4.0.0.tar.gz", hash = "sha256:fc41de0c63e687ebffde81187a948221294896f6bdc0ae2312708df339430095"},
-]
 
 [[package]]
 name = "httptools"
@@ -2652,18 +2588,6 @@ antlr4-python3-runtime = ">=4.9.0,<4.10.0"
 importlib-resources = {version = "*", markers = "python_version < \"3.9\""}
 omegaconf = ">=2.2,<2.4"
 packaging = "*"
-
-[[package]]
-name = "hyperframe"
-version = "6.0.1"
-description = "HTTP/2 framing layer for Python"
-category = "main"
-optional = false
-python-versions = ">=3.6.1"
-files = [
-    {file = "hyperframe-6.0.1-py3-none-any.whl", hash = "sha256:0ec6bafd80d8ad2195c4f03aacba3a8265e57bc4cff261e802bf39970ed02a15"},
-    {file = "hyperframe-6.0.1.tar.gz", hash = "sha256:ae510046231dc8e9ecb1a6586f63d2347bf4c8905914aa84ba585ae85f28a914"},
-]
 
 [[package]]
 name = "hyperlink"
@@ -3552,14 +3476,14 @@ files = [
 
 [[package]]
 name = "mashumaro"
-version = "3.3.1"
-description = "Fast serialization framework on top of dataclasses"
+version = "3.6"
+description = "Fast serialization library on top of dataclasses"
 category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "mashumaro-3.3.1-py3-none-any.whl", hash = "sha256:74ae7704e4ac8813ff701909aa8d96a405156dc2e1e3fd34ac07db7f0823a54a"},
-    {file = "mashumaro-3.3.1.tar.gz", hash = "sha256:997ed0a4ce64967b96ff65f5ca76b8e5e459a4ec7a6a0f73625a067004a801c9"},
+    {file = "mashumaro-3.6-py3-none-any.whl", hash = "sha256:77403e3e2ecd0a7d0e22d472c08e33282460e48726eabe356c5163efbdf9c7ee"},
+    {file = "mashumaro-3.6.tar.gz", hash = "sha256:ceb3de53029219bbbb0385ca600b59348dcd14e0c68523986c6d51889ad338f5"},
 ]
 
 [package.dependencies]
@@ -7066,4 +6990,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8, <3.11, !=3.9.7"
-content-hash = "73ff75aa8edabd4c9f5d09c3df17760d4e807e12448eb6a6f9a73a97a75d1e02"
+content-hash = "f32bf8da794c92eafd0a864641d3ef653e61ccc5b7cc56e7e531b49b0ac2d506"
