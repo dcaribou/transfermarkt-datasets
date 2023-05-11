@@ -22,15 +22,16 @@ models:
       - name: appearance_id
         tests:
           - unique
+
   - name: clubs
     tests:
       - dbt_expectations.expect_table_columns_to_contain_set:
           column_list:
             - club_id
-            - club_code
-            - name
+            - club_code # TODO: many nulls
+            - name # TODO: many nulls
             - domestic_competition_id
-            - total_market_value
+            - total_market_value # TODO: many nulls
             - squad_size
             - average_age
             - foreigners_number
@@ -39,6 +40,87 @@ models:
             - stadium_name
             - stadium_seats
             - net_transfer_record
-            - coach_name
+            - coach_name # TODO: many nulls
             - url
             - club_id
+    columns:
+      - name: club_code
+        tests:
+          - unique
+          - not_null
+      - name: name
+        tests:
+          - not_null
+
+  - name: competitions
+    tests:
+      - dbt_expectations.expect_table_columns_to_contain_set:
+          column_list:
+            - competition_id
+            - competition_code
+            - name # TODO: many nulls
+            - type
+            - sub_type
+            - country_id
+            - country_name
+            # - country_latitude
+            # - country_longitude
+            - domestic_league_code
+            - confederation
+            - url
+    columns:
+      - name: competition_id
+        tests:
+          - unique
+
+  - name: games
+    tests:
+      - dbt_expectations.expect_table_columns_to_contain_set:
+          column_list:
+            - game_id
+            - competition_id
+            - game_id
+            - competition_id
+            - competition_type
+            - season
+            - round
+            - date
+            - home_club_id
+            - away_club_id
+            - home_club_goals
+            - away_club_goals
+            # - aggregate
+            - home_club_position
+            - away_club_position
+            # - club_home_name
+            # - club_away_name
+            - home_club_manager_name
+            - away_club_manager_name
+            - stadium
+            - attendance
+            - referee
+            - url
+    columns:
+      - name: game_id
+        tests:
+          - unique
+          - not_null
+
+  - name: club_games
+    tests:
+      - dbt_expectations.expect_table_columns_to_contain_set:
+          column_list:
+            - club_id
+            - game_id
+            - own_goals
+            - own_position
+            - own_manager_name
+            - opponent_id
+            - opponent_goals
+            - opponent_position
+            - opponent_manager_name
+            - hosting
+            - is_win
+    tests:
+      - unique:
+          column_name: (game_id || club_id)

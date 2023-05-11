@@ -73,4 +73,3 @@ select
 from json_players
 
 where n = 1
-and name is not null

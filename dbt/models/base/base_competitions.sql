@@ -25,7 +25,7 @@ select
         ) then 'international_cup'
         else 'other'
     end as "type",
-    (json_row ->> 'country_id')::integer as country_id,
+    coalesce((json_row ->> 'country_id')::integer, -1) as country_id,
     (json_row ->> 'country_name') as country_name,
     (json_row ->> 'country_code') as domestic_league_code,
     str_split((json_row -> 'parent' ->> 'href'), '/')[3] as confederation,
