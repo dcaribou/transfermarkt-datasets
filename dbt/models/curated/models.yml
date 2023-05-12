@@ -124,3 +124,15 @@ models:
     tests:
       - unique:
           column_name: (game_id || club_id)
+
+  - name: game_events
+    tests:
+      - dbt_expectations.expect_table_columns_to_contain_set:
+          column_list:
+            - game_id
+            - minute
+            - type
+            - club_id
+            - player_id
+            - description
+            - player_in_id
