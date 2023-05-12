@@ -73,6 +73,49 @@ models:
         tests:
           - unique
 
+  - name: players
+    tests:
+      - dbt_expectations.expect_table_columns_to_contain_set:
+          column_list:
+            - player_id
+            - name
+            - current_club_id
+            - current_club_name
+            - country_of_citizenship
+            - country_of_birth
+            - city_of_birth
+            - date_of_birth
+            - position
+            - sub_position
+            - foot
+            - height_in_cm
+            # - market_value_in_eur
+            # - highest_market_value_in_eur
+            - agent_name
+            # - contract_expiration_date
+            - current_club_domestic_competition_id
+            - first_name
+            - last_name
+            - player_code
+            - image_url
+            - last_season
+            - url
+    columns:
+      - name: player_id
+        tests:
+          - unique
+          - not_null
+      - name: player_code
+        tests:
+          - unique
+          - not_null
+      - name: name
+        tests:
+          - not_null
+      - name: current_club_name
+        tests:
+          - not_null
+
   - name: games
     tests:
       - dbt_expectations.expect_table_columns_to_contain_set:
