@@ -64,3 +64,6 @@ dbt/target
 dbt/dbt_packages
 
 duck.db
+
+prep_new
+notebooks/*.html

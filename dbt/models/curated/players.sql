@@ -12,9 +12,7 @@ clubs_cte as (
 select
     players_cte.*,
     clubs_cte.domestic_competition_id as current_club_domestic_competition_id,
-    clubs_cte.name as current_club_name,
-    {# clubs_cte.highest_market_value as highest_market_value_in_eur #}
-    {# clubs_cte.market_value as market_value_in_eur #}
+    clubs_cte.name as current_club_name
 
 from players_cte
 
