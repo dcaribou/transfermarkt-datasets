@@ -115,3 +115,6 @@ stash_and_commit: ## commit and push code and data
 	dvc commit -f && git add data && \
     git diff-index --quiet HEAD data || git commit -m "$(MESSAGE)" && \
     git push && dvc push
+
+test: ## run unit tests for core python module
+	pytest
