@@ -4,9 +4,8 @@ with
         select
             json(value) as json_row,
             str_split(filename, '/')[4] as season,
-            (str_split(json_extract_string(json_row, '$.href'), '/')[5]) as game_id,
-            row_number() over (partition by game_id order by season desc) as n
-
+            (str_split(json_extract_string(json_row, '$.href'), '/')[5]) as game_id
+            
         from {{ source("raw_tfmkt", "games") }}
 
     ),
