@@ -14,9 +14,6 @@ with
 select
     game_id,
     (str_split(json_extract_string(json_row, '$.parent.href'), '/')[5]) as competition_id,
-    {# coalesce(
-        infer_season(json_extract_string(json_row, '$.date'))::date, -1
-    ) as season, #}
     season,
     json_extract_string(json_row, '$.matchday') as round,
     case

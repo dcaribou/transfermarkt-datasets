@@ -155,11 +155,11 @@ models:
             - away_club_id
             - home_club_goals
             - away_club_goals
-            # - aggregate
+            - aggregate
             - home_club_position
             - away_club_position
-            # - club_home_name
-            # - club_away_name
+            - home_club_name
+            - away_club_name
             - home_club_manager_name
             - away_club_manager_name
             - stadium

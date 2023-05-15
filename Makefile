@@ -70,7 +70,7 @@ acquire_cloud:
 prepare_local: ## run the prep process locally (refreshes data/prep)
 prepare_local: ARGS =
 prepare_local:
-	cd dbt && dbt deps && dbt run
+	cd dbt && dbt deps && dbt run --threads 4
 
 prepare_docker: ## run the prep process in a local docker
 	docker run -ti \

@@ -14,7 +14,7 @@ with
 select
     competition_id,
     str_split((json_row ->> 'href'), '/')[2] as competition_code,
-    {# prep_df["name"] = prep_df["competition_code"].apply(lambda x: titleize(x)) #}
+    competition_code as name, -- TODO: this used be done with the titelize function
     json_row ->> 'competition_type' as sub_type,
     case
         when sub_type = 'first_tier' then 'domestic_league'

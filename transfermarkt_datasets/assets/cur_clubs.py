@@ -46,6 +46,7 @@ class CurClubsAsset(Asset):
       form='uri'
       )
     )
+    self.schema.add_field(Field(name='last_season', type='date'))
 
     self.schema.primary_key = ['club_id']
     self.schema.foreign_keys = [
