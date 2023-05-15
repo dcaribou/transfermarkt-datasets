@@ -116,6 +116,29 @@ models:
         tests:
           - not_null
 
+  - name: player_valuations
+    tests:
+      - dbt_expectations.expect_table_columns_to_contain_set:
+          column_list:
+            - player_id
+            - date
+            - datetime
+            - dateweek
+            - current_club_id
+            - market_value_in_eur
+            - player_club_domestic_competition_id
+      - unique:
+          column_name: (player_id || "date")
+    columns:
+      - name: player_id
+        tests:
+          - not_null
+      - name: market_value_in_eur
+        description: >
+          The player's market value for the given date in EUR.
+        tests:
+          - not_null
+
   - name: games
     tests:
       - dbt_expectations.expect_table_columns_to_contain_set:
