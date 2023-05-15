@@ -13,9 +13,6 @@ with
     )
 
 select
-    case when json_row ->> 'current_market_value' = '-' then null
-    else json_row ->> 'current_market_value'
-    end as current_market_value_in_eur,
     player_id,
     case
         when len(trim(json_extract_string(json_row, '$.name'))) = 0
@@ -83,20 +80,13 @@ select
         else json_extract_string(json_row, '$.foot')
     end as foot,
     case when json_row ->> 'height' != 'null'
-    then trim(regexp_replace((json_row ->> 'height')[:4], '[,\s]', ''))::integer
+    then trim(regexp_replace((json_row ->> 'height')[:4], '[,\s´]', ''))::integer
     else null
     end as height_in_cm,
-    json_row ->> 'current_market_value',
-    {#
-    prep_df["market_value_in_eur"] = (
-      json_normalized["current_market_value"].apply(parse_market_value)
-    )
-    prep_df["highest_market_value_in_eur"] = (
-      json_normalized["highest_market_value"].apply(parse_market_value)
-    )
-    #}
+    {{ parse_market_value("json_row ->> 'current_market_value'") }} as market_value_in_eur,
+    {{ parse_market_value("json_row ->> 'highest_market_value'") }} as highest_market_value_in_eur,
     json_extract_string(json_row, '$.player_agent.name') as agent_name,
-    strptime(
+    {# strptime(
         case when json_extract_string(json_row, '$.contract_expires') = '-' then null
         else
             case
@@ -106,11 +96,10 @@ select
             end
         end,
         '%b %-d, %Y'
-    )::date as contract_expiration_date,
+    )::date as contract_expiration_date, #}
     json_extract_string(json_row, '$.image_url') as image_url,
     'https://www.transfermarkt.co.uk' || json_extract_string(json_row, '$.href') as url
 
 from json_players
 
 where n = 1
-and current_market_value_in_eur is not null

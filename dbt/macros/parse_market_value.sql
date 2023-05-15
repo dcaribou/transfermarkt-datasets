@@ -3,8 +3,12 @@
     {% set factor = regexp_extract %}
     {% set regex = '(£|€)([0-9\.]+)(Th|k|m|M)' %}
 
+    {% set str_number %}
+        regexp_extract({{ expression }}, '{{ regex }}', 2)
+    {% endset %}
+
     {% set number %}
-        regexp_extract({{ expression }}, '{{ regex }}', 2)::float
+        case when len({{ str_number }}) > 0 then ({{ str_number }})::float end
     {% endset %}
 
     {% set str_factor %}
