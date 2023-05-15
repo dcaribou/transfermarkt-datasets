@@ -7,22 +7,21 @@ authors = ["dcaribou <davidcereijo@live.com>"]
 [tool.poetry.dependencies]
 python = ">=3.8, <3.11, !=3.9.7"
 pandas = "^1.4.2"
-boto3 = "^1.0.4"
 pytest = "^7.1.2"
-dvc = {extras = ["s3"], version = "^2.17.0"}
 scipy = "^1.8.0"
 kaggle = "^1.5.12"
 streamlit = "1.15.2"
 plotly = "^5.11.0"
 transfermarkt-scraper = {git = "https://github.com/dcaribou/transfermarkt-scraper.git", branch = "main"}
 dbt-duckdb = "1.5.1"
+dvc = {extras = ["s3"], version = "^2.56.0"}
 
 [tool.poetry.group.dev.dependencies]
 jupyter = "^1.0.0"
 autopep8 = "^1.7.0"
 shandy-sqlfmt = {extras = ["jinjafmt"], version = "^0.18.0"}
 datacompy = "^0.9.0"
-
+frictionless = "^5.13.1"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
