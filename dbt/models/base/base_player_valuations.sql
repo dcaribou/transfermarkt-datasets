@@ -7,11 +7,10 @@ with
             (str_split(json_extract_string(json_row, '$.href'), '/')[5])::integer as player_id,
             row_number() over (partition by player_id order by season desc) as n
         
-        from {{ source("raw_tfmkt", "players") }}
-        
+        from {{ source("raw_tfmkt", "players") }}        
 
     ),
-    deduped_json_players as (
+    deduped_seasons as (
 
         select * from json_players where n = 1
 
@@ -20,17 +19,29 @@ with
 
     select
         unnest(json_transform(json_extract(json_row, '$.market_value_history'), '["JSON"]')) as json_row,
-        player_id
-    from deduped_json_players
+        player_id,
+        season
+    from deduped_seasons
 
-)
+    ),
+    extracted as (
+        
+        select
+            player_id,
+            season as last_season,
+            strptime(json_row ->> 'datum_mw', '%b %d, %Y') as "datetime",
+            ("datetime")::date as "date",
+            date_trunc('week', "datetime") as dateweek,
+            {{ parse_market_value("json_row ->> 'mw'") }} as market_value_in_eur,
+            row_number() over (partition by player_id, "date" order by "date" desc) as n
 
-select
-    player_id,
-    strptime(json_row ->> 'datum_mw', '%b %d, %Y') as "datetime",
-    ("datetime")::date as "date",
-    date_trunc('week', "datetime") as dateweek,
-    {{ parse_market_value("json_row ->> 'mw'") }} as market_value_in_eur
+        from unnested
+        where json_row ->> 'mw' != '-'
 
-from unnested
-where json_row ->> 'mw' != '-'
+    )
+
+select *
+from extracted
+where n = 1
+
+

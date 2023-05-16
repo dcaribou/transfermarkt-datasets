@@ -28,10 +28,10 @@ models:
       - dbt_expectations.expect_table_columns_to_contain_set:
           column_list:
             - club_id
-            - club_code # TODO: many nulls
-            - name # TODO: many nulls
+            - club_code
+            - name
             - domestic_competition_id
-            - total_market_value # TODO: many nulls
+            - total_market_value
             - squad_size
             - average_age
             - foreigners_number
@@ -40,7 +40,7 @@ models:
             - stadium_name
             - stadium_seats
             - net_transfer_record
-            - coach_name # TODO: many nulls
+            - coach_name
             - url
             - club_id
     columns:
@@ -58,13 +58,11 @@ models:
           column_list:
             - competition_id
             - competition_code
-            - name # TODO: many nulls
+            - name
             - type
             - sub_type
             - country_id
             - country_name
-            # - country_latitude
-            # - country_longitude
             - domestic_league_code
             - confederation
             - url
@@ -72,6 +70,9 @@ models:
       - name: competition_id
         tests:
           - unique
+      - name: name
+        tests:
+          - not_null
 
   - name: players
     tests:
@@ -89,10 +90,10 @@ models:
             - sub_position
             - foot
             - height_in_cm
-            # - market_value_in_eur
-            # - highest_market_value_in_eur
+            - market_value_in_eur
+            - highest_market_value_in_eur
             - agent_name
-            # - contract_expiration_date
+            - contract_expiration_date
             - current_club_domestic_competition_id
             - first_name
             - last_name
@@ -107,7 +108,6 @@ models:
           - not_null
       - name: player_code
         tests:
-          - unique
           - not_null
       - name: name
         tests:

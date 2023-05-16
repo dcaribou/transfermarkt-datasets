@@ -1,6 +1,7 @@
 ![Build Status](https://github.com/dcaribou/transfermarkt-datasets/actions/workflows/on-push.yml/badge.svg)
 ![Pipeline Status](https://github.com/dcaribou/transfermarkt-datasets/actions/workflows/on-schedule.yml/badge.svg)
 ![Visitors](https://visitor-badge.glitch.me/badge?page_id=dcaribou.transfermarkt-datasets&left_color=green&right_color=red)
+![dbt Version](https://img.shields.io/static/v1?logo=dbt&label=dbt-version&message=1.5.1&color=orange)
 
 # transfermarkt-datasets
 
@@ -71,7 +72,6 @@ class appearances {
 - [data storage](#data-storage)
 - [data acquisition](#data-acquisition)
 - [data preparation](#data-preparation)
-  - [dagster](#dagster)
   - [configuration](#configuration)
   - [python api](#python-api)
 - [data publication](#data-publication)
@@ -113,7 +113,7 @@ All project data assets are kept inside the `data` folder. This is a [DVC](https
 path | description
 -|-
 `data/raw` | contains raw data per season as acquired with [trasfermarkt-scraper](https://github.com/dcaribou/transfermarkt-scraper) (check [acquire](#data-acquisition))
-`data/prep` | contains prepared datasets as produced by `transfermarkt_datasets` module (check [prepare](#data-preparation))
+`data/prep` | contains prepared datasets as produced by dbt (check [prepare](#data-preparation))
 
 ## data acquisition
 In the scope of this project, "acquiring" is the process of collecting "raw data", as it is produced by [trasfermarkt-scraper](https://github.com/dcaribou/transfermarkt-scraper). Acquired data lives in the `data/raw` folder and it can be created or updated for a particular season by running `make acquire_local`
@@ -124,22 +124,7 @@ make acquire_local ARGS="--asset all --season 2022"
 This runs the scraper with a set of parameters and collects the output in `data/raw`.
 
 ## data preparation
-In the scope of this project, "preparing" is the process of transforming raw data to create a high quality dataset that can be conveniently consumed by analysts of all kinds. The `transfermark_datasets` module deals with the data preparation.
-
-path | description
--|-
-`transfermark_datasets/core` | core classes and utils that are used to work with the dataset
-`transfermark_datasets/tests` | unit tests for core classes
-`transfermark_datasets/assets` | perpared asset definitions: one python file per asset
-`transfermark_datasets/dagster` | dagster job definitions
-`transfermark_datasets/stage` | temporary location for asset generation
-
-### dagster
-The dataset preparation steps are rendered as a [dagster](https://dagster.io/) job.
-* `make prepare_local` runs the dagster preparation job in process
-* `make dagit_local` spins up a `dagit` UI where the execution can be visualised
-
-![dagster](resources/dagster.png)
+In the scope of this project, "preparing" is the process of transforming raw data to create a high quality dataset that can be conveniently consumed by analysts of all kinds. dbt..
 
 ### configuration
 Different project configurations are defined in the [config.yml](config.yml) file.
@@ -168,6 +153,17 @@ td.assets["games"].prep_df # get the built asset in a dataframe
 td.assets["games"].load_raw()
 td.assets["games"].raw_df 
 ```
+The `transfermark_datasets` module deals with the data preparation.
+
+path | description
+-|-
+`transfermark_datasets/core` | core classes and utils that are used to work with the dataset
+`transfermark_datasets/tests` | unit tests for core classes
+`transfermark_datasets/assets` | perpared asset definitions: one python file per asset
+`transfermark_datasets/dagster` | dagster job definitions
+`transfermark_datasets/stage` | temporary location for asset generation
+
+
 For more examples on using `transfermark_datasets`, checkout the sample [notebooks](notebooks).
 
 ## data publication

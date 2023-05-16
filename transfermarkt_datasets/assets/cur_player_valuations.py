@@ -22,6 +22,11 @@ class CurPlayerValuationsAsset(Asset):
         Field(name='date', type='date'),
         Field(name='datetime', type='date'),
         Field(name='dateweek', type='date'),
+        Field(
+          name='last_season',
+          description='Last season where the player was seen in the dataset.',
+          type='date'
+        ),
         Field(name='player_id', type='integer'),
         Field(name='current_club_id', type='integer'),
         Field(name='market_value_in_eur', type='number'),
@@ -29,7 +34,8 @@ class CurPlayerValuationsAsset(Asset):
           name='player_club_domestic_competition_id',
           type='string',
           tags=["explore"]
-        )
+        ),
+        Field(name='n', type='number')
       ]
     )
 

@@ -58,3 +58,4 @@ select
 from json_games
 
 where n = 1
+and "date" is not null
