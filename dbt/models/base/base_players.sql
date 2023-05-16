@@ -30,9 +30,9 @@ select
         str_split(json_extract_string(json_row, '$.parent.href'), '/')[5], -1
     ) as current_club_id,
     json_extract_string(json_row, '$.code') as player_code,
-    json_extract_string(json_row, '$.place_of_birth.country') as country_of_birth,
-    json_extract_string(json_row, '$.place_of_birth.city') as city_of_birth,
-    json_extract_string(json_row, '$.citizenship') as country_of_citizenship,
+    trim(json_extract_string(json_row, '$.place_of_birth.country')) as country_of_birth,
+    trim(json_extract_string(json_row, '$.place_of_birth.city')) as city_of_birth,
+    trim(json_extract_string(json_row, '$.citizenship')) as country_of_citizenship,
 
     strptime(
         case
