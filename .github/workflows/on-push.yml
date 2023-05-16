@@ -38,9 +38,7 @@ jobs:
         run: |
           source .venv/bin/activate
           
-          make dvc_pull
-          make test
-          make prepare_local
+          make dvc_pull test prepare_local
 
       - name: image build
         env:
