@@ -1,11 +1,10 @@
 name: build
 
 on:
-  # disable workflow until further notice
   push:
-    branches: []
+    branches: [master]
   pull_request:
-    branches: []
+    branches: [master]
 
 jobs:
   build:
