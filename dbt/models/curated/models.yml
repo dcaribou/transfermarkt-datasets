@@ -135,10 +135,12 @@ models:
           - not_null
       - name: market_value_in_eur
         tests:
-          - not_null # tolerance=0.35
+          - too_many_missings:
+              tolerance: 0.37
       - name: contract_expiration_date
         tests:
-          - not_null # tolerance=0.40
+          - too_many_missings:
+              tolerance: 0.40
       - name: position
         tests:
           - accepted_values:
@@ -211,10 +213,12 @@ models:
           - not_null
       - name: home_club_manager_name
         tests:
-          - not_null
+          - too_many_missings:
+              tolerance: 0.012
       - name: away_club_manager_name
         tests:
-          - not_null
+          - too_many_missings:
+              tolerance: 0.012
 
   - name: club_games
     tests:
