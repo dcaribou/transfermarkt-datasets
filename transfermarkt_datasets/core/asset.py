@@ -156,7 +156,7 @@ class RawAsset(Asset):
 
     if not self.raw_file_name:
       file_name = self.name.replace("base_", "")
-      self.raw_file_name = file_name + ".json"
+      self.raw_file_name = file_name + ".json.gz"
 
   def load_raw(self):
 
