@@ -5,7 +5,7 @@
 
 # transfermarkt-datasets
 
-In an nutshell, this project aims for three things
+In an nutshell, this project aims for three things:
 
 1. Acquiring data from the transfermarkt website using the [trasfermarkt-scraper](https://github.com/dcaribou/transfermarkt-scraper).
 2. Building a **clean, public football (soccer) dataset** using data in 1.
