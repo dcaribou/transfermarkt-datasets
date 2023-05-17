@@ -12,7 +12,7 @@ class CurPlayerValuationsAsset(Asset):
   The `player_valuations` asset contains one row per player value record.
   Player value records appear as a result of a change in the player market value.
   """
-  file_name = "player_valuations.csv"
+  file_name = "player_valuations.csv.gz"
 
   def __init__(self, *args, **kwargs) -> None:
     super().__init__(*args, **kwargs)

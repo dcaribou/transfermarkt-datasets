@@ -14,7 +14,7 @@ class CurClubsAsset(Asset):
   The `clubs` asset contains one row per club in the dataset.
   All clubs are tied to one particular `competition`.
   """
-  file_name = "clubs.csv"
+  file_name = "clubs.csv.gz"
 
   def __init__(self, *args, **kwargs) -> None:
     super().__init__(*args, **kwargs)

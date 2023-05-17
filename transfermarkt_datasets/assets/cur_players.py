@@ -9,7 +9,7 @@ from transfermarkt_datasets.core.schema import Schema, Field
 class CurPlayersAsset(RawAsset):
 
   name = "cur_players"
-  file_name = "players.csv"
+  file_name = "players.csv.gz"
   
   description = """
   The `players` asset contains one row per player in the dataset.

@@ -30,7 +30,7 @@ class CurClubGamesAsset(Asset):
   _The same game represented in the `club_games` asset_
 
   """
-  file_name = "club_games.csv"
+  file_name = "club_games.csv.gz"
 
   def __init__(self, *args, **kwargs) -> None:
     super().__init__(*args, **kwargs)

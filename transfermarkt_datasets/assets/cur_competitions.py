@@ -11,7 +11,7 @@ class CurCompetitionsAsset(RawAsset):
   description = """
   The `competitions` asset contains one row per competition in the dataset, including national leagues, cups and international tournaments. 
   """
-  file_name = "competitions.csv"
+  file_name = "competitions.csv.gz"
 
   def __init__(self, *args, **kwargs) -> None:
     super().__init__(*args, **kwargs)

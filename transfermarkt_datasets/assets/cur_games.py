@@ -9,7 +9,7 @@ class CurGamesAsset(Asset):
   The `games` asset contains one row per game in the dataset.
   All games are tied to one particular `competition`.
   """
-  file_name = "games.csv"
+  file_name = "games.csv.gz"
 
   def __init__(self, *args, **kwargs) -> None:
     super().__init__(*args, **kwargs)

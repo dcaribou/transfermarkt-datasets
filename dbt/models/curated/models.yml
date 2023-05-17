@@ -1,5 +1,8 @@
 version: 2
 
+# check all available dbt_expectations tests in
+# https://github.com/calogica/dbt-expectations#available-tests
+
 models:
   - name: appearances
     tests:
@@ -18,10 +21,16 @@ models:
             - goals
             - assists
             - minutes_played
+      - dbt_expectations.expect_table_row_count_to_be_between:
+          min_value: 1000000
+          max_value: 1500000
     columns:
       - name: appearance_id
         tests:
           - unique
+      - name: game_id
+        tests:
+          - not_null
 
   - name: clubs
     tests:
@@ -43,6 +52,9 @@ models:
             - coach_name
             - url
             - club_id
+      - dbt_expectations.expect_table_row_count_to_be_between:
+          min_value: 400
+          max_value: 420
     columns:
       - name: club_code
         tests:
@@ -66,6 +78,9 @@ models:
             - domestic_league_code
             - confederation
             - url
+      - dbt_expectations.expect_table_row_count_to_be_between:
+          min_value: 43
+          max_value: 45
     columns:
       - name: competition_id
         tests:
@@ -101,6 +116,9 @@ models:
             - image_url
             - last_season
             - url
+      - dbt_expectations.expect_table_row_count_to_be_between:
+          min_value: 28000
+          max_value: 30000
     columns:
       - name: player_id
         tests:
@@ -115,9 +133,21 @@ models:
       - name: current_club_name
         tests:
           - not_null
+      - name: market_value_in_eur
+        tests:
+          - not_null # tolerance=0.35
+      - name: contract_expiration_date
+        tests:
+          - not_null # tolerance=0.40
+      - name: position
+        tests:
+          - accepted_values:
+              values: ['Attack', 'Defender', 'Midfield', 'Goalkeeper', 'Missing']
 
   - name: player_valuations
     tests:
+      - unique:
+          column_name: (player_id || "date")
       - dbt_expectations.expect_table_columns_to_contain_set:
           column_list:
             - player_id
@@ -127,8 +157,13 @@ models:
             - current_club_id
             - market_value_in_eur
             - player_club_domestic_competition_id
-      - unique:
-          column_name: (player_id || "date")
+      - dbt_expectations.expect_table_row_count_to_be_between:
+          min_value: 400000
+          max_value: 440000
+    columns:
+      - name: market_value_in_eur
+        tests:
+          - not_null
     columns:
       - name: player_id
         tests:
@@ -166,14 +201,25 @@ models:
             - attendance
             - referee
             - url
+      - dbt_expectations.expect_table_row_count_to_be_between:
+          min_value: 61000
+          max_value: 67000
     columns:
       - name: game_id
         tests:
           - unique
           - not_null
+      - name: home_club_manager_name
+        tests:
+          - not_null
+      - name: away_club_manager_name
+        tests:
+          - not_null
 
   - name: club_games
     tests:
+      - unique:
+          column_name: (game_id || club_id)
       - dbt_expectations.expect_table_columns_to_contain_set:
           column_list:
             - club_id
@@ -187,9 +233,9 @@ models:
             - opponent_manager_name
             - hosting
             - is_win
-    tests:
-      - unique:
-          column_name: (game_id || club_id)
+      - dbt_expectations.expect_table_row_count_to_be_between:
+          min_value: 116000
+          max_value: 136000
 
   - name: game_events
     tests:
@@ -202,3 +248,9 @@ models:
             - player_id
             - description
             - player_in_id
+      - unique:
+          column_name: (game_id || player_id || club_id || type || minute || coalesce(description, '') || player_in_id )
+    columns:
+      - name: minute
+        tests:
+          - not_null

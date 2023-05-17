@@ -12,7 +12,7 @@ class CurAppearancesAsset(Asset):
   The `appearances` asset contains one records per player appearance. That is, one record per player per game played.
   All `appearances` are bound to one particular `player`. 
   """
-  file_name = "appearances.csv"
+  file_name = "appearances.csv.gz"
 
   def __init__(self, *args, **kwargs) -> None:
     super().__init__(*args, **kwargs)

@@ -76,7 +76,7 @@ class Asset:
 
   @property
   def file_name(self) -> str:
-    return self.name + ".csv"
+    return self.name + ".csv.gz"
   
   @property
   def prep_path(self) -> str:

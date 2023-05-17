@@ -80,7 +80,7 @@ class TestAsset(unittest.TestCase):
 
         self.assertEqual(
             a.file_name,
-            "asset_a.csv"
+            "asset_a.csv.gz"
         )
 
         self.assertEqual(
