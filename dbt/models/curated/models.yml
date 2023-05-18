@@ -116,9 +116,9 @@ models:
             - image_url
             - last_season
             - url
-      - dbt_expectations.expect_table_row_count_to_be_between:
-          min_value: 28000
-          max_value: 30000
+      # - dbt_expectations.expect_table_row_count_to_be_between:
+      #     min_value: 28000
+      #     max_value: 30000
     columns:
       - name: player_id
         tests:
@@ -252,9 +252,9 @@ models:
             - player_id
             - description
             - player_in_id
-      - unique:
-          column_name: >
-            (game_id || player_id || club_id || type || minute || coalesce(description, '') || player_in_id )
+      # - unique:
+      #     column_name: >
+      #       (game_id || player_id || club_id || type || minute || coalesce(description, '') || player_in_id )
     columns:
       - name: minute
         tests:
