@@ -43,5 +43,3 @@ with
 select *
 from extracted
 where n = 1
-
-
