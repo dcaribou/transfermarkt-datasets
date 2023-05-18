@@ -253,7 +253,8 @@ models:
             - description
             - player_in_id
       - unique:
-          column_name: (game_id || player_id || club_id || type || minute || coalesce(description, '') || player_in_id )
+          column_name: >
+            (game_id || player_id || club_id || type || minute || coalesce(description, '') || player_in_id )
     columns:
       - name: minute
         tests:

@@ -4,9 +4,12 @@ with
         select
             json(value) as json_row,
             str_split(filename, '/')[4] as season,
-            (str_split(json_extract_string(json_row, '$.href'), '/')[5]) as game_id
+            (str_split(json_extract_string(json_row, '$.href'), '/')[5]) as game_id,
+            row_number() over (partition by game_id order by season desc) as n
             
         from {{ source("raw_tfmkt", "games") }}
+
+        where game_id != 2469192 -- this game has duplicated subsitution entries for some reason
 
     ),
 unnested as (
@@ -15,6 +18,8 @@ unnested as (
         unnest(json_transform(json_extract(json_row, '$.events'), '["JSON"]')) as json_row,
         game_id
     from json_game_events
+
+    where n = 1
 
 )
 
