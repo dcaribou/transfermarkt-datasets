@@ -38,7 +38,7 @@ jobs:
         run: |
           source .venv/bin/activate
           
-          make dvc_pull test prepare_local
+          make dvc_pull test prepare_local stash_and_commit
 
       - name: image build
         env:
