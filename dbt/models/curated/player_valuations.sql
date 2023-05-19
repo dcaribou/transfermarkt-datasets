@@ -26,4 +26,4 @@ left join players_cte using(player_id)
 left join clubs_cte
     on players_cte.current_club_id = clubs_cte.club_id
 
-order by "date" desc, player_id
+order by "date", player_id
