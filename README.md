@@ -100,9 +100,7 @@ sync                           run the sync process (refreshes data frontends)
 streamlit_local                run streamlit app locally
 dagit_local                    run dagit locally
 ```
-Run `make help` to see the full list.
-
-Once you've completed the setup, you should be able to run most of these from your machine.
+Run `make help` to see the full list. Once you've completed the setup, you should be able to run most of these from your machine.
 
 ## data storage
 > :information_source: Read access to the S3 [DVC remote storage](https://dvc.org/doc/command-reference/remote#description) for the project is required to successfully run `dvc pull`. Contributors can grant themselves access by adding their AWS IAM user ARN to [this whitelist](https://github.com/dcaribou/transfermarkt-datasets/blob/655fe130974905591ff80bb57813bedd01ec7d6c/infra/main.tf#L17).
@@ -127,10 +125,13 @@ In the scope of this project, "preparing" is the process of transforming raw dat
 
 Data prepartion is done in SQL using [dbt](https://docs.getdbt.com/) and [DuckDB](https://duckdb.org/). You can trigger a run of the preparation task using the `prepare_local` make target or work with the dbt CLI directly if you prefer.
 
-```bash
-cd dbt # this folder contains the dbt project
-dbt deps # required the first time you run dbt only
-dbt run -m +appearances # refresh prepartion for the appearances file with dependencies
+* `cd dbt` &rarr; The [dbt](dbt) folder contains the dbt project for data preparation
+* `dbt deps` &rarr; Install dbt packages. This is only required the first time you run dbt.
+* `dbt run -m +appearances` &rarr; Refresh the appearances file by running the model in dbt.
+
+dbt runs will populate a `dbt/duck.db` file in your local, which you can "connect to" using the DuckDB CLI and query the data using SQL.
+```console
+duckdb dbt/duck.db
 ```
 
 ![dbt](resources/dbt.png)
@@ -162,8 +163,8 @@ The module code lives in the `transfermark_datasets` folder with the structure b
 
 path | description
 -|-
-`transfermark_datasets/core` | core classes and utils that are used to work with the dataset
-`transfermark_datasets/tests` | unit tests for core classes
+`transfermark_datasets/core` | core classes and utils that are used to work with the dataset.
+`transfermark_datasets/tests` | unit tests for core classes.
 `transfermark_datasets/assets` | perpared asset definitions: one python file per asset
 
 For more examples on using `transfermark_datasets`, checkout the sample [notebooks](notebooks).
@@ -194,4 +195,4 @@ Contributions to `transfermarkt-datasets` are most welcome. If you want to contr
 4. Start modifying assets or creating new ones in the dbt project. You can use `make prepare_local` to run and test your changes.
 5. If it's all looking good, create a pull request with your changes :rocket:
 
-> :information: In case you face any issue, check installation issues and Discussions
+> ℹ️ In case you face any issue, check installation issues and Discussions
