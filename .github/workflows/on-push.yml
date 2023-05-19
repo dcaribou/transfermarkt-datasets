@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-
+    concurrency: build_queue
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -16,7 +16,7 @@ jobs:
 
     steps:
       - name: checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           token: ${{ secrets.PA_GITHUB_TOKEN }}
 
@@ -39,11 +39,10 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_EC2_METADATA_DISABLED: true # https://github.com/aws/aws-cli/issues/5262
-          BRANCH: ${{ steps.branch-name.outputs.current_branch }}
         run: |
           source .venv/bin/activate
 
-          make dvc_pull test prepare_local BRANCH=$BRANCH
+          make dvc_pull test prepare_local
           dvc commit -f
       
       - uses: EndBug/add-and-commit@v9
