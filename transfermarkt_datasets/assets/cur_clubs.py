@@ -6,8 +6,6 @@ import pandas as pd
 
 from transfermarkt_datasets.core.asset import Asset
 from transfermarkt_datasets.core.schema import Schema, Field
-from transfermarkt_datasets.assets.base_games import BaseGamesAsset
-from transfermarkt_datasets.assets.base_clubs import BaseClubsAsset
 
 class CurClubsAsset(Asset):
 
@@ -16,7 +14,7 @@ class CurClubsAsset(Asset):
   The `clubs` asset contains one row per club in the dataset.
   All clubs are tied to one particular `competition`.
   """
-  file_name = "clubs.csv"
+  file_name = "clubs.csv.gz"
 
   def __init__(self, *args, **kwargs) -> None:
     super().__init__(*args, **kwargs)
@@ -48,17 +46,9 @@ class CurClubsAsset(Asset):
       form='uri'
       )
     )
+    self.schema.add_field(Field(name='last_season', type='date'))
 
     self.schema.primary_key = ['club_id']
     self.schema.foreign_keys = [
       {"fields": "domestic_competition_id", "reference": {"resource": "cur_competitions", "fields": "competition_id"}}
     ]
-
-    self.checks = [
-      checks.table_dimensions(min_rows=400)
-    ]
-
-  def build(self, base_clubs: BaseClubsAsset):
-
-    clubs = base_clubs.prep_df
-    self.prep_df = clubs

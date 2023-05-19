@@ -1,0 +1,50 @@
+version: 2
+
+sources:
+  - name: raw_tfmkt
+    tables:
+      - name: appearances
+        meta:
+          external_location: >
+            read_csv(
+              '../data/raw/*/appearances.json.gz',
+              header=False,
+              columns=struct_pack(value := 'VARCHAR'), delim='\1', quote='\0',
+              filename=True
+            )
+      - name: games
+        meta:
+          external_location: >
+            read_csv(
+              '../data/raw/*/games.json.gz',
+              header=False,
+              columns=struct_pack(value := 'VARCHAR'), delim='\1', quote='\0',
+              filename=True
+            )
+      - name: players
+        meta:
+          external_location: >
+            read_csv(
+              '../data/raw/*/players.json.gz',
+              header=False,
+              columns=struct_pack(value := 'VARCHAR'), delim='\1', quote='\0',
+              filename=True
+            )
+      - name: clubs
+        meta:
+          external_location: >
+            read_csv(
+              '../data/raw/*/clubs.json.gz',
+              header=False,
+              columns=struct_pack(value := 'VARCHAR'), delim='\1', quote='\0',
+              filename=True
+            )
+      - name: competitions
+        meta:
+          external_location: >
+            read_csv(
+              '../data/competitions.json',
+              header=False,
+              columns=struct_pack(value := 'VARCHAR'), delim='\1', quote='\0',
+              filename=True
+            )

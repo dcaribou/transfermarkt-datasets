@@ -47,7 +47,9 @@ docker_push_flyio: docker_login_flyio
 	docker push registry.fly.io/transfermarkt-datasets:$(IMAGE_TAG)
 
 acquire_local: ## run the acquiring process locally (refreshes data/raw)
-	PYTHONPATH=$(PYTHONPATH):`pwd`/. python scripts/acquire.py local $(ARGS)
+	gunzip -r data/raw/*/*.json.gz && \
+	PYTHONPATH=$(PYTHONPATH):`pwd`/. python scripts/acquire.py local $(ARGS) && \
+	gzip -r data/raw/**/*.json
 
 acquire_docker: ## run the acquiring process in a local docker
 	docker run -ti \
@@ -70,15 +72,16 @@ acquire_cloud:
 prepare_local: ## run the prep process locally (refreshes data/prep)
 prepare_local: ARGS =
 prepare_local:
-	PYTHONPATH=$(PYTHONPATH):`pwd`/. python -Wignore scripts/prepare.py local $(ARGS)
+	python -c 'from transfermarkt_datasets.core.dataset import Dataset; td = Dataset(); td.write_datapackage()' && \
+	cd dbt && dbt deps && dbt build --threads 4
 
 prepare_docker: ## run the prep process in a local docker
 	docker run -ti \
 			--env-file .env \
 			-v `pwd`/.:/app/transfermarkt-datasets/ \
 			--memory=4g  \
-			dcaribou/transfermarkt-datasets:dev \
-				$(BRANCH) "prepared from local" prepare.py local $(ARGS)
+			dcaribou/transfermarkt-datasets:$(IMAGE_TAG) \
+				$(BRANCH) make prepare_local
 
 prepare_cloud: ## run the prep process in the cloud (aws batch)
 prepare_cloud: JOB_DEFINITION_NAME = transfermarkt-datasets-batch-job-definition-dev
@@ -92,7 +95,9 @@ prepare_cloud:
 sync: ## run the sync process (refreshes data frontends)
 sync: MESSAGE = Manual sync
 sync:
-	PYTHONPATH=$(PYTHONPATH):`pwd`/. python scripts/sync.py --message "$(MESSAGE)" --season 2022
+	gunzip -r data/prep/*.csv.gz && \
+	PYTHONPATH=$(PYTHONPATH):`pwd`/. python scripts/sync.py --message "$(MESSAGE)" --season 2022 && \
+	gzip -r data/prep/*.csv
 
 streamlit_local: ## run streamlit app locally
 	streamlit run streamlit/01_👋_about.py
@@ -114,4 +119,8 @@ dagit_local: ## run dagit locally
 stash_and_commit: ## commit and push code and data
 	dvc commit -f && git add data && \
     git diff-index --quiet HEAD data || git commit -m "$(MESSAGE)" && \
-    git push && dvc push
+    git push origin HEAD:${BRANCH} && \
+	dvc push
+
+test: ## run unit tests for core python module
+	pytest

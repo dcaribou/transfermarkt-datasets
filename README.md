@@ -1,6 +1,6 @@
 ![Build Status](https://github.com/dcaribou/transfermarkt-datasets/actions/workflows/on-push.yml/badge.svg)
 ![Pipeline Status](https://github.com/dcaribou/transfermarkt-datasets/actions/workflows/on-schedule.yml/badge.svg)
-![Visitors](https://visitor-badge.glitch.me/badge?page_id=dcaribou.transfermarkt-datasets&left_color=green&right_color=red)
+![dbt Version](https://img.shields.io/static/v1?logo=dbt&label=dbt-version&message=1.5.1&color=orange)
 
 # transfermarkt-datasets
 
@@ -71,8 +71,6 @@ class appearances {
 - [data storage](#data-storage)
 - [data acquisition](#data-acquisition)
 - [data preparation](#data-preparation)
-  - [dagster](#dagster)
-  - [configuration](#configuration)
   - [python api](#python-api)
 - [data publication](#data-publication)
 - [streamlit 🎈](#streamlit-)
@@ -101,9 +99,7 @@ sync                           run the sync process (refreshes data frontends)
 streamlit_local                run streamlit app locally
 dagit_local                    run dagit locally
 ```
-Run `make help` to see the full list.
-
-Once you've completed the setup, you should be able to run most of these from your machine.
+Run `make help` to see the full list. Once you've completed the setup, you should be able to run most of these from your machine.
 
 ## data storage
 > :information_source: Read access to the S3 [DVC remote storage](https://dvc.org/doc/command-reference/remote#description) for the project is required to successfully run `dvc pull`. Contributors can grant themselves access by adding their AWS IAM user ARN to [this whitelist](https://github.com/dcaribou/transfermarkt-datasets/blob/655fe130974905591ff80bb57813bedd01ec7d6c/infra/main.tf#L17).
@@ -113,7 +109,7 @@ All project data assets are kept inside the `data` folder. This is a [DVC](https
 path | description
 -|-
 `data/raw` | contains raw data per season as acquired with [trasfermarkt-scraper](https://github.com/dcaribou/transfermarkt-scraper) (check [acquire](#data-acquisition))
-`data/prep` | contains prepared datasets as produced by `transfermarkt_datasets` module (check [prepare](#data-preparation))
+`data/prep` | contains prepared datasets as produced by dbt (check [prepare](#data-preparation))
 
 ## data acquisition
 In the scope of this project, "acquiring" is the process of collecting "raw data", as it is produced by [trasfermarkt-scraper](https://github.com/dcaribou/transfermarkt-scraper). Acquired data lives in the `data/raw` folder and it can be created or updated for a particular season by running `make acquire_local`
@@ -124,28 +120,23 @@ make acquire_local ARGS="--asset all --season 2022"
 This runs the scraper with a set of parameters and collects the output in `data/raw`.
 
 ## data preparation
-In the scope of this project, "preparing" is the process of transforming raw data to create a high quality dataset that can be conveniently consumed by analysts of all kinds. The `transfermark_datasets` module deals with the data preparation.
+In the scope of this project, "preparing" is the process of transforming raw data to create a high quality dataset that can be conveniently consumed by analysts of all kinds.
 
-path | description
--|-
-`transfermark_datasets/core` | core classes and utils that are used to work with the dataset
-`transfermark_datasets/tests` | unit tests for core classes
-`transfermark_datasets/assets` | perpared asset definitions: one python file per asset
-`transfermark_datasets/dagster` | dagster job definitions
-`transfermark_datasets/stage` | temporary location for asset generation
+Data prepartion is done in SQL using [dbt](https://docs.getdbt.com/) and [DuckDB](https://duckdb.org/). You can trigger a run of the preparation task using the `prepare_local` make target or work with the dbt CLI directly if you prefer.
 
-### dagster
-The dataset preparation steps are rendered as a [dagster](https://dagster.io/) job.
-* `make prepare_local` runs the dagster preparation job in process
-* `make dagit_local` spins up a `dagit` UI where the execution can be visualised
+* `cd dbt` &rarr; The [dbt](dbt) folder contains the dbt project for data preparation
+* `dbt deps` &rarr; Install dbt packages. This is only required the first time you run dbt.
+* `dbt run -m +appearances` &rarr; Refresh the appearances file by running the model in dbt.
 
-![dagster](resources/dagster.png)
+dbt runs will populate a `dbt/duck.db` file in your local, which you can "connect to" using the DuckDB CLI and query the data using SQL.
+```console
+duckdb dbt/duck.db
+```
 
-### configuration
-Different project configurations are defined in the [config.yml](config.yml) file.
+![dbt](resources/dbt.png)
 
 ### python api
-`transfermark_datasets` provides a python api that can be used to work with the module from the python console. This is particularly convenient for working with the datasets from a notebook.
+A thin python wrapper is provided as a convenience utility to help with loading and inspecting the dataset (for example, from a notebook).
 
 ```python
 # import the module
@@ -154,13 +145,10 @@ from transfermarkt_datasets.core.dataset import Dataset
 # instantiate the datasets handler
 td = Dataset()
 
-# build the datasets from raw data
-td.discover_assets()
-td.build_datasets()
-# if perpared files already exist in data/prep, you can just load them
-# > td.load_assets()
+# load all assets into memory as pandas dataframes
+td.load_assets()
 
-# inspect the results
+# inspect assets
 td.asset_names # ["games", "players", ...]
 td.assets["games"].prep_df # get the built asset in a dataframe
 
@@ -168,6 +156,15 @@ td.assets["games"].prep_df # get the built asset in a dataframe
 td.assets["games"].load_raw()
 td.assets["games"].raw_df 
 ```
+
+The module code lives in the `transfermark_datasets` folder with the structure below.
+
+path | description
+-|-
+`transfermark_datasets/core` | core classes and utils that are used to work with the dataset.
+`transfermark_datasets/tests` | unit tests for core classes.
+`transfermark_datasets/assets` | perpared asset definitions: one python file per asset
+
 For more examples on using `transfermark_datasets`, checkout the sample [notebooks](notebooks).
 
 ## data publication
@@ -189,9 +186,13 @@ make streamlit_local
 Define all the necessary infrastructure for the project in the cloud with Terraform.
 
 ## contributing :pray:
-Contributions to `transfermarkt-datasets` are most welcome. If you want to contribute new fields or assets to this dataset, instructions are quite simple:
+Contributions to `transfermarkt-datasets` are most welcome. If you want to contribute new fields or assets to this dataset, the instructions are quite simple:
 1. [Fork the repo](https://github.com/dcaribou/transfermarkt-datasets/fork)
 2. Set up your [local environment](##setup)
-3. Pull the raw data by either running `dvc pull` ([requesting access is needed](#dvc)) or using `make acquire_local` script (no access request needed)
-4. Start modifying assets or creating new ones in `transfermarkt_datasets/assets`. You can use `make prepare_local` to run and test your changes.
+3. Pull the raw data by either running `dvc pull` ([requesting access is needed](#data-storage)) or using `make acquire_local` script (no access request needed)
+4. Start modifying assets or creating new ones in the dbt project. You can use `make prepare_local` to run and test your changes.
 5. If it's all looking good, create a pull request with your changes :rocket:
+
+> ℹ️ In case you face any issue following the instructions above or just if you have questions in general you may
+> - check past [Issues](https://github.com/dcaribou/transfermarkt-datasets/issues?q=is%3Aissue) for similar problems or open a new one
+> - check past [Discussions](https://github.com/dcaribou/transfermarkt-datasets/discussions) for similar problems or open a new one

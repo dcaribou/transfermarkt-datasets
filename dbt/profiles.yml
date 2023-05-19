@@ -1,0 +1,6 @@
+transfermarkt_datasets:
+  outputs:
+   dev:
+     type: duckdb
+     path: duck.db
+  target: dev

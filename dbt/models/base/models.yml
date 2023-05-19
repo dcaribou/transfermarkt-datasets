@@ -1,0 +1,22 @@
+version: 2
+
+models:
+  - name: base_appearances
+    columns:
+      - name: appearance_id
+        tests:
+          - unique
+  - name: base_games
+    columns:
+      - name: game_id
+        tests:
+          - unique
+      - name: date
+        tests:
+          - not_null
+
+  - name: base_players
+    columns:
+      - name: player_id
+        tests:
+          - unique

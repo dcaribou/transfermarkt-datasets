@@ -1,7 +1,6 @@
 
 import pathlib
 import unittest
-from dagster import DependencyDefinition
 import pytest
 from transfermarkt_datasets.core.dataset import Dataset
 from transfermarkt_datasets.core.asset import Asset
@@ -63,15 +62,8 @@ class TestDataset(unittest.TestCase):
 
         self.dataset = td
 
-    def test_build_all(self):
-        td = Dataset(config_file="config.yml")
-
-        td.discover_assets()
-        td.build_assets()
-
     def test_datapackage(self):
         td = Dataset()
-        td.discover_assets()
 
         td.as_frictionless_package()
 
@@ -107,26 +99,11 @@ class BaseSomethingAsset(Asset):
                 assets_root=str(tmprootdir),
                 assets_relative_path="assets"
             )
-            td.discover_assets()
 
             self.assertEqual(
                 td.asset_names,
                 ["base_something"]
             )
-
-    def test_dependencies(self):
-
-        td = self.dataset
-
-        self.assertEqual(
-            td.get_dependencies(),
-            {
-                "base_something_a": {},
-                "base_something_b": {
-                    "other": DependencyDefinition("build_base_something_a")
-                }
-            }
-        )
 
     def test_datapackage(self):
 
@@ -148,25 +125,3 @@ class BaseSomethingAsset(Asset):
             dp_excluded.resource_names,
             ["file1"]
         )
-
-    def test_get_relationships(self):
-
-        td = self.dataset
-        rel = td.get_relationships()
-
-        self.assertEqual(
-            len(rel),
-            1
-        )
-        self.assertEqual(
-            rel[0],
-            {
-                "from": "base_something_a",
-                "to": "base_something_b",
-                "on": {
-                    "source": "some_id",
-                    "target": "some_other_id"
-                }
-            }
-        )
-       

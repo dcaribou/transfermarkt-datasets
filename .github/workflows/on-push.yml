@@ -1,15 +1,14 @@
 name: build
 
 on:
-  # disable workflow until further notice
   push:
-    branches: []
+    branches: [master]
   pull_request:
-    branches: []
+    branches: [master]
 
 jobs:
   build:
-
+    concurrency: build_queue
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -17,9 +16,9 @@ jobs:
 
     steps:
       - name: checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
-          ssh-key: ${{ secrets.DEPLOY_KEY_PRIVATE }}
+          token: ${{ secrets.PA_GITHUB_TOKEN }}
 
       - name: Install Poetry
         uses: snok/install-poetry@v1
@@ -31,15 +30,35 @@ jobs:
       - name: Install library
         run: poetry install --no-interaction
 
-      - name: unit tests
+      - name: Get branch name
+        id: branch-name
+        uses: tj-actions/branch-names@v7
+
+      - name: Run tests
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_EC2_METADATA_DISABLED: true # https://github.com/aws/aws-cli/issues/5262
         run: |
-        
-          poetry run dvc pull data/prep
-          poetry run pytest -k "not build_all and not load"
+          source .venv/bin/activate
+
+          make dvc_pull test prepare_local
+          dvc commit -f
+      
+      - uses: EndBug/add-and-commit@v9
+        with:
+          add: 'data/*.dvc'
+          message: ':wrench: Github Actions: Updated dataset files'
+          default_author: github_actions
+          new_branch: ${{ steps.branch-name.outputs.current_branch }}
+
+      - name: Push to dvc
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: |
+          source .venv/bin/activate
+          dvc push
 
       - name: image build
         env:
@@ -57,36 +76,6 @@ jobs:
 
           # build and push
           make docker_build docker_push_dockerhub TAG=$TAG PLATFORM=linux/amd64
-
-      - name: run prep
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: eu-west-1
-          BRANCH: ${{ github.event.pull_request.head.ref }}
-          EVENT: ${{ github.event_name }}
-        run: |
-          # trigger prep job in aws batch
-
-          if [ $EVENT = push ]; then
-            JOB_NAME=on-push-master
-            BRANCH=master
-            JOB_DEFINITION_NAME=transfermarkt-datasets-batch-job-definition-master
-          else
-            PR_NUMBER=$(echo $GITHUB_REF | awk 'BEGIN { FS = "/" } ; { print $3 }')
-            JOB_NAME=on-push-pr-$PR_NUMBER
-            BRANCH=$BRANCH
-            JOB_DEFINITION_NAME=transfermarkt-datasets-batch-job-definition-dev
-          fi
-
-          source .venv/bin/activate
-
-          make \
-            prepare_cloud \
-              JOB_DEFINITION_NAME=$JOB_DEFINITION_NAME \
-              JOB_NAME=$JOB_NAME \
-              BRANCH=$BRANCH \
-              MESSAGE="🤖 updated prepared dataset files"
               
       - name: run sync
         # only sync when there is push to master
