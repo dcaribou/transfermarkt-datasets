@@ -73,12 +73,16 @@ class Asset:
     return self.name + ".csv.gz"
   
   @property
+  def file_name_uncompressed(self) -> str:
+    return self.file_name.replace(".gz", "")
+  
+  @property
   def prep_path(self) -> str:
     return f"{self.prep_location}/{self.file_name}"
 
   @property
   def frictionless_resource_name(self) -> str:
-    return self.file_name.replace(".csv", "")
+    return self.file_name_uncompressed.replace(".csv", "")
 
   def load_from_prep(self):
     """Load prepared dataset from the local to a pandas dataframe.
@@ -129,10 +133,9 @@ class Asset:
     detector = Detector(schema_sync=True)
     resource = Resource(
       title=self.frictionless_resource_name,
-      path=self.file_name,
+      path=self.file_name_uncompressed,
       detector=detector,
       description=self.description,
-      basepath="transfermarkt_datasets/stage",
       schema=self.schema.as_frictionless_schema()
     )
 

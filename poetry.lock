@@ -807,7 +807,7 @@ pycparser = "*"
 name = "chardet"
 version = "5.1.0"
 description = "Universal encoding detector for Python 3"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
@@ -1711,26 +1711,23 @@ files = [
 
 [[package]]
 name = "frictionless"
-version = "5.13.1"
+version = "4.40.8"
 description = "Data management framework for Python that provides functionality to describe, extract, validate, and transform tabular data"
-category = "dev"
+category = "main"
 optional = false
 python-versions = "*"
 files = [
-    {file = "frictionless-5.13.1-py2.py3-none-any.whl", hash = "sha256:8e5afc7c08364d4563797944920e044a8d37970c767c0c6920ac804a05c5f1a9"},
-    {file = "frictionless-5.13.1.tar.gz", hash = "sha256:78ee7c4ea784e85ef7117f17165baf4f2728790ba9406693df8370e812726c4a"},
+    {file = "frictionless-4.40.8-py2.py3-none-any.whl", hash = "sha256:87b71da5ba5f694b2091aabc6f705cf1c00bb44395964735d57aec00a89c555f"},
+    {file = "frictionless-4.40.8.tar.gz", hash = "sha256:324061d754525adfe8f6be56af12660a40966c0c4e01eccfc993dc82b9e9e623"},
 ]
 
 [package.dependencies]
-attrs = ">=22.2.0"
 chardet = ">=3.0"
-humanize = ">=4.2"
 isodate = ">=0.6"
-jinja2 = ">=3.0"
+jinja2 = ">=3.0.3"
 jsonschema = ">=2.5"
 marko = ">=1.0"
 petl = ">=1.6"
-pydantic = ">=1.9"
 python-dateutil = ">=2.8"
 python-slugify = ">=1.2"
 pyyaml = ">=5.3"
@@ -1740,34 +1737,22 @@ simpleeval = ">=0.9.11"
 stringcase = ">=1.2"
 tabulate = ">=0.8.10"
 typer = {version = ">=0.5", extras = ["all"]}
-typing-extensions = ">=4.3"
 validators = ">=0.18"
 
 [package.extras]
-application = ["fastapi (>=0.78)", "frictionless-ckan-mapper (>=1.0)", "ijson (>=3.0)", "jsonlines (>=1.2)", "livemark (>=0.110)", "openpyxl (>=3.0)", "python-multipart (>=0.0)", "sqlalchemy (>=1.4)", "tableschema-to-template (>=0.0)", "uvicorn (>=0.17)", "xlrd (>=1.2)", "xlwt (>=1.2)"]
-aws = ["boto3 (>=1.9)"]
 bigquery = ["google-api-python-client (>=1.12.1)"]
-ckan = ["frictionless-ckan-mapper (>=1.0)"]
-datasette = ["datasette (>=0.64.2)"]
-dev = ["black", "httpx", "ipython", "livemark", "moto", "oauth2client", "pylama", "pyright", "pytest", "pytest-cov", "pytest-dotenv", "pytest-lazy-fixture", "pytest-mock", "pytest-only", "pytest-timeout", "pytest-vcr", "requests-mock", "yattag"]
-excel = ["openpyxl (>=3.0)", "tableschema-to-template (>=0.0)", "xlrd (>=1.2)", "xlwt (>=1.2)"]
-framework = ["frictionless-ckan-mapper (>=1.0)", "ijson (>=3.0)", "jsonlines (>=1.2)", "openpyxl (>=3.0)", "sqlalchemy (>=1.4)", "tableschema-to-template (>=0.0)", "xlrd (>=1.2)", "xlwt (>=1.2)"]
-github = ["pygithub (>=1.50)"]
+ckan = ["ckanapi (>=4.3)"]
+dev = ["black", "docstring-parser", "ipython", "livemark", "moto", "mypy", "oauth2client", "psycopg2", "pydoc-markdown", "pyflakes (==2.4.0)", "pylama", "pymysql", "pytest", "pytest-cov", "pytest-only", "pytest-timeout", "pytest-vcr", "python-dotenv", "requests-mock", "yattag"]
+excel = ["openpyxl (>=3.0)", "tableschema-to-template (>=0.0.12)", "xlrd (>=1.2)", "xlwt (>=1.2)"]
 gsheets = ["pygsheets (>=2.0)"]
 html = ["pyquery (>=1.4)"]
 json = ["ijson (>=3.0)", "jsonlines (>=1.2)"]
-markdown = ["livemark (>=0.110)"]
-mysql = ["pymysql (>=1.0)", "sqlalchemy (>=1.4)"]
 ods = ["ezodf (>=0.3)", "lxml (>=4.0)"]
 pandas = ["pandas (>=1.0)"]
-parquet = ["fastparquet (>=0.8)"]
-postgresql = ["psycopg (>=3.0)", "psycopg2 (>=2.9)", "sqlalchemy (>=1.4)"]
-server = ["fastapi (>=0.78)", "python-multipart (>=0.0)", "uvicorn (>=0.17)"]
+s3 = ["boto3 (>=1.9)"]
+server = ["flask (>=1.1)", "gunicorn (>=20.0)"]
 spss = ["savReaderWriter (>=3.0)"]
-sql = ["sqlalchemy (>=1.4)"]
-visidata = ["visidata (>=2.10)"]
-wkt = ["grako (>=3.99)"]
-zenodo = ["pyzenodo3 (>=1.0)"]
+sql = ["sqlalchemy (>=1.3)"]
 
 [[package]]
 name = "frozenlist"
@@ -1979,21 +1964,6 @@ files = [
 [package.dependencies]
 jsonschema = ">=3.0"
 python-dateutil = ">=2.8,<2.9"
-
-[[package]]
-name = "humanize"
-version = "4.6.0"
-description = "Python humanize utilities"
-category = "dev"
-optional = false
-python-versions = ">=3.7"
-files = [
-    {file = "humanize-4.6.0-py3-none-any.whl", hash = "sha256:401201aca462749773f02920139f302450cb548b70489b9b4b92be39fe3c3c50"},
-    {file = "humanize-4.6.0.tar.gz", hash = "sha256:5f1f22bc65911eb1a6ffe7659bd6598e33dcfeeb904eb16ee1e705a09bf75916"},
-]
-
-[package.extras]
-tests = ["freezegun", "pytest", "pytest-cov"]
 
 [[package]]
 name = "hydra-core"
@@ -2787,7 +2757,7 @@ source = ["Cython (>=0.29.7)"]
 name = "marko"
 version = "1.3.0"
 description = "A markdown parser with high extensibility."
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
@@ -3576,7 +3546,7 @@ files = [
 name = "petl"
 version = "1.7.12"
 description = "A Python package for extracting, transforming and loading tables of data."
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 files = [
@@ -3995,59 +3965,6 @@ files = [
     {file = "pycparser-2.21-py2.py3-none-any.whl", hash = "sha256:8ee45429555515e1f6b185e78100aea234072576aa43ab53aefcae078162fca9"},
     {file = "pycparser-2.21.tar.gz", hash = "sha256:e644fdec12f7872f86c58ff790da456218b10f863970249516d60a5eaca77206"},
 ]
-
-[[package]]
-name = "pydantic"
-version = "1.10.7"
-description = "Data validation and settings management using python type hints"
-category = "dev"
-optional = false
-python-versions = ">=3.7"
-files = [
-    {file = "pydantic-1.10.7-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:e79e999e539872e903767c417c897e729e015872040e56b96e67968c3b918b2d"},
-    {file = "pydantic-1.10.7-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:01aea3a42c13f2602b7ecbbea484a98169fb568ebd9e247593ea05f01b884b2e"},
-    {file = "pydantic-1.10.7-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:516f1ed9bc2406a0467dd777afc636c7091d71f214d5e413d64fef45174cfc7a"},
-    {file = "pydantic-1.10.7-cp310-cp310-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:ae150a63564929c675d7f2303008d88426a0add46efd76c3fc797cd71cb1b46f"},
-    {file = "pydantic-1.10.7-cp310-cp310-musllinux_1_1_i686.whl", hash = "sha256:ecbbc51391248116c0a055899e6c3e7ffbb11fb5e2a4cd6f2d0b93272118a209"},
-    {file = "pydantic-1.10.7-cp310-cp310-musllinux_1_1_x86_64.whl", hash = "sha256:f4a2b50e2b03d5776e7f21af73e2070e1b5c0d0df255a827e7c632962f8315af"},
-    {file = "pydantic-1.10.7-cp310-cp310-win_amd64.whl", hash = "sha256:a7cd2251439988b413cb0a985c4ed82b6c6aac382dbaff53ae03c4b23a70e80a"},
-    {file = "pydantic-1.10.7-cp311-cp311-macosx_10_9_x86_64.whl", hash = "sha256:68792151e174a4aa9e9fc1b4e653e65a354a2fa0fed169f7b3d09902ad2cb6f1"},
-    {file = "pydantic-1.10.7-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:dfe2507b8ef209da71b6fb5f4e597b50c5a34b78d7e857c4f8f3115effaef5fe"},
-    {file = "pydantic-1.10.7-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:10a86d8c8db68086f1e30a530f7d5f83eb0685e632e411dbbcf2d5c0150e8dcd"},
-    {file = "pydantic-1.10.7-cp311-cp311-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:d75ae19d2a3dbb146b6f324031c24f8a3f52ff5d6a9f22f0683694b3afcb16fb"},
-    {file = "pydantic-1.10.7-cp311-cp311-musllinux_1_1_i686.whl", hash = "sha256:464855a7ff7f2cc2cf537ecc421291b9132aa9c79aef44e917ad711b4a93163b"},
-    {file = "pydantic-1.10.7-cp311-cp311-musllinux_1_1_x86_64.whl", hash = "sha256:193924c563fae6ddcb71d3f06fa153866423ac1b793a47936656e806b64e24ca"},
-    {file = "pydantic-1.10.7-cp311-cp311-win_amd64.whl", hash = "sha256:b4a849d10f211389502059c33332e91327bc154acc1845f375a99eca3afa802d"},
-    {file = "pydantic-1.10.7-cp37-cp37m-macosx_10_9_x86_64.whl", hash = "sha256:cc1dde4e50a5fc1336ee0581c1612215bc64ed6d28d2c7c6f25d2fe3e7c3e918"},
-    {file = "pydantic-1.10.7-cp37-cp37m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:e0cfe895a504c060e5d36b287ee696e2fdad02d89e0d895f83037245218a87fe"},
-    {file = "pydantic-1.10.7-cp37-cp37m-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:670bb4683ad1e48b0ecb06f0cfe2178dcf74ff27921cdf1606e527d2617a81ee"},
-    {file = "pydantic-1.10.7-cp37-cp37m-musllinux_1_1_i686.whl", hash = "sha256:950ce33857841f9a337ce07ddf46bc84e1c4946d2a3bba18f8280297157a3fd1"},
-    {file = "pydantic-1.10.7-cp37-cp37m-musllinux_1_1_x86_64.whl", hash = "sha256:c15582f9055fbc1bfe50266a19771bbbef33dd28c45e78afbe1996fd70966c2a"},
-    {file = "pydantic-1.10.7-cp37-cp37m-win_amd64.whl", hash = "sha256:82dffb306dd20bd5268fd6379bc4bfe75242a9c2b79fec58e1041fbbdb1f7914"},
-    {file = "pydantic-1.10.7-cp38-cp38-macosx_10_9_x86_64.whl", hash = "sha256:8c7f51861d73e8b9ddcb9916ae7ac39fb52761d9ea0df41128e81e2ba42886cd"},
-    {file = "pydantic-1.10.7-cp38-cp38-macosx_11_0_arm64.whl", hash = "sha256:6434b49c0b03a51021ade5c4daa7d70c98f7a79e95b551201fff682fc1661245"},
-    {file = "pydantic-1.10.7-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:64d34ab766fa056df49013bb6e79921a0265204c071984e75a09cbceacbbdd5d"},
-    {file = "pydantic-1.10.7-cp38-cp38-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:701daea9ffe9d26f97b52f1d157e0d4121644f0fcf80b443248434958fd03dc3"},
-    {file = "pydantic-1.10.7-cp38-cp38-musllinux_1_1_i686.whl", hash = "sha256:cf135c46099ff3f919d2150a948ce94b9ce545598ef2c6c7bf55dca98a304b52"},
-    {file = "pydantic-1.10.7-cp38-cp38-musllinux_1_1_x86_64.whl", hash = "sha256:b0f85904f73161817b80781cc150f8b906d521fa11e3cdabae19a581c3606209"},
-    {file = "pydantic-1.10.7-cp38-cp38-win_amd64.whl", hash = "sha256:9f6f0fd68d73257ad6685419478c5aece46432f4bdd8d32c7345f1986496171e"},
-    {file = "pydantic-1.10.7-cp39-cp39-macosx_10_9_x86_64.whl", hash = "sha256:c230c0d8a322276d6e7b88c3f7ce885f9ed16e0910354510e0bae84d54991143"},
-    {file = "pydantic-1.10.7-cp39-cp39-macosx_11_0_arm64.whl", hash = "sha256:976cae77ba6a49d80f461fd8bba183ff7ba79f44aa5cfa82f1346b5626542f8e"},
-    {file = "pydantic-1.10.7-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:7d45fc99d64af9aaf7e308054a0067fdcd87ffe974f2442312372dfa66e1001d"},
-    {file = "pydantic-1.10.7-cp39-cp39-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:d2a5ebb48958754d386195fe9e9c5106f11275867051bf017a8059410e9abf1f"},
-    {file = "pydantic-1.10.7-cp39-cp39-musllinux_1_1_i686.whl", hash = "sha256:abfb7d4a7cd5cc4e1d1887c43503a7c5dd608eadf8bc615413fc498d3e4645cd"},
-    {file = "pydantic-1.10.7-cp39-cp39-musllinux_1_1_x86_64.whl", hash = "sha256:80b1fab4deb08a8292d15e43a6edccdffa5377a36a4597bb545b93e79c5ff0a5"},
-    {file = "pydantic-1.10.7-cp39-cp39-win_amd64.whl", hash = "sha256:d71e69699498b020ea198468e2480a2f1e7433e32a3a99760058c6520e2bea7e"},
-    {file = "pydantic-1.10.7-py3-none-any.whl", hash = "sha256:0cd181f1d0b1d00e2b705f1bf1ac7799a2d938cce3376b8007df62b29be3c2c6"},
-    {file = "pydantic-1.10.7.tar.gz", hash = "sha256:cfc83c0678b6ba51b0532bea66860617c4cd4251ecf76e9846fa5a9f3454e97e"},
-]
-
-[package.dependencies]
-typing-extensions = ">=4.2.0"
-
-[package.extras]
-dotenv = ["python-dotenv (>=0.10.4)"]
-email = ["email-validator (>=1.0.3)"]
 
 [[package]]
 name = "pydeck"
@@ -4662,7 +4579,7 @@ six = "*"
 name = "rfc3986"
 version = "2.0.0"
 description = "Validating URI References per RFC 3986"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
@@ -4980,7 +4897,7 @@ testing-integration = ["build[virtualenv]", "filelock (>=3.4.0)", "jaraco.envs (
 name = "shellingham"
 version = "1.5.0.post1"
 description = "Tool to Detect Surrounding Shell"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
@@ -5016,7 +4933,7 @@ files = [
 name = "simpleeval"
 version = "0.9.13"
 description = "A simple, safe single expression evaluator library."
-category = "dev"
+category = "main"
 optional = false
 python-versions = "*"
 files = [
@@ -5167,7 +5084,7 @@ watchdog = {version = "*", markers = "platform_system != \"Darwin\""}
 name = "stringcase"
 version = "1.2.0"
 description = "String case converter."
-category = "dev"
+category = "main"
 optional = false
 python-versions = "*"
 files = [
@@ -5467,7 +5384,7 @@ files = [
 name = "typer"
 version = "0.9.0"
 description = "Typer, build great CLIs. Easy to code. Based on Python type hints."
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.6"
 files = [
@@ -6003,4 +5920,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8, <3.11, !=3.9.7"
-content-hash = "59e148e3ba8b67976b9daa323ac73479127a95cce0ed7716c73bc088591579fa"
+content-hash = "6e55a58fd40d0026e1cf9eb13a4722f3de5607463abe9a5b840400bdaef71198"

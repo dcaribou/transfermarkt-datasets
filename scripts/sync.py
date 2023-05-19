@@ -14,49 +14,6 @@ import boto3
 import os
 import requests
 
-def save_to_s3(path, relative_to):
-  """
-  Upload path contents to S3, keeping the folder structure under the relative_to prefix
-  :param path: path to the file or folder to be uploaded
-  :param relative_to: S3 prefix to be upload the folder contents into
-  """
-
-  import pathlib
-  import botocore
-  import boto3.s3.transfer as s3transfer
-
-  print(f"+ {path} to S3 prefix {relative_to}")
-
-  botocore_config = botocore.config.Config(max_pool_connections=50)
-  s3_client = boto3.client('s3', config=botocore_config)
-
-  transfer_config = s3transfer.TransferConfig(
-      use_threads=True,
-      max_concurrency=50
-  )
-
-  bucket_name = 'transfermarkt-datasets'
-
-  s3t = s3transfer.create_transfer_manager(s3_client, transfer_config)
-
-  if pathlib.Path(path).is_dir():
-    files = [elem for elem in pathlib.Path('.').glob(f"{path}/**/*") if not elem.is_dir()]
-  elif pathlib.Path(path).exists():
-    files = [pathlib.Path(path)]
-  else:
-    files = []
-
-  for elem in files:
-    path = str(elem)
-    key = path
-    s3t.upload(
-      path,
-      bucket_name,
-      relative_to + '/' + key
-    )
-
-  s3t.shutdown()  # wait for all the upload tasks to finish
-
 def publish_to_kaggle(folder, message):
   """Push the contents of the folder to Kaggle datasets
   :param folder: dataset folder path
@@ -162,16 +119,6 @@ season = args.season
 
 prep_location = 'data/prep'
 raw_location = 'data/raw'
-
-print("--> Save assets to S3")
-save_to_s3(prep_location, f"snapshots")
-save_to_s3(f"{raw_location}/{season}", f"snapshots")
-save_to_s3('prep/datapackage_resource_appearances_validation.json', 'snapshots')
-save_to_s3('prep/datapackage_resource_clubs_validation.json', 'snapshots')
-save_to_s3('prep/datapackage_resource_competitions_validation.json', 'snapshots')
-save_to_s3('prep/datapackage_resource_games_validation.json', 'snapshots')
-save_to_s3('prep/datapackage_resource_players_validation.json', 'snapshots')
-print("")
 
 print("--> Publish to Kaggle")
 publish_to_kaggle(prep_location, message)

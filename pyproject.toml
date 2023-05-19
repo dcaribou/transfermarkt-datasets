@@ -7,6 +7,7 @@ authors = ["dcaribou <davidcereijo@live.com>"]
 [tool.poetry.dependencies]
 python = ">=3.8, <3.11, !=3.9.7"
 pandas = "^1.4.2"
+frictionless = "4.40.8"
 pytest = "^7.1.2"
 scipy = "^1.8.0"
 kaggle = "^1.5.12"
@@ -20,7 +21,6 @@ dvc = {extras = ["s3"], version = "^2.56.0"}
 jupyter = "^1.0.0"
 autopep8 = "^1.7.0"
 datacompy = "^0.9.0"
-frictionless = "^5.13.1"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
