@@ -28,7 +28,6 @@ def load_td() -> Dataset:
         os.system("dvc pull data/prep")
 
     td = Dataset()
-    td.discover_assets()
     td.load_assets()
 
     return td

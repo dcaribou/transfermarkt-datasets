@@ -145,11 +145,10 @@ from transfermarkt_datasets.core.dataset import Dataset
 # instantiate the datasets handler
 td = Dataset()
 
-# build the datasets from raw data
-td.discover_assets()
+# load all assets into memory as pandas dataframes
 td.load_assets()
 
-# inspect the results
+# inspect assets
 td.asset_names # ["games", "players", ...]
 td.assets["games"].prep_df # get the built asset in a dataframe
 

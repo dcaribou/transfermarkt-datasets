@@ -64,7 +64,6 @@ class TestDataset(unittest.TestCase):
 
     def test_datapackage(self):
         td = Dataset()
-        td.discover_assets()
 
         td.as_frictionless_package()
 
@@ -100,7 +99,6 @@ class BaseSomethingAsset(Asset):
                 assets_root=str(tmprootdir),
                 assets_relative_path="assets"
             )
-            td.discover_assets()
 
             self.assertEqual(
                 td.asset_names,

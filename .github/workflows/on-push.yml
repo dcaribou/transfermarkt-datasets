@@ -44,6 +44,7 @@ jobs:
           source .venv/bin/activate
 
           make dvc_pull test prepare_local BRANCH=$BRANCH
+          dvc commit
       
       - uses: EndBug/add-and-commit@v9
         with:

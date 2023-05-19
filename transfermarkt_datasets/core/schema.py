@@ -24,10 +24,10 @@ class Field:
     def as_frictionless_field(self) -> frictionless.Field:
         fl_field = frictionless.Field(
             name=self.name,
-            type=self.type,
             description=self.description,
             format=self.form
         )
+
         return fl_field
 
     def has_tag(self, tag: str) -> bool:

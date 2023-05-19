@@ -47,7 +47,11 @@ class Dataset:
 
       self.log = logging.getLogger("main")
 
-      self.run_result = None
+      for file in pathlib.Path(os.path.join(self.assets_root, self.assets_relative_path)).glob("**/*.py"):
+        filename = file.name
+        class_ = self.get_asset_def(filename.split(".")[0])
+        asset = class_()
+        self.assets[asset.name] = asset
 
   @property
   def assets_module(self):
@@ -61,13 +65,6 @@ class Dataset:
         list(str): The list of asset names.
     """
     return list(self.assets.keys())
-
-  def discover_assets(self):
-    for file in pathlib.Path(os.path.join(self.assets_root, self.assets_relative_path)).glob("**/*.py"):
-      filename = file.name
-      class_ = self.get_asset_def(filename.split(".")[0])
-      asset = class_()
-      self.assets[asset.name] = asset
 
   def load_assets(self):
     """Load all assets in the dataset from local.
@@ -139,3 +136,7 @@ class Dataset:
       package.add_resource(asset.as_frictionless_resource())
     
     return package
+  
+  def write_datapackage(self):
+    pkg = self.as_frictionless_package()
+    pkg.to_json("data/prep/dataset-metadata.json")
