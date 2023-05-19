@@ -42,7 +42,7 @@ jobs:
           make dvc_pull test prepare_local
           dvc commit -f
       
-      - uses: EndBug/add-and-commit@v7
+      - uses: EndBug/add-and-commit@v9
         with:
           add: 'data/*.dvc'
           message: ':wrench: Github Actions: Updated dataset files'
