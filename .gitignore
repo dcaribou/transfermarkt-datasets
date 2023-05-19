@@ -56,14 +56,3 @@ terraform.rc
 *.pyc
 
 tmp*
-
-# dbt
-dbt/logs
-dbt/.user.yml
-dbt/target
-dbt/dbt_packages
-
-duck.db
-
-prep_new
-notebooks/*.html

@@ -38,7 +38,6 @@ class Dataset:
 
       self.prep_folder_path = "data/prep"
       self.assets = {}
-      self.validation_report = None
 
       if self.config.get("logging"):
         logging.config.dictConfig(self.config["logging"])
