@@ -29,15 +29,9 @@ class Asset:
     settings: dict = None) -> None:
 
       self._prep_df = None
-      self.errors_tolerance = 0
-      
       self.settings = settings
-      self.checks = []
-
       self.log = logging.getLogger("main")
-
       self.prep_location = "data/prep"
-
       self.datapackage_descriptor_path = f"{self.prep_location}/dataset-metadata.json"
 
       if not self.file_name:

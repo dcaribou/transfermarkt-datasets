@@ -1,9 +1,8 @@
 name: pipeline
 
 on:
-  # disable scheduled workflow until further notice
-  # schedule:
-  #   - cron: '0 4 * * TUE'
+  schedule:
+    - cron: '0 4 * * TUE'
   workflow_dispatch:
     inputs:
       message:
@@ -27,11 +26,9 @@ jobs:
       - name: checkout
         uses: actions/checkout@v2
 
-      # https://stackoverflow.com/questions/58033366/how-to-get-the-current-branch-within-github-actions
-      - name: Extract branch name
-        shell: bash
-        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
-        id: extract_branch
+      - name: Get branch name
+        id: branch-name
+        uses: tj-actions/branch-names@v7
 
       - name: Install Poetry
         uses: snok/install-poetry@v1
@@ -48,7 +45,7 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: eu-west-1
-          BRANCH: ${{ steps.extract_branch.outputs.branch }}
+          BRANCH: ${{ steps.branch-name.outputs.current_branch }}
           ARGS: ${{ github.event.inputs.acquire_args }}
         run: |
           # trigger prep job in aws batch
