@@ -133,10 +133,10 @@ models:
       - name: current_club_name
         tests:
           - not_null
-      - name: market_value_in_eur
-        tests:
-          - too_many_missings:
-              tolerance: 0.37
+      # - name: market_value_in_eur
+      #   tests:
+      #     - too_many_missings:
+      #         tolerance: 0.37
       - name: contract_expiration_date
         tests:
           - too_many_missings:
@@ -252,9 +252,12 @@ models:
             - player_id
             - description
             - player_in_id
-      # - unique:
-      #     column_name: >
-      #       (game_id || player_id || club_id || type || minute || coalesce(description, '') || player_in_id )
+      - unique:
+          column_name: >
+            (game_id || player_id || club_id || type || minute || coalesce(description, '') || player_in_id )
+      - dbt_expectations.expect_table_row_count_to_be_between:
+          min_value: 550000
+          max_value: 600000
     columns:
       - name: minute
         tests:

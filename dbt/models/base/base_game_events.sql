@@ -9,8 +9,6 @@ with
             
         from {{ source("raw_tfmkt", "games") }}
 
-        where game_id != 2469192 -- this game has duplicated subsitution entries for some reason
-
     ),
 unnested as (
 
@@ -23,7 +21,7 @@ unnested as (
 
 )
 
-select
+select distinct
     game_id,
     (json_row -> 'minute')::integer as "minute",
     (json_row ->> 'type') as "type",
