@@ -47,6 +47,7 @@ docker_push_flyio: docker_login_flyio
 	docker push registry.fly.io/transfermarkt-datasets:$(IMAGE_TAG)
 
 acquire_local: ## run the acquiring process locally (refreshes data/raw)
+	gunzip -r data/raw/*/*.json.gz && \
 	PYTHONPATH=$(PYTHONPATH):`pwd`/. python scripts/acquire.py local $(ARGS) && \
 	gzip -r data/raw/**/*.json
 

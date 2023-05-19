@@ -72,7 +72,6 @@ class appearances {
 - [data storage](#data-storage)
 - [data acquisition](#data-acquisition)
 - [data preparation](#data-preparation)
-  - [configuration](#configuration)
   - [python api](#python-api)
 - [data publication](#data-publication)
 - [streamlit 🎈](#streamlit-)
@@ -124,13 +123,20 @@ make acquire_local ARGS="--asset all --season 2022"
 This runs the scraper with a set of parameters and collects the output in `data/raw`.
 
 ## data preparation
-In the scope of this project, "preparing" is the process of transforming raw data to create a high quality dataset that can be conveniently consumed by analysts of all kinds. dbt..
+In the scope of this project, "preparing" is the process of transforming raw data to create a high quality dataset that can be conveniently consumed by analysts of all kinds.
 
-### configuration
-Different project configurations are defined in the [config.yml](config.yml) file.
+Data prepartion is done in SQL using [dbt](https://docs.getdbt.com/) and [DuckDB](https://duckdb.org/). You can trigger a run of the preparation task using the `prepare_local` make target or work with the dbt CLI directly if you prefer.
+
+```bash
+cd dbt # this folder contains the dbt project
+dbt deps # required the first time you run dbt only
+dbt run -m +appearances # refresh prepartion for the appearances file with dependencies
+```
+
+![dbt](resources/dbt.png)
 
 ### python api
-`transfermark_datasets` provides a python api that can be used to work with the module from the python console. This is particularly convenient for working with the datasets from a notebook.
+A thin python wrapper is provided as a convenience utility to help with loading and inspecting the dataset (for example, from a notebook).
 
 ```python
 # import the module
@@ -141,9 +147,7 @@ td = Dataset()
 
 # build the datasets from raw data
 td.discover_assets()
-td.build_datasets()
-# if perpared files already exist in data/prep, you can just load them
-# > td.load_assets()
+td.load_assets()
 
 # inspect the results
 td.asset_names # ["games", "players", ...]
@@ -153,16 +157,14 @@ td.assets["games"].prep_df # get the built asset in a dataframe
 td.assets["games"].load_raw()
 td.assets["games"].raw_df 
 ```
-The `transfermark_datasets` module deals with the data preparation.
+
+The module code lives in the `transfermark_datasets` folder with the structure below.
 
 path | description
 -|-
 `transfermark_datasets/core` | core classes and utils that are used to work with the dataset
 `transfermark_datasets/tests` | unit tests for core classes
 `transfermark_datasets/assets` | perpared asset definitions: one python file per asset
-`transfermark_datasets/dagster` | dagster job definitions
-`transfermark_datasets/stage` | temporary location for asset generation
-
 
 For more examples on using `transfermark_datasets`, checkout the sample [notebooks](notebooks).
 
@@ -185,9 +187,11 @@ make streamlit_local
 Define all the necessary infrastructure for the project in the cloud with Terraform.
 
 ## contributing :pray:
-Contributions to `transfermarkt-datasets` are most welcome. If you want to contribute new fields or assets to this dataset, instructions are quite simple:
+Contributions to `transfermarkt-datasets` are most welcome. If you want to contribute new fields or assets to this dataset, the instructions are quite simple:
 1. [Fork the repo](https://github.com/dcaribou/transfermarkt-datasets/fork)
 2. Set up your [local environment](##setup)
 3. Pull the raw data by either running `dvc pull` ([requesting access is needed](#dvc)) or using `make acquire_local` script (no access request needed)
-4. Start modifying assets or creating new ones in `transfermarkt_datasets/assets`. You can use `make prepare_local` to run and test your changes.
+4. Start modifying assets or creating new ones in the dbt project. You can use `make prepare_local` to run and test your changes.
 5. If it's all looking good, create a pull request with your changes :rocket:
+
+> :information: In case you face any issue, check installation issues and Discussions
