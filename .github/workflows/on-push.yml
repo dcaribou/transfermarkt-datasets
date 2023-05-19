@@ -30,11 +30,18 @@ jobs:
       - name: Install library
         run: poetry install --no-interaction
 
-      - name: unit tests
+      # https://stackoverflow.com/questions/58033366/how-to-get-the-current-branch-within-github-actions
+      - name: Extract branch name
+        shell: bash
+        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+        id: extract_branch
+
+      - name: Run tests
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_EC2_METADATA_DISABLED: true # https://github.com/aws/aws-cli/issues/5262
+          BRANCH: ${{ steps.extract_branch.outputs.branch }}
         run: |
           source .venv/bin/activate
           dvc install
@@ -42,7 +49,7 @@ jobs:
           git config --global user.email "username@users.noreply.github.com"
           git config --global user.name "CI Job"
 
-          make dvc_pull test prepare_local stash_and_commit
+          make dvc_pull test prepare_local stash_and_commit BRANCH=$BRANCH
       
       - uses: EndBug/add-and-commit@v9
         with:
