@@ -94,7 +94,9 @@ prepare_cloud:
 sync: ## run the sync process (refreshes data frontends)
 sync: MESSAGE = Manual sync
 sync:
-	PYTHONPATH=$(PYTHONPATH):`pwd`/. python scripts/sync.py --message "$(MESSAGE)" --season 2022
+	gunzip -r data/prep/*.csv.gz && \
+	PYTHONPATH=$(PYTHONPATH):`pwd`/. python scripts/sync.py --message "$(MESSAGE)" --season 2022 && \
+	gzip -r data/prep/*.csv
 
 streamlit_local: ## run streamlit app locally
 	streamlit run streamlit/01_👋_about.py
@@ -116,7 +118,7 @@ dagit_local: ## run dagit locally
 stash_and_commit: ## commit and push code and data
 	dvc commit -f && git add data && \
     git diff-index --quiet HEAD data || git commit -m "$(MESSAGE)" && \
-    git push git push origin HEAD:${BRANCH} && \
+    git push origin HEAD:${BRANCH} && \
 	dvc push
 
 test: ## run unit tests for core python module
