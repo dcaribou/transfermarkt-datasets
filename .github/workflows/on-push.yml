@@ -37,10 +37,12 @@ jobs:
           AWS_EC2_METADATA_DISABLED: true # https://github.com/aws/aws-cli/issues/5262
         run: |
           source .venv/bin/activate
-          
           dvc install
-          make dvc_pull test prepare_local
-          dvc commit -f
+
+          git config --global user.email "username@users.noreply.github.com"
+          git config --global user.name "CI Job"
+
+          make dvc_pull test prepare_local stash_and_commit
       
       - uses: EndBug/add-and-commit@v9
         with:
