@@ -191,7 +191,7 @@ Define all the necessary infrastructure for the project in the cloud with Terraf
 Contributions to `transfermarkt-datasets` are most welcome. If you want to contribute new fields or assets to this dataset, the instructions are quite simple:
 1. [Fork the repo](https://github.com/dcaribou/transfermarkt-datasets/fork)
 2. Set up your [local environment](##setup)
-3. Pull the raw data by either running `dvc pull` ([requesting access is needed](#dvc)) or using `make acquire_local` script (no access request needed)
+3. Pull the raw data by either running `dvc pull` ([requesting access is needed](#data-storage)) or using `make acquire_local` script (no access request needed)
 4. Start modifying assets or creating new ones in the dbt project. You can use `make prepare_local` to run and test your changes.
 5. If it's all looking good, create a pull request with your changes :rocket:
 
