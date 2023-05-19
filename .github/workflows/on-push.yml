@@ -42,18 +42,22 @@ jobs:
           BRANCH: ${{ steps.branch-name.outputs.current_branch }}
         run: |
           source .venv/bin/activate
-          dvc install
 
-          git config --global user.email "username@users.noreply.github.com"
-          git config --global user.name "CI Job"
-
-          make dvc_pull test prepare_local stash_and_commit BRANCH=$BRANCH
+          make dvc_pull test prepare_local BRANCH=$BRANCH
       
       - uses: EndBug/add-and-commit@v9
         with:
           add: 'data/*.dvc'
           message: ':wrench: Github Actions: Updated dataset files'
           default_author: github_actions
+
+      - name: Push to dvc
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: |
+          source .venv/bin/activate
+          dvc push
 
       - name: image build
         env:
