@@ -116,9 +116,9 @@ models:
             - image_url
             - last_season
             - url
-      # - dbt_expectations.expect_table_row_count_to_be_between:
-      #     min_value: 28000
-      #     max_value: 30000
+      - dbt_expectations.expect_table_row_count_to_be_between:
+          min_value: 28000
+          max_value: 30000
     columns:
       - name: player_id
         tests:
@@ -133,10 +133,10 @@ models:
       - name: current_club_name
         tests:
           - not_null
-      # - name: market_value_in_eur
-      #   tests:
-      #     - too_many_missings:
-      #         tolerance: 0.37
+      - name: market_value_in_eur
+        tests:
+          - too_many_missings:
+              tolerance: 0.37
       - name: contract_expiration_date
         tests:
           - too_many_missings:

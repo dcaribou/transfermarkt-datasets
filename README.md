@@ -194,4 +194,6 @@ Contributions to `transfermarkt-datasets` are most welcome. If you want to contr
 4. Start modifying assets or creating new ones in the dbt project. You can use `make prepare_local` to run and test your changes.
 5. If it's all looking good, create a pull request with your changes :rocket:
 
-> ℹ️ In case you face any issue, check installation issues and Discussions
+> ℹ️ In case you face any issue following the instructions above or just if you have questions in general you may
+> - check past [Issues](https://github.com/dcaribou/transfermarkt-datasets/issues?q=is%3Aissue) for similar problems or open a new one
+> - check past [Discussions](https://github.com/dcaribou/transfermarkt-datasets/discussions) for similar problems or open a new one
