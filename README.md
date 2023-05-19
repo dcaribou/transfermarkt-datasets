@@ -1,6 +1,5 @@
 ![Build Status](https://github.com/dcaribou/transfermarkt-datasets/actions/workflows/on-push.yml/badge.svg)
 ![Pipeline Status](https://github.com/dcaribou/transfermarkt-datasets/actions/workflows/on-schedule.yml/badge.svg)
-![Visitors](https://visitor-badge.glitch.me/badge?page_id=dcaribou.transfermarkt-datasets&left_color=green&right_color=red)
 ![dbt Version](https://img.shields.io/static/v1?logo=dbt&label=dbt-version&message=1.5.1&color=orange)
 
 # transfermarkt-datasets
