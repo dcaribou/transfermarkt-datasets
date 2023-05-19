@@ -40,6 +40,7 @@ jobs:
           
           dvc install
           make dvc_pull test prepare_local
+          dvc commit
       
       - uses: EndBug/add-and-commit@v7
         with:
