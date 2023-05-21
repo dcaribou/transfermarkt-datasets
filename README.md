@@ -102,14 +102,14 @@ dagit_local                    run dagit locally
 Run `make help` to see the full list. Once you've completed the setup, you should be able to run most of these from your machine.
 
 ## data storage
-> :information_source: Read access to the S3 [DVC remote storage](https://dvc.org/doc/command-reference/remote#description) for the project is required to successfully run `dvc pull`. Contributors can grant themselves access by adding their AWS IAM user ARN to [this whitelist](https://github.com/dcaribou/transfermarkt-datasets/blob/655fe130974905591ff80bb57813bedd01ec7d6c/infra/main.tf#L17).
-
-All project data assets are kept inside the `data` folder. This is a [DVC](https://dvc.org/) repository, all files can be pulled from the remote storage with the `make dvc_pull`.
+All project data assets are kept inside the `data` folder. This is a [DVC](https://dvc.org/) repository, so all files can be pulled from the remote storage with the `make dvc_pull`.
 
 path | description
 -|-
 `data/raw` | contains raw data per season as acquired with [trasfermarkt-scraper](https://github.com/dcaribou/transfermarkt-scraper) (check [acquire](#data-acquisition))
 `data/prep` | contains prepared datasets as produced by dbt (check [prepare](#data-preparation))
+
+> :warning: Read access to the S3 [DVC remote storage](https://dvc.org/doc/command-reference/remote#description) for the project is required to successfully run `dvc pull`. Contributors can grant themselves access by adding their AWS IAM user ARN to [this whitelist](https://github.com/dcaribou/transfermarkt-datasets/blob/655fe130974905591ff80bb57813bedd01ec7d6c/infra/main.tf#L17).
 
 ## data acquisition
 In the scope of this project, "acquiring" is the process of collecting "raw data", as it is produced by [trasfermarkt-scraper](https://github.com/dcaribou/transfermarkt-scraper). Acquired data lives in the `data/raw` folder and it can be created or updated for a particular season by running `make acquire_local`

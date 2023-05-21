@@ -48,7 +48,7 @@ jobs:
       - uses: EndBug/add-and-commit@v9
         with:
           add: 'data/*.dvc'
-          message: ':wrench: Github Actions: Updated dataset files'
+          message: '🤖 updated prepared dataset files'
           default_author: github_actions
           new_branch: ${{ steps.branch-name.outputs.current_branch }}
 

@@ -11,7 +11,7 @@ frictionless = "4.40.8"
 pytest = "^7.1.2"
 scipy = "^1.8.0"
 kaggle = "^1.5.12"
-streamlit = "1.15.2"
+streamlit = "1.22.0"
 plotly = "^5.11.0"
 transfermarkt-scraper = {git = "https://github.com/dcaribou/transfermarkt-scraper.git", branch = "main"}
 dbt-duckdb = "1.5.1"
