@@ -14,6 +14,8 @@ In an nutshell, this project aims for three things:
 [![Kaggle](https://kaggle.com/static/images/open-in-kaggle.svg)](https://www.kaggle.com/datasets/davidcariboo/player-scores)
 [![data.world](https://img.shields.io/badge/-Open%20in%20data.world-blue?style=appveyor)](https://data.world/dcereijo/player-scores)
 
+**🔈 New!** &rarr; Checkout [this sample notebook](notebooks/chat_playbook.ipynb) that demonstrating how to interact with the dataset using natural language leveraging OpenAI APIs.
+
 ------
 ```mermaid
 classDiagram
