@@ -5,6 +5,7 @@ with
 
     ),
     all_appearances as (
+        
         select
 
             (str_split(json_extract_string(json_row, '$.href'), '/')[5])::integer
@@ -46,12 +47,24 @@ with
         from json_appearances
 
         where list_contains({{ var("competition_codes") }}, competition_id)
+
     ),
     with_n as (
+
         select *, row_number() over (partition by appearance_id order by 1) as n
         from all_appearances
+
+    ),
+    base_games_cte as (
+
+        select * from {{ ref('base_games') }}
+
     )
 
 select *
 from with_n
-where n = 1
+where
+    n = 1 and
+    game_id in (
+        select game_id from base_games_cte
+    ) -- exclude appearances if we don't have the corresponding game in order to avoid inconsistencies

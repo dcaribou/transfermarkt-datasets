@@ -168,7 +168,7 @@ class RawAsset(Asset):
         )
         raw_dfs.append(df)
     else:
-      seasons = read_config()["seasons"]
+      seasons = read_config()["defintions"]["seasons"]
       for season in seasons:
 
         season_file = f"{self.raw_files_path}/{season}/{self.raw_file_name}"

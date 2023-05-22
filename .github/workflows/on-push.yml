@@ -40,6 +40,7 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_EC2_METADATA_DISABLED: true # https://github.com/aws/aws-cli/issues/5262
         run: |
+          set -e
           source .venv/bin/activate
 
           make dvc_pull test prepare_local

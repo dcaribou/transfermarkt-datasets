@@ -56,3 +56,6 @@ terraform.rc
 *.pyc
 
 tmp*
+
+# Ignore the logs directory
+logs
