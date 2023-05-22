@@ -5717,7 +5717,7 @@ Scrapy = "2.7.1"
 type = "git"
 url = "https://github.com/dcaribou/transfermarkt-scraper.git"
 reference = "main"
-resolved_reference = "eab7c416013b9e754bb5ffef59f0e26e958346f8"
+resolved_reference = "b476b9b458b3edcf056184f53412f45ca66dbbd9"
 
 [[package]]
 name = "twisted"
