@@ -1,17 +1,81 @@
-  source_path: data/raw
-  seasons: [2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022]
+defintions:
+  console_handler: &console_handler
+    class: logging.StreamHandler
+    level: INFO
+    stream: ext://sys.stdout
+    formatter: console
+  file_handler: &file_handler
+    class: logging.FileHandler
+    level: DEBUG
+    filename: logs/run.log
+    mode: w
+    formatter: file
+  console_formatter: &console_formatter
+    format: '%(asctime)s [%(levelname)s]: %(message)s'
+  file_formatter: &file_formatter
+    format: '%(asctime)s [%(levelname)s] %(pathname)s: %(message)s'
+
+prepare:
+  transfermarkt_datasets:
+    source_path: data/raw
+    seasons: [2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022]
+    competition_codes: [
+        'ES1', 'GB1', 'L1', 'IT1', 'FR1', 'GR1', 'PO1', 
+        'BE1', 'UKR1', 'BE1', 'RU1', 'DK1', 'SC1', 'TR1',
+        'NL1', 'NLP', 'NLSC', 'BESC', 'DFB', 'POSU', 'POCP',
+        'CGB', 'UKRP', 'RUP', 'GBCS', 'SUC', 'DFL', 'CDR',
+        'RUSS', 'GRP', 'SFA', 'CIT', 'DKP', 'FRCH', 'UKRS',
+        'SCI', 'CL', 'EL', 'KLUB', 'ECLQ', 'CLQ', 'ELQ', 'USC',
+        'FAC',
+      ]
   logging:
     version: 1
-    loggers:
-      main:
-        handlers: [console]
-        level: DEBUG
+    disable_existing_loggers: False
+    "": # root logger
+      handlers: [console, file]
+      level: DEBUG
     handlers:
-      console:
-        class: logging.StreamHandler
-        level: DEBUG
-        stream: ext://sys.stdout
-        formatter: main
+      console: *console_handler
+      file:
+        <<: *file_handler
+        filename: logs/prepare.log
     formatters:
-      main:
-        format: '%(module)s - %(message)s'
+      console: *console_formatter
+      file: *file_formatter
+
+acquire:
+  scrapy_config:
+    USER_AGENT: >
+      transfermarkt-datasets/1.0 (https://github.com/dcaribou/transfermarkt-datasets)"
+    FEED_URI_PARAMS: tfmkt.utils.uri_params
+    FEEDS:
+      "data/raw/%(season)s/%(name)s.json":
+        format: jsonlines
+    SPIDER_MODULES: ['tfmkt']
+    REQUEST_FINGERPRINTER_IMPLEMENTATION: '2.7'
+    HTTPCACHE_ENABLED: True
+  logging:
+    version: 1
+    disable_existing_loggers: False
+    loggers:
+      "": # root logger
+        handlers: [console, file]
+        level: DEBUG
+      # from https://docs.scrapy.org/en/latest/_modules/scrapy/utils/log.html#configure_logging
+      hpack:
+        level: ERROR
+        handlers: [console, file]
+      scrapy:
+        level: DEBUG
+        handlers: [file]
+      twisted:
+        level: ERROR
+        handlers: [console, file]
+    handlers:
+      console: *console_handler
+      file:
+        <<: *file_handler
+        filename: logs/acquire.log
+    formatters:
+      console: *console_formatter
+      file: *file_formatter
