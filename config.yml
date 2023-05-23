@@ -19,12 +19,12 @@ defintions:
 
 acquire:
   scrapy_config:
-    USER_AGENT: >
-      transfermarkt-datasets/1.0 (https://github.com/dcaribou/transfermarkt-datasets)
+    USER_AGENT: transfermarkt-datasets/1.0 (https://github.com/dcaribou/transfermarkt-datasets)
     FEED_URI_PARAMS: tfmkt.utils.uri_params
     FEEDS:
-      "data/raw/%(season)s/%(name)s.json":
+      "data/raw/%(season)s/%(name)s.json.gz":
         format: jsonlines
+        postprocessing: [scrapy.extensions.postprocessing.GzipPlugin]
     SPIDER_MODULES: ['tfmkt']
     REQUEST_FINGERPRINTER_IMPLEMENTATION: '2.7'
     HTTPCACHE_ENABLED: True
