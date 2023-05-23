@@ -14,7 +14,7 @@ In an nutshell, this project aims for three things:
 [![Kaggle](https://kaggle.com/static/images/open-in-kaggle.svg)](https://www.kaggle.com/datasets/davidcariboo/player-scores)
 [![data.world](https://img.shields.io/badge/-Open%20in%20data.world-blue?style=appveyor)](https://data.world/dcereijo/player-scores)
 
-**🔈 New!** &rarr; Checkout [this sample notebook](notebooks/chat_playbook.ipynb) that demonstrating how to interact with the dataset using natural language leveraging OpenAI APIs.
+**🔈 New!** &rarr; [This sample notebook](notebooks/chat_playbook.ipynb) demonstrates how to interact with the dataset using natural language and leveraging OpenAI APIs.
 
 ------
 ```mermaid
@@ -104,7 +104,7 @@ dagit_local                    run dagit locally
 Run `make help` to see the full list. Once you've completed the setup, you should be able to run most of these from your machine.
 
 ## data storage
-All project data assets are kept inside the `data` folder. This is a [DVC](https://dvc.org/) repository, so all files can be pulled from the remote storage with the `make dvc_pull`.
+All project data assets are kept inside the [`data`](data) folder. This is a [DVC](https://dvc.org/) repository, so all files can be pulled from the remote storage with the `make dvc_pull`.
 
 path | description
 -|-

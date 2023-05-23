@@ -76,7 +76,7 @@ class Asset():
     if self.name == 'competitions':
       return pathlib.Path(f"data/competitions.json")
     else:
-      return pathlib.Path(f"data/raw/{season}/{self.name}.json")
+      return pathlib.Path(f"data/raw/{season}/{self.name}.json.gz")
   
   def file_full_path(self, season):
     return str(self.file_path(season).absolute())
