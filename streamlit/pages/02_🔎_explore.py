@@ -28,7 +28,7 @@ For each appearance you will find attributes such as `goals`, `assists` or `yell
 
 st.info("""
 There is no support yet for downloading assets from the streamlit app.
-For downloading the data, may use one of the other dataset [frontends](https://github.com/dcaribou/transfermarkt-datasets#data-publication).
+For downloading the data, may use one of the other dataset [frontends](https://github.com/dcaribou/transfermarkt-datasets#frontends).
 """, 
 icon="ℹ️")
 

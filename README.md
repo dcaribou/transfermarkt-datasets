@@ -74,10 +74,12 @@ class appearances {
 - [data acquisition](#data-acquisition)
 - [data preparation](#data-preparation)
   - [python api](#python-api)
-- [data publication](#data-publication)
-- [streamlit 🎈](#streamlit-)
+- [frontends](#frontends)
+  - [streamlit 🎈](#streamlit-)
 - [infra](#infra)
-- [contributing :pray:](#contributing-pray)
+- [community 💬](#community-)
+  - [getting in touch](#getting-in-touch)
+  - [contributing :pray:](#contributing-pray)
 
 ------
 
