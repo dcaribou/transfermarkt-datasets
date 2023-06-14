@@ -36,7 +36,7 @@ st.info(
 
 st.subheader("How do I use it?")
 st.markdown("""
-Access to this dataset is provided through some of its various [frontends](https://github.com/dcaribou/transfermarkt-datasets#data-publication), you can use any of those to start playing with the data. 
+Access to this dataset is provided through some of its various [frontends](https://github.com/dcaribou/transfermarkt-datasets#frontends), you can use any of those to start playing with the data. 
 
 For advance users, the source code for the project is available [in Github](https://github.com/dcaribou/transfermarkt-datasets), together with instructions for setting up you local environment to run it. 
 """)
