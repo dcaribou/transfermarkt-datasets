@@ -169,13 +169,13 @@ path | description
 
 For more examples on using `transfermark_datasets`, checkout the sample [notebooks](notebooks).
 
-## data publication
+## frontends
 Prepared data is published to a couple of popular dataset websites. This is done running `make sync`, which runs weekly as part of the [data pipeline](.github/workflows/on-schedule.yml).
 
 * [Kaggle](https://www.kaggle.com/datasets/davidcariboo/player-scores)
 * [data.world](https://data.world/dcereijo/player-scores)
 
-## streamlit 🎈
+### streamlit 🎈
 There is a [streamlit](https://streamlit.io/) app for the project with documentation, a data catalog and sample analyisis. The app is currently hosted in fly.io, you can check it out [here](https://transfermarkt-datasets.fly.dev/).
 
 For local development, you can also run the app in your machine. Provided you've done the [setup](#setup), run the following to spin up a local instance of the app
@@ -187,7 +187,14 @@ make streamlit_local
 ## [infra](infra)
 Define all the necessary infrastructure for the project in the cloud with Terraform.
 
-## contributing :pray:
+## community 💬
+
+### getting in touch
+In order to keep things tidy, there are two simple guidelines
+* Keep the conversation centralised and public by getting in touch via the [Discussions](https://github.com/dcaribou/transfermarkt-datasets/discussions) tab.
+* Avoid topic duplication by having a quick look at the [FAQs](https://github.com/dcaribou/transfermarkt-datasets/discussions/175)
+
+### contributing :pray:
 Contributions to `transfermarkt-datasets` are most welcome. If you want to contribute new fields or assets to this dataset, the instructions are quite simple:
 1. [Fork the repo](https://github.com/dcaribou/transfermarkt-datasets/fork)
 2. Set up your [local environment](##setup)
@@ -195,6 +202,5 @@ Contributions to `transfermarkt-datasets` are most welcome. If you want to contr
 4. Start modifying assets or creating new ones in the dbt project. You can use `make prepare_local` to run and test your changes.
 5. If it's all looking good, create a pull request with your changes :rocket:
 
-> ℹ️ In case you face any issue following the instructions above or just if you have questions in general you may
-> - check past [Issues](https://github.com/dcaribou/transfermarkt-datasets/issues?q=is%3Aissue) for similar problems or open a new one
-> - check past [Discussions](https://github.com/dcaribou/transfermarkt-datasets/discussions) for similar problems or open a new one
+> ℹ️ In case you face any issue following the instructions above or just if you have questions in general you may [get in touch](#contributing-pray)
+
