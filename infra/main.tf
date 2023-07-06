@@ -18,7 +18,8 @@ locals {
     "arn:aws:iam::272181418418:user/transfermarkt-datasets",
     "arn:aws:iam::272181418418:user/transfermarkt-datasets-streamlit",
     "arn:aws:iam::254931886714:user/iam_coloal",
-    "arn:aws:iam::035556015160:user/Serge"
+    "arn:aws:iam::035556015160:user/Serge",
+    "arn:aws:iam::768182442866:user/adam"
   ]
 }
 
