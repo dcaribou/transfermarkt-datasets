@@ -11,7 +11,7 @@ on:
         description: Commit message for the 'add-and-commit' step
       acquire_args:
         required: false
-        default: "--asset all --seasons 2022"
+        default: "--asset all --seasons 2023"
         description: Arguments to be passed to the acquiring script
 
 jobs:
@@ -50,7 +50,7 @@ jobs:
         run: |
           # trigger prep job in aws batch
 
-          DEFAULT_ARGS="--asset all --seasons 2022"
+          DEFAULT_ARGS="--asset all --seasons 2023"
           EFFECTIVE_ARGS=${ARGS:-${DEFAULT_ARGS}}
 
           DAY=$(date +"%Y-%m-%d")

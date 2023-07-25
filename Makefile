@@ -2,7 +2,7 @@
 PLATFORM = linux/arm64
 BRANCH = $(shell git rev-parse --abbrev-ref HEAD)
 JOB_NAME = on-cli
-ARGS = --asset all --seasons 2022
+ARGS = --asset all --seasons 2023
 MESSAGE = some message
 TAG = dev
 
@@ -94,7 +94,7 @@ sync: ## run the sync process (refreshes data frontends)
 sync: MESSAGE = Manual sync
 sync:
 	gunzip -r data/prep/*.csv.gz && \
-	PYTHONPATH=$(PYTHONPATH):`pwd`/. python scripts/sync.py --message "$(MESSAGE)" --season 2022 && \
+	PYTHONPATH=$(PYTHONPATH):`pwd`/. python scripts/sync.py --message "$(MESSAGE)" --season 2023 && \
 	gzip -r data/prep/*.csv
 
 streamlit_local: ## run streamlit app locally

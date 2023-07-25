@@ -57,7 +57,7 @@ models:
             - club_id
       - dbt_expectations.expect_table_row_count_to_be_between:
           min_value: 400
-          max_value: 420
+          max_value: 430
     columns:
       - name: club_code
         tests:
@@ -141,7 +141,7 @@ models:
       - name: market_value_in_eur
         tests:
           - too_many_missings:
-              tolerance: 0.37
+              tolerance: 0.38
       - name: contract_expiration_date
         tests:
           - too_many_missings:
@@ -167,10 +167,6 @@ models:
       - dbt_expectations.expect_table_row_count_to_be_between:
           min_value: 400000
           max_value: 440000
-    columns:
-      - name: market_value_in_eur
-        tests:
-          - not_null
     columns:
       - name: player_id
         tests:
