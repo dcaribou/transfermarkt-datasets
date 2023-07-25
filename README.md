@@ -119,7 +119,7 @@ path | description
 In the scope of this project, "acquiring" is the process of collecting "raw data", as it is produced by [trasfermarkt-scraper](https://github.com/dcaribou/transfermarkt-scraper). Acquired data lives in the `data/raw` folder and it can be created or updated for a particular season by running `make acquire_local`
 
 ```console
-make acquire_local ARGS="--asset all --season 2022"
+make acquire_local ARGS="--asset all --season 2023"
 ```
 This runs the scraper with a set of parameters and collects the output in `data/raw`.
 
