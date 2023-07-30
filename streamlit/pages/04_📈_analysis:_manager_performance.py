@@ -32,7 +32,7 @@ games["season"] = pd.to_datetime(games["season"], format="%Y")
 # define the set of leagues to be used in the analysis
 
 DEFAULT_COMPETITIONS = ["GB1", "L1", "ES1", "IT1"]
-DEFAULT_SEASONS = [2021, 2022, 2023]
+DEFAULT_SEASONS = [2021, 2023]
 DEFAULT_MANAGERS = ["Jürgen Klopp", "Pep Guardiola"]
 DEFAULT_COMPETITION_TYPES = [
     "domestic_cup", "domestic_league", "international_cup"
