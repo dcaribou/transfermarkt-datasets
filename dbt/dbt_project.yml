@@ -50,3 +50,6 @@ vars:
       'SCI', 'CL', 'EL', 'KLUB', 'ECLQ', 'CLQ', 'ELQ', 'USC',
       'FAC',
     ]
+  data_diff:
+    prod_database: duck # default database for the prod target
+    prod_schema: prod # default schema for the prod target
