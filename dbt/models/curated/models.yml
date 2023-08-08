@@ -29,6 +29,18 @@ models:
       - name: appearance_id
         tests:
           - unique
+          # check that we get a minimum amount of appearances every month
+          - dbt_expectations.expect_column_distinct_count_to_be_greater_than:
+              value: 11000
+              group_by:
+                - >
+                  date_trunc('month', "date")
+              # the rationale for the filter below is
+              # - exclude months of may, june, july, december and january many competitions stop on those dates and thresholds might not be reached
+              # - exclude 2020 becase many competitions stopped as well due to the pandemic
+              row_condition: >
+                date_part('month', "date") not in (5, 6, 7, 12, 1) and
+                date_part('year', "date") != 2020
       - name: game_id
         tests:
           - not_null
