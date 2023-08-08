@@ -24,6 +24,7 @@ models:
       - dbt_expectations.expect_table_row_count_to_be_between:
           min_value: 1000000
           max_value: 1500000
+      
     columns:
       - name: appearance_id
         tests:
@@ -253,13 +254,14 @@ models:
             - player_id
             - description
             - player_in_id
-      - unique:
-          column_name: >
-            (game_id || player_id || club_id || type || minute || coalesce(description, '') || player_in_id )
       - dbt_expectations.expect_table_row_count_to_be_between:
           min_value: 550000
           max_value: 600000
     columns:
+      - name: game_event_id
+        tests:
+          - not_null
+          - unique
       - name: minute
         tests:
           - not_null
