@@ -1,5 +1,5 @@
 """
-Acquire raw data from transfermark website using a dockerized version of transfermark-scraper.
+Acquire raw data from transfermark website using transfermark-scraper.
 
 usage: 1_acquire.py [-h] {local,cloud} ...
 

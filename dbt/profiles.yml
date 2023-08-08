@@ -1,6 +1,10 @@
 transfermarkt_datasets:
-  outputs:
-   dev:
-     type: duckdb
-     path: duck.db
   target: dev
+  outputs:
+    dev: &dev_target
+      type: duckdb
+      path: duck.db
+      schema: dev
+    prod:
+      <<: *dev_target
+      schema: prod
