@@ -7,7 +7,7 @@ sources:
         meta:
           external_location: >
             read_csv(
-              '../data/raw/*/appearances.json.gz',
+              'data/raw/*/appearances.json.gz',
               header=False,
               columns=struct_pack(value := 'VARCHAR'), delim='\1', quote='\0',
               filename=True
@@ -16,7 +16,7 @@ sources:
         meta:
           external_location: >
             read_csv(
-              '../data/raw/*/games.json.gz',
+              'data/raw/*/games.json.gz',
               header=False,
               columns=struct_pack(value := 'VARCHAR'), delim='\1', quote='\0',
               filename=True
@@ -25,7 +25,7 @@ sources:
         meta:
           external_location: >
             read_csv(
-              '../data/raw/*/players.json.gz',
+              'data/raw/*/players.json.gz',
               header=False,
               columns=struct_pack(value := 'VARCHAR'), delim='\1', quote='\0',
               filename=True
@@ -34,7 +34,7 @@ sources:
         meta:
           external_location: >
             read_csv(
-              '../data/raw/*/clubs.json.gz',
+              'data/raw/*/clubs.json.gz',
               header=False,
               columns=struct_pack(value := 'VARCHAR'), delim='\1', quote='\0',
               filename=True
@@ -43,7 +43,7 @@ sources:
         meta:
           external_location: >
             read_csv(
-              '../data/competitions.json',
+              'data/competitions.json',
               header=False,
               columns=struct_pack(value := 'VARCHAR'), delim='\1', quote='\0',
               filename=True
