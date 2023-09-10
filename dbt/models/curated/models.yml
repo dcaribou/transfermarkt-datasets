@@ -37,10 +37,11 @@ models:
                   date_trunc('month', "date")
               # the rationale for the filter below is
               # - exclude months of may, june, july, december and january many competitions stop on those dates and thresholds might not be reached
-              # - exclude 2020 becase many competitions stopped as well due to the pandemic
+              # - exclude 2020 because many competitions stopped as well due to the pandemic
+              # - exclude 2023 because its the ongoing season
               row_condition: >
                 date_part('month', "date") not in (5, 6, 7, 12, 1) and
-                date_part('year', "date") != 2020
+                date_part('year', "date") not in (2020, 2023)
       - name: game_id
         tests:
           - not_null
@@ -135,8 +136,8 @@ models:
             - last_season
             - url
       - dbt_expectations.expect_table_row_count_to_be_between:
-          min_value: 28000
-          max_value: 30000
+          min_value: 30000
+          max_value: 32000
     columns:
       - name: player_id
         tests:
@@ -178,8 +179,8 @@ models:
             - market_value_in_eur
             - player_club_domestic_competition_id
       - dbt_expectations.expect_table_row_count_to_be_between:
-          min_value: 400000
-          max_value: 440000
+          min_value: 430000
+          max_value: 460000
     columns:
       - name: player_id
         tests:
