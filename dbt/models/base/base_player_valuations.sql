@@ -43,3 +43,4 @@ with
 select *
 from extracted
 where n = 1
+and date_part('year', "date") != 5023

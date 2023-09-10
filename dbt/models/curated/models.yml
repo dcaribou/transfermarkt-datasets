@@ -185,6 +185,10 @@ models:
       - name: player_id
         tests:
           - not_null
+      - name: datetime
+        tests:
+          - dbt_expectations.expect_column_max_to_be_between:
+              max_value: "'2023-12-31'"
       - name: market_value_in_eur
         description: >
           The player's market value for the given date in EUR.
