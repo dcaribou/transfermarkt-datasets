@@ -1270,14 +1270,14 @@ test = ["black (==21.9b0)", "flake8 (>=3.8.3,<4.0.0)", "isort (>=5.0.6,<6.0.0)",
 
 [[package]]
 name = "dbt-core"
-version = "1.6.0"
+version = "1.6.2"
 description = "With dbt, data analysts and engineers can build analytics the way engineers build applications."
 category = "main"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "dbt-core-1.6.0.tar.gz", hash = "sha256:51da239af02ed449562d3c5caea903edee7b5427c47efd5a6439634c59858087"},
-    {file = "dbt_core-1.6.0-py3-none-any.whl", hash = "sha256:494018fef1254e6169f754c9ea32986d3851f1e5a8214d02f4e75fdd4a6c6c50"},
+    {file = "dbt-core-1.6.2.tar.gz", hash = "sha256:26915958e667b46e966d4658a74f6d20b84bd905f1db787bdfc2861267a27215"},
+    {file = "dbt_core-1.6.2-py3-none-any.whl", hash = "sha256:92435746bd317b955788290baaf1c0e2729c4cc87be5878780c1f2b56219198e"},
 ]
 
 [package.dependencies]
