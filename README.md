@@ -198,9 +198,9 @@ In order to keep things tidy, there are two simple guidelines
 * Avoid topic duplication by having a quick look at the [FAQs](https://github.com/dcaribou/transfermarkt-datasets/discussions/175)
 
 ### 🫶 sponsoring
-Maintenance of this project is made possible by <a href="https://github.com/sponsors/dcaribou">sponsors</a>. If you'd like to sponsor this project you can use the `Sponsor` button at the top (for becomming a contributor read below).
+Maintenance of this project is made possible by <a href="https://github.com/sponsors/dcaribou">sponsors</a>. If you'd like to sponsor this project you can use the `Sponsor` button at the top.
 
-🙏 I would like to express my grattitude to [@mortgad](https://github.com/mortgad) for becoming the first sponsor of this project.
+&rarr; I would like to express my grattitude to [@mortgad](https://github.com/mortgad) for becoming the first sponsor of this project.
 
 ### 👨‍💻 contributing
 Contributions to `transfermarkt-datasets` are most welcome. If you want to contribute new fields or assets to this dataset, the instructions are quite simple:
