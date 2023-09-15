@@ -198,9 +198,9 @@ In order to keep things tidy, there are two simple guidelines
 * Avoid topic duplication by having a quick look at the [FAQs](https://github.com/dcaribou/transfermarkt-datasets/discussions/175)
 
 ### 🫶 sponsoring
-Maintenance of this project is made possible by all the <a href="https://github.com/dcaribou/transfermarkt-dataset/graphs/contributors">contributors</a> and <a href="https://github.com/sponsors/dcaribou">sponsors</a>. If you'd like to sponsor this project you can use the `Sponsor` button at the top (for becomming a contributor read below).
+Maintenance of this project is made possible by <a href="https://github.com/sponsors/dcaribou">sponsors</a>. If you'd like to sponsor this project you can use the `Sponsor` button at the top (for becomming a contributor read below).
 
-🙏 I would like to express my grattitude to @mortgad for becoming the first sponsor of this project.
+🙏 I would like to express my grattitude to [@mortgad] for becoming the first sponsor of this project.
 
 ### 👨‍💻 contributing
 Contributions to `transfermarkt-datasets` are most welcome. If you want to contribute new fields or assets to this dataset, the instructions are quite simple:
@@ -210,4 +210,4 @@ Contributions to `transfermarkt-datasets` are most welcome. If you want to contr
 4. Start modifying assets or creating new ones in the dbt project. You can use `make prepare_local` to run and test your changes.
 5. If it's all looking good, create a pull request with your changes :rocket:
 
-> ℹ️ In case you face any issue following the instructions above or just if you have questions in general please [get in touch](#contributing-pray)
+> ℹ️ In case you face any issue following the instructions above please [get in touch](#contributing-pray)
