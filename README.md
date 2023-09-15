@@ -1,6 +1,6 @@
 ![Build Status](https://github.com/dcaribou/transfermarkt-datasets/actions/workflows/on-push.yml/badge.svg)
 ![Pipeline Status](https://github.com/dcaribou/transfermarkt-datasets/actions/workflows/on-schedule.yml/badge.svg)
-![dbt Version](https://img.shields.io/static/v1?logo=dbt&label=dbt-version&message=1.5.1&color=orange)
+![dbt Version](https://img.shields.io/static/v1?logo=dbt&label=dbt-version&message=1.6.2&color=orange)
 
 # transfermarkt-datasets
 
@@ -68,22 +68,23 @@ class appearances {
 ```
 ------
 
-- [setup](#setup)
+- [📥 setup](#-setup)
   - [make](#make)
-- [data storage](#data-storage)
-- [data acquisition](#data-acquisition)
-- [data preparation](#data-preparation)
+- [💾 data storage](#-data-storage)
+- [🕸️ data acquisition](#️-data-acquisition)
+- [🔨 data preparation](#-data-preparation)
   - [python api](#python-api)
-- [frontends](#frontends)
-  - [streamlit 🎈](#streamlit-)
-- [infra](#infra)
-- [community 💬](#community-)
-  - [getting in touch](#getting-in-touch)
-  - [contributing :pray:](#contributing-pray)
+- [👁️ frontends](#️-frontends)
+  - [🎈 streamlit](#-streamlit)
+- [🏗️ infra](#️-infra)
+- [💬 community](#-community)
+  - [📞 getting in touch](#-getting-in-touch)
+  - [🫶 sponsoring](#-sponsoring)
+  - [👨‍💻 contributing](#-contributing)
 
 ------
 
-## setup
+## 📥 setup 
 Setup your local environment to run the project with `poetry`.
 1. Install [poetry](https://python-poetry.org/docs/)
 2. Install python dependencies (poetry will create a virtual environment for you)
@@ -105,8 +106,8 @@ dagit_local                    run dagit locally
 ```
 Run `make help` to see the full list. Once you've completed the setup, you should be able to run most of these from your machine.
 
-## data storage
-All project data assets are kept inside the [`data`](data) folder. This is a [DVC](https://dvc.org/) repository, so all files can be pulled from the remote storage with the `make dvc_pull`.
+## 💾 data storage
+All project data assets are kept inside the [`data`](data) folder. This is a [DVC](https://dvc.org/) repository, so all files can be pulled from the remote storage by running `make dvc_pull`.
 
 path | description
 -|-
@@ -115,7 +116,7 @@ path | description
 
 > :warning: Read access to the S3 [DVC remote storage](https://dvc.org/doc/command-reference/remote#description) for the project is required to successfully run `dvc pull`. Contributors can grant themselves access by adding their AWS IAM user ARN to [this whitelist](https://github.com/dcaribou/transfermarkt-datasets/blob/655fe130974905591ff80bb57813bedd01ec7d6c/infra/main.tf#L17).
 
-## data acquisition
+## 🕸️ data acquisition
 In the scope of this project, "acquiring" is the process of collecting "raw data", as it is produced by [trasfermarkt-scraper](https://github.com/dcaribou/transfermarkt-scraper). Acquired data lives in the `data/raw` folder and it can be created or updated for a particular season by running `make acquire_local`
 
 ```console
@@ -123,7 +124,7 @@ make acquire_local ARGS="--asset all --season 2023"
 ```
 This runs the scraper with a set of parameters and collects the output in `data/raw`.
 
-## data preparation
+## 🔨 data preparation
 In the scope of this project, "preparing" is the process of transforming raw data to create a high quality dataset that can be conveniently consumed by analysts of all kinds.
 
 Data prepartion is done in SQL using [dbt](https://docs.getdbt.com/) and [DuckDB](https://duckdb.org/). You can trigger a run of the preparation task using the `prepare_local` make target or work with the dbt CLI directly if you prefer.
@@ -171,13 +172,13 @@ path | description
 
 For more examples on using `transfermark_datasets`, checkout the sample [notebooks](notebooks).
 
-## frontends
+## 👁️ frontends
 Prepared data is published to a couple of popular dataset websites. This is done running `make sync`, which runs weekly as part of the [data pipeline](.github/workflows/on-schedule.yml).
 
 * [Kaggle](https://www.kaggle.com/datasets/davidcariboo/player-scores)
 * [data.world](https://data.world/dcereijo/player-scores)
 
-### streamlit 🎈
+### 🎈 streamlit
 There is a [streamlit](https://streamlit.io/) app for the project with documentation, a data catalog and sample analyisis. The app is currently hosted in fly.io, you can check it out [here](https://transfermarkt-datasets.fly.dev/).
 
 For local development, you can also run the app in your machine. Provided you've done the [setup](#setup), run the following to spin up a local instance of the app
@@ -186,17 +187,22 @@ make streamlit_local
 ```
 > :warning: Note that the app expects prepared data to exist in `data/prep`. Check out [data storage](#data-storage) for instructions about how to populate that folder.
 
-## [infra](infra)
+## 🏗️ [infra](infra)
 Define all the necessary infrastructure for the project in the cloud with Terraform.
 
-## community 💬
+## 💬 community
 
-### getting in touch
+### 📞 getting in touch
 In order to keep things tidy, there are two simple guidelines
 * Keep the conversation centralised and public by getting in touch via the [Discussions](https://github.com/dcaribou/transfermarkt-datasets/discussions) tab.
 * Avoid topic duplication by having a quick look at the [FAQs](https://github.com/dcaribou/transfermarkt-datasets/discussions/175)
 
-### contributing :pray:
+### 🫶 sponsoring
+Maintenance of this project is made possible by all the <a href="https://github.com/dcaribou/transfermarkt-dataset/graphs/contributors">contributors</a> and <a href="https://github.com/sponsors/dcaribou">sponsors</a>. If you'd like to sponsor this project you can use the `Sponsor` button at the top (for becomming a contributor read below).
+
+🙏 I would like to express my grattitude to @mortgad for becoming the first sponsor of this project.
+
+### 👨‍💻 contributing
 Contributions to `transfermarkt-datasets` are most welcome. If you want to contribute new fields or assets to this dataset, the instructions are quite simple:
 1. [Fork the repo](https://github.com/dcaribou/transfermarkt-datasets/fork)
 2. Set up your [local environment](##setup)
@@ -204,5 +210,4 @@ Contributions to `transfermarkt-datasets` are most welcome. If you want to contr
 4. Start modifying assets or creating new ones in the dbt project. You can use `make prepare_local` to run and test your changes.
 5. If it's all looking good, create a pull request with your changes :rocket:
 
-> ℹ️ In case you face any issue following the instructions above or just if you have questions in general you may [get in touch](#contributing-pray)
-
+> ℹ️ In case you face any issue following the instructions above or just if you have questions in general please [get in touch](#contributing-pray)
