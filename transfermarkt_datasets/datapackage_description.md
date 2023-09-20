@@ -2,9 +2,9 @@
 > Clean, structured and **automatically updated** football data from [Transfermarkt](https://www.transfermarkt.co.uk/), including
 > * `60,000+` games from many seasons on all major competitions
 > * `400+` clubs from those competitions
-> * `28,000+` players from those clubs
-> * `300,000+` player market valuations historical records
-> * `1,000,000+` player appearance records from all games
+> * `30,000+` players from those clubs
+> * `400,000+` player market valuations historical records
+> * `1,200,000+` player appearance records from all games
 > 
 > and more!
 
@@ -25,6 +25,6 @@ The source code that maintains this dataset, as well as the data pipeline, [is a
 This dataset is a live project subject to regular updates and new enhancements. The best way to find out about the different initiatives within this project and their status is to check the `Issues` section on [transfermarkt-datasets](https://github.com/dcaribou/transfermarkt-datasets/issues).
 
 ### Contact
-The source of truth for the code and data for this project is Github and that is the best place to start a conversation. If you want to report a bug or propose a new feature, use the [`Issues`](https://github.com/dcaribou/transfermarkt-datasets/issues) or [`Discussions`](https://github.com/dcaribou/transfermarkt-datasets/discussions) sections.
+The source of truth for the code and data for this project is Github and that is the best place to start a conversation, please checkout the community guidelines [here](https://github.com/dcaribou/transfermarkt-datasets/discussions/179).
 
-> Bugfixes and enhancements contributing to this dataset are most welcome. If you want to contribute, the best way to start is by opening a new issue or picking an existing one from the [`Issues`](https://github.com/dcaribou/transfermarkt-datasets/issues) section in Github.
+> If you have a github user I kindly ask that you post your questions there and not in the __Discussion__ tab in this website.
