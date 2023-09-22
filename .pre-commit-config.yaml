@@ -3,4 +3,5 @@ repos:
   rev: v1.1.1
   hooks:
   - id: dbt-docs-generate
+  - id: dbt-run
   - id: dbt-test
