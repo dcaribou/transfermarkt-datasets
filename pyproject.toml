@@ -25,6 +25,7 @@ jupyter = "^1.0.0"
 autopep8 = "^1.7.0"
 datacompy = "^0.9.0"
 data-diff = "0.8.2"
+pre-commit = "^3.3.3"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

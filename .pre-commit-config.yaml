@@ -1,0 +1,7 @@
+repos:
+- repo: https://github.com/dbt-checkpoint/dbt-checkpoint
+  rev: v1.1.1
+  hooks:
+  - id: dbt-docs-generate
+  - id: dbt-run
+  - id: dbt-test

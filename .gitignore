@@ -59,3 +59,7 @@ tmp*
 
 # Ignore the logs directory
 logs
+
+# dbt stuff
+dbt_packages
+duck.db*
