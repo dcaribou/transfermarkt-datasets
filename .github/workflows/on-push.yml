@@ -59,7 +59,7 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: |
           source .venv/bin/activate
-          dvc push
+          dvc push --remote s3
 
       - name: image build
         env:

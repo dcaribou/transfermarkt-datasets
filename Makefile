@@ -6,6 +6,7 @@ ARGS = --asset all --seasons 2023
 MESSAGE = some message
 TAG = dev
 DBT_TARGET = dev
+DVC_REMOTE = http
 
 DASH:= -
 SLASH:= /
@@ -119,7 +120,7 @@ stash_and_commit: ## commit and push code and data
 	dvc commit -f && git add data && \
     git diff-index --quiet HEAD data || git commit -m "$(MESSAGE)" && \
     git push origin HEAD:${BRANCH} && \
-	dvc push
+	dvc push --remote $(DVC_REMOTE)
 
 test: ## run unit tests for core python module
 	pytest
