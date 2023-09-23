@@ -66,7 +66,7 @@ acquire_cloud:
 		--branch $(BRANCH) \
 		--job-name $(JOB_NAME) \
 		--job-definition $(JOB_DEFINITION_NAME) \
-		ARGS='$(ARGS)' MESSAGE='$(MESSAGE)' DVC_REMOTE='$(DVC_REMOTE)'
+		ARGS='$(ARGS)' MESSAGE='$(MESSAGE)' DVC_REMOTE=s3
 
 
 prepare_local: ## run the prep process locally (refreshes data/prep)
