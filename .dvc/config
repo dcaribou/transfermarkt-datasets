@@ -1,4 +1,6 @@
 [core]
-    remote = s3
+    remote = http
 ['remote "s3"']
     url = s3://transfermarkt-datasets/dvc
+['remote "http"']
+    url = https://d1mj0i4rr3evqd.cloudfront.net/dvc/

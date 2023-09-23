@@ -17,6 +17,11 @@ variable "write_user_arn" {
   type = string
 }
 
+variable "cdn_arn" {
+  type = string
+  description = "ARN of the Cloudfront distribution to be used as DVC remote"
+}
+
 variable "bucket_name" {
   type = string
 }
@@ -96,6 +101,25 @@ data "aws_iam_policy_document" "user_access_process" {
 
     resources = [
       "${data.aws_s3_bucket.bucket.arn}/snapshots/*",
+    ]
+  }
+
+  statement {
+    sid = "cloudfront"
+    principals {
+      type = "Service"
+      identifiers = ["cloudfront.amazonaws.com"]
+    }
+    actions = [
+      "s3:GetObject"
+    ]
+    condition {
+      test = "StringEquals"
+      variable = "AWS:SourceArn"
+      values = [var.cdn_arn]
+    }
+    resources = [ 
+      "${data.aws_s3_bucket.bucket.arn}/dvc/*",
     ]
   }
 

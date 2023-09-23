@@ -2,10 +2,10 @@ terraform {
   required_providers {
     aws = {
       source = "hashicorp/aws"
-      version = "4.19.0"
+      version = ">= 4.19.0"
     }
   }
-  required_version = "1.0.4"
+  required_version = "1.5.7"
 }
 
 provider "aws" {
@@ -31,6 +31,15 @@ module "base" {
   }
 }
 
+module "cdn" {
+  source = "./cdn"
+  name = "transfermarkt-datasets"
+  bucket_name = module.base.bucket_name
+  tags = {
+    "project" = "transfermarkt-datasets"
+  }
+}
+
 module "iam" {
   name = "transfermarkt-datasets"
   source = "./iam"
@@ -38,6 +47,7 @@ module "iam" {
   write_user_arn = "arn:aws:iam::272181418418:user/transfermarkt-datasets"
   bucket_name = module.base.bucket_name
   bucket_arn = module.base.bucket_arn
+  cdn_arn = module.cdn.arn
   tags = {
     "project" = "transfermarkt-datasets"
   }
@@ -49,3 +59,5 @@ module "batch" {
   execution_role_arn = module.iam.batch_execution_role_arn
   service_role_arn = module.iam.batch_service_role_arn
 }
+
+
