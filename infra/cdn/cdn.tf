@@ -1,4 +1,3 @@
-
 variable "bucket_name" {
   type = string
   description = "The name of the base bucket for the project"
@@ -15,7 +14,7 @@ variable "tags" {
 }
 
 locals {
-  s3_origin_id = "transfermarkt-datasets.s3.eu-west-1.amazonaws.com"
+  s3_origin_id = "${var.bucket_name}.s3.eu-west-1.amazonaws.com"
 }
 
 resource "aws_cloudfront_origin_access_control" "oac" {
@@ -27,7 +26,7 @@ resource "aws_cloudfront_origin_access_control" "oac" {
 
 resource "aws_cloudfront_distribution" "s3_distribution" {
   origin {
-    domain_name              = "transfermarkt-datasets.s3.eu-west-1.amazonaws.com"
+    domain_name              = local.s3_origin_id
     origin_access_control_id = aws_cloudfront_origin_access_control.oac.id
     origin_id                = local.s3_origin_id
   }
