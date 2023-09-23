@@ -14,6 +14,7 @@ In an nutshell, this project aims for three things:
 [![Kaggle](https://kaggle.com/static/images/open-in-kaggle.svg)](https://www.kaggle.com/datasets/davidcariboo/player-scores)
 [![data.world](https://img.shields.io/badge/-Open%20in%20data.world-blue?style=appveyor)](https://data.world/dcereijo/player-scores)
 
+**🔈 New!** &rarr; Now it's much easier to get the data (no access required)
 **🔈 New!** &rarr; [This sample notebook](notebooks/chat_playbook.ipynb) demonstrates how to interact with the dataset using natural language and leveraging OpenAI APIs.
 
 ------
@@ -96,7 +97,7 @@ poetry install
 ### make
 The `Makefile` in the root defines a set of useful targets that will help you run the different parts of the project. Some examples are
 ```console
-dvc_pull                       pull data from the cloud (aws s3)
+dvc_pull                       pull data from the cloud
 docker_build                   build the project docker image and tag accordingly
 acquire_local                  run the acquiring process locally (refreshes data/raw)
 prepare_local                  run the prep process locally (refreshes data/prep)
@@ -113,8 +114,6 @@ path | description
 -|-
 `data/raw` | contains raw data per season as acquired with [trasfermarkt-scraper](https://github.com/dcaribou/transfermarkt-scraper) (check [acquire](#data-acquisition))
 `data/prep` | contains prepared datasets as produced by dbt (check [prepare](#data-preparation))
-
-> :warning: Read access to the S3 [DVC remote storage](https://dvc.org/doc/command-reference/remote#description) for the project is required to successfully run `dvc pull`. Contributors can grant themselves access by adding their AWS IAM user ARN to [this whitelist](https://github.com/dcaribou/transfermarkt-datasets/blob/655fe130974905591ff80bb57813bedd01ec7d6c/infra/main.tf#L17).
 
 ## 🕸️ data acquisition
 In the scope of this project, "acquiring" is the process of collecting "raw data", as it is produced by [trasfermarkt-scraper](https://github.com/dcaribou/transfermarkt-scraper). Acquired data lives in the `data/raw` folder and it can be created or updated for a particular season by running `make acquire_local`
