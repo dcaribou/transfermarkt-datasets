@@ -66,7 +66,7 @@ acquire_cloud:
 		--branch $(BRANCH) \
 		--job-name $(JOB_NAME) \
 		--job-definition $(JOB_DEFINITION_NAME) \
-		ARGS='$(ARGS)' MESSAGE='$(MESSAGE)'
+		ARGS='$(ARGS)' MESSAGE='$(MESSAGE)' DVC_REMOTE='$(DVC_REMOTE)'
 
 
 prepare_local: ## run the prep process locally (refreshes data/prep)
@@ -111,7 +111,6 @@ streamlit_docker: ## run streamlit app in a local docker
 streamlit_deploy: ## deploy streamlit to app hosting service (fly.io)
 streamlit_deploy: docker_push_flyio
 	flyctl deploy
-	flyctl apps restart transfermarkt-datasets
 
 dagit_local: ## run dagit locally
 	dagit -f transfermarkt_datasets/dagster/jobs.py
