@@ -52,5 +52,3 @@ module "batch" {
   execution_role_arn = module.iam.batch_execution_role_arn
   service_role_arn = module.iam.batch_service_role_arn
 }
-
-
