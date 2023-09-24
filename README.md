@@ -85,7 +85,7 @@ class appearances {
 
 ## 📥 setup
 
-> **🔈 New!** &rarr; Thanks to [Github codespaces](https://github.com/features/codespaces) you can now spin up a working dev environment in your browser with just a click, local setup required.
+> **🔈 New!** &rarr; Thanks to [Github codespaces](https://github.com/features/codespaces) you can now spin up a working dev environment in your browser with just a click, **no local setup required**.
 >
 > [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/dcaribou/transfermarkt-datasets/tree/master?quickstart=1)
 
