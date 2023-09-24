@@ -2,8 +2,6 @@
 ![Pipeline Status](https://github.com/dcaribou/transfermarkt-datasets/actions/workflows/on-schedule.yml/badge.svg)
 ![dbt Version](https://img.shields.io/static/v1?logo=dbt&label=dbt-version&message=1.6.2&color=orange)
 
-**🔈 New!** &rarr; An AWS IAM user is no longer required to access the [project data](#💾-data-storage). You can now pull the data to your local by simply running `dvc pull`.
-
 # transfermarkt-datasets
 
 In an nutshell, this project aims for three things:
