@@ -85,8 +85,9 @@ class appearances {
 
 ## 📥 setup
 
-> **🔈 New!** &rarr; Thanks to [Github codespaces](https://github.com/features/codespaces) you can now spin up a working dev environment in your browser with just a click. No local setup required!
-> ![Open in GitHub Codespaces]
+> **🔈 New!** &rarr; Thanks to [Github codespaces](https://github.com/features/codespaces) you can now spin up a working dev environment in your browser with just a click, local setup required.
+>
+> [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/dcaribou/transfermarkt-datasets/tree/master?quickstart=1)
 
 Setup your local environment to run the project with `poetry`.
 1. Install [poetry](https://python-poetry.org/docs/)
