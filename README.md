@@ -8,8 +8,9 @@ In an nutshell, this project aims for three things:
 
 1. Acquiring data from the transfermarkt website using the [trasfermarkt-scraper](https://github.com/dcaribou/transfermarkt-scraper).
 2. Building a **clean, public football (soccer) dataset** using data in 1.
-3. Automating 1 and 2 to **keep these assets up to date** and publicly available on some well-known data catalogs.
+3. Automating 1 and 2 to **keep assets up to date** and publicly available on some well-known data catalogs.
 
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/github/docs)
 [![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://transfermarkt-datasets.fly.dev/)
 [![Kaggle](https://kaggle.com/static/images/open-in-kaggle.svg)](https://www.kaggle.com/datasets/davidcariboo/player-scores)
 [![data.world](https://img.shields.io/badge/-Open%20in%20data.world-blue?style=appveyor)](https://data.world/dcereijo/player-scores)
