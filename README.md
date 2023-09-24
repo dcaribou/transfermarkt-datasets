@@ -109,8 +109,8 @@ All project data assets are kept inside the [`data`](data) folder. This is a [DV
 
 path | description
 -|-
-`data/raw` | contains raw data per season as acquired with [trasfermarkt-scraper](https://github.com/dcaribou/transfermarkt-scraper) (check [acquire](#🕸️-data-acquisition))
-`data/prep` | contains prepared datasets as produced by dbt (check [prepare](#🔨-data-preparation))
+`data/raw` | contains raw data per season as acquired with [trasfermarkt-scraper](https://github.com/dcaribou/transfermarkt-scraper) (check [acquire](#-data-acquisition))
+`data/prep` | contains prepared datasets as produced by dbt (check [prepare](#-data-preparation))
 
 ## 🕸️ data acquisition
 In the scope of this project, "acquiring" is the process of collecting "raw data", as it is produced by [trasfermarkt-scraper](https://github.com/dcaribou/transfermarkt-scraper). Acquired data lives in the `data/raw` folder and it can be created or updated for a particular season by running `make acquire_local`
@@ -177,11 +177,11 @@ Prepared data is published to a couple of popular dataset websites. This is done
 ### 🎈 streamlit
 There is a [streamlit](https://streamlit.io/) app for the project with documentation, a data catalog and sample analyisis. The app is currently hosted in fly.io, you can check it out [here](https://transfermarkt-datasets.fly.dev/).
 
-For local development, you can also run the app in your machine. Provided you've done the [setup](#📥-setup), run the following to spin up a local instance of the app
+For local development, you can also run the app in your machine. Provided you've done the [setup](#-setup), run the following to spin up a local instance of the app
 ```console
 make streamlit_local
 ```
-> :warning: Note that the app expects prepared data to exist in `data/prep`. Check out [data storage](#💾-data-storage) for instructions about how to populate that folder.
+> :warning: Note that the app expects prepared data to exist in `data/prep`. Check out [data storage](#-data-storage) for instructions about how to populate that folder.
 
 ## 🏗️ [infra](infra)
 Define all the necessary infrastructure for the project in the cloud with Terraform.
@@ -201,9 +201,9 @@ Maintenance of this project is made possible by <a href="https://github.com/spon
 ### 👨‍💻 contributing
 Contributions to `transfermarkt-datasets` are most welcome. If you want to contribute new fields or assets to this dataset, the instructions are quite simple:
 1. [Fork the repo](https://github.com/dcaribou/transfermarkt-datasets/fork)
-2. Set up your [local environment](#📥-setup)
-3. [Populate `data/raw` directory](#💾-data-storage)
-4. Start modifying assets or creating new ones in [the dbt project](#🔨-data-preparation)
+2. Set up your [local environment](#-setup)
+3. [Populate `data/raw` directory](#-data-storage)
+4. Start modifying assets or creating new ones in [the dbt project](#-data-preparation)
 5. If it's all looking good, create a pull request with your changes :rocket:
 
-> ℹ️ In case you face any issue following the instructions above please [get in touch](#📞-getting-in-touch)
+> ℹ️ In case you face any issue following the instructions above please [get in touch](#-getting-in-touch)
