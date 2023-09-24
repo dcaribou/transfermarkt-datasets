@@ -68,4 +68,5 @@ jobs:
               JOB_NAME=on-schedule-$DAY \
               BRANCH=$BRANCH \
               ARGS="$EFFECTIVE_ARGS" \
-              MESSAGE="🤖 updated raw dataset files"
+              MESSAGE="🤖 updated raw dataset files" \
+              DVC_REMOTE="s3"

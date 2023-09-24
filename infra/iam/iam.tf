@@ -7,14 +7,15 @@ variable "tags" {
   description = "Project tags"
 }
 
-variable "read_users_arns" {
+variable "read_write_users_arns" {
   type = list(string)
   description = "IAM users who are authorized to read dvc/ objects"
   default = []
 }
 
-variable "write_user_arn" {
+variable "cdn_arn" {
   type = string
+  description = "ARN of the Cloudfront distribution to be used as DVC remote"
 }
 
 variable "bucket_name" {
@@ -28,9 +29,9 @@ data "aws_s3_bucket" "bucket" {
   bucket = var.bucket_name
 }
 
-# create a limited access policy for the project user
+# create policy with the read grants
 data "aws_iam_policy_document" "user_access_base" {
-  for_each = toset(concat(var.read_users_arns, [aws_iam_role.batch_execution_role.arn]))
+  for_each = toset(concat(var.read_write_users_arns, [aws_iam_role.batch_execution_role.arn]))
 
   statement {
     sid = "bucketlevel${sha256(each.key)}"
@@ -61,10 +62,30 @@ data "aws_iam_policy_document" "user_access_base" {
     resources = [
       "${data.aws_s3_bucket.bucket.arn}/dvc/*",
     ]
-  } 
+  }
+
+  statement {
+    sid = "cloudfront"
+    principals {
+      type = "Service"
+      identifiers = ["cloudfront.amazonaws.com"]
+    }
+    actions = [
+      "s3:GetObject"
+    ]
+    condition {
+      test = "StringEquals"
+      variable = "AWS:SourceArn"
+      values = [var.cdn_arn]
+    }
+    resources = [ 
+      "${data.aws_s3_bucket.bucket.arn}/dvc/*",
+    ]
+  }
   
 }
 
+# add write grants to the read policy (by overriding / enhancing the read grants)
 data "aws_iam_policy_document" "user_access_process" {
   override_policy_documents = [for s in data.aws_iam_policy_document.user_access_base : s.json]
 
@@ -72,7 +93,7 @@ data "aws_iam_policy_document" "user_access_process" {
     sid = "writedvc"
     principals {
       type = "AWS"
-      identifiers = [var.write_user_arn]
+      identifiers = var.read_write_users_arns
     }
     actions = [
       "s3:PutObject",
@@ -88,7 +109,7 @@ data "aws_iam_policy_document" "user_access_process" {
     sid = "delete"
     principals {
       type = "AWS"
-      identifiers = [var.write_user_arn]
+      identifiers = var.read_write_users_arns
     }
     actions = [
       "s3:DeleteObject"

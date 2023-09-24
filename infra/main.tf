@@ -2,45 +2,48 @@ terraform {
   required_providers {
     aws = {
       source = "hashicorp/aws"
-      version = "4.19.0"
+      version = ">= 4.19.0"
     }
   }
-  required_version = "1.0.4"
+  required_version = "1.5.7"
 }
 
 provider "aws" {
   region = "eu-west-1"
 }
 
-# add your AWS IAM user ARN to this list to gain access to DVC remote storage
 locals {
-  dvc_read_users = [
+  core_bucket_name = "transfermarkt-datasets"
+  # write access is only granted via S3 direct access
+  dvc_read_write_users = [
     "arn:aws:iam::272181418418:user/transfermarkt-datasets",
-    "arn:aws:iam::272181418418:user/transfermarkt-datasets-streamlit",
-    "arn:aws:iam::254931886714:user/iam_coloal",
-    "arn:aws:iam::035556015160:user/Serge",
-    "arn:aws:iam::768182442866:user/adam"
   ]
+  module_tags = {
+    "project" = "transfermarkt-datasets"
+  }
 }
 
 module "base" {
   source = "./base"
-  bucket_name = "transfermarkt-datasets"
-  tags = {
-    "project" = "transfermarkt-datasets"
-  }
+  bucket_name = local.core_bucket_name
+  tags = local.module_tags
+}
+
+module "cdn" {
+  source = "./cdn"
+  name = "transfermarkt-datasets"
+  bucket_name = module.base.bucket_name
+  tags = local.module_tags
 }
 
 module "iam" {
   name = "transfermarkt-datasets"
   source = "./iam"
-  read_users_arns = local.dvc_read_users
-  write_user_arn = "arn:aws:iam::272181418418:user/transfermarkt-datasets"
+  read_write_users_arns = local.dvc_read_write_users
   bucket_name = module.base.bucket_name
   bucket_arn = module.base.bucket_arn
-  tags = {
-    "project" = "transfermarkt-datasets"
-  }
+  cdn_arn = module.cdn.arn
+  tags = local.module_tags
 }
 
 module "batch" {
