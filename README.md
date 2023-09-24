@@ -10,7 +10,7 @@ In an nutshell, this project aims for three things:
 2. Building a **clean, public football (soccer) dataset** using data in 1.
 3. Automating 1 and 2 to **keep assets up to date** and publicly available on some well-known data catalogs.
 
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/github/docs)
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/dcaribou/transfermarkt-datasets/tree/master?quickstart=1)
 [![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://transfermarkt-datasets.fly.dev/)
 [![Kaggle](https://kaggle.com/static/images/open-in-kaggle.svg)](https://www.kaggle.com/datasets/davidcariboo/player-scores)
 [![data.world](https://img.shields.io/badge/-Open%20in%20data.world-blue?style=appveyor)](https://data.world/dcereijo/player-scores)
@@ -83,7 +83,11 @@ class appearances {
 
 ------
 
-## 📥 setup 
+## 📥 setup
+
+> **🔈 New!** &rarr; Thanks to [Github codespaces](https://github.com/features/codespaces) you can now spin up a working dev environment in your browser with just a click. No local setup required!
+> ![Open in GitHub Codespaces]
+
 Setup your local environment to run the project with `poetry`.
 1. Install [poetry](https://python-poetry.org/docs/)
 2. Install python dependencies (poetry will create a virtual environment for you)
@@ -91,6 +95,7 @@ Setup your local environment to run the project with `poetry`.
 cd transfermarkt-datasets
 poetry install
 ```
+Remember to active the virtual environment once poetry has finished installing the dependencies by running `poetry shell`.
 
 ### make
 The `Makefile` in the root defines a set of useful targets that will help you run the different parts of the project. Some examples are
