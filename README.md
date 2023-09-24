@@ -14,9 +14,6 @@ In an nutshell, this project aims for three things:
 [![Kaggle](https://kaggle.com/static/images/open-in-kaggle.svg)](https://www.kaggle.com/datasets/davidcariboo/player-scores)
 [![data.world](https://img.shields.io/badge/-Open%20in%20data.world-blue?style=appveyor)](https://data.world/dcereijo/player-scores)
 
-**🔈 New!** &rarr; Now it's much easier to get the data (no access required)
-**🔈 New!** &rarr; [This sample notebook](notebooks/chat_playbook.ipynb) demonstrates how to interact with the dataset using natural language and leveraging OpenAI APIs.
-
 ------
 ```mermaid
 classDiagram
@@ -112,8 +109,8 @@ All project data assets are kept inside the [`data`](data) folder. This is a [DV
 
 path | description
 -|-
-`data/raw` | contains raw data per season as acquired with [trasfermarkt-scraper](https://github.com/dcaribou/transfermarkt-scraper) (check [acquire](#data-acquisition))
-`data/prep` | contains prepared datasets as produced by dbt (check [prepare](#data-preparation))
+`data/raw` | contains raw data per season as acquired with [trasfermarkt-scraper](https://github.com/dcaribou/transfermarkt-scraper) (check [acquire](#🕸️-data-acquisition))
+`data/prep` | contains prepared datasets as produced by dbt (check [prepare](#🔨-data-preparation))
 
 ## 🕸️ data acquisition
 In the scope of this project, "acquiring" is the process of collecting "raw data", as it is produced by [trasfermarkt-scraper](https://github.com/dcaribou/transfermarkt-scraper). Acquired data lives in the `data/raw` folder and it can be created or updated for a particular season by running `make acquire_local`
@@ -165,8 +162,8 @@ The module code lives in the `transfermark_datasets` folder with the structure b
 
 path | description
 -|-
-`transfermark_datasets/core` | core classes and utils that are used to work with the dataset.
-`transfermark_datasets/tests` | unit tests for core classes.
+`transfermark_datasets/core` | core classes and utils that are used to work with the dataset
+`transfermark_datasets/tests` | unit tests for core classes
 `transfermark_datasets/assets` | perpared asset definitions: one python file per asset
 
 For more examples on using `transfermark_datasets`, checkout the sample [notebooks](notebooks).
@@ -180,11 +177,11 @@ Prepared data is published to a couple of popular dataset websites. This is done
 ### 🎈 streamlit
 There is a [streamlit](https://streamlit.io/) app for the project with documentation, a data catalog and sample analyisis. The app is currently hosted in fly.io, you can check it out [here](https://transfermarkt-datasets.fly.dev/).
 
-For local development, you can also run the app in your machine. Provided you've done the [setup](#setup), run the following to spin up a local instance of the app
+For local development, you can also run the app in your machine. Provided you've done the [setup](#📥-setup), run the following to spin up a local instance of the app
 ```console
 make streamlit_local
 ```
-> :warning: Note that the app expects prepared data to exist in `data/prep`. Check out [data storage](#data-storage) for instructions about how to populate that folder.
+> :warning: Note that the app expects prepared data to exist in `data/prep`. Check out [data storage](#💾-data-storage) for instructions about how to populate that folder.
 
 ## 🏗️ [infra](infra)
 Define all the necessary infrastructure for the project in the cloud with Terraform.
@@ -204,9 +201,9 @@ Maintenance of this project is made possible by <a href="https://github.com/spon
 ### 👨‍💻 contributing
 Contributions to `transfermarkt-datasets` are most welcome. If you want to contribute new fields or assets to this dataset, the instructions are quite simple:
 1. [Fork the repo](https://github.com/dcaribou/transfermarkt-datasets/fork)
-2. Set up your [local environment](##setup)
-3. Pull the raw data by either running `dvc pull` ([requesting access is needed](#data-storage)) or using `make acquire_local` script (no access request needed)
-4. Start modifying assets or creating new ones in the dbt project. You can use `make prepare_local` to run and test your changes.
+2. Set up your [local environment](#📥-setup)
+3. [Populate `data/raw` directory](#💾-data-storage)
+4. Start modifying assets or creating new ones in [the dbt project](#🔨-data-preparation)
 5. If it's all looking good, create a pull request with your changes :rocket:
 
-> ℹ️ In case you face any issue following the instructions above please [get in touch](#contributing-pray)
+> ℹ️ In case you face any issue following the instructions above please [get in touch](#📞-getting-in-touch)
