@@ -137,7 +137,7 @@ Data prepartion is done in SQL using [dbt](https://docs.getdbt.com/) and [DuckDB
 
 dbt runs will populate a `dbt/duck.db` file in your local, which you can "connect to" using the DuckDB CLI and query the data using SQL.
 ```console
-duckdb dbt/duck.db
+duckdb dbt/duck.db -c 'select * from dev.games'
 ```
 
 ![dbt](resources/dbt.png)
