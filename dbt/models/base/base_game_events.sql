@@ -28,7 +28,8 @@ select distinct
     str_split(json_row -> 'club' ->> 'href', '/')[5]::integer as club_id,
     str_split(json_row -> 'player' ->> 'href', '/')[5]::integer as player_id,
     (json_row -> 'action' ->> 'description') as description,
-    str_split(json_row -> 'action' -> 'player_in' ->> 'href', '/')[5]::integer as player_in_id
+    str_split(json_row -> 'action' -> 'player_in' ->> 'href', '/')[5]::integer as player_in_id,
+    str_split(json_row -> 'action' -> 'player_assist' ->> 'href', '/')[5]::integer as player_assist_id
 
 from unnested
 
