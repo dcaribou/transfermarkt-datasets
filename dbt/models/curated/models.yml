@@ -36,7 +36,7 @@ models:
                 - >
                   date_trunc('month', "date")
               # the rationale for the filter below is
-              # - exclude months of may, june, july, december and january many competitions stop on those dates and thresholds might not be reached
+              # - exclude months of may, june, july, december and january as many competitions stop on those dates and thresholds might not be reached
               # - exclude 2020 because many competitions stopped as well due to the pandemic
               # - exclude 2023 because its the ongoing season
               row_condition: >
