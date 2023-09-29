@@ -22,6 +22,7 @@ class CurGameEventsAsset(Asset):
           type='string',
           description="Surrogate key"
         ),
+        Field(name='date', type='date'),
         Field(name='game_id', type='integer'),
         Field(name='player_id', type='integer'),
         Field(name='club_id', type='integer'),
