@@ -5,7 +5,16 @@ with game_events_cte as (
 )
 
 select
-    {{ dbt_utils.generate_surrogate_key(['game_id', 'player_id', 'club_id', 'type', 'minute', 'description', 'player_in_id', 'player_assist_id']) }} as game_event_id,
+    {{ dbt_utils.generate_surrogate_key([
+        'game_id',
+        'player_id',
+        'club_id',
+        'type',
+        'minute',
+        'description',
+        'player_in_id',
+        'player_assist_id'
+    ]) }} as game_event_id,
     * 
 
 from game_events_cte
