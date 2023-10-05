@@ -15,7 +15,7 @@ streamlit = "1.25.0"
 plotly = "^5.11.0"
 transfermarkt-scraper = {git = "https://github.com/dcaribou/transfermarkt-scraper.git", branch = "main"}
 dbt-duckdb = "1.6.0"
-langchain = "^0.0.176"
+langchain = "^0.0.306"
 openai = "^0.27.7"
 duckdb-engine = "^0.7.3"
 dvc = {extras = ["s3"], version = "^3.22.0"}

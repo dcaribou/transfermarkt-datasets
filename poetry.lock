@@ -3073,14 +3073,14 @@ zookeeper = ["kazoo (>=2.8.0)"]
 
 [[package]]
 name = "langchain"
-version = "0.0.176"
+version = "0.0.306"
 description = "Building applications with LLMs through composability"
 category = "main"
 optional = false
 python-versions = ">=3.8.1,<4.0"
 files = [
-    {file = "langchain-0.0.176-py3-none-any.whl", hash = "sha256:b2a1958ed07d884869b4bdaa28d63a005787e7f4938d2bbe984b3662827db861"},
-    {file = "langchain-0.0.176.tar.gz", hash = "sha256:25f2875d48efab9b32affbe886b85580b1a9df0fb5ae54798eb28aeafba60bec"},
+    {file = "langchain-0.0.306-py3-none-any.whl", hash = "sha256:ca565a82f9147e2a80587aa386565b77c1e90c50934210fbfb3df67a7535483a"},
+    {file = "langchain-0.0.306.tar.gz", hash = "sha256:f6baca557dcf2ec3f19f59b54a9d3550f9bc10827b27b550c503033acc0bcba2"},
 ]
 
 [package.dependencies]
