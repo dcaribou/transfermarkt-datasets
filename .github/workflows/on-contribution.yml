@@ -1,11 +1,11 @@
-name: build
+name: build-contribution
 
 on:
   pull_request:
     branches: [master]
 
 jobs:
-  build:
+  build-contribution:
     if: github.event.pull_request.head.repo.fork == true
     concurrency: build_queue
     runs-on: ubuntu-latest
