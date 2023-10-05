@@ -107,7 +107,6 @@ acquire_local                  run the acquiring process locally (refreshes data
 prepare_local                  run the prep process locally (refreshes data/prep)
 sync                           run the sync process (refreshes data frontends)
 streamlit_local                run streamlit app locally
-dagit_local                    run dagit locally
 ```
 Run `make help` to see the full list. Once you've completed the setup, you should be able to run most of these from your machine.
 
