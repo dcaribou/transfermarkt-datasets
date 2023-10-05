@@ -112,9 +112,6 @@ streamlit_deploy: ## deploy streamlit to app hosting service (fly.io)
 streamlit_deploy: docker_push_flyio
 	flyctl deploy
 
-dagit_local: ## run dagit locally
-	dagit -f transfermarkt_datasets/dagster/jobs.py
-
 stash_and_commit: ## commit and push code and data
 	dvc commit -f && git add data && \
     git diff-index --quiet HEAD data || git commit -m "$(MESSAGE)" && \
