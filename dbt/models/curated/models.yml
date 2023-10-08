@@ -218,6 +218,8 @@ models:
             - away_club_name
             - home_club_manager_name
             - away_club_manager_name
+            - home_club_formation
+            - away_club_formation
             - stadium
             - attendance
             - referee
@@ -282,3 +284,24 @@ models:
       - name: minute
         tests:
           - not_null
+
+  - name: game_lineups
+    tests:
+      - dbt_expectations.expect_table_columns_to_contain_set:
+          column_list:
+            - game_id
+            - club_id
+            - player_id
+            - player_name
+            - number
+            - position
+            - team_captain
+            - type
+      - dbt_expectations.expect_table_row_count_to_be_between:
+          min_value: 670000
+          max_value: 1340000
+    columns:
+      - name: game_lineups_id
+        tests:
+          - not_null
+          - unique

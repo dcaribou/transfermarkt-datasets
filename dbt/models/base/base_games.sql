@@ -1,5 +1,18 @@
 with
-    json_games as (
+    json_game_lineups as (
+
+        select
+            json(value) as json_row,
+            str_split(filename, '/')[4] as season,
+            json_extract_string(json_row, '$.game_id') as game_id,
+            json_extract_string(json_row, '$.home_club.formation') as home_club_formation,
+            json_extract_string(json_row, '$.away_club.formation') as away_club_formation,
+            row_number() over (partition by game_id order by season desc) as n
+
+        from {{ source("raw_tfmkt", "game_lineups") }}
+
+    ),
+    json_raw_games as (
 
         select
             json(value) as json_row,
@@ -8,6 +21,19 @@ with
             row_number() over (partition by game_id order by season desc) as n
 
         from {{ source("raw_tfmkt", "games") }}
+
+    ),
+    json_games as (
+
+        select
+            json_raw_games.*,
+            json_game_lineups.home_club_formation,
+            json_game_lineups.away_club_formation
+
+        from json_raw_games
+        left join json_game_lineups 
+            on json_raw_games.game_id = json_game_lineups.game_id and json_game_lineups.n = 1
+        where json_raw_games.n = 1
 
     )
 
@@ -53,7 +79,9 @@ select
     json_extract_string(json_row, '$.referee') as referee,
     (
         'https://www.transfermarkt.co.uk' || json_extract_string(json_row, '$.href')
-    ) as url
+    ) as url,
+    home_club_formation,
+    away_club_formation
 
 from json_games
 

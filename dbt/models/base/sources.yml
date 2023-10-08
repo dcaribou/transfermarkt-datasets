@@ -48,3 +48,13 @@ sources:
               columns=struct_pack(value := 'VARCHAR'), delim='\1', quote='\0',
               filename=True
             )
+
+      - name: game_lineups
+        meta:
+          external_location: >
+            read_csv(
+              '../data/raw/*/game_lineups.json.gz',
+              header=False,
+              columns=struct_pack(value := 'VARCHAR'), delim='\1', quote='\0',
+              filename=True
+            )
