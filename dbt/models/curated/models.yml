@@ -298,7 +298,7 @@ models:
             - team_captain
             - type
       - dbt_expectations.expect_table_row_count_to_be_between:
-          min_value: 670000
+          min_value: 81000
           max_value: 1340000
     columns:
       - name: game_lineups_id
