@@ -59,7 +59,8 @@ class Asset():
       'games': 'competitions',
       'clubs': 'competitions',
       'players': 'clubs',
-      'appearances': 'players'
+      'appearances': 'players',
+      'game_lineups': 'games'
     }
   
   def __init__(self, name) -> None:
@@ -223,7 +224,7 @@ local_parser = subparsers.add_parser('local', help='Run the acquiring step local
 local_parser.add_argument(
   '--asset',
   help="Name of the asset to be acquired",
-  choices=['clubs', 'players', 'games', 'appearances', 'all'],
+  choices=['clubs', 'players', 'games', 'game_lineups', 'appearances', 'all'],
   required=True
 )
 local_parser.add_argument(

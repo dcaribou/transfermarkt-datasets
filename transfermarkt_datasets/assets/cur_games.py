@@ -33,6 +33,8 @@ class CurGamesAsset(Asset):
         Field(name='away_club_name', type='string', tags=["explore"]),
         Field(name='home_club_manager_name', type='string'),
         Field(name='away_club_manager_name', type='string'),
+        Field(name='home_club_formation', type='string'),
+        Field(name='away_club_formation', type='string'),
         Field(name='stadium', type='string'),
         Field(name='attendance', type='integer'),
         Field(name='referee', type='string'),
