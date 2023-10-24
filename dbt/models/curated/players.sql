@@ -1,3 +1,5 @@
+{{ config(enabled = false) }}
+
 with players_cte as (
 
     select * from {{ ref('base_players') }}
