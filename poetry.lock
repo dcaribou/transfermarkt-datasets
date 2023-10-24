@@ -297,21 +297,6 @@ files = [
 ]
 
 [[package]]
-name = "argcomplete"
-version = "3.1.1"
-description = "Bash tab completion for argparse"
-category = "dev"
-optional = false
-python-versions = ">=3.6"
-files = [
-    {file = "argcomplete-3.1.1-py3-none-any.whl", hash = "sha256:35fa893a88deea85ea7b20d241100e64516d6af6d7b0ae2bed1d263d26f70948"},
-    {file = "argcomplete-3.1.1.tar.gz", hash = "sha256:6c4c563f14f01440aaffa3eae13441c5db2357b5eec639abe7c0b15334627dff"},
-]
-
-[package.extras]
-test = ["coverage", "mypy", "pexpect", "ruff", "wheel"]
-
-[[package]]
 name = "argon2-cffi"
 version = "21.3.0"
 description = "The secure Argon2 password hashing algorithm."
@@ -579,53 +564,6 @@ files = [
     {file = "billiard-4.1.0-py3-none-any.whl", hash = "sha256:0f50d6be051c6b2b75bfbc8bfd85af195c5739c281d3f5b86a5640c65563614a"},
     {file = "billiard-4.1.0.tar.gz", hash = "sha256:1ad2eeae8e28053d729ba3373d34d9d6e210f6e4d8bf0a9c64f92bd053f1edf5"},
 ]
-
-[[package]]
-name = "black"
-version = "23.7.0"
-description = "The uncompromising code formatter."
-category = "dev"
-optional = false
-python-versions = ">=3.8"
-files = [
-    {file = "black-23.7.0-cp310-cp310-macosx_10_16_arm64.whl", hash = "sha256:5c4bc552ab52f6c1c506ccae05681fab58c3f72d59ae6e6639e8885e94fe2587"},
-    {file = "black-23.7.0-cp310-cp310-macosx_10_16_universal2.whl", hash = "sha256:552513d5cd5694590d7ef6f46e1767a4df9af168d449ff767b13b084c020e63f"},
-    {file = "black-23.7.0-cp310-cp310-macosx_10_16_x86_64.whl", hash = "sha256:86cee259349b4448adb4ef9b204bb4467aae74a386bce85d56ba4f5dc0da27be"},
-    {file = "black-23.7.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:501387a9edcb75d7ae8a4412bb8749900386eaef258f1aefab18adddea1936bc"},
-    {file = "black-23.7.0-cp310-cp310-win_amd64.whl", hash = "sha256:fb074d8b213749fa1d077d630db0d5f8cc3b2ae63587ad4116e8a436e9bbe995"},
-    {file = "black-23.7.0-cp311-cp311-macosx_10_16_arm64.whl", hash = "sha256:b5b0ee6d96b345a8b420100b7d71ebfdd19fab5e8301aff48ec270042cd40ac2"},
-    {file = "black-23.7.0-cp311-cp311-macosx_10_16_universal2.whl", hash = "sha256:893695a76b140881531062d48476ebe4a48f5d1e9388177e175d76234ca247cd"},
-    {file = "black-23.7.0-cp311-cp311-macosx_10_16_x86_64.whl", hash = "sha256:c333286dc3ddca6fdff74670b911cccedacb4ef0a60b34e491b8a67c833b343a"},
-    {file = "black-23.7.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:831d8f54c3a8c8cf55f64d0422ee875eecac26f5f649fb6c1df65316b67c8926"},
-    {file = "black-23.7.0-cp311-cp311-win_amd64.whl", hash = "sha256:7f3bf2dec7d541b4619b8ce526bda74a6b0bffc480a163fed32eb8b3c9aed8ad"},
-    {file = "black-23.7.0-cp38-cp38-macosx_10_16_arm64.whl", hash = "sha256:f9062af71c59c004cd519e2fb8f5d25d39e46d3af011b41ab43b9c74e27e236f"},
-    {file = "black-23.7.0-cp38-cp38-macosx_10_16_universal2.whl", hash = "sha256:01ede61aac8c154b55f35301fac3e730baf0c9cf8120f65a9cd61a81cfb4a0c3"},
-    {file = "black-23.7.0-cp38-cp38-macosx_10_16_x86_64.whl", hash = "sha256:327a8c2550ddc573b51e2c352adb88143464bb9d92c10416feb86b0f5aee5ff6"},
-    {file = "black-23.7.0-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:6d1c6022b86f83b632d06f2b02774134def5d4d4f1dac8bef16d90cda18ba28a"},
-    {file = "black-23.7.0-cp38-cp38-win_amd64.whl", hash = "sha256:27eb7a0c71604d5de083757fbdb245b1a4fae60e9596514c6ec497eb63f95320"},
-    {file = "black-23.7.0-cp39-cp39-macosx_10_16_arm64.whl", hash = "sha256:8417dbd2f57b5701492cd46edcecc4f9208dc75529bcf76c514864e48da867d9"},
-    {file = "black-23.7.0-cp39-cp39-macosx_10_16_universal2.whl", hash = "sha256:47e56d83aad53ca140da0af87678fb38e44fd6bc0af71eebab2d1f59b1acf1d3"},
-    {file = "black-23.7.0-cp39-cp39-macosx_10_16_x86_64.whl", hash = "sha256:25cc308838fe71f7065df53aedd20327969d05671bac95b38fdf37ebe70ac087"},
-    {file = "black-23.7.0-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:642496b675095d423f9b8448243336f8ec71c9d4d57ec17bf795b67f08132a91"},
-    {file = "black-23.7.0-cp39-cp39-win_amd64.whl", hash = "sha256:ad0014efc7acf0bd745792bd0d8857413652979200ab924fbf239062adc12491"},
-    {file = "black-23.7.0-py3-none-any.whl", hash = "sha256:9fd59d418c60c0348505f2ddf9609c1e1de8e7493eab96198fc89d9f865e7a96"},
-    {file = "black-23.7.0.tar.gz", hash = "sha256:022a582720b0d9480ed82576c920a8c1dde97cc38ff11d8d8859b3bd6ca9eedb"},
-]
-
-[package.dependencies]
-click = ">=8.0.0"
-mypy-extensions = ">=0.4.3"
-packaging = ">=22.0"
-pathspec = ">=0.9.0"
-platformdirs = ">=2"
-tomli = {version = ">=1.1.0", markers = "python_version < \"3.11\""}
-typing-extensions = {version = ">=3.10.0.0", markers = "python_version < \"3.10\""}
-
-[package.extras]
-colorama = ["colorama (>=0.4.3)"]
-d = ["aiohttp (>=3.7.4)"]
-jupyter = ["ipython (>=7.8.0)", "tokenize-rt (>=3.2.0)"]
-uvloop = ["uvloop (>=0.15.2)"]
 
 [[package]]
 name = "bleach"
@@ -1139,33 +1077,36 @@ files = [
 
 [[package]]
 name = "data-diff"
-version = "0.8.2"
+version = "0.9.7"
 description = "Command-line tool and Python library to efficiently diff rows across two different databases."
 category = "dev"
 optional = false
-python-versions = ">=3.7.2,<4.0.0"
+python-versions = ">=3.8.0,<4.0.0"
 files = [
-    {file = "data_diff-0.8.2-py3-none-any.whl", hash = "sha256:023ee4659c6dff0a7069c9b6c03fa5c080e41c9a53a30d23492d6b5bf7ed4453"},
-    {file = "data_diff-0.8.2.tar.gz", hash = "sha256:c7154de9139a10a37105630e2154a5a433865690108068e074dcfda7b73a6e8e"},
+    {file = "data_diff-0.9.7-py3-none-any.whl", hash = "sha256:63bed7ac5519fb491c592f3a84171c7953d56b02bf588882b691f4aa6c944e5e"},
+    {file = "data_diff-0.9.7.tar.gz", hash = "sha256:31a25f4cf54216d9ad4f1329f3dc540e9b5f74d4300c4d8b8575f205bea7adc9"},
 ]
 
 [package.dependencies]
+attrs = ">=23.1.0,<24.0.0"
 click = ">=8.1,<9.0"
-dbt-artifacts-parser = ">=0.4.0,<0.5.0"
 dbt-core = ">=1.0.0,<2.0.0"
 dsnparse = "<0.2.0"
 keyring = "*"
+mashumaro = {version = ">=3.8.1,<3.9.0", extras = ["msgpack"]}
+pydantic = "1.10.12"
 rich = "*"
-runtype = ">=0.2.6,<0.3.0"
 tabulate = ">=0.9.0,<0.10.0"
 toml = ">=0.10.2,<0.11.0"
+typing-extensions = ">=4.0.1"
 urllib3 = "<2"
 
 [package.extras]
 clickhouse = ["clickhouse-driver"]
 duckdb = ["duckdb"]
+mssql = ["pyodbc (>=4.0.39,<5.0.0)"]
 mysql = ["mysql-connector-python (==8.0.29)"]
-oracle = ["cx_Oracle"]
+oracle = ["oracledb"]
 postgresql = ["psycopg2"]
 preql = ["preql (>=0.2.19,<0.3.0)"]
 presto = ["presto-python-client"]
@@ -1215,58 +1156,6 @@ edgetest = ["edgetest", "edgetest-conda"]
 qa = ["black", "isort", "pre-commit"]
 spark = ["pyspark (>=2.2.0)"]
 tests = ["pytest", "pytest-cov", "pytest-spark"]
-
-[[package]]
-name = "datamodel-code-generator"
-version = "0.21.3"
-description = "Datamodel Code Generator"
-category = "dev"
-optional = false
-python-versions = ">=3.7,<4.0"
-files = [
-    {file = "datamodel_code_generator-0.21.3-py3-none-any.whl", hash = "sha256:42b4fbf167a2352d5b7e5ee83dd57f0999683a0ebcac3b97f26c3ac135198957"},
-    {file = "datamodel_code_generator-0.21.3.tar.gz", hash = "sha256:a8f05509b7632d18f3f4bfa8a313769cbe0754dac3715d25d26c71d2c0d2e0d4"},
-]
-
-[package.dependencies]
-argcomplete = ">=1.10,<4.0"
-black = ">=19.10b0"
-genson = ">=1.2.1,<2.0"
-inflect = ">=4.1.0,<6.0"
-isort = ">=4.3.21,<6.0"
-jinja2 = ">=2.10.1,<4.0"
-openapi-spec-validator = ">=0.2.8,<=0.5.2"
-packaging = "*"
-prance = ">=0.18.2"
-pydantic = [
-    {version = ">=1.5.1,<3.0", extras = ["email"], markers = "python_version < \"3.10\""},
-    {version = ">=1.9.0,<3.0", extras = ["email"], markers = "python_version >= \"3.10\" and python_version < \"3.11\""},
-]
-PySnooper = ">=0.4.1,<2.0.0"
-toml = ">=0.10.0,<1.0.0"
-
-[package.extras]
-http = ["httpx"]
-
-[[package]]
-name = "dbt-artifacts-parser"
-version = "0.4.1"
-description = "A dbt artifacts parser in python"
-category = "dev"
-optional = false
-python-versions = ">=3.7.0"
-files = [
-    {file = "dbt_artifacts_parser-0.4.1-py3-none-any.whl", hash = "sha256:a31e33b2e3af6991a4dc8cba35005964406e695df414c89bb5b2c23cef346fe2"},
-    {file = "dbt_artifacts_parser-0.4.1.tar.gz", hash = "sha256:e37f24440f8eb7d1e261ebe05829d52959b67c39a2d7a1c46175a721b239d9db"},
-]
-
-[package.dependencies]
-datamodel-code-generator = ">=0.12.0"
-pydantic = ">=1.6,<2.0"
-
-[package.extras]
-dev = ["build (==0.7.0)", "flit (==3.7.1)", "pdoc3 (>=0.9.2)", "pre-commit (>=2.15.0)", "pyyaml (>=5.3)", "yapf (>=0.29.0)"]
-test = ["black (==21.9b0)", "flake8 (>=3.8.3,<4.0.0)", "isort (>=5.0.6,<6.0.0)", "mypy (==0.910)", "pylint (>=2.12.0)", "pytest (>=6.2.4,<7.0.0)", "yapf (>=0.29.0)"]
 
 [[package]]
 name = "dbt-core"
@@ -1466,26 +1355,6 @@ files = [
     {file = "distro-1.8.0-py3-none-any.whl", hash = "sha256:99522ca3e365cac527b44bde033f64c6945d90eb9f769703caaec52b09bbd3ff"},
     {file = "distro-1.8.0.tar.gz", hash = "sha256:02e111d1dc6a50abb8eed6bf31c3e48ed8b0830d1ea2a1b78c61765c2513fdd8"},
 ]
-
-[[package]]
-name = "dnspython"
-version = "2.4.1"
-description = "DNS toolkit"
-category = "dev"
-optional = false
-python-versions = ">=3.8,<4.0"
-files = [
-    {file = "dnspython-2.4.1-py3-none-any.whl", hash = "sha256:5b7488477388b8c0b70a8ce93b227c5603bc7b77f1565afe8e729c36c51447d7"},
-    {file = "dnspython-2.4.1.tar.gz", hash = "sha256:c33971c79af5be968bb897e95c2448e11a645ee84d93b265ce0b7aabe5dfdca8"},
-]
-
-[package.extras]
-dnssec = ["cryptography (>=2.6,<42.0)"]
-doh = ["h2 (>=4.1.0)", "httpcore (>=0.17.3)", "httpx (>=0.24.1)"]
-doq = ["aioquic (>=0.9.20)"]
-idna = ["idna (>=2.1,<4.0)"]
-trio = ["trio (>=0.14,<0.23)"]
-wmi = ["wmi (>=1.5.1,<2.0.0)"]
 
 [[package]]
 name = "dpath"
@@ -1889,22 +1758,6 @@ docs = ["mkdocs (==1.3.1)", "mkdocs-gen-files (==0.3.5)", "mkdocs-material (==8.
 tests = ["celery-types (==0.15.0)", "flaky (==3.7.0)", "mypy (==0.971)", "pylint (==2.15.0)", "pytest (==7.2.0)", "pytest-celery", "pytest-cov (==3.0.0)", "pytest-mock (==3.8.2)", "pytest-sugar (==0.9.6)", "pytest-test-utils (>=0.0.6)"]
 
 [[package]]
-name = "email-validator"
-version = "2.0.0.post2"
-description = "A robust email address syntax and deliverability validation library."
-category = "dev"
-optional = false
-python-versions = ">=3.7"
-files = [
-    {file = "email_validator-2.0.0.post2-py3-none-any.whl", hash = "sha256:2466ba57cda361fb7309fd3d5a225723c788ca4bbad32a0ebd5373b99730285c"},
-    {file = "email_validator-2.0.0.post2.tar.gz", hash = "sha256:1ff6e86044200c56ae23595695c54e9614f4a9551e0e393614f764860b3d7900"},
-]
-
-[package.dependencies]
-dnspython = ">=2.0.0"
-idna = ">=2.0.0"
-
-[[package]]
 name = "entrypoints"
 version = "0.4"
 description = "Discover and load entry points from installed packages."
@@ -2188,17 +2041,6 @@ files = [
 ]
 
 [[package]]
-name = "genson"
-version = "1.2.2"
-description = "GenSON is a powerful, user-friendly JSON Schema generator."
-category = "dev"
-optional = false
-python-versions = "*"
-files = [
-    {file = "genson-1.2.2.tar.gz", hash = "sha256:8caf69aa10af7aee0e1a1351d1d06801f4696e005f06cedef438635384346a16"},
-]
-
-[[package]]
 name = "gitdb"
 version = "4.0.10"
 description = "Git Object Database"
@@ -2437,22 +2279,6 @@ mypy = ["click (>=6.0)", "mypy (==0.812)", "twisted (>=16.4.0)"]
 scripts = ["click (>=6.0)", "twisted (>=16.4.0)"]
 
 [[package]]
-name = "inflect"
-version = "5.6.2"
-description = "Correctly generate plurals, singular nouns, ordinals, indefinite articles; convert numbers to words"
-category = "dev"
-optional = false
-python-versions = ">=3.7"
-files = [
-    {file = "inflect-5.6.2-py3-none-any.whl", hash = "sha256:b45d91a4a28a4e617ff1821117439b06eaa86e2a4573154af0149e9be6687238"},
-    {file = "inflect-5.6.2.tar.gz", hash = "sha256:aadc7ed73928f5e014129794bbac03058cca35d0a973a5fc4eb45c7fa26005f9"},
-]
-
-[package.extras]
-docs = ["jaraco.packaging (>=9)", "jaraco.tidelift (>=1.4)", "rst.linker (>=1.9)", "sphinx"]
-testing = ["pygments", "pytest (>=6)", "pytest-black (>=0.3.7)", "pytest-checkdocs (>=2.4)", "pytest-cov", "pytest-enabler (>=1.3)", "pytest-flake8", "pytest-mypy (>=0.9.1)"]
-
-[[package]]
 name = "inflection"
 version = "0.5.1"
 description = "A port of Ruby on Rails inflector to Python"
@@ -2598,24 +2424,6 @@ files = [
 
 [package.dependencies]
 six = "*"
-
-[[package]]
-name = "isort"
-version = "5.12.0"
-description = "A Python utility / library to sort Python imports."
-category = "dev"
-optional = false
-python-versions = ">=3.8.0"
-files = [
-    {file = "isort-5.12.0-py3-none-any.whl", hash = "sha256:f84c2818376e66cf843d497486ea8fed8700b340f308f076c6fb1229dff318b6"},
-    {file = "isort-5.12.0.tar.gz", hash = "sha256:8bef7dde241278824a6d83f44a544709b065191b95b6e50894bdc722fcba0504"},
-]
-
-[package.extras]
-colors = ["colorama (>=0.4.3)"]
-pipfile-deprecated-finder = ["pip-shims (>=0.5.2)", "pipreqs", "requirementslib"]
-plugins = ["setuptools"]
-requirements-deprecated-finder = ["pip-api", "pipreqs"]
 
 [[package]]
 name = "itemadapter"
@@ -4000,47 +3808,6 @@ embeddings = ["matplotlib", "numpy", "openpyxl (>=3.0.7)", "pandas (>=1.2.3)", "
 wandb = ["numpy", "openpyxl (>=3.0.7)", "pandas (>=1.2.3)", "pandas-stubs (>=1.1.0.11)", "wandb"]
 
 [[package]]
-name = "openapi-schema-validator"
-version = "0.2.3"
-description = "OpenAPI schema validation for Python"
-category = "dev"
-optional = false
-python-versions = ">=3.7.0,<4.0.0"
-files = [
-    {file = "openapi-schema-validator-0.2.3.tar.gz", hash = "sha256:2c64907728c3ef78e23711c8840a423f0b241588c9ed929855e4b2d1bb0cf5f2"},
-    {file = "openapi_schema_validator-0.2.3-py3-none-any.whl", hash = "sha256:9bae709212a19222892cabcc60cafd903cbf4b220223f48583afa3c0e3cc6fc4"},
-]
-
-[package.dependencies]
-jsonschema = ">=3.0.0,<5.0.0"
-
-[package.extras]
-isodate = ["isodate"]
-rfc3339-validator = ["rfc3339-validator"]
-strict-rfc3339 = ["strict-rfc3339"]
-
-[[package]]
-name = "openapi-spec-validator"
-version = "0.4.0"
-description = "OpenAPI 2.0 (aka Swagger) and OpenAPI 3.0 spec validator"
-category = "dev"
-optional = false
-python-versions = ">=3.7.0,<4.0.0"
-files = [
-    {file = "openapi-spec-validator-0.4.0.tar.gz", hash = "sha256:97f258850afc97b048f7c2653855e0f88fa66ac103c2be5077c7960aca2ad49a"},
-    {file = "openapi_spec_validator-0.4.0-py3-none-any.whl", hash = "sha256:06900ac4d546a1df3642a779da0055be58869c598e3042a2fef067cfd99d04d0"},
-]
-
-[package.dependencies]
-jsonschema = ">=3.2.0,<5.0.0"
-openapi-schema-validator = ">=0.2.0,<0.3.0"
-PyYAML = ">=5.1"
-setuptools = "*"
-
-[package.extras]
-requests = ["requests"]
-
-[[package]]
 name = "ordered-set"
 version = "4.1.0"
 description = "An OrderedSet is a custom MutableSet that remembers its order, so that every"
@@ -4454,33 +4221,6 @@ dev = ["pre-commit", "tox"]
 testing = ["pytest", "pytest-benchmark"]
 
 [[package]]
-name = "prance"
-version = "23.6.21.0"
-description = "Resolving Swagger/OpenAPI 2.0 and 3.0.0 Parser"
-category = "dev"
-optional = false
-python-versions = ">=3.8"
-files = [
-    {file = "prance-23.6.21.0-py3-none-any.whl", hash = "sha256:6a4276fa07ed9f22feda4331097d7503c4adc3097e46ffae97425f2c1026bd9f"},
-    {file = "prance-23.6.21.0.tar.gz", hash = "sha256:d8c15f8ac34019751cc4945f866d8d964d7888016d10de3592e339567177cabe"},
-]
-
-[package.dependencies]
-chardet = ">=3.0"
-packaging = ">=21.3"
-requests = ">=2.25"
-"ruamel.yaml" = ">=0.17.10"
-six = ">=1.15,<2.0"
-
-[package.extras]
-cli = ["click (>=7.0)"]
-dev = ["bumpversion (>=0.6)", "pytest (>=6.1)", "pytest-cov (>=2.11)", "sphinx (>=3.4)", "towncrier (>=19.2)", "tox (>=3.4)"]
-flex = ["flex (>=6.13,<7.0)"]
-icu = ["PyICU (>=2.4,<3.0)"]
-osv = ["openapi-spec-validator (>=0.5.1,<0.6.0)"]
-ssv = ["swagger-spec-validator (>=2.4,<3.0)"]
-
-[[package]]
 name = "prometheus-client"
 version = "0.17.1"
 description = "Python client for the Prometheus monitoring system."
@@ -4738,7 +4478,6 @@ files = [
 ]
 
 [package.dependencies]
-email-validator = {version = ">=1.0.3", optional = true, markers = "extra == \"email\""}
 typing-extensions = ">=4.2.0"
 
 [package.extras]
@@ -4949,21 +4688,6 @@ files = [
     {file = "pyrsistent-0.19.3-py3-none-any.whl", hash = "sha256:ccf0d6bd208f8111179f0c26fdf84ed7c3891982f2edaeae7422575f47e66b64"},
     {file = "pyrsistent-0.19.3.tar.gz", hash = "sha256:1a2994773706bbb4995c31a97bc94f1418314923bd1048c6d964837040376440"},
 ]
-
-[[package]]
-name = "pysnooper"
-version = "1.2.0"
-description = "A poor man's debugger for Python."
-category = "dev"
-optional = false
-python-versions = "*"
-files = [
-    {file = "PySnooper-1.2.0-py2.py3-none-any.whl", hash = "sha256:aa859aa9a746cffc1f35e4ee469d49c3cc5185b5fc0c571feb3af3c94d2eb625"},
-    {file = "PySnooper-1.2.0.tar.gz", hash = "sha256:810669e162a250a066d8662e573adbc5af770e937c5b5578f28bb7355d1c859b"},
-]
-
-[package.extras]
-tests = ["pytest"]
 
 [[package]]
 name = "pytest"
@@ -5482,18 +5206,6 @@ files = [
     {file = "ruamel.yaml.clib-0.2.7-cp39-cp39-win32.whl", hash = "sha256:d5e51e2901ec2366b79f16c2299a03e74ba4531ddcfacc1416639c557aef0ad8"},
     {file = "ruamel.yaml.clib-0.2.7-cp39-cp39-win_amd64.whl", hash = "sha256:184faeaec61dbaa3cace407cffc5819f7b977e75360e8d5ca19461cd851a5fc5"},
     {file = "ruamel.yaml.clib-0.2.7.tar.gz", hash = "sha256:1f08fd5a2bea9c4180db71678e850b995d2a5f4537be0e94557668cf0f5f9497"},
-]
-
-[[package]]
-name = "runtype"
-version = "0.2.7"
-description = "Type dispatch and validation for run-time Python"
-category = "dev"
-optional = false
-python-versions = ">=3.6,<4.0"
-files = [
-    {file = "runtype-0.2.7-py3-none-any.whl", hash = "sha256:a2bdeb1a1dece5b753ac0cc602d373239166887fe652fd9fec41683dc38bff10"},
-    {file = "runtype-0.2.7.tar.gz", hash = "sha256:5a9e1212846b3e54d4ba29fd7db602af5544a2a4253d1f8d829087214a8766ad"},
 ]
 
 [[package]]
@@ -6806,4 +6518,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8.1, <3.11, !=3.9.7"
-content-hash = "07b617a4896f04cfb587ce0f27fe6fc81e77048593013583fd73b1ecafbbe05f"
+content-hash = "b2db6475022ea3209ea1c6b234e9015504f3ed8a5499362f347b31c169290f86"
