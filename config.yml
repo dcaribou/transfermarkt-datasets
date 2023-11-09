@@ -1,6 +1,4 @@
 defintions:
-  source_path: data/raw
-  seasons: [2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023]
   console_handler: &console_handler
     class: logging.StreamHandler
     level: INFO
@@ -22,7 +20,7 @@ acquire:
     USER_AGENT: transfermarkt-datasets/1.0 (https://github.com/dcaribou/transfermarkt-datasets)
     FEED_URI_PARAMS: tfmkt.utils.uri_params
     FEEDS:
-      "data/raw/%(season)s/%(name)s.json.gz":
+      "data/raw/transfermarkt-scraper/%(season)s/%(name)s.json.gz":
         format: jsonlines
         postprocessing: [scrapy.extensions.postprocessing.GzipPlugin]
     SPIDER_MODULES: ['tfmkt']

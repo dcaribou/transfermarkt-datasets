@@ -77,7 +77,7 @@ class Asset():
     if self.name == 'competitions':
       return pathlib.Path(f"data/competitions.json")
     else:
-      return pathlib.Path(f"data/raw/{season}/{self.name}.json.gz")
+      return pathlib.Path(f"data/raw/transfermarkt-scraper/{season}/{self.name}.json.gz")
   
   def file_full_path(self, season):
     return str(self.file_path(season).absolute())
@@ -162,7 +162,7 @@ def acquire_on_local(asset, seasons, func):
     def crawl():
       for season in seasons:
         # if there's no path created yet for this season create one
-        season_path = pathlib.Path(f"data/raw/{season}")
+        season_path = pathlib.Path(f"data/raw/transfermarkt-scraper/{season}")
         if not season_path.exists():
           season_path.mkdir()
 
