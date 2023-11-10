@@ -119,4 +119,4 @@ stash_and_commit: ## commit and push code and data
 	dvc push --remote $(DVC_REMOTE)
 
 test: ## run unit tests for core python module
-	pytest
+	pytest transfermarkt_datasets/tests

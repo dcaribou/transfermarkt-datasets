@@ -64,7 +64,6 @@ async def get_market_values(player_ids: List[int]) -> List[dict]:
 
     async def fetch_data(session, player_id):
 
-
         headers = {
             'Content-Type': 'application/json',
             'User-Agent': USER_AGENT
