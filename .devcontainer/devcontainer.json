@@ -6,7 +6,9 @@
 	"image": "mcr.microsoft.com/devcontainers/base:bullseye",
 	"features": {
 		"ghcr.io/devcontainers-contrib/features/poetry:2": {},
-		"ghcr.io/eitsupi/devcontainer-features/duckdb-cli:1": {}
+		"ghcr.io/eitsupi/devcontainer-features/duckdb-cli:1": {
+			"version": "0.8.1"
+		}
 	},
 
 	// Features to add to the dev container. More info: https://containers.dev/features.
