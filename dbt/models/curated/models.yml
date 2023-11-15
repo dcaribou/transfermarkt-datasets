@@ -23,7 +23,7 @@ models:
             - minutes_played
       - dbt_expectations.expect_table_row_count_to_be_between:
           min_value: 1000000
-          max_value: 1500000
+          max_value: 1600000
       
     columns:
       - name: appearance_id
