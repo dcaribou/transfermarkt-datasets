@@ -3,7 +3,7 @@ with
 
         select
             json(value) as raw_json_row,
-            str_split(filename, '/')[4] as season,
+            str_split(filename, '/')[5] as season,
             json_extract_string(raw_json_row, '$.game_id')::integer as game_id,
             row_number() over (partition by game_id order by season desc) as n
 

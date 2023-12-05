@@ -149,7 +149,7 @@ class RawAsset(Asset):
     super().__init__(settings)
 
     self.raw_df = None
-    self.raw_files_path = "data/raw"
+    self.raw_files_path = "data/raw/transfermarkt-scraper"
 
     if not self.raw_file_name:
       file_name = self.name.replace("base_", "")

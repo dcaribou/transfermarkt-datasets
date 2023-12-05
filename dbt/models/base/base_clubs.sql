@@ -2,7 +2,8 @@ with
     json_players as (
 
         select
-            str_split(filename, '/')[4] as season,
+            str_split(filename, '/')[5] as season,
+            filename as "filename",
             json(value) as json_row,
             (str_split(json_extract_string(json_row, '$.href'), '/')[5]) as club_id,
             row_number() over (partition by club_id order by season desc) as n
@@ -66,6 +67,7 @@ select
     json_extract_string(json_row, '$.net_transfer_record') as net_transfer_record,
     json_extract_string(json_row, '$.coach_name') as coach_name,
     season as last_season,
+    "filename",
     (
         'https://www.transfermarkt.co.uk' || json_extract_string(json_row, '$.href')
     ) as url

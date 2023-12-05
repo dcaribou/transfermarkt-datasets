@@ -7,7 +7,7 @@ sources:
         meta:
           external_location: >
             read_csv(
-              '../data/raw/*/appearances.json.gz',
+              '../data/raw/transfermarkt-scraper/*/appearances.json.gz',
               header=False,
               columns=struct_pack(value := 'VARCHAR'), delim='\1', quote='\0',
               filename=True
@@ -16,7 +16,7 @@ sources:
         meta:
           external_location: >
             read_csv(
-              '../data/raw/*/games.json.gz',
+              '../data/raw/transfermarkt-scraper/*/games.json.gz',
               header=False,
               columns=struct_pack(value := 'VARCHAR'), delim='\1', quote='\0',
               filename=True
@@ -25,7 +25,7 @@ sources:
         meta:
           external_location: >
             read_csv(
-              '../data/raw/*/players.json.gz',
+              '../data/raw/transfermarkt-scraper/*/players.json.gz',
               header=False,
               columns=struct_pack(value := 'VARCHAR'), delim='\1', quote='\0',
               filename=True
@@ -34,7 +34,7 @@ sources:
         meta:
           external_location: >
             read_csv(
-              '../data/raw/*/clubs.json.gz',
+              '../data/raw/transfermarkt-scraper/*/clubs.json.gz',
               header=False,
               columns=struct_pack(value := 'VARCHAR'), delim='\1', quote='\0',
               filename=True
@@ -53,7 +53,7 @@ sources:
         meta:
           external_location: >
             read_csv(
-              '../data/raw/*/game_lineups.json.gz',
+              '../data/raw/transfermarkt-scraper/*/game_lineups.json.gz',
               header=False,
               columns=struct_pack(value := 'VARCHAR'), delim='\1', quote='\0',
               filename=True

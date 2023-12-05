@@ -2,7 +2,7 @@ with
     json_players as (
 
         select
-            str_split(filename, '/')[4] as season,
+            str_split(filename, '/')[5] as season,
             json(value) as json_row,
             (str_split(json_extract_string(json_row, '$.href'), '/')[5])::integer as player_id,
             row_number() over (partition by player_id order by season desc) as n
