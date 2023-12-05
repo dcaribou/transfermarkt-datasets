@@ -1,5 +1,3 @@
-{{ config(enabled = false) }}
-
 with player_valuations_cte as (
 
     select * from {{ ref('base_player_valuations') }}

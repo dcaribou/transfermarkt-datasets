@@ -7,7 +7,7 @@ with
             (str_split(json_extract_string(json_row, '$.href'), '/')[5])::integer as player_id,
             row_number() over (partition by player_id order by season desc) as n
         
-        from {{ source("raw_tfmkt", "players") }}        
+        from {{ source("transfermarkt_scraper", "players") }}        
 
     ),
     deduped_seasons as (

@@ -1,7 +1,7 @@
 with
     json_appearances as (
 
-        select json(value) as json_row from {{ source("raw_tfmkt", "appearances") }}
+        select json(value) as json_row from {{ source("transfermarkt_scraper", "appearances") }}
 
     ),
     all_appearances as (

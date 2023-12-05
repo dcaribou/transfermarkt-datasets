@@ -8,7 +8,7 @@ with
             (str_split(json_extract_string(json_row, '$.href'), '/')[5]) as club_id,
             row_number() over (partition by club_id order by season desc) as n
 
-        from {{ source("raw_tfmkt", "clubs") }}
+        from {{ source("transfermarkt_scraper", "clubs") }}
 
     )
     

@@ -1,6 +1,6 @@
 ![Build Status](https://github.com/dcaribou/transfermarkt-datasets/actions/workflows/on-push.yml/badge.svg)
 ![Pipeline Status](https://github.com/dcaribou/transfermarkt-datasets/actions/workflows/on-schedule.yml/badge.svg)
-![dbt Version](https://img.shields.io/static/v1?logo=dbt&label=dbt-version&message=1.6.2&color=orange)
+![dbt Version](https://img.shields.io/static/v1?logo=dbt&label=dbt-version&message=1.7.3&color=orange)
 
 # transfermarkt-datasets
 
@@ -96,7 +96,7 @@ Setup your local environment to run the project with `poetry`.
 cd transfermarkt-datasets
 poetry install
 ```
-Remember to active the virtual environment once poetry has finished installing the dependencies by running `poetry shell`.
+Remember to activate the virtual environment once poetry has finished installing the dependencies by running `poetry shell`.
 
 ### make
 The `Makefile` in the root defines a set of useful targets that will help you run the different parts of the project. Some examples are

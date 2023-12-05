@@ -9,7 +9,7 @@ with
             json_extract_string(json_row, '$.away_club.formation') as away_club_formation,
             row_number() over (partition by game_id order by season desc) as n
 
-        from {{ source("raw_tfmkt", "game_lineups") }}
+        from {{ source("transfermarkt_scraper", "game_lineups") }}
 
     ),
     json_raw_games as (
@@ -20,7 +20,7 @@ with
             (str_split(json_extract_string(json_row, '$.href'), '/')[5]) as game_id,
             row_number() over (partition by game_id order by season desc) as n
 
-        from {{ source("raw_tfmkt", "games") }}
+        from {{ source("transfermarkt_scraper", "games") }}
 
     ),
     json_games as (

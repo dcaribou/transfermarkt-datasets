@@ -1,0 +1,14 @@
+version: 2
+
+sources:
+  - name: transfermarkt_api
+    tables:
+      - name: market_value_development
+        meta:
+          external_location: >
+            read_csv(
+              '../data/raw/transfermarkt-api/*/market_values.json',
+              header=False,
+              columns=struct_pack(value := 'VARCHAR'), delim='\1', quote='\0',
+              filename=True
+            )

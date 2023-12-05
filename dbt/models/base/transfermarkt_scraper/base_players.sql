@@ -7,7 +7,7 @@ with
             (str_split(json_extract_string(json_row, '$.href'), '/')[5])::integer as player_id,
             row_number() over (partition by player_id order by season desc) as n
         
-        from {{ source("raw_tfmkt", "players") }}
+        from {{ source("transfermarkt_scraper", "players") }}
         
 
     )
@@ -83,8 +83,6 @@ select
     then trim(regexp_replace((json_row ->> 'height')[:4], '[,\s´]', ''))::integer
     else null
     end as height_in_cm,
-    {{ parse_market_value("json_row ->> 'current_market_value'") }} as market_value_in_eur,
-    {{ parse_market_value("json_row ->> 'highest_market_value'") }} as highest_market_value_in_eur,
     {{ parse_contract_expiration_date("json_row ->> 'contract_expires'")}} as contract_expiration_date,
     json_row -> 'player_agent' ->> 'name' as agent_name,
     json_extract_string(json_row, '$.image_url') as image_url,
