@@ -111,12 +111,12 @@ streamlit_local                run streamlit app locally
 Run `make help` to see the full list. Once you've completed the setup, you should be able to run most of these from your machine.
 
 ## 💾 data storage
-All project data assets are kept inside the [`data`](data) folder. This is a [DVC](https://dvc.org/) repository, so all files can be pulled from the remote storage by running `make dvc_pull`.
+All project data assets are kept inside the [`data`](data) folder. This is a [DVC](https://dvc.org/) repository, so all files can be pulled from remote storage by running `dvc pull`.
 
-path | description
--|-
-`data/raw` | contains raw data per season as acquired with [trasfermarkt-scraper](https://github.com/dcaribou/transfermarkt-scraper) (check [acquire](#-data-acquisition))
-`data/prep` | contains prepared datasets as produced by dbt (check [prepare](#-data-preparation))
+| path        | description                                                                                                                                                   |
+| ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `data/raw`  | contains raw data per season as acquired with [trasfermarkt-scraper](https://github.com/dcaribou/transfermarkt-scraper) (check [acquire](#-data-acquisition)) |
+| `data/prep` | contains prepared datasets as produced by dbt (check [prepare](#-data-preparation))                                                                           |
 
 ## 🕸️ data acquisition
 In the scope of this project, "acquiring" is the process of collecting "raw data", as it is produced by [trasfermarkt-scraper](https://github.com/dcaribou/transfermarkt-scraper). Acquired data lives in the `data/raw` folder and it can be created or updated for a particular season by running `make acquire_local`
@@ -166,11 +166,11 @@ td.assets["games"].raw_df
 
 The module code lives in the `transfermark_datasets` folder with the structure below.
 
-path | description
--|-
-`transfermark_datasets/core` | core classes and utils that are used to work with the dataset
-`transfermark_datasets/tests` | unit tests for core classes
-`transfermark_datasets/assets` | perpared asset definitions: one python file per asset
+| path                           | description                                                   |
+| ------------------------------ | ------------------------------------------------------------- |
+| `transfermark_datasets/core`   | core classes and utils that are used to work with the dataset |
+| `transfermark_datasets/tests`  | unit tests for core classes                                   |
+| `transfermark_datasets/assets` | perpared asset definitions: one python file per asset         |
 
 For more examples on using `transfermark_datasets`, checkout the sample [notebooks](notebooks).
 
