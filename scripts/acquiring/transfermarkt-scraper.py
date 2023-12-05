@@ -25,8 +25,11 @@ from scrapy.utils.project import get_project_settings
 from scrapy.utils.log import configure_logging
 from scrapy.settings import Settings
 
-from transfermarkt_datasets.core.utils import read_config
-from transfermarkt_datasets.core.utils import submit_batch_job_and_wait
+from transfermarkt_datasets.core.utils import (
+  read_config,
+  submit_batch_job_and_wait,
+  seasons_list
+)
 
 import logging
 
@@ -94,36 +97,6 @@ class Asset():
     return assets
 
 def acquire_on_local(asset, seasons, func):
-
-  def seasons_list(seasons: str) -> List[str]:
-    """Generate a list of seasons to acquire based on the "seasons" string. For example,
-    for "2012-2014", it should return [2012, 2013, 2014].
-
-    Args:
-        seasons (str): A string representing a date or range of dates to acquire.
-
-    Returns:
-        List[str]: The expanded list of seasons to acquire.
-    """
-    parts = seasons.split("-")
-    
-    if len(parts) == 0:
-      raise Exception("Empty string provided for seasons")
-
-    elif len(parts) == 1: # single season string
-      return [int(seasons)]
-
-    elif len(parts) == 2: # range of seasons
-      start, end = parts
-      season_range = list(range(int(start), int(end) + 1))
-
-      if len(season_range) > 20:
-        raise Exception("The range is too high")
-      else:
-        return season_range
-
-    else:
-      raise Exception(f"Invalid string: {seasons}")
 
   def assets_list(assets: str) -> List[Asset]:
     """Generate the ordered list of Assets to be scraped based on the provided string.
@@ -230,7 +203,7 @@ local_parser.add_argument(
 local_parser.add_argument(
   '--seasons',
   help="Season to be acquired. This is passed to the scraper as the SEASON argument",
-  default="2020",
+  default="2023",
   type=str
 )
 local_parser.set_defaults(func=acquire_on_local)
