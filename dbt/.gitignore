@@ -4,3 +4,4 @@ target
 dbt_packages
 
 duck.db
+duck.db.wal
