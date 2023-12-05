@@ -1099,7 +1099,7 @@ files = [
 name = "data-diff"
 version = "0.9.17"
 description = "Command-line tool and Python library to efficiently diff rows across two different databases."
-category = "main"
+category = "dev"
 optional = false
 python-versions = ">=3.8.0,<4.0.0"
 files = [
@@ -1392,7 +1392,7 @@ files = [
 name = "dsnparse"
 version = "0.1.15"
 description = "parse dsn urls"
-category = "main"
+category = "dev"
 optional = false
 python-versions = "*"
 files = [
@@ -2195,29 +2195,6 @@ docs = ["Sphinx", "docutils (<0.18)"]
 test = ["objgraph", "psutil"]
 
 [[package]]
-name = "harlequin"
-version = "1.3.0"
-description = "The DuckDB IDE for Your Terminal."
-category = "dev"
-optional = false
-python-versions = ">=3.8.1,<4.0.0"
-files = [
-    {file = "harlequin-1.3.0-py3-none-any.whl", hash = "sha256:616ba3edcd9da63de1fc99607cd15b9a8991c273c5841d206acc48c8910b83ff"},
-    {file = "harlequin-1.3.0.tar.gz", hash = "sha256:da830c1944d9dca7ac1f31b9dab8fa7d6a3acef11376103193908516053bb381"},
-]
-
-[package.dependencies]
-click = ">=8.1.3,<9.0.0"
-duckdb = ">=0.8.0"
-importlib_metadata = {version = ">=4.6.0", markers = "python_full_version < \"3.10.0\""}
-platformdirs = ">=3.10.0,<4.0.0"
-pyperclip = ">=1.8.2,<2.0.0"
-shandy-sqlfmt = ">=0.19.0"
-textual = "0.40.0"
-textual-fastdatatable = "0.1.4"
-textual-textarea = "0.7.3"
-
-[[package]]
 name = "hydra-core"
 version = "1.3.2"
 description = "A framework for elegantly configuring complex applications"
@@ -2535,7 +2512,7 @@ tests = ["mypy (==0.971)", "pylint (==2.15.0)", "pytest (==7.2.0)", "pytest-cov 
 name = "jaraco-classes"
 version = "3.3.0"
 description = "Utility functions for Python class constructs"
-category = "main"
+category = "dev"
 optional = false
 python-versions = ">=3.8"
 files = [
@@ -2574,7 +2551,7 @@ testing = ["Django (<3.1)", "attrs", "colorama", "docopt", "pytest (<7.0.0)"]
 name = "jeepney"
 version = "0.8.0"
 description = "Low-level, pure Python DBus protocol wrapper."
-category = "main"
+category = "dev"
 optional = false
 python-versions = ">=3.7"
 files = [
@@ -2911,14 +2888,14 @@ urllib3 = "*"
 
 [[package]]
 name = "keyring"
-version = "24.2.0"
+version = "24.3.0"
 description = "Store and access your passwords safely."
-category = "main"
+category = "dev"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "keyring-24.2.0-py3-none-any.whl", hash = "sha256:4901caaf597bfd3bbd78c9a0c7c4c29fcd8310dab2cffefe749e916b6527acd6"},
-    {file = "keyring-24.2.0.tar.gz", hash = "sha256:ca0746a19ec421219f4d713f848fa297a661a8a8c1504867e55bfb5e09091509"},
+    {file = "keyring-24.3.0-py3-none-any.whl", hash = "sha256:4446d35d636e6a10b8bce7caa66913dd9eca5fd222ca03a3d42c38608ac30836"},
+    {file = "keyring-24.3.0.tar.gz", hash = "sha256:e730ecffd309658a08ee82535a3b5ec4b4c8669a9be11efb66249d8e0aeb9a25"},
 ]
 
 [package.dependencies]
@@ -2930,9 +2907,9 @@ pywin32-ctypes = {version = ">=0.2.0", markers = "sys_platform == \"win32\""}
 SecretStorage = {version = ">=3.2", markers = "sys_platform == \"linux\""}
 
 [package.extras]
-completion = ["shtab"]
-docs = ["furo", "jaraco.packaging (>=9)", "jaraco.tidelift (>=1.4)", "rst.linker (>=1.9)", "sphinx (>=3.5)", "sphinx-lint"]
-testing = ["pytest (>=6)", "pytest-black (>=0.3.7)", "pytest-checkdocs (>=2.4)", "pytest-cov", "pytest-enabler (>=1.3)", "pytest-mypy (>=0.9.1)", "pytest-ruff"]
+completion = ["shtab (>=1.1.0)"]
+docs = ["furo", "jaraco.packaging (>=9.3)", "jaraco.tidelift (>=1.4)", "rst.linker (>=1.9)", "sphinx (<7.2.5)", "sphinx (>=3.5)", "sphinx-lint"]
+testing = ["pytest (>=6)", "pytest-black (>=0.3.7)", "pytest-checkdocs (>=2.4)", "pytest-cov", "pytest-enabler (>=2.2)", "pytest-mypy (>=0.9.1)", "pytest-ruff"]
 
 [[package]]
 name = "kombu"
@@ -3040,27 +3017,6 @@ files = [
 
 [package.dependencies]
 six = ">=1.6.1"
-
-[[package]]
-name = "linkify-it-py"
-version = "2.0.2"
-description = "Links recognition library with FULL unicode support."
-category = "dev"
-optional = false
-python-versions = ">=3.7"
-files = [
-    {file = "linkify-it-py-2.0.2.tar.gz", hash = "sha256:19f3060727842c254c808e99d465c80c49d2c7306788140987a1a7a29b0d6ad2"},
-    {file = "linkify_it_py-2.0.2-py3-none-any.whl", hash = "sha256:a3a24428f6c96f27370d7fe61d2ac0be09017be5190d68d8658233171f1b6541"},
-]
-
-[package.dependencies]
-uc-micro-py = "*"
-
-[package.extras]
-benchmark = ["pytest", "pytest-benchmark"]
-dev = ["black", "flake8", "isort", "pre-commit", "pyproject-flake8"]
-doc = ["myst-parser", "sphinx", "sphinx-book-theme"]
-test = ["coverage", "pytest", "pytest-cov"]
 
 [[package]]
 name = "logbook"
@@ -3213,8 +3169,6 @@ files = [
 ]
 
 [package.dependencies]
-linkify-it-py = {version = ">=1,<3", optional = true, markers = "extra == \"linkify\""}
-mdit-py-plugins = {version = "*", optional = true, markers = "extra == \"plugins\""}
 mdurl = ">=0.1,<1.0"
 
 [package.extras]
@@ -3360,26 +3314,6 @@ files = [
 
 [package.dependencies]
 traitlets = "*"
-
-[[package]]
-name = "mdit-py-plugins"
-version = "0.4.0"
-description = "Collection of plugins for markdown-it-py"
-category = "dev"
-optional = false
-python-versions = ">=3.8"
-files = [
-    {file = "mdit_py_plugins-0.4.0-py3-none-any.whl", hash = "sha256:b51b3bb70691f57f974e257e367107857a93b36f322a9e6d44ca5bf28ec2def9"},
-    {file = "mdit_py_plugins-0.4.0.tar.gz", hash = "sha256:d8ab27e9aed6c38aa716819fedfde15ca275715955f8a185a8e1cf90fb1d2c1b"},
-]
-
-[package.dependencies]
-markdown-it-py = ">=1.0.0,<4.0.0"
-
-[package.extras]
-code-style = ["pre-commit"]
-rtd = ["myst-parser", "sphinx-book-theme"]
-testing = ["coverage", "pytest", "pytest-cov", "pytest-regressions"]
 
 [[package]]
 name = "mdurl"
@@ -4772,17 +4706,6 @@ files = [
 diagrams = ["jinja2", "railroad-diagrams"]
 
 [[package]]
-name = "pyperclip"
-version = "1.8.2"
-description = "A cross-platform clipboard module for Python. (Only handles plain text for now.)"
-category = "dev"
-optional = false
-python-versions = "*"
-files = [
-    {file = "pyperclip-1.8.2.tar.gz", hash = "sha256:105254a8b04934f0bc84e9c24eb360a591aaf6535c9def5f29d92af107a9bf57"},
-]
-
-[[package]]
 name = "pypydispatcher"
 version = "2.1.2"
 description = "Multi-producer-multi-consumer signal dispatching mechanism"
@@ -4929,7 +4852,7 @@ files = [
 name = "pywin32-ctypes"
 version = "0.2.2"
 description = "A (partial) reimplementation of pywin32 using ctypes/cffi"
-category = "main"
+category = "dev"
 optional = false
 python-versions = ">=3.6"
 files = [
@@ -5578,7 +5501,7 @@ w3lib = ">=1.17.0"
 name = "secretstorage"
 version = "3.3.3"
 description = "Python bindings to FreeDesktop.org Secret Service API"
-category = "main"
+category = "dev"
 optional = false
 python-versions = ">=3.6"
 files = [
@@ -5648,29 +5571,6 @@ files = [
 docs = ["furo", "jaraco.packaging (>=9)", "jaraco.tidelift (>=1.4)", "pygments-github-lexers (==0.0.5)", "rst.linker (>=1.9)", "sphinx (>=3.5)", "sphinx-favicon", "sphinx-hoverxref (<2)", "sphinx-inline-tabs", "sphinx-lint", "sphinx-notfound-page (==0.8.3)", "sphinx-reredirects", "sphinxcontrib-towncrier"]
 testing = ["build[virtualenv]", "filelock (>=3.4.0)", "flake8-2020", "ini2toml[lite] (>=0.9)", "jaraco.envs (>=2.2)", "jaraco.path (>=3.2.0)", "pip (>=19.1)", "pip-run (>=8.8)", "pytest (>=6)", "pytest-black (>=0.3.7)", "pytest-checkdocs (>=2.4)", "pytest-cov", "pytest-enabler (>=1.3)", "pytest-mypy (>=0.9.1)", "pytest-perf", "pytest-ruff", "pytest-timeout", "pytest-xdist", "tomli-w (>=1.0.0)", "virtualenv (>=13.0.0)", "wheel"]
 testing-integration = ["build[virtualenv]", "filelock (>=3.4.0)", "jaraco.envs (>=2.2)", "jaraco.path (>=3.2.0)", "pytest", "pytest-enabler", "pytest-xdist", "tomli", "virtualenv (>=13.0.0)", "wheel"]
-
-[[package]]
-name = "shandy-sqlfmt"
-version = "0.21.0"
-description = "sqlfmt formats your dbt SQL files so you don't have to."
-category = "dev"
-optional = false
-python-versions = ">=3.8,<4.0"
-files = [
-    {file = "shandy_sqlfmt-0.21.0-py3-none-any.whl", hash = "sha256:7c7cd00470cd0631f05c0fdb83e218f9d2d4391df9deb0f6eb450bc98ced56c6"},
-    {file = "shandy_sqlfmt-0.21.0.tar.gz", hash = "sha256:af5d7bd503668c05489da118ff97a65a396fafeb534040808e672a3a7e1757ea"},
-]
-
-[package.dependencies]
-click = ">=8.0,<9.0"
-jinja2 = ">=3.0,<4.0"
-platformdirs = ">=2.4,<4.0"
-tomli = {version = ">=2.0,<3.0", markers = "python_version < \"3.11\""}
-tqdm = ">=4.0,<5.0"
-
-[package.extras]
-jinjafmt = ["black"]
-sqlfmt-primer = ["gitpython (>=3.1.24,<4.0.0)"]
 
 [[package]]
 name = "shellingham"
@@ -6019,59 +5919,6 @@ files = [
 ]
 
 [[package]]
-name = "textual"
-version = "0.40.0"
-description = "Modern Text User Interface framework"
-category = "dev"
-optional = false
-python-versions = ">=3.7,<4.0"
-files = [
-    {file = "textual-0.40.0-py3-none-any.whl", hash = "sha256:3e98f0c9c9a9361d3077c00e3fc5a708f927dd1ce45a1149eb1ba6945ce9d71c"},
-    {file = "textual-0.40.0.tar.gz", hash = "sha256:0fd014f9fab7f6d88167c82f90e115b118b3016b8597281d14c9257967f7812e"},
-]
-
-[package.dependencies]
-importlib-metadata = ">=4.11.3"
-markdown-it-py = {version = ">=2.1.0", extras = ["linkify", "plugins"]}
-rich = ">=13.3.3"
-typing-extensions = ">=4.4.0,<5.0.0"
-
-[package.extras]
-syntax = ["tree-sitter (>=0.20.1,<0.21.0)", "tree_sitter_languages (>=1.7.0)"]
-
-[[package]]
-name = "textual-fastdatatable"
-version = "0.1.4"
-description = "A performance-focused reimplementation of Textual's DataTable widget, with a pluggable data storage backend."
-category = "dev"
-optional = false
-python-versions = ">=3.8,<4.0"
-files = [
-    {file = "textual_fastdatatable-0.1.4-py3-none-any.whl", hash = "sha256:d55d992df320651383e67f3cc46a2aa867c72e3eff7fe7644310cefe0a7fea10"},
-    {file = "textual_fastdatatable-0.1.4.tar.gz", hash = "sha256:44ee27ff0099fc6618eeebadb64bc6218cb176f9a1d0a085b25fe2974628b04f"},
-]
-
-[package.dependencies]
-pyarrow = ">=7.0.0"
-textual = ">=0.38.0"
-
-[[package]]
-name = "textual-textarea"
-version = "0.7.3"
-description = "A text area (multi-line input) with syntax highlighting for Textual"
-category = "dev"
-optional = false
-python-versions = ">=3.8,<4.0"
-files = [
-    {file = "textual_textarea-0.7.3-py3-none-any.whl", hash = "sha256:110d1afa61534b0dd2598876a5795e37d1c6f27e29ec6a385d639a34571429df"},
-    {file = "textual_textarea-0.7.3.tar.gz", hash = "sha256:105ae9c4f27f41af3ad10f4bcd88dc12e8cf6746ca3d5c8051db8ea2c846de9a"},
-]
-
-[package.dependencies]
-pyperclip = ">=1.8.2,<2.0.0"
-textual = ">=0.27.0,<1.0.0"
-
-[[package]]
 name = "tinycss2"
 version = "1.2.1"
 description = "A tiny CSS parser"
@@ -6397,21 +6244,6 @@ tzdata = {version = "*", markers = "platform_system == \"Windows\""}
 
 [package.extras]
 devenv = ["black", "check-manifest", "flake8", "pyroma", "pytest (>=4.3)", "pytest-cov", "pytest-mock (>=3.3)", "zest.releaser"]
-
-[[package]]
-name = "uc-micro-py"
-version = "1.0.2"
-description = "Micro subset of unicode data files for linkify-it-py projects."
-category = "dev"
-optional = false
-python-versions = ">=3.7"
-files = [
-    {file = "uc-micro-py-1.0.2.tar.gz", hash = "sha256:30ae2ac9c49f39ac6dce743bd187fcd2b574b16ca095fa74cd9396795c954c54"},
-    {file = "uc_micro_py-1.0.2-py3-none-any.whl", hash = "sha256:8c9110c309db9d9e87302e2f4ad2c3152770930d88ab385cd544e7a7e75f3de0"},
-]
-
-[package.extras]
-test = ["coverage", "pytest", "pytest-cov"]
 
 [[package]]
 name = "uri-template"
@@ -6865,4 +6697,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8.1, <3.11, !=3.9.7"
-content-hash = "274de8f724d77637a8b5c9c49c9e997d172461ababe603eb531ba5c80762fa2a"
+content-hash = "cec3326567cf1e600a780fbde50c667759c58855f1e3a87c0d94b0eb95b08b86"
