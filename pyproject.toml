@@ -14,11 +14,12 @@ kaggle = "^1.5.12"
 streamlit = "1.25.0"
 plotly = "^5.11.0"
 transfermarkt-scraper = {git = "https://github.com/dcaribou/transfermarkt-scraper.git", branch = "main"}
-dbt-duckdb = "1.6.0"
+dbt-duckdb = "1.7.0"
 langchain = "^0.0.306"
 openai = "^0.27.7"
 duckdb-engine = "^0.7.3"
 dvc = {extras = ["s3"], version = "^3.22.0"}
+data-diff = "0.9.17"
 
 [tool.poetry.group.dev.dependencies]
 jupyter = "^1.0.0"
