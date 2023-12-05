@@ -46,6 +46,12 @@ class CurClubsAsset(Asset):
       form='uri'
       )
     )
+    self.schema.add_field(Field(
+      name='filename',
+      type='string',
+      description="Name of the raw file where the data came from."
+      )
+    )
     self.schema.add_field(Field(name='last_season', type='date'))
 
     self.schema.primary_key = ['club_id']
