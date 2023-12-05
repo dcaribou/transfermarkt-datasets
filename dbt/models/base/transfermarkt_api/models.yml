@@ -1,0 +1,7 @@
+version: 2
+
+models:
+  - name: base_market_value_development
+    tests:
+      - unique:
+          column_name: player_id || date
