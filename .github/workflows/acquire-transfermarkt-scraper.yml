@@ -45,6 +45,9 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: dcaribou/transfermarkt-datasets:linux-amd64-dev
+    defaults:
+      run:
+        shell: bash -l {0}
     needs: acquire-clubs
     steps:
       - name: checkout
@@ -74,6 +77,9 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: dcaribou/transfermarkt-datasets:linux-amd64-dev
+    defaults:
+      run:
+        shell: bash -l {0}
     steps:
       - name: checkout
         uses: actions/checkout@v3
@@ -96,6 +102,9 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: dcaribou/transfermarkt-datasets:linux-amd64-dev
+    defaults:
+      run:
+        shell: bash -l {0}
     needs: acquire-players
     steps:
       - name: checkout
