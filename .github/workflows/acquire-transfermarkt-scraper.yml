@@ -25,7 +25,7 @@ jobs:
 
     steps:
       - name: checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
           
       - name: run acquire
         run: |
@@ -48,13 +48,13 @@ jobs:
     needs: acquire-clubs
     steps:
       - name: checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: retrive artifact
         uses: actions/download-artifact@v3
         with:
           name: clubs
-          path: ${{ env.DATA_DIR }}/clubs.json.gz
+          path: ${{ env.DATA_DIR }}
           
       - name: run acquire
         run: |
@@ -75,7 +75,7 @@ jobs:
     needs: acquire-players
     steps:
       - name: checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - uses: actions/download-artifact@v3
         with:
           path: ${{ env.DATA_DIR }}
