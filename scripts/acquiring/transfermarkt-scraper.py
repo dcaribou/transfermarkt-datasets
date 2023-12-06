@@ -137,7 +137,7 @@ def acquire_on_local(asset, seasons, func):
         # if there's no path created yet for this season create one
         season_path = pathlib.Path(f"data/raw/transfermarkt-scraper/{season}")
         if not season_path.exists():
-          season_path.mkdir()
+          season_path.mkdir(parents=True)
 
         for asset_obj in assets:
           # TODO: ideally, let transfermark-scraper handle destination file truncation via a setting instead of doing it here
