@@ -60,16 +60,6 @@ acquire_docker: ## run the acquiring process in a local docker
 			dcaribou/transfermarkt-datasets:dev \
 				HEAD make prepare_local $(ARGS)
 
-acquire_cloud: ## run the acquiring process in the cloud (aws batch)
-acquire_cloud: JOB_DEFINITION_NAME = transfermarkt-datasets-batch-job-definition-dev
-acquire_cloud:
-	PYTHONPATH=$(PYTHONPATH):`pwd`/. python scripts/acquire.py cloud \
-		--branch $(BRANCH) \
-		--job-name $(JOB_NAME) \
-		--job-definition $(JOB_DEFINITION_NAME) \
-		ARGS='$(ARGS)' MESSAGE='$(MESSAGE)' 'DVC_REMOTE=s3'
-
-
 prepare_local: ## run the prep process locally (refreshes data/prep)
 prepare_local: ARGS =
 prepare_local:
