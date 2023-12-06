@@ -138,12 +138,10 @@ jobs:
           path: ${{ env.DATA_DIR }}
       - name: Display structure of downloaded files # TODO: remove
         run: ls -R
-      - name: Push data to dvc remote
-        run: |
-          poetry shell
-          dvc commit -f data/raw/transfermarkt-scraper/$SEASON
+      - name: commit dvc files
+        run: dvc commit -f data/raw/transfermarkt-scraper/$SEASON # TODO: remove poetry shell steps from all jobs?
       - uses: EndBug/add-and-commit@v9
         with:
           add: 'data/raw/*.dvc'
-          message: '🤖 updated prepared dataset files'
+          message: '🤖 updated `transfermarkt-scraper` raw data'
           default_author: github_actions
