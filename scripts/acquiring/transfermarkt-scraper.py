@@ -23,7 +23,6 @@ from twisted.internet import reactor, defer
 from scrapy.crawler import CrawlerRunner
 
 from scrapy.utils.project import get_project_settings
-from scrapy.utils.log import configure_logging
 from scrapy.settings import Settings
 
 from transfermarkt_datasets.core.utils import (
@@ -185,26 +184,6 @@ def acquire_on_local(asset, seasons, func):
   # create crawlers and wait until they complete
   issue_crawlers_and_wait(expanded_assets, expanded_seasons, settings)
 
-def acquire_on_cloud(job_name, job_queue, job_definition, branch, message, args, func):
-
-  submit_batch_job_and_wait(
-    job_name=job_name,
-    job_queue=job_queue,
-    job_definition=job_definition,
-    cmd=[
-      branch,
-      "make",
-      "dvc_pull",
-      "acquire_local",
-      "stash_and_commit"
-    ] + args,
-    vcpus=1.0,
-    memory=3072,
-    timeout=5
-  )
-
-# main
-
 parser = argparse.ArgumentParser()
 
 subparsers = parser.add_subparsers()
@@ -223,33 +202,6 @@ local_parser.add_argument(
   type=str
 )
 local_parser.set_defaults(func=acquire_on_local)
-
-cloud_parser = subparsers.add_parser('cloud', help='Run the acquiring step in the cloud')
-cloud_parser.add_argument(
-  '--job-name',
-  default="on-cli"
-)
-cloud_parser.add_argument(
-  '--job-queue',
-  default="transfermarkt-datasets-batch-compute-job-queue"
-)
-cloud_parser.add_argument(
-  '--job-definition',
-  default="transfermarkt-datasets-batch-job-definition-dev"
-)
-cloud_parser.add_argument(
-  '--branch',
-  required=True
-)
-cloud_parser.add_argument(
-  '--message',
-  default="🤖 updated raw dataset files"
-)
-cloud_parser.add_argument(
-  "args",
-  nargs="*"
-)
-cloud_parser.set_defaults(func=acquire_on_cloud)
 
 arguments = parser.parse_args()
 arguments.func(**vars(arguments))
