@@ -3,7 +3,8 @@ FROM python:3.8
 WORKDIR /app
 
 RUN apt-get update && \
-    apt-get -y install gcc python3-dev jq awscli nodejs
+    apt-get -y install gcc python3-dev jq awscli nodejs && \
+    apt-get install --only-upgrade git
 
 COPY pyproject.toml /app
 COPY poetry.lock /app
@@ -18,7 +19,9 @@ RUN /bin/bash -c "poetry shell"
 
 RUN git config --global user.email "transfermarkt-datasets-ci@transfermark-datasets.dev" && \
     git config --global user.name "CI Job" && \
-    git config --global core.sshCommand "ssh -o StrictHostKeyChecking=no"
+    git config --global core.sshCommand "ssh -o StrictHostKeyChecking=no" && \
+    git config --global --add safe.directory '*'
+    # https://stackoverflow.com/questions/72978485/git-submodule-update-failed-with-fatal-detected-dubious-ownership-in-repositor
 
 # Creating folders, and files for a project:
 COPY scripts/bootstrap.sh /app/

@@ -137,7 +137,7 @@ jobs:
         with:
           name: appearances
           path: ${{ env.DATA_DIR }}
-      - name: commit dvc files
+      - name: dvc commit and push
         run: dvc commit -f && dvc push
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
