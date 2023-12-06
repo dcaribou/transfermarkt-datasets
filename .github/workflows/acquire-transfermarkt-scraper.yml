@@ -116,6 +116,9 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: pull data
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: |
           dvc pull
       - uses: actions/download-artifact@v3
@@ -134,11 +137,11 @@ jobs:
         with:
           name: appearances
           path: ${{ env.DATA_DIR }}
-      - name: Display structure of downloaded files # TODO: remove
-        run: ls -R
       - name: commit dvc files
-        run: |
-          dvc commit -f
+        run: dvc commit -f && dvc push
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       - uses: EndBug/add-and-commit@v9
         with:
           add: 'data/raw/*.dvc'
