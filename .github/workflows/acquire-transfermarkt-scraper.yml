@@ -21,7 +21,7 @@ jobs:
 
     steps:
       - name: checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
           
       - name: run acquire
         env:
@@ -49,7 +49,7 @@ jobs:
     needs: acquire-clubs
     steps:
       - name: checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
 
       - name: retrive artifact
         uses: actions/download-artifact@v3
@@ -79,10 +79,10 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: dcaribou/transfermarkt-datasets:linux-arm64-dev
-    needs: acquire-clubs
+    needs: acquire-players
     steps:
       - name: checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
       - uses: actions/download-artifact@v3
         with:
           path: data/raw/transfermarkt-scraper/2023
