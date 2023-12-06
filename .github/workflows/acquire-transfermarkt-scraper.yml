@@ -14,7 +14,7 @@ jobs:
   acquire-clubs:
     runs-on: ubuntu-latest
     container:
-      image: dcaribou/transfermarkt-datasets:linux-arm64-dev
+      image: dcaribou/transfermarkt-datasets:linux-amd64-dev
     defaults:
       run:
         shell: bash -l {0}
@@ -45,7 +45,7 @@ jobs:
   acquire-players:
     runs-on: ubuntu-latest
     container:
-      image: dcaribou/transfermarkt-datasets:linux-arm64-dev
+      image: dcaribou/transfermarkt-datasets:linux-amd64-dev
     needs: acquire-clubs
     steps:
       - name: checkout
@@ -78,7 +78,7 @@ jobs:
   dvc-push:
     runs-on: ubuntu-latest
     container:
-      image: dcaribou/transfermarkt-datasets:linux-arm64-dev
+      image: dcaribou/transfermarkt-datasets:linux-amd64-dev
     needs: acquire-players
     steps:
       - name: checkout
