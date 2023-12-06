@@ -5,10 +5,10 @@ on:
     - cron: '0 4 * * TUE,FRI'
   workflow_dispatch:
     inputs:
-      acquire_args:
+      seasons:
         required: false
-        default: "--seasons 2023"
-        description: Arguments to be passed to the acquiring script
+        default: "2023"
+        description: Seasons to acquire data for
 
 jobs:
   acquire-clubs:
@@ -25,16 +25,13 @@ jobs:
           
       - name: run acquire
         env:
-          ARGS: ${{ github.event.inputs.acquire_args }}
+          SEASONS: ${{ github.event.inputs.seasons }}
         run: |
-          DEFAULT_ARGS="--asset clubs"
-          EFFECTIVE_ARGS=${ARGS:-${DEFAULT_ARGS}}
-
           poetry shell
 
           make \
             acquire_local \
-              ARGS="$EFFECTIVE_ARGS"
+              ARGS="--asset clubs --seasons $SEASONS"
 
       - name: save artifact
         uses: actions/upload-artifact@v3
@@ -58,16 +55,13 @@ jobs:
           
       - name: run acquire
         env:
-          ARGS: ${{ github.event.inputs.acquire_args }}
+          SEASONS: ${{ github.event.inputs.seasons }}
         run: |
-          DEFAULT_ARGS="--asset player"
-          EFFECTIVE_ARGS=${ARGS:-${DEFAULT_ARGS}}
-
           poetry shell
 
           make \
             acquire_local \
-              ARGS="$EFFECTIVE_ARGS"
+              ARGS="--asset player --seasons $SEASONS"
 
       - name: save artifact
         uses: actions/upload-artifact@v3
