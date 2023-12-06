@@ -1,0 +1,92 @@
+name: acquire-transfermarkt-scraper
+
+on:
+  schedule:
+    - cron: '0 4 * * TUE,FRI'
+  workflow_dispatch:
+    inputs:
+      acquire_args:
+        required: false
+        default: "--seasons 2023"
+        description: Arguments to be passed to the acquiring script
+
+jobs:
+  acquire-clubs:
+    runs-on: ubuntu-latest
+    container:
+      image: dcaribou/transfermarkt-datasets:linux-arm64-dev
+    defaults:
+      run:
+        shell: bash -l {0}
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+          
+      - name: run acquire
+        env:
+          ARGS: ${{ github.event.inputs.acquire_args }}
+        run: |
+          DEFAULT_ARGS="--asset clubs"
+          EFFECTIVE_ARGS=${ARGS:-${DEFAULT_ARGS}}
+
+          poetry shell
+
+          make \
+            acquire_local \
+              ARGS="$EFFECTIVE_ARGS"
+
+      - name: save artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: clubs
+          path: data/raw/transfermarkt-scraper/2023/clubs.json.gz # TODO: the path should actually depend on the season
+  
+  acquire-players:
+    runs-on: ubuntu-latest
+    container:
+      image: dcaribou/transfermarkt-datasets:linux-arm64-dev
+    needs: acquire-clubs
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+
+      - name: retrive artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: clubs
+          
+      - name: run acquire
+        env:
+          ARGS: ${{ github.event.inputs.acquire_args }}
+        run: |
+          DEFAULT_ARGS="--asset player"
+          EFFECTIVE_ARGS=${ARGS:-${DEFAULT_ARGS}}
+
+          poetry shell
+
+          make \
+            acquire_local \
+              ARGS="$EFFECTIVE_ARGS"
+
+      - name: save artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: players
+          path: data/raw/transfermarkt-scraper/2023/players.json.gz
+  
+  dvc-push:
+    runs-on: ubuntu-latest
+    container:
+      image: dcaribou/transfermarkt-datasets:linux-arm64-dev
+    needs: acquire-clubs
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+      - uses: actions/download-artifact@v3
+        with:
+          path: data/raw/transfermarkt-scraper/2023
+          
+      - name: Display structure of downloaded files
+        run: ls -R
+        working-directory: data/raw/transfermarkt-scraper/2023
