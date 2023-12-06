@@ -12,7 +12,7 @@ on:
 
 env:
   SEASON: ${{ github.event.inputs.season }}
-  DATA_DIR: ${{ github.workspace }}/data/raw/transfermarkt-scraper/${{ github.event.inputs.season }}
+  DATA_DIR: data/raw/transfermarkt-scraper/${{ github.event.inputs.season }}
 
 jobs:
   acquire-clubs:
@@ -69,10 +69,71 @@ jobs:
         with:
           name: players
           path: ${{ env.DATA_DIR }}/players.json.gz
+
+  acquire-games:
+    runs-on: ubuntu-latest
+    container:
+      image: dcaribou/transfermarkt-datasets:linux-amd64-dev
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+
+      - name: retrive artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: clubs
+          path: ${{ env.DATA_DIR }}
+          
+      - name: run acquire
+        run: |
+          poetry shell
+
+          make \
+            acquire_local \
+              ARGS="--asset games --seasons $SEASON"
+
+      - name: save artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: games
+          path: ${{ env.DATA_DIR }}/games.json.gz
   
+  acquire-appearances:
+    runs-on: ubuntu-latest
+    container:
+      image: dcaribou/transfermarkt-datasets:linux-amd64-dev
+    needs: acquire-players
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+
+      - name: retrive artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: clubs
+          path: ${{ env.DATA_DIR }}
+          
+      - name: run acquire
+        run: |
+          poetry shell
+
+          make \
+            acquire_local \
+              ARGS="--asset appearances --seasons $SEASON"
+
+      - name: save artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: games
+          path: ${{ env.DATA_DIR }}/games.json.gz
+
   dvc-push:
     runs-on: ubuntu-latest
-    needs: acquire-players
+    needs:
+      - acquire-clubs
+      - acquire-players
+      - acquire-games
+      - acquire-appearances
     steps:
       - name: checkout
         uses: actions/checkout@v3
