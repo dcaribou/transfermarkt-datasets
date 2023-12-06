@@ -139,7 +139,10 @@ jobs:
       - name: Display structure of downloaded files # TODO: remove
         run: ls -R
       - name: commit dvc files
-        run: dvc commit -f data/raw/transfermarkt-scraper/$SEASON # TODO: remove poetry shell steps from all jobs?
+      # TODO: remove poetry shell steps from all jobs?
+        run: |
+          dvc commit -f data/raw/transfermarkt-scraper/$SEASON
+          git config --global --add safe.directory '*'
       - uses: EndBug/add-and-commit@v9
         with:
           add: 'data/raw/*.dvc'
