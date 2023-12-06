@@ -12,7 +12,7 @@ on:
 
 env:
   SEASON: ${{ github.event.inputs.season }}
-  DATA_DIR: data/raw/transfermarkt-scraper/${{ github.event.inputs.season }}
+  DATA_DIR: ${{ github.workspace }}/data/raw/transfermarkt-scraper/${{ github.event.inputs.season }}
 
 jobs:
   acquire-clubs:
@@ -27,13 +27,13 @@ jobs:
       - name: checkout
         uses: actions/checkout@v2
           
-      # - name: run acquire
-      #   run: |
-      #     poetry shell
+      - name: run acquire
+        run: |
+          poetry shell
 
-      #     make \
-      #       acquire_local \
-      #         ARGS="--asset clubs --seasons $SEASON"
+          make \
+            acquire_local \
+              ARGS="--asset clubs --seasons $SEASON"
 
       - name: save artifact
         uses: actions/upload-artifact@v3
@@ -54,15 +54,15 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: clubs
-          path: ${{ env.GITHUB_WORKSPACE }}/${{ env.DATA_DIR }}/clubs.json.gz
+          path: ${{ env.DATA_DIR }}/clubs.json.gz
           
-      # - name: run acquire
-      #   run: |
-      #     poetry shell
+      - name: run acquire
+        run: |
+          poetry shell
 
-      #     make \
-      #       acquire_local \
-      #         ARGS="--asset players --seasons $SEASON"
+          make \
+            acquire_local \
+              ARGS="--asset players --seasons $SEASON"
 
       - name: save artifact
         uses: actions/upload-artifact@v3
@@ -78,8 +78,8 @@ jobs:
         uses: actions/checkout@v2
       - uses: actions/download-artifact@v3
         with:
-          path: ${{ env.GITHUB_WORKSPACE }}/${{ env.DATA_DIR }}
+          path: ${{ env.DATA_DIR }}
           
       - name: Display structure of downloaded files
         run: ls -R
-        working-directory: ${{ env.GITHUB_WORKSPACE }}/${{ env.DATA_DIR }}
+        working-directory: ${{ env.DATA_DIR }}
