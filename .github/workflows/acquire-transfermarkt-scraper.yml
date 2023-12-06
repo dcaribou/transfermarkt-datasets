@@ -110,6 +110,7 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: dcaribou/transfermarkt-datasets:linux-amd64-dev
+      options: --user 1001
     defaults:
       run:
         shell: bash -l {0}
