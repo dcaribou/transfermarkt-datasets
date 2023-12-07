@@ -27,6 +27,13 @@ jobs:
         shell: bash -l {0}
     steps:
       - uses: actions/checkout@v3
+        # the players asset is requeried for the transfermarkt-api script to run
+      - name: pull data
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: |
+          dvc pull data/raw/transfermarkt-scraper/${{ env.SEASON }}/players.json.gz
       - name: run acquire
         run: |
           make \
