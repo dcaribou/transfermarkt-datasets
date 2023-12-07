@@ -21,6 +21,36 @@ def read_config(config_file="config.yml") -> Dict:
 		config = yaml.load(config_file, yaml.Loader)
 		return config
 
+def seasons_list(seasons: str) -> List[str]:
+	"""Generate a list of seasons to acquire based on the "seasons" string. For example,
+	for "2012-2014", it should return [2012, 2013, 2014].
+
+	Args:
+		seasons (str): A string representing a date or range of dates to acquire.
+
+	Returns:
+		List[str]: The expanded list of seasons to acquire.
+	"""
+	parts = seasons.split("-")
+
+	if len(parts) == 0:
+		raise Exception("Empty string provided for seasons")
+
+	elif len(parts) == 1: # single season string
+		return [int(seasons)]
+
+	elif len(parts) == 2: # range of seasons
+		start, end = parts
+		season_range = list(range(int(start), int(end) + 1))
+
+		if len(season_range) > 20:
+			raise Exception("The range is too high")
+		else:
+			return season_range
+
+	else:
+		raise Exception(f"Invalid string: {seasons}")
+
 
 def submit_batch_job_and_wait(
 	job_name: str,

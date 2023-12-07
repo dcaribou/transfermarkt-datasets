@@ -1,7 +1,7 @@
 version: 2
 
 sources:
-  - name: raw_tfmkt
+  - name: transfermarkt_scraper
     tables:
       - name: appearances
         meta:

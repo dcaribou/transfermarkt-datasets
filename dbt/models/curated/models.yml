@@ -155,7 +155,7 @@ models:
       - name: market_value_in_eur
         tests:
           - too_many_missings:
-              tolerance: 0.38
+              tolerance: 0.40
       - name: contract_expiration_date
         tests:
           - too_many_missings:

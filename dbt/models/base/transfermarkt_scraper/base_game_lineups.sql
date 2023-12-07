@@ -7,7 +7,7 @@ with
             json_extract_string(raw_json_row, '$.game_id')::integer as game_id,
             row_number() over (partition by game_id order by season desc) as n
 
-        from {{ source("raw_tfmkt", "game_lineups") }}
+        from {{ source("transfermarkt_scraper", "game_lineups") }}
         
     ),
     home_club_starting_lineup as (

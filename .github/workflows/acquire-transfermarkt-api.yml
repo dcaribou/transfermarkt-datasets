@@ -1,0 +1,74 @@
+name: acquire-transfermarkt-api
+
+on:
+  workflow_run:
+    workflows: ["acquire-transfermarkt-scraper"]
+    branches: [master]
+    types:
+      - completed
+  workflow_dispatch:
+    inputs:
+      season:
+        required: false
+        default: "2023"
+        description: Season to acquire data for
+
+env:
+  SEASON: ${{ github.event.inputs.season }}
+  DATA_DIR: data/raw/transfermarkt-api/${{ github.event.inputs.season }}
+
+jobs:
+  acquire-market-values:
+    runs-on: ubuntu-latest
+    container:
+      image: dcaribou/transfermarkt-datasets:linux-amd64-master
+    defaults:
+      run:
+        shell: bash -l {0}
+    steps:
+      - uses: actions/checkout@v3
+        # the players asset is requeried for the transfermarkt-api script to run
+      - name: pull data
+        run: |
+          dvc pull data/raw/transfermarkt-scraper/${{ env.SEASON }}/players.json.gz
+      - name: run acquire
+        run: |
+          make \
+            acquire_local \
+              ACQUIRER=transfermarkt-api \
+              ARGS="--seasons $SEASON"
+      - uses: actions/upload-artifact@v3
+        with:
+          name: market_values
+          path: ${{ env.DATA_DIR }}/market_values.json
+
+  dvc-push:
+    runs-on: ubuntu-latest
+    container:
+      image: dcaribou/transfermarkt-datasets:linux-amd64-master
+    defaults:
+      run:
+        shell: bash -l {0}
+    needs:
+      - acquire-market-values
+    steps:
+      - uses: actions/checkout@v3
+      - name: pull data
+        run: |
+          dvc pull data/raw/transfermarkt-api
+      - uses: actions/download-artifact@v3
+        with:
+          name: market_values
+          path: ${{ env.DATA_DIR }}
+      - name: dvc commit and push
+        run: |
+          dvc commit -f data/raw/transfermarkt-api && dvc push --remote s3
+          git config --global --add safe.directory '*'
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      - uses: EndBug/add-and-commit@v9
+        with:
+          add: 'data/raw/transfermarkt-api.dvc'
+          message: '🤖 updated `transfermarkt-api` raw data'
+          default_author: github_actions

@@ -16,17 +16,20 @@ import os
 import pathlib
 
 import argparse
+import sys
 from typing import List
 
 from twisted.internet import reactor, defer
 from scrapy.crawler import CrawlerRunner
 
 from scrapy.utils.project import get_project_settings
-from scrapy.utils.log import configure_logging
 from scrapy.settings import Settings
 
-from transfermarkt_datasets.core.utils import read_config
-from transfermarkt_datasets.core.utils import submit_batch_job_and_wait
+from transfermarkt_datasets.core.utils import (
+  read_config,
+  submit_batch_job_and_wait,
+  seasons_list
+)
 
 import logging
 
@@ -93,37 +96,7 @@ class Asset():
       asset.set_parent()
     return assets
 
-def acquire_on_local(asset, seasons, func):
-
-  def seasons_list(seasons: str) -> List[str]:
-    """Generate a list of seasons to acquire based on the "seasons" string. For example,
-    for "2012-2014", it should return [2012, 2013, 2014].
-
-    Args:
-        seasons (str): A string representing a date or range of dates to acquire.
-
-    Returns:
-        List[str]: The expanded list of seasons to acquire.
-    """
-    parts = seasons.split("-")
-    
-    if len(parts) == 0:
-      raise Exception("Empty string provided for seasons")
-
-    elif len(parts) == 1: # single season string
-      return [int(seasons)]
-
-    elif len(parts) == 2: # range of seasons
-      start, end = parts
-      season_range = list(range(int(start), int(end) + 1))
-
-      if len(season_range) > 20:
-        raise Exception("The range is too high")
-      else:
-        return season_range
-
-    else:
-      raise Exception(f"Invalid string: {seasons}")
+def acquire_on_local(asset, seasons):
 
   def assets_list(assets: str) -> List[Asset]:
     """Generate the ordered list of Assets to be scraped based on the provided string.
@@ -164,7 +137,7 @@ def acquire_on_local(asset, seasons, func):
         # if there's no path created yet for this season create one
         season_path = pathlib.Path(f"data/raw/transfermarkt-scraper/{season}")
         if not season_path.exists():
-          season_path.mkdir()
+          season_path.mkdir(parents=True)
 
         for asset_obj in assets:
           # TODO: ideally, let transfermark-scraper handle destination file truncation via a setting instead of doing it here
@@ -196,71 +169,20 @@ def acquire_on_local(asset, seasons, func):
   # create crawlers and wait until they complete
   issue_crawlers_and_wait(expanded_assets, expanded_seasons, settings)
 
-def acquire_on_cloud(job_name, job_queue, job_definition, branch, message, args, func):
-
-  submit_batch_job_and_wait(
-    job_name=job_name,
-    job_queue=job_queue,
-    job_definition=job_definition,
-    cmd=[
-      branch,
-      "make",
-      "dvc_pull",
-      "acquire_local",
-      "stash_and_commit"
-    ] + args,
-    vcpus=1.0,
-    memory=3072,
-    timeout=5
-  )
-
-# main
-
 parser = argparse.ArgumentParser()
 
-subparsers = parser.add_subparsers()
-
-local_parser = subparsers.add_parser('local', help='Run the acquiring step locally')
-local_parser.add_argument(
+parser.add_argument(
   '--asset',
   help="Name of the asset to be acquired",
   choices=['clubs', 'players', 'games', 'game_lineups', 'appearances', 'all'],
   required=True
 )
-local_parser.add_argument(
+parser.add_argument(
   '--seasons',
   help="Season to be acquired. This is passed to the scraper as the SEASON argument",
-  default="2020",
+  default="2023",
   type=str
 )
-local_parser.set_defaults(func=acquire_on_local)
-
-cloud_parser = subparsers.add_parser('cloud', help='Run the acquiring step in the cloud')
-cloud_parser.add_argument(
-  '--job-name',
-  default="on-cli"
-)
-cloud_parser.add_argument(
-  '--job-queue',
-  default="transfermarkt-datasets-batch-compute-job-queue"
-)
-cloud_parser.add_argument(
-  '--job-definition',
-  default="transfermarkt-datasets-batch-job-definition-dev"
-)
-cloud_parser.add_argument(
-  '--branch',
-  required=True
-)
-cloud_parser.add_argument(
-  '--message',
-  default="🤖 updated raw dataset files"
-)
-cloud_parser.add_argument(
-  "args",
-  nargs="*"
-)
-cloud_parser.set_defaults(func=acquire_on_cloud)
 
 arguments = parser.parse_args()
-arguments.func(**vars(arguments))
+acquire_on_local(**vars(arguments))

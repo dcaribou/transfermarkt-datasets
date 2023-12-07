@@ -1,0 +1,148 @@
+name: acquire-transfermarkt-scraper
+
+on:
+  schedule:
+    - cron: '0 4 * * TUE,FRI'
+  workflow_dispatch:
+    inputs:
+      season:
+        required: false
+        default: "2023"
+        description: Season to acquire data for
+
+env:
+  SEASON: ${{ github.event.inputs.season }}
+  DATA_DIR: data/raw/transfermarkt-scraper/${{ github.event.inputs.season }}
+
+jobs:
+  acquire-clubs:
+    runs-on: ubuntu-latest
+    container:
+      image: dcaribou/transfermarkt-datasets:linux-amd64-master
+    defaults:
+      run:
+        shell: bash -l {0}
+    steps:
+      - uses: actions/checkout@v3
+      - name: run acquire
+        run: |
+          make \
+            acquire_local \
+              ARGS="--asset clubs --seasons $SEASON"
+      - uses: actions/upload-artifact@v3
+        with:
+          name: clubs
+          path: ${{ env.DATA_DIR }}/clubs.json.gz
+  
+  acquire-players:
+    runs-on: ubuntu-latest
+    container:
+      image: dcaribou/transfermarkt-datasets:linux-amd64-master
+    defaults:
+      run:
+        shell: bash -l {0}
+    needs: acquire-clubs
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/download-artifact@v3
+        with:
+          name: clubs
+          path: ${{ env.DATA_DIR }}
+      - name: run acquire
+        run: |
+          make \
+            acquire_local \
+              ARGS="--asset players --seasons $SEASON"
+      - uses: actions/upload-artifact@v3
+        with:
+          name: players
+          path: ${{ env.DATA_DIR }}/players.json.gz
+
+  acquire-games:
+    runs-on: ubuntu-latest
+    container:
+      image: dcaribou/transfermarkt-datasets:linux-amd64-master
+    defaults:
+      run:
+        shell: bash -l {0}
+    steps:
+      - uses: actions/checkout@v3
+      - name: run acquire
+        run: |
+          make \
+            acquire_local \
+              ARGS="--asset games --seasons $SEASON"
+      - uses: actions/upload-artifact@v3
+        with:
+          name: games
+          path: ${{ env.DATA_DIR }}/games.json.gz
+  
+  acquire-appearances:
+    runs-on: ubuntu-latest
+    container:
+      image: dcaribou/transfermarkt-datasets:linux-amd64-master
+    defaults:
+      run:
+        shell: bash -l {0}
+    needs: acquire-players
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/download-artifact@v3
+        with:
+          name: clubs
+          path: ${{ env.DATA_DIR }}
+      - name: run acquire
+        run: |
+          make \
+            acquire_local \
+              ARGS="--asset appearances --seasons $SEASON"
+      - uses: actions/upload-artifact@v3
+        with:
+          name: appearances
+          path: ${{ env.DATA_DIR }}/appearances.json.gz
+
+  dvc-push:
+    runs-on: ubuntu-latest
+    container:
+      image: dcaribou/transfermarkt-datasets:linux-amd64-master
+    defaults:
+      run:
+        shell: bash -l {0}
+    needs:
+      - acquire-clubs
+      - acquire-players
+      - acquire-games
+      - acquire-appearances
+    steps:
+      - uses: actions/checkout@v3
+      - name: pull data
+        run: |
+          dvc pull
+      - uses: actions/download-artifact@v3
+        with:
+          name: clubs
+          path: ${{ env.DATA_DIR }}
+      - uses: actions/download-artifact@v3
+        with:
+          name: players
+          path: ${{ env.DATA_DIR }}
+      - uses: actions/download-artifact@v3
+        with:
+          name: games
+          path: ${{ env.DATA_DIR }}
+      - uses: actions/download-artifact@v3
+        with:
+          name: appearances
+          path: ${{ env.DATA_DIR }}
+      - name: dvc commit and push
+        run: |
+          dvc commit -f && dvc push --remote s3
+          git config --global --add safe.directory '*'
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      - uses: EndBug/add-and-commit@v9
+        with:
+          add: 'data/raw/transfermarkt-scraper.dvc'
+          message: '🤖 updated `transfermarkt-scraper` raw data'
+          default_author: github_actions

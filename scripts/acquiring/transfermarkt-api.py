@@ -1,17 +1,26 @@
 """Collect market value data from transfermarkt's REST API
-
 https://www.transfermarkt.com/ceapi/marketValueDevelopment/graph/{player_id}
+
+Usage:
+    python transfermarkt-api.py --seasons=<seasons>
+
+Note that the will look for the players asset from the transfermarkt-scraper acquirer under
+    data/raw/transfermarkt-scraper/{season}/players.json.gz
 """
 
 import pathlib
 from typing import List
 import json
 import gzip
+import argparse
 
 import aiohttp
 import asyncio
 
-from transfermarkt_datasets.core.utils import read_config
+from transfermarkt_datasets.core.utils import (
+  read_config,
+  seasons_list
+)
 
 import logging
 import logging.config
@@ -22,30 +31,29 @@ logging.config.dictConfig(
   acquire_config["logging"]
 )
 
-SEASON = 2023
-PLAYERS_ASSET_PATH = f"data/raw/transfermarkt-scraper/{SEASON}/players.json.gz"
-TARGET_PATH = f"data/raw/transfermarkt-api/{SEASON}/market_values.json"
-
 MARKET_VALUES_API = "https://www.transfermarkt.com/ceapi/marketValueDevelopment/graph/"
 USER_AGENT = "transfermarkt-datasets/1.0 (https://github.com/dcaribou/transfermarkt-datasets)"
 
 
 # get the player ids from the players asset from transfermarkt-scraper source
-def get_player_ids() -> List[int]:
+def get_player_ids(season: int) -> List[int]:
     """Get the player ids from the players asset from transfermarkt-scraper source.
 
     Returns:
         List[int]: List of player ids
     """
+
+    players_asset_path = f"data/raw/transfermarkt-scraper/{season}/players.json.gz"
+
     # read lines from a zipped file
-    with gzip.open(PLAYERS_ASSET_PATH, mode="r") as z:
+    with gzip.open(players_asset_path, mode="r") as z:
         players = [json.loads(line) for line in z.readlines()]
 
     player_ids = [
         int(player["href"].split("/")[-1]) 
         for player in players
     ]
-    logging.info(f"Fetched {len(player_ids)} player ids from {PLAYERS_ASSET_PATH}")
+    logging.info(f"Fetched {len(player_ids)} player ids from {players_asset_path}")
 
     return player_ids
 
@@ -84,25 +92,49 @@ async def get_market_values(player_ids: List[int]) -> List[dict]:
 
     return responses
 
-def persist_market_values(market_values: List[dict]) -> None:
+def persist_market_values(market_values: List[dict], path: str) -> None:
     """Persist the market value data to a file.
 
     Args:
         market_values (List[dict]): List of dicts with market value data
+        path (str): Path where to store the market value data
     """
-    with open(TARGET_PATH, "w") as f:
+    with open(path, "w") as f:
         f.writelines(json.dumps(market_value) + "\n" for market_value in market_values)
 
+def run_for_season(season: int) -> None:
+    """Run all steps for a given season.
 
-logging.info("Starting player market value acquisition")
+    :param season: _description_
+    :type season: int
+    """
+    players_asset_path = f"data/raw/transfermarkt-scraper/{season}/players.json.gz"
+    target_path = f"data/raw/transfermarkt-api/{season}/market_values.json"
 
-# create target directory if it does not exist
-pathlib.Path(TARGET_PATH).parent.mkdir(parents=True, exist_ok=True)
+    logging.info(f"Starting player market value acquisition for season {season}")
 
-# collect market values for players in SEASON
-market_values = asyncio.run(get_market_values(get_player_ids()))
+    # create target directory if it does not exist
+    pathlib.Path(target_path).parent.mkdir(parents=True, exist_ok=True)
 
-logging.info("Persisting market values")
+    # collect market values for players in SEASON
+    market_values = asyncio.run(get_market_values(get_player_ids(season)))
 
-# persist market values to file
-persist_market_values(market_values)
+    logging.info(f"Persisting market values for season {season}")
+
+    # persist market values to file
+    persist_market_values(market_values, target_path)
+
+parser = argparse.ArgumentParser()
+parser.add_argument(
+  '--seasons',
+  help="Season to be acquired. This is passed to the scraper as the SEASON argument",
+  default="2023",
+  type=str
+)
+
+parsed = parser.parse_args()
+
+expanded_seasons = seasons_list(parsed.seasons)
+
+for season in expanded_seasons:
+    run_for_season(season)
