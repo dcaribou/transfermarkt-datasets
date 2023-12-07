@@ -29,9 +29,6 @@ jobs:
       - uses: actions/checkout@v3
         # the players asset is requeried for the transfermarkt-api script to run
       - name: pull data
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: |
           dvc pull data/raw/transfermarkt-scraper/${{ env.SEASON }}/players.json.gz
       - name: run acquire
@@ -57,9 +54,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: pull data
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: |
           dvc pull data/raw/transfermarkt-api
       - uses: actions/download-artifact@v3
@@ -67,7 +61,7 @@ jobs:
           name: market_values
           path: ${{ env.DATA_DIR }}
       - name: dvc commit and push
-        run: dvc commit -f data/raw/transfermarkt-api && dvc push
+        run: dvc commit -f data/raw/transfermarkt-api && dvc push --remote s3
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}

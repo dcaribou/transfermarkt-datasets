@@ -116,9 +116,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: pull data
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: |
           dvc pull
       - uses: actions/download-artifact@v3
@@ -138,12 +135,12 @@ jobs:
           name: appearances
           path: ${{ env.DATA_DIR }}
       - name: dvc commit and push
-        run: dvc commit -f && dvc push
+        run: dvc commit -f && dvc push --remote s3
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       - uses: EndBug/add-and-commit@v9
         with:
-          add: 'data/raw/*.dvc'
+          add: 'data/raw/transfermarkt-scraper.dvc'
           message: '🤖 updated `transfermarkt-scraper` raw data'
           default_author: github_actions
