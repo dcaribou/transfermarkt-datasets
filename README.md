@@ -211,6 +211,8 @@ The data pipeline is orchestrated as a series of Github Actions workflows. They 
 | `acquire-<acquirer>.yml` | Schedule                                                     | Runs the acquirer and commits the data                                                                        |
 | `deploy-streamlit.yml`   | Every push to the `master`                                   | It deploys the streamlit app to fly.io                                                                        |
 
+> 💡 Debugging workflows remotelly is a pain. I recommend using [act](https://github.com/nektos/act) to run them locally to the extent possible.
+
 ## 💬 community
 
 ### 📞 getting in touch
