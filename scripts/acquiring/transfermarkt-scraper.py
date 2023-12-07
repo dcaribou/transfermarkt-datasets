@@ -96,7 +96,7 @@ class Asset():
       asset.set_parent()
     return assets
 
-def acquire_on_local(asset, seasons, func):
+def acquire_on_local(asset, seasons):
 
   # create a file with name of the asset to be acquired
   file_full = f"data/raw/transfermarkt-scraper/2023/{asset}.json.gz"
@@ -186,22 +186,18 @@ def acquire_on_local(asset, seasons, func):
 
 parser = argparse.ArgumentParser()
 
-subparsers = parser.add_subparsers()
-
-local_parser = subparsers.add_parser('local', help='Run the acquiring step locally')
-local_parser.add_argument(
+parser.add_argument(
   '--asset',
   help="Name of the asset to be acquired",
   choices=['clubs', 'players', 'games', 'game_lineups', 'appearances', 'all'],
   required=True
 )
-local_parser.add_argument(
+parser.add_argument(
   '--seasons',
   help="Season to be acquired. This is passed to the scraper as the SEASON argument",
   default="2023",
   type=str
 )
-local_parser.set_defaults(func=acquire_on_local)
 
 arguments = parser.parse_args()
-arguments.func(**vars(arguments))
+acquire_on_local(**vars(arguments))
