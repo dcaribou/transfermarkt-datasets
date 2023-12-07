@@ -33,7 +33,8 @@ with
 
             select
                 *,
-                strptime(json_row ->> 'datum_mw', '%b %d, %Y') as "datetime",
+                json_row ->> 'datum_mw' as datetime_str,
+                strptime(datetime_str, '%b %d, %Y') as "datetime",
                 row_number() over (partition by player_id, "datetime"::date order by "datetime" desc) as n
 
             from unnested
@@ -50,6 +51,7 @@ with
 select
     player_id,
     {{ parse_market_value("json_row ->> 'mw'") }} as market_value_in_eur,
+    datetime_str,
     "datetime",
     ("datetime")::date as "date",
     date_trunc('week', "datetime") as dateweek,
@@ -57,3 +59,6 @@ select
     filename
     
 from deduplicated
+
+-- this is a bug in the data
+where datetime_str != 'May 15, 5023' 

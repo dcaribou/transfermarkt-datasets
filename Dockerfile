@@ -19,9 +19,7 @@ RUN /bin/bash -c "poetry shell"
 
 RUN git config --global user.email "transfermarkt-datasets-ci@transfermark-datasets.dev" && \
     git config --global user.name "CI Job" && \
-    git config --global core.sshCommand "ssh -o StrictHostKeyChecking=no" && \
-    git config --global --add safe.directory '*'
-    # https://stackoverflow.com/questions/72978485/git-submodule-update-failed-with-fatal-detected-dubious-ownership-in-repositor
+    git config --global core.sshCommand "ssh -o StrictHostKeyChecking=no"
 
 # Creating folders, and files for a project:
 COPY scripts/bootstrap.sh /app/
