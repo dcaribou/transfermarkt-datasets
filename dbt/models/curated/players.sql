@@ -42,3 +42,5 @@ from players_cte
 left join clubs_cte on players_cte.current_club_id = clubs_cte.club_id
 
 left join market_value_agg_cte on players_cte.player_id = market_value_agg_cte.player_id
+
+order by players_cte.player_id
