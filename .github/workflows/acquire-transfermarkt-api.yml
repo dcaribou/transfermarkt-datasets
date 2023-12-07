@@ -61,7 +61,9 @@ jobs:
           name: market_values
           path: ${{ env.DATA_DIR }}
       - name: dvc commit and push
-        run: dvc commit -f data/raw/transfermarkt-api && dvc push --remote s3
+        run: |
+          dvc commit -f data/raw/transfermarkt-api && dvc push --remote s3
+          git config --global --add safe.directory '*'
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
