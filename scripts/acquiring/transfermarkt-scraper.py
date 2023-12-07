@@ -98,21 +98,6 @@ class Asset():
 
 def acquire_on_local(asset, seasons):
 
-  # create a file with name of the asset to be acquired
-  file_full = f"data/raw/transfermarkt-scraper/2023/{asset}.json.gz"
-
-  # get path's base directory
-  file_path = pathlib.Path(file_full).parent
-
-  # create the directory if it doesn't exist
-  if not file_path.exists():
-    file_path.mkdir(parents=True)
-
-  with open(f"data/raw/transfermarkt-scraper/2023/{asset}.json.gz", "w+") as f:
-    f.write("")
-
-  sys.exit(0)
-
   def assets_list(assets: str) -> List[Asset]:
     """Generate the ordered list of Assets to be scraped based on the provided string.
 
