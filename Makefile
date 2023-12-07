@@ -29,7 +29,7 @@ docker_login_ecr :
 	aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin 272181418418.dkr.ecr.eu-west-1.amazonaws.com
 
 docker_login_dockerhub :
-	docker login
+	@echo ${DOCKERHUB_TOKEN} | docker login --username dcaribou --password-stdin
 
 docker_login_flyio :
 	flyctl auth docker
@@ -111,3 +111,12 @@ stash_and_commit: ## commit and push code and data
 
 test: ## run unit tests for core python module
 	pytest transfermarkt_datasets/tests
+
+act:
+	act \
+		-j dvc-push \
+		--pull=false \
+		--input season=2023 \
+		-W .github/workflows/acquire-transfermarkt-api.yml \
+		--artifact-server-path /tmp/artifacts \
+		--container-options "--mount type=bind,source=~/.scrapy,target=~/.scrapy" --container-architecture linux/amd64
