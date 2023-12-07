@@ -71,11 +71,13 @@ class appearances {
   - [make](#make)
 - [💾 data storage](#-data-storage)
 - [🕸️ data acquisition](#️-data-acquisition)
+  - [acquirers](#acquirers)
 - [🔨 data preparation](#-data-preparation)
   - [python api](#python-api)
 - [👁️ frontends](#️-frontends)
   - [🎈 streamlit](#-streamlit)
 - [🏗️ infra](#️-infra)
+- [🎼 orchestration](#-orchestration)
 - [💬 community](#-community)
   - [📞 getting in touch](#-getting-in-touch)
   - [🫶 sponsoring](#-sponsoring)
@@ -103,7 +105,7 @@ The `Makefile` in the root defines a set of useful targets that will help you ru
 ```console
 dvc_pull                       pull data from the cloud
 docker_build                   build the project docker image and tag accordingly
-acquire_local                  run the acquiring process locally (refreshes data/raw)
+acquire_local                  run the acquiring process locally (refreshes data/raw/<acquirer>)
 prepare_local                  run the prep process locally (refreshes data/prep)
 sync                           run the sync process (refreshes data frontends)
 streamlit_local                run streamlit app locally
@@ -113,18 +115,25 @@ Run `make help` to see the full list. Once you've completed the setup, you shoul
 ## 💾 data storage
 All project data assets are kept inside the [`data`](data) folder. This is a [DVC](https://dvc.org/) repository, so all files can be pulled from remote storage by running `dvc pull`.
 
-| path        | description                                                                                                                                                   |
-| ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `data/raw`  | contains raw data per season as acquired with [trasfermarkt-scraper](https://github.com/dcaribou/transfermarkt-scraper) (check [acquire](#-data-acquisition)) |
-| `data/prep` | contains prepared datasets as produced by dbt (check [prepare](#-data-preparation))                                                                           |
+| path        | description                                                                                                                                                                     |
+| ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `data/raw`  | contains raw data for [different acquirers](https://github.com/dcaribou/transfermarkt-datasets/discussions/202#discussioncomment-7142557) (check [acquire](#-data-acquisition)) |
+| `data/prep` | contains prepared datasets as produced by dbt (check [prepare](#-data-preparation))                                                                                             |
 
 ## 🕸️ data acquisition
-In the scope of this project, "acquiring" is the process of collecting "raw data", as it is produced by [trasfermarkt-scraper](https://github.com/dcaribou/transfermarkt-scraper). Acquired data lives in the `data/raw` folder and it can be created or updated for a particular season by running `make acquire_local`
+In the scope of this project, "acquiring" is the process of collecting data from a specific source and via an acquiring script. Acquired data lives in the `data/raw` folder.
 
+### acquirers
+An acquirer is just a script that collect data from somewhere and puts it in `data/raw`. They are defined in the [`scripts/acquiring`](scripts/acquiring) folder and run using the `acquire_local` make target.
+For example, to run the `transfermarkt-api` acquirer with a set of parameters, you can run
 ```console
-make acquire_local ARGS="--asset all --season 2023"
+make acquire_local ACQUIRER=transfermarkt-api ARGS="--season 2023"
 ```
-This runs the scraper with a set of parameters and collects the output in `data/raw`.
+which will populate `data/raw/transfermarkt-api` with the data it collected. Obviously, you can also run [the script](scripts/acquiring/transfermarkt-api.py) directly if you prefer.
+```console
+python transfermarkt-api.py --season 2023
+```
+
 
 ## 🔨 data preparation
 In the scope of this project, "preparing" is the process of transforming raw data to create a high quality dataset that can be conveniently consumed by analysts of all kinds.
@@ -191,6 +200,16 @@ make streamlit_local
 
 ## 🏗️ [infra](infra)
 Define all the necessary infrastructure for the project in the cloud with Terraform.
+
+## 🎼 orchestration
+The data pipeline is orchestrated as a series of Github Actions workflows. They are defined in the [`.github/workflows`](.github/workflows) folder and are triggered by different events.
+
+| workflow name            | triggers on                                                  | description                                                                                                   |
+| ------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------- |
+| `on-push`                | Every push to the `master` branch or to an open pull request | It runs the [data preparation](#🔨-data-preparation) step, and tests and commits the data if there are changes |
+| `on-contribution`        | Every push to an open pull request                           | The same as `on-push` but without commiting data                                                              |
+| `acquire-<acquirer>.yml` | Schedule                                                     | Runs the acquirer and commits the data                                                                        |
+| `deploy-streamlit.yml`   | Every push to the `master`                                   | It deploys the streamlit app to fly.io                                                                        |
 
 ## 💬 community
 
