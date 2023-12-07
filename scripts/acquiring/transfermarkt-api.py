@@ -1,6 +1,11 @@
 """Collect market value data from transfermarkt's REST API
-
 https://www.transfermarkt.com/ceapi/marketValueDevelopment/graph/{player_id}
+
+Usage:
+    python transfermarkt-api.py --seasons=<seasons>
+
+Note that the will look for the players asset from the transfermarkt-scraper acquirer under
+    data/raw/transfermarkt-scraper/{season}/players.json.gz
 """
 
 import pathlib
