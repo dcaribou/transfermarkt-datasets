@@ -1,3 +1,4 @@
+import json
 import pathlib
 from typing import Dict, List
 
@@ -138,4 +139,12 @@ class Dataset:
   
   def write_datapackage(self):
     pkg = self.as_frictionless_package()
-    pkg.to_json("data/prep/dataset-metadata.json")
+    pkg_as_json = json.loads(pkg.to_json())
+
+    # recursively sort a json object by key
+    def sort_dict_by_key(d):
+      return {k: sort_dict_by_key(v) if isinstance(v, dict) else v for k, v in sorted(d.items())}
+    
+    # write the sorted json to a file
+    with open("data/prep/dataset-metadata.json", "w") as f:
+      json.dump(sort_dict_by_key(pkg_as_json), f, indent=2)
