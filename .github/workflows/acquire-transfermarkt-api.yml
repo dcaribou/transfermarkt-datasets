@@ -21,7 +21,7 @@ jobs:
   acquire-market-values:
     runs-on: ubuntu-latest
     container:
-      image: dcaribou/transfermarkt-datasets:linux-amd64-dev
+      image: dcaribou/transfermarkt-datasets:linux-amd64-master
     defaults:
       run:
         shell: bash -l {0}
@@ -45,7 +45,7 @@ jobs:
   dvc-push:
     runs-on: ubuntu-latest
     container:
-      image: dcaribou/transfermarkt-datasets:linux-amd64-dev
+      image: dcaribou/transfermarkt-datasets:linux-amd64-master
     defaults:
       run:
         shell: bash -l {0}
