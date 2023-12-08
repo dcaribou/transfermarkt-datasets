@@ -76,6 +76,30 @@ jobs:
         with:
           name: games
           path: ${{ env.DATA_DIR }}/games.json.gz
+
+  acquire-game-lineups:
+    runs-on: ubuntu-latest
+    container:
+      image: dcaribou/transfermarkt-datasets:linux-amd64-master
+    defaults:
+      run:
+        shell: bash -l {0}
+    needs: acquire-games
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/download-artifact@v3
+        with:
+          name: games
+          path: ${{ env.DATA_DIR }}
+      - name: run acquire
+        run: |
+          make \
+            acquire_local \
+              ARGS="--asset game_lineups --seasons $SEASON"
+      - uses: actions/upload-artifact@v3
+        with:
+          name: game_lineups
+          path: ${{ env.DATA_DIR }}/game_lineups.json.gz
   
   acquire-appearances:
     runs-on: ubuntu-latest
@@ -113,6 +137,7 @@ jobs:
       - acquire-players
       - acquire-games
       - acquire-appearances
+      - acquire-game-lineups
     steps:
       - uses: actions/checkout@v3
       - name: pull data
@@ -133,6 +158,10 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: appearances
+          path: ${{ env.DATA_DIR }}
+      - uses: actions/download-artifact@v3
+        with:
+          name: game_lineups
           path: ${{ env.DATA_DIR }}
       - name: dvc commit and push
         run: |
