@@ -25,6 +25,8 @@ jobs:
     defaults:
       run:
         shell: bash -l {0}
+    # https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#running-a-workflow-based-on-the-conclusion-of-another-workflow
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
       - uses: actions/checkout@v3
         # the players asset is requeried for the transfermarkt-api script to run
@@ -51,6 +53,8 @@ jobs:
         shell: bash -l {0}
     needs:
       - acquire-market-values
+    # https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#running-a-workflow-based-on-the-conclusion-of-another-workflow
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
       - uses: actions/checkout@v3
       - name: pull data
