@@ -33,30 +33,6 @@ jobs:
         with:
           name: clubs
           path: ${{ env.DATA_DIR }}/clubs.json.gz
-  
-  acquire-players:
-    runs-on: ubuntu-latest
-    container:
-      image: dcaribou/transfermarkt-datasets:linux-amd64-master
-    defaults:
-      run:
-        shell: bash -l {0}
-    needs: acquire-clubs
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/download-artifact@v3
-        with:
-          name: clubs
-          path: ${{ env.DATA_DIR }}
-      - name: run acquire
-        run: |
-          make \
-            acquire_local \
-              ARGS="--asset players --seasons $SEASON"
-      - uses: actions/upload-artifact@v3
-        with:
-          name: players
-          path: ${{ env.DATA_DIR }}/players.json.gz
 
   acquire-games:
     runs-on: ubuntu-latest
@@ -100,6 +76,30 @@ jobs:
         with:
           name: game_lineups
           path: ${{ env.DATA_DIR }}/game_lineups.json.gz
+
+  acquire-players:
+    runs-on: ubuntu-latest
+    container:
+      image: dcaribou/transfermarkt-datasets:linux-amd64-master
+    defaults:
+      run:
+        shell: bash -l {0}
+    needs: acquire-clubs
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/download-artifact@v3
+        with:
+          name: clubs
+          path: ${{ env.DATA_DIR }}
+      - name: run acquire
+        run: |
+          make \
+            acquire_local \
+              ARGS="--asset players --seasons $SEASON"
+      - uses: actions/upload-artifact@v3
+        with:
+          name: players
+          path: ${{ env.DATA_DIR }}/players.json.gz
   
   acquire-appearances:
     runs-on: ubuntu-latest
@@ -133,10 +133,10 @@ jobs:
       run:
         shell: bash -l {0}
     needs:
-      - acquire-clubs
-      - acquire-players
       - acquire-games
       - acquire-game-lineups
+      - acquire-clubs
+      - acquire-players
       - acquire-appearances
     steps:
       - uses: actions/checkout@v3
