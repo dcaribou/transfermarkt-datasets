@@ -12,7 +12,7 @@ on:
 
 env:
   SEASON: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.season || '2023' }}
-  DATA_DIR: data/raw/transfermarkt-scraper/${{ github.event.inputs.season }}
+  DATA_DIR: data/raw/transfermarkt-scraper/${{ github.event_name == 'workflow_dispatch' && github.event.inputs.season || '2023' }}
 
 jobs:
   acquire-clubs:

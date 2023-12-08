@@ -15,7 +15,7 @@ on:
 
 env:
   SEASON: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.season || '2023' }}
-  DATA_DIR: data/raw/transfermarkt-api/${{ github.event.inputs.season }}
+  DATA_DIR: data/raw/transfermarkt-api/${{ github.event_name == 'workflow_dispatch' && github.event.inputs.season || '2023' }}
 
 jobs:
   acquire-market-values:
