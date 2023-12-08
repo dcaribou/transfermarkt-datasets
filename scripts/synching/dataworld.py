@@ -1,35 +1,13 @@
 """
-Upload datasets to S3 storage and data hub websites.
-Publication to the following sites are supported:
+Upload datasets to data.world (update dataset 'dcereijo/player-scores').
 
-- S3: store scrapy cache and prepared files in s3://transfermarkt-datasets 
-- Kaggle: update dataset 'davidcariboo/player-scores'
-- data.world: update dataset 'dcereijo/player-scores'
-
+Usage:
+    python scripts/synching/dataworld.py
 """
 
-import argparse
-import pathlib
 import boto3
 import os
 import requests
-
-def publish_to_kaggle(folder, message):
-  """Push the contents of the folder to Kaggle datasets
-  :param folder: dataset folder path
-  :param message: a string message with version notes
-  """
-  
-  from kaggle.api.kaggle_api_extended import KaggleApi
-  
-  api = KaggleApi()
-  api.authenticate()
-
-  # https://github.com/Kaggle/kaggle-api/blob/master/kaggle/api/kaggle_api_extended.py#L1317
-  api.dataset_create_version(
-    folder=folder,
-    version_notes=message
-  )
 
 def publish_to_dataworld(folder):
   """Push the contents of the folder to data.world's dataset dcereijo/player-scores
@@ -108,21 +86,8 @@ def publish_to_dataworld(folder):
   if response.status_code != 200:
     raise Exception("Publication to data.world failed")
 
-parser = argparse.ArgumentParser()
-parser.add_argument('--message', help='Dataset version notes', required=False, default="Dataset sync")
-parser.add_argument('--season', help='Season to be synchronized. It applies to S3 stored objects only', required=False, default=2020)
-
-args = parser.parse_args()
-
-message = args.message
-season = args.season
 
 prep_location = 'data/prep'
-raw_location = 'data/raw'
-
-print("--> Publish to Kaggle")
-publish_to_kaggle(prep_location, message)
-print("")
 
 print("--> Publish to data.world")
 publish_to_dataworld(prep_location)

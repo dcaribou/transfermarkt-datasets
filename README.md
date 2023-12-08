@@ -206,10 +206,10 @@ The data pipeline is orchestrated as a series of Github Actions workflows. They 
 
 | workflow name            | triggers on                                                  | description                                                                                                   |
 | ------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------- |
-| `on-push`                | Every push to the `master` branch or to an open pull request | It runs the [data preparation](#🔨-data-preparation) step, and tests and commits the data if there are changes |
-| `on-contribution`        | Every push to an open pull request                           | The same as `on-push` but without commiting data                                                              |
+| `build`                  | Every push to the `master` branch or to an open pull request | It runs the [data preparation](#🔨-data-preparation) step, and tests and commits the data if there are changes |
+| `build-contribution`     | Every push to an open pull request                           | The same as `build` but without commiting data                                                                |
 | `acquire-<acquirer>.yml` | Schedule                                                     | Runs the acquirer and commits the data                                                                        |
-| `deploy-streamlit.yml`   | Every push to the `master`                                   | It deploys the streamlit app to fly.io                                                                        |
+| `sync-<frontend>.yml`    | Every change on prepared data                                | Syncs the data to the frontend                                                                                |
 
 > 💡 Debugging workflows remotelly is a pain. I recommend using [act](https://github.com/nektos/act) to run them locally to the extent possible.
 

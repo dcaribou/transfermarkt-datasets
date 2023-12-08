@@ -3,11 +3,12 @@ PLATFORM = linux/arm64
 BRANCH = $(shell git rev-parse --abbrev-ref HEAD)
 JOB_NAME = on-cli
 ARGS = --asset all --seasons 2023
-MESSAGE = some message
 TAG = dev
 DBT_TARGET = dev
 DVC_REMOTE = http
 ACQUIRER = transfermarkt-scraper
+SYNCER = kaggle
+WORKFLOW = sync-kaggle
 
 DASH:= -
 SLASH:= /
@@ -50,7 +51,7 @@ docker_push_flyio: docker_login_flyio
 	docker push registry.fly.io/transfermarkt-datasets:$(IMAGE_TAG)
 
 acquire_local: ## run the acquiring process locally (refreshes data/raw)
-	scripts/acquire.sh $(ACQUIRER) $(ARGS)
+	scripts/runner.sh scripts/acquiring $(ACQUIRER) $(ARGS)
 
 acquire_docker: ## run the acquiring process in a local docker
 	docker run -ti \
@@ -79,14 +80,13 @@ prepare_cloud:
 	PYTHONPATH=$(PYTHONPATH):`pwd`/. python scripts/prepare.py cloud \
 		--branch $(BRANCH) \
 		--job-name $(JOB_NAME) \
-		--job-definition $(JOB_DEFINITION_NAME) \
-		MESSAGE='$(MESSAGE)'
+		--job-definition $(JOB_DEFINITION_NAME)
 
 sync: ## run the sync process (refreshes data frontends)
-sync: MESSAGE = Manual sync
+sync: ARGS = 
 sync:
 	gunzip -r data/prep/*.csv.gz && \
-	PYTHONPATH=$(PYTHONPATH):`pwd`/. python scripts/sync.py --message "$(MESSAGE)" --season 2023 && \
+	scripts/runner.sh scripts/synching $(SYNCER) $(ARGS) && \
 	gzip -r data/prep/*.csv
 
 streamlit_local: ## run streamlit app locally
@@ -102,12 +102,6 @@ streamlit_deploy: ## deploy streamlit to app hosting service (fly.io)
 streamlit_deploy: docker_push_flyio
 	flyctl deploy
 
-stash_and_commit: ## commit and push code and data
-	dvc commit -f && git add data && \
-    git diff-index --quiet HEAD data || git commit -m "$(MESSAGE)" && \
-    git push origin HEAD:${BRANCH} && \
-	dvc push --remote $(DVC_REMOTE)
-
 test: ## run unit tests for core python module
 	pytest transfermarkt_datasets/tests
 
@@ -117,6 +111,6 @@ act:
 		-j acquire-clubs \
 		--pull=true \
 		--input season=2023 \
-		-W .github/workflows/acquire-transfermarkt-scraper.yml \
+		-W .github/workflows/$(WORKFLOW).yml \
 		--artifact-server-path /tmp/artifacts \
 		--container-architecture linux/amd64

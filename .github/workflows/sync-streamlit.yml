@@ -7,7 +7,7 @@ on:
     branches: [master]
 
 jobs:
-  deploy-streamlit:
+  sync-streamlit:
 
     runs-on: ubuntu-latest
     defaults:
