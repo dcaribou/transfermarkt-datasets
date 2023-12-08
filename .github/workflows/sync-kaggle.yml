@@ -1,0 +1,35 @@
+name: sync-kaggle
+
+on:
+  workflow_run:
+    workflows: ["build"]
+    types:
+      - completed
+
+jobs:
+  sync-kaggle:
+    runs-on: ubuntu-latest
+    container:
+      image: dcaribou/transfermarkt-datasets:linux-amd64-master
+    defaults:
+      run:
+        shell: bash -l {0}
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Get changed files
+        id: changed-files
+        uses: tj-actions/changed-files@v40
+        with:
+          files: |
+            data/prep.dvc
+      - name: pull data
+        if: ${{ steps.changed-files.outputs.any_changed == 'true' }}
+        run: |
+          dvc pull
+      - name: sync
+        if: ${{ steps.changed-files.outputs.any_changed == 'true' }}
+        run: |
+          make \
+            sync \
+              SYNCER=kaggle

@@ -78,22 +78,3 @@ jobs:
 
           # build and push
           make docker_build docker_push_dockerhub TAG=$TAG PLATFORM=linux/amd64
-              
-      - name: run sync
-        # only sync when there is push to master
-        if: ${{ github.event_name == 'push' && github.event.head_commit.message != '🤖 updated raw dataset files' }}
-        env:
-          # Kaggle API auth
-          KAGGLE_USERNAME: ${{ secrets.KAGGLE_USERNAME }}
-          KAGGLE_KEY: ${{ secrets.KAGGLE_KEY }}
-          # data.world API auth
-          DW_AUTH_TOKEN: ${{ secrets.DW_AUTH_TOKEN }}
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_EC2_METADATA_DISABLED: true # https://github.com/aws/aws-cli/issues/5262
-        run: |
-          source .venv/bin/activate
-          dvc pull data/prep
-          make \
-            sync \
-              MESSAGE="${{ github.event.head_commit.message }}"
