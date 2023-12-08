@@ -28,12 +28,17 @@ jobs:
           make dvc_pull test prepare_local DBT_TARGET=prod
           dvc commit -f
           git config --global --add safe.directory '*'
+
+      - name: Get branch name
+        id: branch-name
+        uses: tj-actions/branch-names@v7
       
       - uses: EndBug/add-and-commit@v9
         with:
           add: 'data/*.dvc'
           message: '🤖 updated prepared dataset files'
           default_author: github_actions
+          new_branch: ${{ steps.branch-name.outputs.current_branch }}
 
       - name: Push to dvc
         env:
