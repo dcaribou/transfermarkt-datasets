@@ -114,9 +114,10 @@ test: ## run unit tests for core python module
 
 act:
 	act \
-		-j dvc-push \
-		--pull=false \
+		"workflow_dispatch" \
+		-j acquire-clubs \
+		--pull=true \
 		--input season=2023 \
-		-W .github/workflows/acquire-transfermarkt-api.yml \
+		-W .github/workflows/acquire-transfermarkt-scraper.yml \
 		--artifact-server-path /tmp/artifacts \
-		--container-options "--mount type=bind,source=~/.scrapy,target=~/.scrapy" --container-architecture linux/amd64
+		--container-architecture linux/amd64
