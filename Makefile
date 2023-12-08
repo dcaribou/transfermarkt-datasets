@@ -63,7 +63,6 @@ acquire_docker: ## run the acquiring process in a local docker
 prepare_local: ## run the prep process locally (refreshes data/prep)
 prepare_local: ARGS =
 prepare_local:
-	python -c 'from transfermarkt_datasets.core.dataset import Dataset; td = Dataset(); td.write_datapackage()' && \
 	cd dbt && dbt deps && dbt build --threads 4 --target $(DBT_TARGET)
 
 prepare_docker: ## run the prep process in a local docker
