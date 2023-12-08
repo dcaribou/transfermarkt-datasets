@@ -1,4 +1,4 @@
-![Build Status](https://github.com/dcaribou/transfermarkt-datasets/actions/workflows/on-push.yml/badge.svg)
+![Build Status](https://github.com/dcaribou/transfermarkt-datasets/actions/workflows/build.yml/badge.svg)
 ![Pipeline Status](https://github.com/dcaribou/transfermarkt-datasets/actions/workflows/acquire-transfermarkt-scraper.yml/badge.svg)
 ![dbt Version](https://img.shields.io/static/v1?logo=dbt&label=dbt-version&message=1.7.3&color=orange)
 
