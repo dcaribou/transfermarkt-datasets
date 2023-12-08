@@ -136,8 +136,8 @@ jobs:
       - acquire-clubs
       - acquire-players
       - acquire-games
-      - acquire-appearances
       - acquire-game-lineups
+      - acquire-appearances
     steps:
       - uses: actions/checkout@v3
       - name: pull data
