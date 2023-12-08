@@ -3,8 +3,8 @@ name: sync-kaggle
 on:
   workflow_run:
     workflows: ["build"]
-    types:
-      - completed
+    types: [completed]
+    branches: [master]
 
 jobs:
   sync-kaggle:
