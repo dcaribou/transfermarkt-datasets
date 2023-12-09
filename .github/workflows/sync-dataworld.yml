@@ -15,7 +15,7 @@ jobs:
     defaults:
       run:
         shell: bash -l {0}
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    # if: ${{ github.event.workflow_run.conclusion == 'success' }} TODO
     steps:
       - uses: actions/checkout@v4
         with:
