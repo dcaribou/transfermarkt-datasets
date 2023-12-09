@@ -11,7 +11,7 @@ jobs:
   sync-dataworld:
     runs-on: ubuntu-latest
     container:
-      image: dcaribou/transfermarkt-datasets:linux-amd64-master
+      image: dcaribou/transfermarkt-datasets:linux-amd64-dev # TODO: change to master
     defaults:
       run:
         shell: bash -l {0}
