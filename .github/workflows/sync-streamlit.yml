@@ -1,4 +1,4 @@
-name: deploy-streamlit
+name: sync-streamlit
 
 on:
   workflow_run:

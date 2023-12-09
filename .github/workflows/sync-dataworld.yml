@@ -5,6 +5,7 @@ on:
     workflows: ["build"]
     types: [completed]
     branches: [master]
+  workflow_dispatch:
 
 jobs:
   sync-dataworld:
@@ -17,6 +18,8 @@ jobs:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
       - uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.PA_GITHUB_TOKEN }}
       - name: Get changed files
         id: changed-files
         uses: tj-actions/changed-files@v40
