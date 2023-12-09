@@ -17,9 +17,13 @@ jobs:
         shell: bash -l {0}
     # if: ${{ github.event.workflow_run.conclusion == 'success' }} TODO: uncomment
     steps:
+      - run: |
+          tree -a
       - uses: actions/checkout@v3
         with:
           token: ${{ secrets.PA_GITHUB_TOKEN }}
+      - run: |
+          tree -a
       - name: Get changed files
         id: changed-files
         uses: tj-actions/changed-files@v40
