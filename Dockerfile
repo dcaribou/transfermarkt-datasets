@@ -3,8 +3,9 @@ FROM python:3.8
 WORKDIR /app
 
 RUN apt-get update && \
-    apt-get -y install gcc python3-dev jq awscli nodejs && \
-    apt-get install --only-upgrade git
+    apt-get -y install \
+    gcc python3-dev jq awscli nodejs \
+    python3-launchpadlib tree
 
 COPY pyproject.toml /app
 COPY poetry.lock /app

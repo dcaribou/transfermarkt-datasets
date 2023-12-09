@@ -108,9 +108,9 @@ test: ## run unit tests for core python module
 act:
 	act \
 		"workflow_dispatch" \
-		-j acquire-clubs \
+		-s GITHUB_TOKEN \
+		-j sync-dataworld \
 		--pull=true \
-		--input season=2023 \
-		-W .github/workflows/$(WORKFLOW).yml \
-		--artifact-server-path /tmp/artifacts \
+		--no-skip-checkout \
+		-W .github/workflows/sync-dataworld.yml \
 		--container-architecture linux/amd64
