@@ -117,10 +117,7 @@ def run_for_season(season: int) -> None:
     pathlib.Path(target_path).parent.mkdir(parents=True, exist_ok=True)
 
     # collect market values for players in SEASON
-    # market_values = asyncio.run(get_market_values(get_player_ids(season)))
-    market_values = [
-        {"player_id": 2, "response": {"data": {"history": []}}}
-    ]
+    market_values = asyncio.run(get_market_values(get_player_ids(season)))
 
     logging.info(f"Persisting market values for season {season}")
 
