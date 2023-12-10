@@ -29,8 +29,6 @@ jobs:
     # if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
       - uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.PA_GITHUB_TOKEN }}
         # the players asset is requeried for the transfermarkt-api script to run
       - name: pull data
         run: |
@@ -58,7 +56,9 @@ jobs:
     # https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#running-a-workflow-based-on-the-conclusion-of-another-workflow
     # if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PA_GITHUB_TOKEN }}
       - name: pull data
         run: |
           dvc pull data/raw/transfermarkt-api
