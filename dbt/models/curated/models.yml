@@ -164,6 +164,10 @@ models:
         tests:
           - accepted_values:
               values: ['Attack', 'Defender', 'Midfield', 'Goalkeeper', 'Missing']
+      - name: date_of_birth
+        tests:
+          - too_many_missings:
+              tolerance: 0.01
 
   - name: player_valuations
     tests:
