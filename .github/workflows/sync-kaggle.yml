@@ -15,7 +15,7 @@ jobs:
     defaults:
       run:
         shell: bash -l {0}
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    # if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
       - uses: actions/checkout@v4
       # see https://github.com/dcaribou/transfermarkt-datasets/issues/256
@@ -28,11 +28,11 @@ jobs:
           files: |
             data/prep.dvc
       - name: pull data
-        if: ${{ steps.changed-files.outputs.any_changed == 'true' }}
+        # if: ${{ steps.changed-files.outputs.any_changed == 'true' }}
         run: |
           dvc pull
       - name: sync
-        if: ${{ steps.changed-files.outputs.any_changed == 'true' }}
+        # if: ${{ steps.changed-files.outputs.any_changed == 'true' }}
         env:
           KAGGLE_USERNAME: ${{ secrets.KAGGLE_USERNAME }}
           KAGGLE_KEY: ${{ secrets.KAGGLE_KEY }}
