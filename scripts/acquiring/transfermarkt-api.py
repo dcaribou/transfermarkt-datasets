@@ -119,7 +119,7 @@ def run_for_season(season: int) -> None:
     # collect market values for players in SEASON
     # market_values = asyncio.run(get_market_values(get_player_ids(season)))
     market_values = [
-        {"player_id": 1, "response": {"data": {"history": []}}}
+        {"player_id": 2, "response": {"data": {"history": []}}}
     ]
 
     logging.info(f"Persisting market values for season {season}")
