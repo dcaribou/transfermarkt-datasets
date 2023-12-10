@@ -33,7 +33,13 @@ jobs:
           dvc pull
       - name: sync
         if: ${{ steps.changed-files.outputs.any_changed == 'true' }}
+        env:
+          DW_AUTH_TOKEN: ${{ secrets.DW_AUTH_TOKEN }}
+          # aws credentials are required for to generate presigned urls
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_EC2_METADATA_DISABLED: true # https://github.com/aws/aws-cli/issues/5262
         run: |
           make \
             sync \
-              SYNCER=dataworld
+              SYNCER=sync-dataworld

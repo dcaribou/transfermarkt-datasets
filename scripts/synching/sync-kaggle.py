@@ -6,15 +6,14 @@ Usage:
 """
 
 import argparse
+from kaggle.api.kaggle_api_extended import KaggleApi
 
 def publish_to_kaggle(folder, message):
   """Push the contents of the folder to Kaggle datasets
   :param folder: dataset folder path
   :param message: a string message with version notes
   """
-  
-  from kaggle.api.kaggle_api_extended import KaggleApi
-  
+    
   api = KaggleApi()
   api.authenticate()
 
