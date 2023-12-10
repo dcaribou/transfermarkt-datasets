@@ -7,7 +7,7 @@ TAG = dev
 DBT_TARGET = dev
 DVC_REMOTE = http
 ACQUIRER = transfermarkt-scraper
-SYNCER = kaggle
+SYNCER = sync-kaggle
 WORKFLOW = sync-kaggle
 
 DASH:= -

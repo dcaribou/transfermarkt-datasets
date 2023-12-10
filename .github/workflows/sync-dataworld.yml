@@ -42,4 +42,4 @@ jobs:
         run: |
           make \
             sync \
-              SYNCER=dataworld
+              SYNCER=sync-dataworld
