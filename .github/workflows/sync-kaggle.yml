@@ -33,6 +33,9 @@ jobs:
           dvc pull
       - name: sync
         if: ${{ steps.changed-files.outputs.any_changed == 'true' }}
+        env:
+          KAGGLE_USERNAME: ${{ secrets.KAGGLE_USERNAME }}
+          KAGGLE_KEY: ${{ secrets.KAGGLE_KEY }}
         run: |
           make \
             sync \
