@@ -62,7 +62,7 @@ jobs:
         uses: tj-actions/changed-files@v40
         with:
           files: |
-            data/*.dvc
+            data/**/*.dvc
       - name: image build
         env:
           DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
