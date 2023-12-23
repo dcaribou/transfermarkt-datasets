@@ -78,3 +78,4 @@ jobs:
           add: 'data/raw/transfermarkt-api.dvc'
           message: '🤖 updated `transfermarkt-api` raw data'
           default_author: github_actions
+          pull: '--no-rebase'

@@ -177,3 +177,4 @@ jobs:
           add: 'data/raw/transfermarkt-scraper.dvc'
           message: '🤖 updated `transfermarkt-scraper` raw data'
           default_author: github_actions
+          pull: '--no-rebase'
