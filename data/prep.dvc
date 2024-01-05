@@ -1,6 +1,6 @@
 outs:
-- md5: a3c771f4d406a44144d10acb618c2b64.dir
-  size: 74934057
+- md5: f4371af605b357d8e7d15e8773f3b7ad.dir
+  size: 73369724
   nfiles: 10
   path: prep
   hash: md5
