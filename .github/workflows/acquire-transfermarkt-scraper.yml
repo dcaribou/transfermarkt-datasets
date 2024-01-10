@@ -141,6 +141,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          # a different (personal access) github token need to be setup here so that a 'add-and-commit' step below triggers the 'on-push' workflow
+          # checkout https://github.community/t/push-from-action-does-not-trigger-subsequent-action/16854
           token: ${{ secrets.PA_GITHUB_TOKEN }}
       - name: pull data
         run: |
