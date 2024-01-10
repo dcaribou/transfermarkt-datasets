@@ -5266,21 +5266,21 @@ tests = ["mock (==5.0.1)", "mypy (==0.971)", "paramiko (==3.2.0)", "pylint (==2.
 
 [[package]]
 name = "scrapy"
-version = "2.7.1"
+version = "2.11.0"
 description = "A high-level Web Crawling and Web Scraping framework"
 optional = false
-python-versions = ">=3.7"
+python-versions = ">=3.8"
 files = [
-    {file = "Scrapy-2.7.1-py2.py3-none-any.whl", hash = "sha256:ba5c99a0a6bc5d51708fb1919843cad650711d2baef3124e4ac3f2e1759f4ca6"},
-    {file = "Scrapy-2.7.1.tar.gz", hash = "sha256:30fa408353d24b1df979df2ea4afbd19b4ae02fb2207f218d246332f1e1cf14e"},
+    {file = "Scrapy-2.11.0-py2.py3-none-any.whl", hash = "sha256:a7f36544d1f5ceb13cff9b7bc904bd7c0fc43a3af0fbe5aa2034fd937cf092d1"},
+    {file = "Scrapy-2.11.0.tar.gz", hash = "sha256:3cbdedce0c3f0e0482d61be2d7458683be7cd7cf14b0ee6adfbaddb80f5b36a5"},
 ]
 
 [package.dependencies]
-cryptography = ">=3.3"
+cryptography = ">=36.0.0"
 cssselect = ">=0.9.1"
 itemadapter = ">=0.1.0"
 itemloaders = ">=1.0.1"
-lxml = ">=4.3.0"
+lxml = ">=4.4.1"
 packaging = "*"
 parsel = ">=1.5.0"
 protego = ">=0.1.15"
@@ -5291,7 +5291,7 @@ queuelib = ">=1.4.2"
 service-identity = ">=18.1.0"
 setuptools = "*"
 tldextract = "*"
-Twisted = ">=18.9.0"
+Twisted = ">=18.9.0,<23.8.0"
 w3lib = ">=1.17.0"
 "zope.interface" = ">=5.1.0"
 
@@ -5841,13 +5841,13 @@ develop = false
 inflection = "^0.5.1"
 Protego = "^0.2.1"
 python-dateutil = "^2.8.2"
-Scrapy = "2.7.1"
+scrapy = "^2.11.0"
 
 [package.source]
 type = "git"
 url = "https://github.com/dcaribou/transfermarkt-scraper.git"
 reference = "main"
-resolved_reference = "266d6f69c3624582e31cee0a6523af7d79ac01cd"
+resolved_reference = "34a2a3ee0d403e5e19596036fb205f4491ffc2fa"
 
 [[package]]
 name = "twisted"
