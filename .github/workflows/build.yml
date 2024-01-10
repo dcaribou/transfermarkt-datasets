@@ -25,6 +25,7 @@ jobs:
 
       - name: Run tests
         run: |
+          set -e
           make dvc_pull test prepare_local DBT_TARGET=prod
           dvc commit -f
           git config --global --add safe.directory '*'
