@@ -184,7 +184,7 @@ models:
             - player_club_domestic_competition_id
       - dbt_expectations.expect_table_row_count_to_be_between:
           min_value: 430000
-          max_value: 460000
+          max_value: 480000
     columns:
       - name: player_id
         tests:
