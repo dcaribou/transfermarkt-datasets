@@ -177,8 +177,6 @@ models:
           column_list:
             - player_id
             - date
-            - datetime
-            - dateweek
             - current_club_id
             - market_value_in_eur
             - player_club_domestic_competition_id
@@ -189,15 +187,17 @@ models:
       - name: player_id
         tests:
           - not_null
-      - name: datetime
-        tests:
-          - dbt_expectations.expect_column_max_to_be_between:
-              max_value: "'2023-12-31'"
       - name: market_value_in_eur
         description: >
           The player's market value for the given date in EUR.
         tests:
           - not_null
+      # check that we don't have player valuation dates greater than today
+      - name: date
+        tests:
+          - dbt_expectations.expect_column_values_to_be_between:
+              min_value: "'2000-01-20'::date"
+              max_value: "today()::date"
 
   - name: games
     tests:

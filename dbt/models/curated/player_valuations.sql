@@ -17,8 +17,6 @@ clubs_cte as (
 select
     market_value_development_cte.player_id,
     market_value_development_cte."date",
-    market_value_development_cte."datetime",
-    market_value_development_cte."dateweek",
     market_value_development_cte.market_value_in_eur,
     players_cte.current_club_id,
     clubs_cte.domestic_competition_id as player_club_domestic_competition_id

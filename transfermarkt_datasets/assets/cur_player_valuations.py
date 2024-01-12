@@ -20,8 +20,6 @@ class CurPlayerValuationsAsset(Asset):
     self.schema = Schema(
       fields=[
         Field(name='date', type='date'),
-        Field(name='datetime', type='date'),
-        Field(name='dateweek', type='date'),
         Field(name='player_id', type='integer'),
         Field(name='current_club_id', type='integer'),
         Field(name='market_value_in_eur', type='number'),

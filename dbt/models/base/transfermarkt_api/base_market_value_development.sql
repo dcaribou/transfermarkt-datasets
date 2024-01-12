@@ -52,9 +52,7 @@ select
     player_id,
     {{ parse_market_value("json_row ->> 'mw'") }} as market_value_in_eur,
     datetime_str,
-    "datetime",
     ("datetime")::date as "date",
-    date_trunc('week', "datetime") as dateweek,
     season as last_season,
     filename
     
