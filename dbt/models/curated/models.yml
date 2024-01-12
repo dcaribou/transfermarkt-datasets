@@ -192,6 +192,12 @@ models:
           The player's market value for the given date in EUR.
         tests:
           - not_null
+      # check that we don't have player valuation dates greater than today
+      - name: date
+        tests:
+          - dbt_expectations.expect_column_values_to_be_between:
+              min_value: "'2000-01-20'::date"
+              max_value: "today()::date"
 
   - name: games
     tests:
