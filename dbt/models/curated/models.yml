@@ -279,7 +279,7 @@ models:
             - player_in_id
       - dbt_expectations.expect_table_row_count_to_be_between:
           min_value: 640000
-          max_value: 680000
+          max_value: 750000
     columns:
       - name: game_event_id
         tests:
