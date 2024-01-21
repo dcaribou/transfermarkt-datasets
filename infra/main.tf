@@ -45,10 +45,3 @@ module "iam" {
   cdn_arn = module.cdn.arn
   tags = local.module_tags
 }
-
-module "batch" {
-  name = "transfermarkt-datasets"
-  source = "./batch"
-  execution_role_arn = module.iam.batch_execution_role_arn
-  service_role_arn = module.iam.batch_service_role_arn
-}
