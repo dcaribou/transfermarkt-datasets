@@ -1,8 +1,8 @@
 {#
-  Export a model to the prep folder in a CSV format.
+    Export a model to the prep folder in a CSV format.
 
-  Arguments:
-    - relation: the model to be exported.
+    Arguments:
+      - relation: the model to be exported.
 #}
 {% macro export_table(relation) %}
 
