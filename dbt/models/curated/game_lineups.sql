@@ -8,15 +8,13 @@ select
     {{ dbt_utils.generate_surrogate_key([
         'game_id',
         'player_id',
-        'club_id',
         'type',
-        'player_name',
         'position',
-        'team_captain',
-        'number'
+        'number',
+        'team_captain'
     ]) }} as game_lineups_id,
     game_lineups_cte.* 
 
 from game_lineups_cte
 
-order by game_id, club_id, "type"
+order by game_id, player_id, position, "number", team_captain, "type"
