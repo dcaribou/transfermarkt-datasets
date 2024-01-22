@@ -61,11 +61,11 @@ with
     all_game_lineups as (
 
         select * from home_club_starting_lineup
-        UNION ALL  
+        union
         select * from home_club_substitutes
-        UNION ALL
+        union
         select * from away_club_starting_lineup 
-        UNION ALL
+        union
         select * from away_club_substitutes
 
     )

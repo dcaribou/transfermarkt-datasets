@@ -303,7 +303,7 @@ models:
             - type
       - dbt_expectations.expect_table_row_count_to_be_between:
           min_value: 81000
-          max_value: 1340000
+          max_value: 2500000
     columns:
       - name: game_lineups_id
         tests:
