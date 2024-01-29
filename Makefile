@@ -44,7 +44,6 @@ docker_push_dockerhub : docker_build docker_login_dockerhub
 	docker push dcaribou/transfermarkt-datasets:$(IMAGE_TAG)
 
 docker_push_flyio: docker_login_flyio
-	docker pull dcaribou/transfermarkt-datasets:$(IMAGE_TAG)
 	docker tag \
 		dcaribou/transfermarkt-datasets:$(IMAGE_TAG) \
 		registry.fly.io/transfermarkt-datasets:$(IMAGE_TAG)
