@@ -117,8 +117,8 @@ All project data assets are kept inside the [`data`](data) folder. This is a [DV
 
 | path        | description                                                                                                                                                                     |
 | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `data/raw`  | contains raw data for [different acquirers](https://github.com/dcaribou/transfermarkt-datasets/discussions/202#discussioncomment-7142557) (check [acquire](#-data-acquisition)) |
-| `data/prep` | contains prepared datasets as produced by dbt (check [prepare](#-data-preparation))                                                                                             |
+| `data/raw`  | contains raw data for [different acquirers](https://github.com/dcaribou/transfermarkt-datasets/discussions/202#discussioncomment-7142557) (check the data acquisition section below) |
+| `data/prep` | contains prepared datasets as produced by dbt (check [data preparation](#-data-preparation))                                                                                             |
 
 ## 🕸️ data acquisition
 In the scope of this project, "acquiring" is the process of collecting data from a specific source and via an acquiring script. Acquired data lives in the `data/raw` folder.
@@ -131,7 +131,7 @@ make acquire_local ACQUIRER=transfermarkt-api ARGS="--season 2023"
 ```
 which will populate `data/raw/transfermarkt-api` with the data it collected. Obviously, you can also run [the script](scripts/acquiring/transfermarkt-api.py) directly if you prefer.
 ```console
-python transfermarkt-api.py --season 2023
+cd scripts/acquiring && python transfermarkt-api.py --season 2023
 ```
 
 
@@ -142,7 +142,7 @@ Data prepartion is done in SQL using [dbt](https://docs.getdbt.com/) and [DuckDB
 
 * `cd dbt` &rarr; The [dbt](dbt) folder contains the dbt project for data preparation
 * `dbt deps` &rarr; Install dbt packages. This is only required the first time you run dbt.
-* `dbt run -m +appearances` &rarr; Refresh the appearances file by running the model in dbt.
+* `dbt run -m +appearances` &rarr; Refresh the assets by running the corresponding model in dbt.
 
 dbt runs will populate a `dbt/duck.db` file in your local, which you can "connect to" using the DuckDB CLI and query the data using SQL.
 ```console
@@ -150,6 +150,9 @@ duckdb dbt/duck.db -c 'select * from dev.games'
 ```
 
 ![dbt](resources/dbt.png)
+
+> :warning: Make sure that you are using a DukcDB version that matches that [that is used in the project](devcontainer/devcontainer.json).
+
 
 ### python api
 A thin python wrapper is provided as a convenience utility to help with loading and inspecting the dataset (for example, from a notebook).
@@ -184,7 +187,7 @@ The module code lives in the `transfermark_datasets` folder with the structure b
 For more examples on using `transfermark_datasets`, checkout the sample [notebooks](notebooks).
 
 ## 👁️ frontends
-Prepared data is published to a couple of popular dataset websites. This is done running `make sync`, which runs weekly as part of the [data pipeline](.github/workflows/on-schedule.yml).
+Prepared data is published to a couple of popular dataset websites. This is done running `make sync`, which runs weekly as part of the [data pipeline](#-orchestration).
 
 * [Kaggle](https://www.kaggle.com/datasets/davidcariboo/player-scores)
 * [data.world](https://data.world/dcereijo/player-scores)
@@ -206,12 +209,13 @@ The data pipeline is orchestrated as a series of Github Actions workflows. They 
 
 | workflow name            | triggers on                                                  | description                                                                                                   |
 | ------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------- |
-| `build`                  | Every push to the `master` branch or to an open pull request | It runs the [data preparation](#🔨-data-preparation) step, and tests and commits the data if there are changes |
-| `build-contribution`     | Every push to an open pull request                           | The same as `build` but without commiting data                                                                |
-| `acquire-<acquirer>.yml` | Schedule                                                     | Runs the acquirer and commits the data                                                                        |
-| `sync-<frontend>.yml`    | Every change on prepared data                                | Syncs the data to the frontend                                                                                |
+| `build`*                  | Every push to the `master` branch or to an open pull request | It runs the [data preparation](#-data-preparation) step, and tests and commits a new version of the prepared data if there are any changes |
+| `acquire-<acquirer>.yml` | Schedule                                                     | It runs the acquirer and commits the acquired data to the corresponding raw location                                                                      |
+| `sync-<frontend>.yml`    | Every change on prepared data                                | It syncs the prepared data to the corresponding frontend                                                                                |
 
-> 💡 Debugging workflows remotelly is a pain. I recommend using [act](https://github.com/nektos/act) to run them locally to the extent possible.
+*`build-contribution` is the same as `build` but without commiting any data.
+
+> 💡 Debugging workflows remotelly is a pain. I recommend using [act](https://github.com/nektos/act) to run them locally to the extent that is possible.
 
 ## 💬 community
 
