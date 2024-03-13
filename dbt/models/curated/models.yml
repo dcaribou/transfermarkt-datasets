@@ -229,8 +229,8 @@ models:
             - referee
             - url
       - dbt_expectations.expect_table_row_count_to_be_between:
-          min_value: 61000
-          max_value: 67000
+          min_value: 67000
+          max_value: 70000
     columns:
       - name: game_id
         tests:
