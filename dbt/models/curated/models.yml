@@ -294,6 +294,7 @@ models:
       - dbt_expectations.expect_table_columns_to_contain_set:
           column_list:
             - game_id
+            - date
             - club_id
             - player_id
             - player_name
@@ -309,3 +310,6 @@ models:
         tests:
           - not_null
           - unique
+      - name: date
+        tests:
+          - not_null

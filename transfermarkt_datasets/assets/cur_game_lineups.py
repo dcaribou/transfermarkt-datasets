@@ -28,6 +28,7 @@ class CurGameLineupsAsset(Asset):
         Field(name='team_captain', type='string'),
         Field(name='number', type='string'),
         Field(name='position', type='string'),
+        Field(name='date', type='date'),
       ]
     )
 
