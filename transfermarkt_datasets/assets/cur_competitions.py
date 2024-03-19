@@ -23,6 +23,12 @@ class CurCompetitionsAsset(RawAsset):
     self.schema.add_field(Field(name="name", type="string"))
     self.schema.add_field(Field(name="type", type="string"))
     self.schema.add_field(Field(name="sub_type", type="string"))
+    self.schema.add_field(Field(
+      name="is_major_national_league",
+      type="boolean",
+      description="Competition is a major national league in the confederation."
+      )
+    )
     self.schema.add_field(Field(name="country_id", type="integer"))
     self.schema.add_field(Field(name="country_name", type="string"))
     self.schema.add_field(Field(name="domestic_league_code", type="string"))
