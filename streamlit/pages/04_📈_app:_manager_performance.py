@@ -8,10 +8,10 @@ import plotly.express as px
 
 td = load_td()
 
-st.title("Analysis: Manager Performance")
+st.title("Manager Performance")
 
 st.markdown("""
-This analysis amis to show which managers exhibit the best performance in their careers. The peformance indicator in this case is the win percentage (`pct_win`).
+This app amis to show which managers exhibit the best performance in their careers. The peformance indicator in this case is the win percentage (`pct_win`).
 
 The win percentage is calculated looking at the team performance, mostly based on the `club_games` asset, and it's displayed across seasons and competition types (domestic or international).
 """)
@@ -29,7 +29,7 @@ clubs = td.assets["cur_clubs"].prep_df
 # TODO: it's kind of annoying that this does not come in with the correct type already
 games["season"] = pd.to_datetime(games["season"], format="%Y")
 
-# define the set of leagues to be used in the analysis
+# define the set of leagues to be used in the app
 
 DEFAULT_COMPETITIONS = ["GB1", "L1", "ES1", "IT1"]
 DEFAULT_SEASONS = [2021, 2023]

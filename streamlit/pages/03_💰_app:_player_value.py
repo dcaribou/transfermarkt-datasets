@@ -16,7 +16,7 @@ def top_n_players(df: pd.DataFrame, n: int) -> List[str]:
 
 td = load_td()
 
-st.title("Analysis: Player Value")
+st.title("Player Value")
 
 st.markdown("""
 Market value for players is captured in the `players` and `player_valuations` assets. Find out more about this assets in the [explore](explore) section.
