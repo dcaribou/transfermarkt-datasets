@@ -305,6 +305,11 @@ models:
       - dbt_expectations.expect_table_row_count_to_be_between:
           min_value: 81000
           max_value: 2500000
+      - dbt_expectations.expect_row_values_to_have_data_for_every_n_datepart:
+          date_col: date
+          date_part: year
+          test_start_date: '2013-01-01'
+          test_end_date: '2025-01-01'
     columns:
       - name: game_lineups_id
         tests:
