@@ -1,3 +1,8 @@
+{{
+  config(
+    enabled = false,
+    )
+}}
 with game_lineups_cte as (
 
     select * from {{ ref('base_game_lineups') }}
