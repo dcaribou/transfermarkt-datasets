@@ -10,7 +10,6 @@ pandas = "^1.4.2"
 frictionless = "4.40.8"
 pytest = "^7.1.2"
 scipy = "^1.8.0"
-kaggle = "1.5.16"
 streamlit = "1.25.0"
 plotly = "^5.11.0"
 transfermarkt-scraper = {git = "https://github.com/dcaribou/transfermarkt-scraper.git", branch = "main"}
@@ -20,6 +19,7 @@ openai = "^0.27.7"
 duckdb-engine = "^0.7.3"
 dvc = {extras = ["s3"], version = "^3.22.0"}
 watchdog = "^3.0.0"
+kaggle = "^1.6.11"
 
 [tool.poetry.group.dev.dependencies]
 jupyter = "^1.0.0"

@@ -2746,17 +2746,17 @@ files = [
 
 [[package]]
 name = "kaggle"
-version = "1.5.16"
+version = "1.6.11"
 description = "Kaggle API"
 optional = false
 python-versions = "*"
 files = [
-    {file = "kaggle-1.5.16.tar.gz", hash = "sha256:a6b3542f590cf341a5ad441d5ae021be93bd64441c96c758b154903495a3a600"},
+    {file = "kaggle-1.6.11.tar.gz", hash = "sha256:a0dde395ddd20795d94eaa0cf66223e1b76032ecce5fa463dd54216de76f5f56"},
 ]
 
 [package.dependencies]
 bleach = "*"
-certifi = "*"
+certifi = ">=2023.7.22"
 python-dateutil = "*"
 python-slugify = "*"
 requests = "*"
@@ -6438,4 +6438,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8.1, <3.11, !=3.9.7"
-content-hash = "d46fe21eed05b03566b0ff456d2296e7f81e3bd44bde7b364900e8b0c211fde7"
+content-hash = "e7722c52ab16728e9a377a2966919fbc263edc17648a3e337949e8c87fc17c1e"
