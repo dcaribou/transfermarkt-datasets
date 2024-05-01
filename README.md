@@ -11,7 +11,6 @@ In an nutshell, this project aims for three things:
 3. Automating 1 and 2 to **keep assets up to date** and publicly available on some well-known data catalogs.
 
 [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/dcaribou/transfermarkt-datasets/tree/master?quickstart=1)
-[![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://transfermarkt-datasets.fly.dev/)
 [![Kaggle](https://kaggle.com/static/images/open-in-kaggle.svg)](https://www.kaggle.com/datasets/davidcariboo/player-scores)
 [![data.world](https://img.shields.io/badge/-Open%20in%20data.world-blue?style=appveyor)](https://data.world/dcereijo/player-scores)
 
@@ -193,7 +192,7 @@ Prepared data is published to a couple of popular dataset websites. This is done
 * [data.world](https://data.world/dcereijo/player-scores)
 
 ### 🎈 streamlit
-There is a [streamlit](https://streamlit.io/) app for the project with documentation, a data catalog and sample analyisis. The app is currently hosted in fly.io, you can check it out [here](https://transfermarkt-datasets.fly.dev/).
+There is a [streamlit](https://streamlit.io/) app for the project with documentation, a data catalog and sample analyisis. The app ~~is currently hosted in fly.io, you can check it out [here](https://transfermarkt-datasets.fly.dev/)~~ deployment is currently disabled until [this](https://github.com/dcaribou/transfermarkt-datasets/issues/297) is resolved.
 
 For local development, you can also run the app in your machine. Provided you've done the [setup](#-setup), run the following to spin up a local instance of the app
 ```console
