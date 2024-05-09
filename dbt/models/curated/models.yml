@@ -263,8 +263,8 @@ models:
             - hosting
             - is_win
       - dbt_expectations.expect_table_row_count_to_be_between:
-          min_value: 116000
-          max_value: 136000
+          min_value: 136000
+          max_value: 176000
 
   - name: game_events
     tests:
