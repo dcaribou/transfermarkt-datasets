@@ -1,6 +1,6 @@
 outs:
-- md5: 4b61cdb34a8e29e38a61b76833e50e67.dir
-  size: 344773142
+- md5: 277e1a0739ee184c5eada7f03ef7542a.dir
+  size: 344736092
   nfiles: 59
   hash: md5
   path: transfermarkt-scraper
