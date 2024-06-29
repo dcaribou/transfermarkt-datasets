@@ -70,7 +70,7 @@ select
             (json_extract_string(json_row, '$.away_club_position') = 'null')
             or (json_extract_string(json_row, '$.away_club_position') = '')
         then -1
-        else (str_split_regex(json_extract_string(json_row, '$.away_club_position'), '[\s]+'))[2]::integer
+        else regexp_extract(json_extract_string(json_row, '$.away_club_position'), '\s([0-9]+)')::integer
     end as away_club_position,
     json_extract_string(json_row, '$.home_manager.name') as home_club_manager_name,
     json_extract_string(json_row, '$.away_manager.name') as away_club_manager_name,
