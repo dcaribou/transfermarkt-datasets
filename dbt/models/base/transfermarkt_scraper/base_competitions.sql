@@ -21,7 +21,7 @@ select
         when sub_type = 'domestic_cup' then 'domestic_cup'
         when sub_type in (
             'uefa_champions_league', 'europa_league', 'uefa_europa_conference_league_qualifiers',
-            'uefa_champions_league_qualifying', 'europa_league_qualifying'
+            'uefa_champions_league_qualifying', 'europa_league_qualifying', 'uefa_europa_conference_league'
         ) then 'international_cup'
         else 'other'
     end as "type",
