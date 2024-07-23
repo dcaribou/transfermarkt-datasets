@@ -12,3 +12,12 @@ sources:
               columns=struct_pack(value := 'VARCHAR'), delim='\1', quote='\0',
               filename=True
             )
+      - name: transfers
+        meta:
+          external_location: >
+            read_csv(
+              '../data/raw/transfermarkt-api/*/transfers.json',
+              header=False,
+              columns=struct_pack(value := 'VARCHAR'), delim='\1', quote='\0',
+              filename=True
+            )

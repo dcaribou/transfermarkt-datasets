@@ -36,7 +36,7 @@ select
 
     strptime(
         case
-            when json_extract_string(json_row, '$.date_of_birth') not in ('N/A', 'null')
+            when json_extract_string(json_row, '$.date_of_birth') not in ('N/A', 'null', '')
             then json_extract_string(json_row, '$.date_of_birth')
             else null
         end,

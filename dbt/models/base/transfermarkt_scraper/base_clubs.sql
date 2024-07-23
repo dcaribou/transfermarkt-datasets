@@ -11,7 +11,7 @@ with
         from {{ source("transfermarkt_scraper", "clubs") }}
 
     )
-    
+
 select
     club_id,
     json_extract_string(json_row, '$.code') as club_code,
