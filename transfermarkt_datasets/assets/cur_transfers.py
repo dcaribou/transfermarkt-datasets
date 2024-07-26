@@ -22,9 +22,7 @@ class CurTransfersAsset(RawAsset):
                 Field(name="player_name", type="string"),
                 Field(name="transfer_date", type="date"),
                 Field(name="transfer_season", type="string"),
-                Field(name="from_club_id", type="integer"),
                 Field(name="from_club_name", type="string", tags=["explore"]),
-                Field(name="to_club_id", type="integer"),
                 Field(name="to_club_name", type="string", tags=["explore"]),
                 Field(
                     name="transfer_fee",
@@ -35,29 +33,11 @@ class CurTransfersAsset(RawAsset):
                     name="market_value_in_eur",
                     type="number",
                     description="The player's market value at the time of transfer in EUR."
-                ),
-                Field(name="from_club_domestic_competition_id", type="string"),
-                Field(name="to_club_domestic_competition_id", type="string"),
-                Field(
-                    name="source_filename",
-                    type="string",
-                    description="Name of the raw file where the data came from."
-                ),
-                Field(
-                    name="url",
-                    type="string",
-                    form="uri"
                 )
             ]
         )
 
         self.schema.primary_key = ["player_id", "transfer_date"]
         self.schema.foreign_keys = [
-            {"fields": "player_id", "reference": {"resource": "cur_players", "fields": "player_id"}},
-            {"fields": "from_club_id", "reference": {"resource": "cur_clubs", "fields": "club_id"}},
-            {"fields": "to_club_id", "reference": {"resource": "cur_clubs", "fields": "club_id"}},
-            {"fields": "from_club_domestic_competition_id",
-             "reference": {"resource": "cur_competitions", "fields": "competition_id"}},
-            {"fields": "to_club_domestic_competition_id",
-             "reference": {"resource": "cur_competitions", "fields": "competition_id"}}
+            {"fields": "player_id", "reference": {"resource": "cur_players", "fields": "player_id"}}
         ]

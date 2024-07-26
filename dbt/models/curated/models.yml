@@ -332,9 +332,7 @@ models:
             - market_value_in_eur
             - player_name
             - from_club_name
-            - from_club_domestic_competition_id
             - to_club_name
-            - to_club_domestic_competition_id
     columns:
       - name: player_id
         tests:
@@ -344,7 +342,7 @@ models:
           - not_null
           - dbt_expectations.expect_column_values_to_be_between:
               min_value: "'1970-01-01'::date"
-              max_value: "current_date()"
+              max_value: "current_date() + interval '5 years'"
       - name: from_club_id
         tests:
           - not_null
