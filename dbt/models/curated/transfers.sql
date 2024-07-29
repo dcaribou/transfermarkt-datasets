@@ -13,19 +13,19 @@ players_cte as (
 )
 
 select
-    t.player_id,
-    t.transfer_date,
-    t.transfer_season,
-    t.from_club_id,
-    t.to_club_id,
-    t.from_club_name,
-    t.to_club_name,
-    t.transfer_fee,
-    t.market_value_in_eur,
-    p.player_name
+    transfers_cte.player_id,
+    transfers_cte.transfer_date,
+    transfers_cte.transfer_season,
+    transfers_cte.from_club_id,
+    transfers_cte.to_club_id,
+    transfers_cte.from_club_name,
+    transfers_cte.to_club_name,
+    transfers_cte.transfer_fee,
+    transfers_cte.market_value_in_eur,
+    players_cte.player_name
 
-from transfers_cte t
+from transfers_cte
 
-left join players_cte p on t.player_id = p.player_id
+left join players_cte on transfers_cte.player_id = players_cte.player_id
 
-order by t.transfer_date desc, t.player_id
+order by transfers_cte.transfer_date desc, transfers_cte.player_id
