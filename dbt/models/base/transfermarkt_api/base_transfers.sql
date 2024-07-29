@@ -34,7 +34,7 @@ with
     processed_transfers as (
         select
             player_id,
-            date_unformatted as transfer_date,
+            try_cast(date_unformatted as date) as transfer_date,
             transfer_season,
             split_part(from_club_url, '/', 5)::integer as from_club_id,
             split_part(to_club_url, '/', 5)::integer as to_club_id,
