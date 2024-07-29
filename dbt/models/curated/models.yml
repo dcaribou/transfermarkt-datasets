@@ -70,7 +70,7 @@ models:
             - url
             - club_id
       - dbt_expectations.expect_table_row_count_to_be_between:
-          min_value: 200
+          min_value: 400
           max_value: 430
     columns:
       - name: club_code
