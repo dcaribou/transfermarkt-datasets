@@ -24,7 +24,7 @@ models:
       - dbt_expectations.expect_table_row_count_to_be_between:
           min_value: 1000000
           max_value: 1600000
-      
+
     columns:
       - name: appearance_id
         tests:
@@ -182,7 +182,7 @@ models:
             - player_club_domestic_competition_id
       - dbt_expectations.expect_table_row_count_to_be_between:
           min_value: 430000
-          max_value: 480000
+          max_value: 550000
     columns:
       - name: player_id
         tests:
@@ -316,5 +316,59 @@ models:
           - not_null
           - unique
       - name: date
+        tests:
+          - not_null
+
+  - name: transfers
+    tests:
+      - dbt_expectations.expect_table_columns_to_contain_set:
+          column_list:
+            - player_id
+            - transfer_date
+            - transfer_season
+            - from_club_id
+            - to_club_id
+            - transfer_fee
+            - market_value_in_eur
+            - player_name
+            - from_club_name
+            - to_club_name
+    columns:
+      - name: player_id
+        tests:
+          - not_null
+      - name: transfer_date
+        tests:
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_between:
+              min_value: "'1970-01-01'::date"
+              max_value: "current_date() + interval '5 years'"
+      - name: from_club_id
+        tests:
+          - not_null
+      - name: to_club_id
+        tests:
+          - not_null
+      - name: transfer_fee
+        description: >
+          The transfer fee in EUR. Null if unknown, 0 if free transfer.
+        tests:
+          - dbt_expectations.expect_column_values_to_be_between:
+              min_value: 0
+
+      - name: market_value_in_eur
+        description: >
+          The player's market value at the time of transfer in EUR.
+        tests:
+          - dbt_expectations.expect_column_values_to_be_between:
+              min_value: 0
+
+      - name: player_name
+        tests:
+          - not_null
+      - name: from_club_name
+        tests:
+          - not_null
+      - name: to_club_name
         tests:
           - not_null

@@ -5,3 +5,8 @@ models:
     tests:
       - unique:
           column_name: player_id || date
+
+  - name: base_transfers
+    tests:
+      - unique:
+          column_name: player_id || transfer_date || from_club_id || to_club_id
