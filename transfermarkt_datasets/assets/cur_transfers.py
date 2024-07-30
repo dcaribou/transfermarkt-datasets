@@ -21,8 +21,8 @@ class CurTransfersAsset(RawAsset):
                 Field(name="player_name", type="string"),
                 Field(name="transfer_date", type="date"),
                 Field(name="transfer_season", type="string"),
-                Field(name="from_club_id", type="integer"),  # Добавлено
-                Field(name="to_club_id", type="integer"),    # Добавлено
+                Field(name="from_club_id", type="integer"),
+                Field(name="to_club_id", type="integer"),
                 Field(name="from_club_name", type="string", tags=["explore"]),
                 Field(name="to_club_name", type="string", tags=["explore"]),
                 Field(
