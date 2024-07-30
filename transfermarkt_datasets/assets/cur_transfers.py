@@ -3,7 +3,6 @@ from frictionless import checks
 from transfermarkt_datasets.core.asset import RawAsset
 from transfermarkt_datasets.core.schema import Schema, Field
 
-
 class CurTransfersAsset(RawAsset):
     name = "cur_transfers"
     file_name = "transfers.csv.gz"
@@ -22,6 +21,8 @@ class CurTransfersAsset(RawAsset):
                 Field(name="player_name", type="string"),
                 Field(name="transfer_date", type="date"),
                 Field(name="transfer_season", type="string"),
+                Field(name="from_club_id", type="integer"),
+                Field(name="to_club_id", type="integer"),
                 Field(name="from_club_name", type="string", tags=["explore"]),
                 Field(name="to_club_name", type="string", tags=["explore"]),
                 Field(
