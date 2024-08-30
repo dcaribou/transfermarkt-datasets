@@ -164,7 +164,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument(
   '--seasons',
   help="Season to be acquired. This is passed to the scraper as the SEASON argument",
-  default="2023",
+  default="2024",
   type=str
 )
 

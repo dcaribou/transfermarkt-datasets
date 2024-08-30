@@ -66,21 +66,22 @@ class appearances {
 ```
 ------
 
-- [📥 setup](#-setup)
-  - [make](#make)
-- [💾 data storage](#-data-storage)
-- [🕸️ data acquisition](#️-data-acquisition)
-  - [acquirers](#acquirers)
-- [🔨 data preparation](#-data-preparation)
-  - [python api](#python-api)
-- [👁️ frontends](#️-frontends)
-  - [🎈 streamlit](#-streamlit)
-- [🏗️ infra](#️-infra)
-- [🎼 orchestration](#-orchestration)
-- [💬 community](#-community)
-  - [📞 getting in touch](#-getting-in-touch)
-  - [🫶 sponsoring](#-sponsoring)
-  - [👨‍💻 contributing](#-contributing)
+- [transfermarkt-datasets](#transfermarkt-datasets)
+  - [📥 setup](#-setup)
+    - [make](#make)
+  - [💾 data storage](#-data-storage)
+  - [🕸️ data acquisition](#️-data-acquisition)
+    - [acquirers](#acquirers)
+  - [🔨 data preparation](#-data-preparation)
+    - [python api](#python-api)
+  - [👁️ frontends](#️-frontends)
+    - [🎈 streamlit](#-streamlit)
+  - [🏗️ infra](#️-infra)
+  - [🎼 orchestration](#-orchestration)
+  - [💬 community](#-community)
+    - [📞 getting in touch](#-getting-in-touch)
+    - [🫶 sponsoring](#-sponsoring)
+    - [👨‍💻 contributing](#-contributing)
 
 ------
 
@@ -126,11 +127,11 @@ In the scope of this project, "acquiring" is the process of collecting data from
 An acquirer is just a script that collect data from somewhere and puts it in `data/raw`. They are defined in the [`scripts/acquiring`](scripts/acquiring) folder and run using the `acquire_local` make target.
 For example, to run the `transfermarkt-api` acquirer with a set of parameters, you can run
 ```console
-make acquire_local ACQUIRER=transfermarkt-api ARGS="--season 2023"
+make acquire_local ACQUIRER=transfermarkt-api ARGS="--season 2024"
 ```
 which will populate `data/raw/transfermarkt-api` with the data it collected. Obviously, you can also run [the script](scripts/acquiring/transfermarkt-api.py) directly if you prefer.
 ```console
-cd scripts/acquiring && python transfermarkt-api.py --season 2023
+cd scripts/acquiring && python transfermarkt-api.py --season 2024
 ```
 
 
@@ -150,7 +151,7 @@ duckdb dbt/duck.db -c 'select * from dev.games'
 
 ![dbt](resources/dbt.png)
 
-> :warning: Make sure that you are using a DukcDB version that matches that [that is used in the project](devcontainer/devcontainer.json).
+> :warning: Make sure that you are using a DukcDB version that matches that [that is used in the project](.devcontainer/devcontainer.json).
 
 
 ### python api
