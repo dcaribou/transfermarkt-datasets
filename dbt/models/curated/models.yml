@@ -22,8 +22,8 @@ models:
             - assists
             - minutes_played
       - dbt_expectations.expect_table_row_count_to_be_between:
-          min_value: 1000000
-          max_value: 1600000
+          min_value: 1600000
+          max_value: 2000000
 
     columns:
       - name: appearance_id
@@ -70,8 +70,8 @@ models:
             - url
             - club_id
       - dbt_expectations.expect_table_row_count_to_be_between:
-          min_value: 400
-          max_value: 430
+          min_value: 430
+          max_value: 480
     columns:
       - name: club_code
         tests:
@@ -136,8 +136,8 @@ models:
             - last_season
             - url
       - dbt_expectations.expect_table_row_count_to_be_between:
-          min_value: 30000
-          max_value: 32000
+          min_value: 32000
+          max_value: 38000
     columns:
       - name: player_id
         tests:
@@ -230,7 +230,7 @@ models:
             - url
       - dbt_expectations.expect_table_row_count_to_be_between:
           min_value: 67000
-          max_value: 70000
+          max_value: 75000
     columns:
       - name: game_id
         tests:
@@ -278,8 +278,8 @@ models:
             - description
             - player_in_id
       - dbt_expectations.expect_table_row_count_to_be_between:
-          min_value: 640000
-          max_value: 750000
+          min_value: 750000
+          max_value: 850000
     columns:
       - name: game_event_id
         tests:
