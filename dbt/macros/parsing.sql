@@ -37,8 +37,11 @@
     {% endset %}
 
     {% set month_and_day %}
-      case when ({{ month_and_day_str }}) ~ '[a-zA-Z]{3} [0-9]+' then {{ month_and_day_str }}
-      else {{ month_and_day_str }} || ' 1' end
+        case
+            when len({{ month_and_day_str }}) = 0 then null
+            when ({{ month_and_day_str }}) ~ '[a-zA-Z]{3} [0-9]+' then {{ month_and_day_str }}
+            else {{ month_and_day_str }} || ' 1'
+        end
     {% endset %}
 
     strptime({{ month_and_day }} || ', ' || {{ year_str }}, '%b %d, %Y')

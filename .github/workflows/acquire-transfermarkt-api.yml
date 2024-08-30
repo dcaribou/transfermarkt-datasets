@@ -10,12 +10,12 @@ on:
     inputs:
       season:
         required: false
-        default: "2023"
+        default: "2024"
         description: Season to acquire data for
 
 env:
-  SEASON: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.season || '2023' }}
-  DATA_DIR: data/raw/transfermarkt-api/${{ github.event_name == 'workflow_dispatch' && github.event.inputs.season || '2023' }}
+  SEASON: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.season || '2024' }}
+  DATA_DIR: data/raw/transfermarkt-api/${{ github.event_name == 'workflow_dispatch' && github.event.inputs.season || '2024' }}
 
 jobs:
   acquire-market-values:
