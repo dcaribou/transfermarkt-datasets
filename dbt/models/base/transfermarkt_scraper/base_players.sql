@@ -34,14 +34,17 @@ select
     trim(json_extract_string(json_row, '$.place_of_birth.city')) as city_of_birth,
     trim(json_extract_string(json_row, '$.citizenship')) as country_of_citizenship,
 
-    strptime(
-        case
-            when json_extract_string(json_row, '$.date_of_birth') not in ('N/A', 'null', '')
-            then json_extract_string(json_row, '$.date_of_birth')
-            else null
-        end,
-        '%b %d, %Y'
-    )::date as date_of_birth,
+    case
+        when json_extract_string(json_row, '$.date_of_birth') not in ('N/A', 'null', '')
+        then 
+            case
+                when length(json_extract_string(json_row, '$.date_of_birth')) = 4
+                then cast(json_extract_string(json_row, '$.date_of_birth') || '-01-01' as date)  -- Assume first day of the year if only year is given
+                else strptime(json_extract_string(json_row, '$.date_of_birth'), '%b %d, %Y')  -- Handles full date like "Jan 01, 2000"
+            end
+        else null
+    end as date_of_birth,
+    
     case
         when json_extract_string(json_row, '$.position') = 'Goalkeeper' then 'Goalkeeper'
         else str_split(json_extract_string(json_row, '$.position'), ' - ')[2]
