@@ -48,7 +48,7 @@ select
         then 
             case
                 when length(json_extract_string(json_row, '$.date_of_birth')) = 4
-                then CAST(json_extract_string(json_row, '$.date_of_birth') || '-01-01' AS DATE)  -- Assume first day of the year if only year is given
+                then cast(json_extract_string(json_row, '$.date_of_birth') || '-01-01' as date)  -- Assume first day of the year if only year is given
                 else strptime(json_extract_string(json_row, '$.date_of_birth'), '%b %d, %Y')  -- Handles full date like "Jan 01, 2000"
             end
         else null
