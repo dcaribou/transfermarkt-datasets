@@ -2,7 +2,7 @@
 PLATFORM = linux/arm64
 BRANCH = $(shell git rev-parse --abbrev-ref HEAD)
 JOB_NAME = on-cli
-ARGS = --asset all --seasons 2023
+ARGS = --asset all --seasons 2024
 TAG = dev
 DBT_TARGET = dev
 DVC_REMOTE = http
