@@ -77,8 +77,12 @@ async def fetch_data(session, url, player_id):
     }
 
     async with session.get(url=url, headers=headers, ssl=False) as response:
-        json = await response.json()
-        return {"response": json, "player_id": player_id}
+        try:
+            json = await response.json()
+            return {"response": json, "player_id": player_id}
+        except aiohttp.ContentTypeError as e:
+            logging.error(f"Failed to fetch data for player {player_id}: {e}")
+            return {"response": None, "player_id": player_id}
 
 # for each player id, get the market value data from the API
 async def get_market_values(player_ids: List[int]) -> List[dict]:
@@ -153,6 +157,9 @@ def run_for_season(season: int) -> None:
     # collect market values and transfers for players in SEASON
     market_values = asyncio.run(get_market_values(player_ids))
     transfers = asyncio.run(get_transfers(player_ids))
+
+    # filter out player ids in responses that are not in the original list
+    transfers = [item for item in transfers if item["player_id"] in player_ids]
 
     logging.info(f"Persisting market values and transfers for season {season}")
 
