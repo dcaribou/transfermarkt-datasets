@@ -52,7 +52,12 @@ select
     player_id,
     {{ parse_market_value("json_row ->> 'mw'") }} as market_value_in_eur,
     datetime_str,
-    ("datetime")::date as "date",
+    -- we came across some dates in the future, which are clearly wrong
+    -- so are we are truncating them to the current date
+    case
+        when ("datetime")::date > current_date then current_date
+        else ("datetime")::date
+    end as "date",
     season as last_season,
     filename
     
