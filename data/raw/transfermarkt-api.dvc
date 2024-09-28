@@ -1,6 +1,6 @@
 outs:
-- md5: 0fdb03f9008d32b8f9b144c84e378b19.dir
-  size: 575855231
+- md5: d8a71e0a7f4e9f5547cc6da9c489ea0f.dir
+  size: 575855219
   nfiles: 15
   hash: md5
   path: transfermarkt-api
