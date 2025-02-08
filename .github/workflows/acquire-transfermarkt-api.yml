@@ -39,11 +39,11 @@ jobs:
             acquire_local \
               ACQUIRER=transfermarkt-api \
               ARGS="--seasons $SEASON"
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: market_values
           path: ${{ env.DATA_DIR }}/market_values.json
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: transfers
           path: ${{ env.DATA_DIR }}/transfers.json
@@ -66,11 +66,11 @@ jobs:
       - name: pull data
         run: |
           dvc pull data/raw/transfermarkt-api
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: market_values
           path: ${{ env.DATA_DIR }}
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: transfers
           path: ${{ env.DATA_DIR }}

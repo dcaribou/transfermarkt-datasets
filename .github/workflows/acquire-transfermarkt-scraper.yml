@@ -29,7 +29,7 @@ jobs:
           make \
             acquire_local \
               ARGS="--asset clubs --seasons $SEASON"
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: clubs
           path: ${{ env.DATA_DIR }}/clubs.json.gz
@@ -44,7 +44,7 @@ jobs:
     needs: acquire-clubs
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: clubs
           path: ${{ env.DATA_DIR }}
@@ -53,7 +53,7 @@ jobs:
           make \
             acquire_local \
               ARGS="--asset players --seasons $SEASON"
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: players
           path: ${{ env.DATA_DIR }}/players.json.gz
@@ -72,7 +72,7 @@ jobs:
           make \
             acquire_local \
               ARGS="--asset games --seasons $SEASON"
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: games
           path: ${{ env.DATA_DIR }}/games.json.gz
@@ -87,7 +87,7 @@ jobs:
     needs: acquire-games
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: games
           path: ${{ env.DATA_DIR }}
@@ -96,7 +96,7 @@ jobs:
           make \
             acquire_local \
               ARGS="--asset game_lineups --seasons $SEASON"
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: game_lineups
           path: ${{ env.DATA_DIR }}/game_lineups.json.gz
@@ -111,7 +111,7 @@ jobs:
     needs: acquire-players
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: players
           path: ${{ env.DATA_DIR }}
@@ -120,7 +120,7 @@ jobs:
           make \
             acquire_local \
               ARGS="--asset appearances --seasons $SEASON"
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: appearances
           path: ${{ env.DATA_DIR }}/appearances.json.gz
@@ -147,23 +147,23 @@ jobs:
       - name: pull data
         run: |
           dvc pull
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: clubs
           path: ${{ env.DATA_DIR }}
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: players
           path: ${{ env.DATA_DIR }}
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: games
           path: ${{ env.DATA_DIR }}
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: appearances
           path: ${{ env.DATA_DIR }}
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: game_lineups
           path: ${{ env.DATA_DIR }}
