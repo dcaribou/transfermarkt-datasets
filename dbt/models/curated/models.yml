@@ -41,7 +41,7 @@ models:
               # - exclude 2024 because its the ongoing season
               row_condition: >
                 date_part('month', "date") not in (5, 6, 7, 12, 1) and
-                date_part('year', "date") not in (2020, 2024)
+                date_part('year', "date") not in (2020, 2025)
       - name: game_id
         tests:
           - not_null
