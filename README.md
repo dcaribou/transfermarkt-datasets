@@ -3,6 +3,8 @@
 ![API Pipeline Status](https://github.com/dcaribou/transfermarkt-datasets/actions/workflows/acquire-transfermarkt-api.yml/badge.svg)
 ![dbt Version](https://img.shields.io/static/v1?logo=dbt&label=dbt-version&message=1.7.3&color=orange)
 
+# 🔴 Automated updates are disabled until further notice. More info [here](https://github.com/dcaribou/transfermarkt-datasets/issues/327) 
+
 # transfermarkt-datasets
 
 In an nutshell, this project aims for three things:
@@ -67,28 +69,27 @@ class appearances {
 ```
 ------
 
-- [transfermarkt-datasets](#transfermarkt-datasets)
-  - [📥 setup](#-setup)
-    - [make](#make)
-  - [💾 data storage](#-data-storage)
-  - [🕸️ data acquisition](#️-data-acquisition)
-    - [acquirers](#acquirers)
-  - [🔨 data preparation](#-data-preparation)
-    - [python api](#python-api)
-  - [👁️ frontends](#️-frontends)
-    - [🎈 streamlit](#-streamlit)
-  - [🏗️ infra](#️-infra)
-  - [🎼 orchestration](#-orchestration)
-  - [💬 community](#-community)
-    - [📞 getting in touch](#-getting-in-touch)
-    - [🫶 sponsoring](#-sponsoring)
-    - [👨‍💻 contributing](#-contributing)
+- [📥 setup](#-setup)
+  - [make](#make)
+- [💾 data storage](#-data-storage)
+- [🕸️ data acquisition](#️-data-acquisition)
+  - [acquirers](#acquirers)
+- [🔨 data preparation](#-data-preparation)
+  - [python api](#python-api)
+- [👁️ frontends](#️-frontends)
+  - [🎈 streamlit](#-streamlit)
+- [🏗️ infra](#️-infra)
+- [🎼 orchestration](#-orchestration)
+- [💬 community](#-community)
+  - [📞 getting in touch](#-getting-in-touch)
+  - [🫶 sponsoring](#-sponsoring)
+  - [👨‍💻 contributing](#-contributing)
 
 ------
 
 ## 📥 setup
 
-> **🔈 New!** &rarr; Thanks to [Github codespaces](https://github.com/features/codespaces) you can now spin up a working dev environment in your browser with just a click, **no local setup required**.
+> Thanks to [Github codespaces](https://github.com/features/codespaces) you can spin up a working dev environment in your browser with just a click, **no local setup required**.
 >
 > [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/dcaribou/transfermarkt-datasets/tree/master?quickstart=1)
 
