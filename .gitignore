@@ -60,3 +60,6 @@ tmp*
 
 # Ignore the logs directory
 logs
+
+# crawlee
+storage
