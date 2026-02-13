@@ -23,7 +23,7 @@ IMAGE_TAG = $(subst $(SLASH),$(DASH),$(PLATFORM))-${TAG}
 help:
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
-dvc_pull: ## pull data from the cloud (aws s3)
+dvc_pull: ## pull data from the cloud (cloudflare r2)
 	dvc pull
 
 docker_login_ecr :

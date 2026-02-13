@@ -115,7 +115,14 @@ streamlit_local                run streamlit app locally
 Run `make help` to see the full list. Once you've completed the setup, you should be able to run most of these from your machine.
 
 ## 💾 data storage
-All project data assets are kept inside the [`data`](data) folder. This is a [DVC](https://dvc.org/) repository, so all files can be pulled from remote storage by running `dvc pull`.
+All project data assets are kept inside the [`data`](data) folder. This is a [DVC](https://dvc.org/) repository, so all files can be pulled from remote storage by running `dvc pull`. Data is stored in [Cloudflare R2](https://developers.cloudflare.com/r2/) and served via a public URL, so no credentials are needed for pulling.
+
+To **push** data to the remote, you need R2 credentials configured as per-remote DVC config:
+```console
+dvc remote modify --local r2 access_key_id <R2_ACCESS_KEY_ID>
+dvc remote modify --local r2 secret_access_key <R2_SECRET_ACCESS_KEY>
+```
+This stores credentials in `.dvc/config.local` (gitignored) without conflicting with AWS credentials.
 
 | path        | description                                                                                                                                                                     |
 | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |

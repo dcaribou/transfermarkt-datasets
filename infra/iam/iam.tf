@@ -13,11 +13,6 @@ variable "read_write_users_arns" {
   default = []
 }
 
-variable "cdn_arn" {
-  type = string
-  description = "ARN of the Cloudfront distribution to be used as DVC remote"
-}
-
 variable "bucket_name" {
   type = string
 }
@@ -64,25 +59,6 @@ data "aws_iam_policy_document" "user_access_base" {
     ]
   }
 
-  statement {
-    sid = "cloudfront"
-    principals {
-      type = "Service"
-      identifiers = ["cloudfront.amazonaws.com"]
-    }
-    actions = [
-      "s3:GetObject"
-    ]
-    condition {
-      test = "StringEquals"
-      variable = "AWS:SourceArn"
-      values = [var.cdn_arn]
-    }
-    resources = [ 
-      "${data.aws_s3_bucket.bucket.arn}/dvc/*",
-    ]
-  }
-  
 }
 
 # add write grants to the read policy (by overriding / enhancing the read grants)
@@ -124,11 +100,6 @@ data "aws_iam_policy_document" "user_access_process" {
 
 resource "aws_iam_user" "user" {
   name = var.name
-  tags = var.tags
-}
-
-resource "aws_iam_user" "user_streamlit" {
-  name = "${var.name}-streamlit"
   tags = var.tags
 }
 

@@ -76,11 +76,11 @@ jobs:
           path: ${{ env.DATA_DIR }}
       - name: dvc commit and push
         run: |
-          dvc commit -f data/raw/transfermarkt-api && dvc push --remote s3
+          dvc commit -f data/raw/transfermarkt-api && dvc push --remote r2
           git config --global --add safe.directory '*'
         env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
       - uses: EndBug/add-and-commit@v9
         with:
           add: 'data/raw/transfermarkt-api.dvc'
