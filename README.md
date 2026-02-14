@@ -1,9 +1,7 @@
 ![Build Status](https://github.com/dcaribou/transfermarkt-datasets/actions/workflows/build.yml/badge.svg)
 ![Scraper Pipeline Status](https://github.com/dcaribou/transfermarkt-datasets/actions/workflows/acquire-transfermarkt-scraper.yml/badge.svg)
 ![API Pipeline Status](https://github.com/dcaribou/transfermarkt-datasets/actions/workflows/acquire-transfermarkt-api.yml/badge.svg)
-![dbt Version](https://img.shields.io/static/v1?logo=dbt&label=dbt-version&message=1.7.3&color=orange)
-
-# 🔴 Automated updates are disabled until further notice. More info [here](https://github.com/dcaribou/transfermarkt-datasets/issues/327) 
+![dbt Version](https://img.shields.io/static/v1?logo=dbt&label=dbt-version&message=1.9.x&color=orange)
 
 # transfermarkt-datasets
 
@@ -69,7 +67,6 @@ class appearances {
 ```
 ------
 
-- [� Automated updates are disabled until further notice. More info here](#-automated-updates-are-disabled-until-further-notice-more-info-here)
 - [transfermarkt-datasets](#transfermarkt-datasets)
   - [📥 setup](#-setup)
     - [make](#make)
