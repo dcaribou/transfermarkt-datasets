@@ -14,7 +14,6 @@ import os
 import pathlib
 import argparse
 import subprocess
-import tempfile
 from typing import List
 
 from transfermarkt_datasets.core.utils import (
@@ -102,29 +101,6 @@ def run_tfmkt(crawler, season=None, parents_file=None):
 
   return result.stdout
 
-def acquire_competitions():
-  """Acquire competitions data using the two-step confederations -> competitions chain."""
-  logging.info("Acquiring competitions (confederations -> competitions)")
-
-  # Step 1: run confederations (no parents, no season)
-  confederations_output = run_tfmkt("confederations")
-
-  # Step 2: run competitions with confederations output as parents
-  with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
-    f.write(confederations_output)
-    temp_path = f.name
-
-  try:
-    competitions_output = run_tfmkt("competitions", parents_file=temp_path)
-  finally:
-    os.unlink(temp_path)
-
-  # Write to data/competitions.json (uncompressed, not per-season)
-  output_path = pathlib.Path("data/competitions.json")
-  output_path.parent.mkdir(parents=True, exist_ok=True)
-  output_path.write_text(competitions_output)
-  logging.info(f"Wrote {output_path}")
-
 def acquire_asset(asset, season):
   """Acquire a single asset for a given season using the tfmkt CLI."""
   season_dir = pathlib.Path(f"data/raw/transfermarkt-scraper/{season}")
@@ -150,8 +126,6 @@ def acquire_on_local(asset, seasons):
   def assets_list(asset: str) -> List[Asset]:
     if asset == 'all':
       assets = Asset.all()
-    elif asset == 'competitions':
-      return []  # handled separately
     else:
       asset_obj = Asset(name=asset)
       asset_obj.set_parent()
@@ -162,11 +136,6 @@ def acquire_on_local(asset, seasons):
   expanded_seasons = seasons_list(seasons)
   expanded_assets = assets_list(asset)
 
-  # If requesting competitions (or all), acquire them first
-  if asset in ('competitions', 'all'):
-    acquire_competitions()
-
-  # Acquire remaining assets
   for season in expanded_seasons:
     for asset_obj in expanded_assets:
       acquire_asset(asset_obj, season)
@@ -176,7 +145,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument(
   '--asset',
   help="Name of the asset to be acquired",
-  choices=['clubs', 'players', 'games', 'game_lineups', 'appearances', 'competitions', 'all'],
+  choices=['clubs', 'players', 'games', 'game_lineups', 'appearances', 'all'],
   required=True
 )
 parser.add_argument(

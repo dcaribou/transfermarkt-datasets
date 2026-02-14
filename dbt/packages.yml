@@ -1,8 +1,7 @@
 packages:
-  # more in https://github.com/calogica/dbt-expectations
-  - package: calogica/dbt_expectations
+  # more in https://github.com/metaplane/dbt-expectations
+  - package: metaplane/dbt_expectations
     version: [">=0.9.0", "<0.10.0"]
-    # <see https://github.com/calogica/dbt-expectations/releases/latest> for the latest version tag
     
   # see https://hub.getdbt.com/dbt-labs/dbt_utils/latest/
   - package: dbt-labs/dbt_utils

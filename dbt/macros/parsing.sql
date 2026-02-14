@@ -28,22 +28,28 @@
 
 {% macro parse_contract_expiration_date(expression) %}
 
-    {% set month_and_day_str %}
-      str_split({{ expression }}, ',')[1]
-    {% endset %}
+    case
+        when {{ expression }} ~ '^\d{2}/\d{2}/\d{4}$'
+        then strptime({{ expression }}, '%d/%m/%Y')
+        else (
+            {%- set month_and_day_str %}
+              str_split({{ expression }}, ',')[1]
+            {% endset -%}
 
-    {% set year_str %}
-      trim(str_split({{ expression }}, ',')[2])
-    {% endset %}
+            {%- set year_str %}
+              trim(str_split({{ expression }}, ',')[2])
+            {% endset -%}
 
-    {% set month_and_day %}
-        case
-            when len({{ month_and_day_str }}) = 0 then null
-            when ({{ month_and_day_str }}) ~ '[a-zA-Z]{3} [0-9]+' then {{ month_and_day_str }}
-            else {{ month_and_day_str }} || ' 1'
-        end
-    {% endset %}
+            {%- set month_and_day %}
+                case
+                    when len({{ month_and_day_str }}) = 0 then null
+                    when ({{ month_and_day_str }}) ~ '[a-zA-Z]{3} [0-9]+' then {{ month_and_day_str }}
+                    else {{ month_and_day_str }} || ' 1'
+                end
+            {% endset -%}
 
-    strptime({{ month_and_day }} || ', ' || {{ year_str }}, '%b %d, %Y')
-  
+            strptime({{ month_and_day }} || ', ' || {{ year_str }}, '%b %d, %Y')
+        )
+    end
+
 {% endmacro %}

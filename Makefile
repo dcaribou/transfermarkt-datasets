@@ -51,7 +51,7 @@ docker_push_flyio: docker_login_flyio
 	docker push registry.fly.io/transfermarkt-datasets:$(IMAGE_TAG)
 
 acquire_local: ## run the acquiring process locally (refreshes data/raw)
-	scripts/runner.sh scripts/acquiring $(ACQUIRER) $(ARGS)
+	poetry run scripts/runner.sh scripts/acquiring $(ACQUIRER) $(ARGS)
 
 acquire_docker: ## run the acquiring process in a local docker
 	docker run -ti \
@@ -64,7 +64,7 @@ acquire_docker: ## run the acquiring process in a local docker
 prepare_local: ## run the prep process locally (refreshes data/prep)
 prepare_local: ARGS =
 prepare_local:
-	cd dbt && dbt deps && dbt build --threads 4 --target $(DBT_TARGET)
+	cd dbt && poetry run dbt deps && poetry run dbt build --threads 4 --target $(DBT_TARGET)
 
 prepare_docker: ## run the prep process in a local docker
 	docker run -ti \
