@@ -1,6 +1,6 @@
 # linux/amd64 is intel and linux/arm64 is mac M1
 platform := "linux/arm64"
-branch := `git rev-parse --abbrev-ref HEAD`
+branch := `git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "HEAD"`
 job_name := "on-cli"
 args := "--asset all --seasons 2025"
 tag := "dev"
