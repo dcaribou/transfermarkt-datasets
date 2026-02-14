@@ -44,10 +44,17 @@ select
     json_extract_string(json_row, '$.matchday') as round,
     case
         when json_extract_string(json_row, '$.date') != 'null' then
-        coalesce(
-            try_strptime(json_extract_string(json_row, '$.date'), '%a, %d/%m/%y'),
-            try_strptime(json_extract_string(json_row, '$.date'), '%a, %m/%d/%y')
-        )::date
+        case
+            -- raw data switched from m/d/y to d/m/y format starting in the 2024 season
+            when season::integer >= 2024 then coalesce(
+                try_strptime(json_extract_string(json_row, '$.date'), '%a, %d/%m/%y'),
+                try_strptime(json_extract_string(json_row, '$.date'), '%a, %m/%d/%y')
+            )
+            else coalesce(
+                try_strptime(json_extract_string(json_row, '$.date'), '%a, %m/%d/%y'),
+                try_strptime(json_extract_string(json_row, '$.date'), '%a, %d/%m/%y')
+            )
+        end::date
         else null
     end as date,
     (str_split(json_extract_string(json_row, '$.home_club.href'), '/')[5])::integer as home_club_id,
