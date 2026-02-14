@@ -31,18 +31,18 @@ cd dbt && ../.venv/bin/dbt build -s base_games games --target dev
 
 ## Querying data with DuckDB
 
-DuckDB is already installed in the virtualenv (pulled as a dbt dependency), no separate install needed.
+DuckDB is available as a Python package in the virtualenv (no CLI binary). Use Python to run queries:
 
 After a dbt build, a `dbt/duck.db` database is created. Query it with:
 
 ```sh
-.venv/bin/duckdb dbt/duck.db -c 'SELECT * FROM dev.games LIMIT 10'
+.venv/bin/python -c "import duckdb; print(duckdb.connect('dbt/duck.db').sql('SELECT * FROM dev.games LIMIT 10').fetchdf().to_markdown(index=False))"
 ```
 
 To query the prepared CSV files directly (no build required):
 
 ```sh
-.venv/bin/duckdb -c "SELECT * FROM read_csv_auto('data/prep/games.csv.gz') LIMIT 10"
+.venv/bin/python -c "import duckdb; print(duckdb.sql(\"SELECT * FROM read_csv_auto('data/prep/games.csv.gz') LIMIT 10\").fetchdf().to_markdown(index=False))"
 ```
 
 ## Raw data format
