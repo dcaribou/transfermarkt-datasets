@@ -192,8 +192,6 @@ The module code lives in the `transfermark_datasets` folder with the structure b
 | `transfermark_datasets/tests`  | unit tests for core classes                                   |
 | `transfermark_datasets/assets` | perpared asset definitions: one python file per asset         |
 
-For more examples on using `transfermark_datasets`, checkout the sample [notebooks](notebooks).
-
 ## 👁️ frontends
 Prepared data is published to a couple of popular dataset websites. This is done running `just sync`, which runs weekly as part of the [data pipeline](#-orchestration).
 
