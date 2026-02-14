@@ -58,6 +58,7 @@ select
         when ("datetime")::date > current_date then current_date
         else ("datetime")::date
     end as "date",
+    json_row ->> 'verein' as current_club_name,
     season as last_season,
     filename
     

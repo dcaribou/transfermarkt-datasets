@@ -178,6 +178,7 @@ models:
             - player_id
             - date
             - current_club_id
+            - current_club_name
             - market_value_in_eur
             - player_club_domestic_competition_id
       - dbt_expectations.expect_table_row_count_to_be_between:
