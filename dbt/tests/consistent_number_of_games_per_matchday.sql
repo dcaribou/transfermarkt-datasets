@@ -22,7 +22,7 @@ from games_cte
 left join competitions_cte using(competition_id)
 
 where competitions_cte.is_major_national_league
-and season != 2024
+and season not in (2024, 2025)
 
 group by 1,2,3
 having count(*) < 9

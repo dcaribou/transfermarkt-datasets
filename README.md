@@ -69,21 +69,23 @@ class appearances {
 ```
 ------
 
-- [📥 setup](#-setup)
-  - [make](#make)
-- [💾 data storage](#-data-storage)
-- [🕸️ data acquisition](#️-data-acquisition)
-  - [acquirers](#acquirers)
-- [🔨 data preparation](#-data-preparation)
-  - [python api](#python-api)
-- [👁️ frontends](#️-frontends)
-  - [🎈 streamlit](#-streamlit)
-- [🏗️ infra](#️-infra)
-- [🎼 orchestration](#-orchestration)
-- [💬 community](#-community)
-  - [📞 getting in touch](#-getting-in-touch)
-  - [🫶 sponsoring](#-sponsoring)
-  - [👨‍💻 contributing](#-contributing)
+- [� Automated updates are disabled until further notice. More info here](#-automated-updates-are-disabled-until-further-notice-more-info-here)
+- [transfermarkt-datasets](#transfermarkt-datasets)
+  - [📥 setup](#-setup)
+    - [make](#make)
+  - [💾 data storage](#-data-storage)
+  - [🕸️ data acquisition](#️-data-acquisition)
+    - [acquirers](#acquirers)
+  - [🔨 data preparation](#-data-preparation)
+    - [python api](#python-api)
+  - [👁️ frontends](#️-frontends)
+    - [🎈 streamlit](#-streamlit)
+  - [🏗️ infra](#️-infra)
+  - [🎼 orchestration](#-orchestration)
+  - [💬 community](#-community)
+    - [📞 getting in touch](#-getting-in-touch)
+    - [🫶 sponsoring](#-sponsoring)
+    - [👨‍💻 contributing](#-contributing)
 
 ------
 
