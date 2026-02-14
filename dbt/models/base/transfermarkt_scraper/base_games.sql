@@ -45,8 +45,8 @@ select
     case
         when json_extract_string(json_row, '$.date') != 'null' then
         coalesce(
-            try_strptime(json_extract_string(json_row, '$.date'), '%a, %m/%d/%y'),
-            try_strptime(json_extract_string(json_row, '$.date'), '%a, %d/%m/%y')
+            try_strptime(json_extract_string(json_row, '$.date'), '%a, %d/%m/%y'),
+            try_strptime(json_extract_string(json_row, '$.date'), '%a, %m/%d/%y')
         )::date
         else null
     end as date,
