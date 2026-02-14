@@ -14,7 +14,7 @@ ENV PYTHONPATH=${PYTHONPATH}:${PWD}
 
 RUN pip3 install poetry
 RUN poetry config virtualenvs.create false
-RUN poetry install --no-dev
+RUN poetry install --without dev
 
 RUN /bin/bash -c "poetry shell"
 
