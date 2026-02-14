@@ -20,6 +20,15 @@ resource "aws_s3_bucket" "audit_bucket" {
   tags = var.tags
 }
 
+resource "aws_s3_bucket_public_access_block" "bucket" {
+  bucket = aws_s3_bucket.bucket.id
+
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+}
+
 resource "aws_s3_bucket_logging" "bucket_to_audit_bucket" {
   bucket = aws_s3_bucket.bucket.id
 

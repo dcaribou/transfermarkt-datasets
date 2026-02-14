@@ -2,35 +2,58 @@
 Upload datasets to data.world (update dataset 'dcereijo/player-scores').
 
 Usage:
-    python scripts/synching/dataworld.py
+    python scripts/synching/sync-dataworld.py
 """
 
-import boto3
+import json
 import os
 import requests
+import yaml
+
+R2_PUBLIC_URL = "https://pub-e682421888d945d684bcae8890b0ec20.r2.dev/dvc"
+
+
+def get_dvc_file_urls():
+  """Read the DVC manifest and return a mapping of relpath -> public R2 URL."""
+
+  with open('data/prep.dvc') as f:
+    dvc_meta = yaml.safe_load(f)
+
+  dir_md5 = dvc_meta['outs'][0]['md5'].replace('.dir', '')
+
+  cache_path = f'.dvc/cache/files/md5/{dir_md5[:2]}/{dir_md5[2:]}.dir'
+  with open(cache_path) as f:
+    manifest = json.load(f)
+
+  urls = {}
+  for entry in manifest:
+    md5 = entry['md5']
+    urls[entry['relpath']] = f'{R2_PUBLIC_URL}/{md5[:2]}/{md5[2:]}'
+
+  return urls
+
 
 def publish_to_dataworld(folder):
   """Push the contents of the folder to data.world's dataset dcereijo/player-scores
   :param folder: dataset folder path
   """
-  import json
 
   with open(folder + '/dataset-metadata.json') as metadata_file:
     metadata = json.load(metadata_file)
 
-  dw_files = []
-  s3_client = boto3.client('s3')
+  file_urls = get_dvc_file_urls()
 
+  dw_files = []
   for resource in metadata['resources']:
-    # https://boto3.amazonaws.com/v1/documentation/api/latest/guide/s3-presigned-urls.html
-    presigned_url = s3_client.generate_presigned_url(
-      'get_object',
-      Params={
-        'Bucket': 'transfermarkt-datasets',
-        'Key': 'snapshots/data/prep/' + resource['path']
-      },
-      ExpiresIn=120
-    )
+    # metadata references .csv but DVC stores .csv.gz
+    dvc_path = resource['path']
+    if not dvc_path.endswith('.gz'):
+      dvc_path += '.gz'
+
+    url = file_urls.get(dvc_path)
+    if url is None:
+      print(f"Warning: no DVC entry found for {dvc_path}, skipping")
+      continue
 
     dw_files.append(
       {
@@ -38,7 +61,7 @@ def publish_to_dataworld(folder):
         'description': (resource['description'])[0:120],
         'labels': ['clean data'],
         'source': {
-          'url': presigned_url
+          'url': url
         }
       }
     )
