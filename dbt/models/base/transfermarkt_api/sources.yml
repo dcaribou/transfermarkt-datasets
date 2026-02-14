@@ -9,7 +9,7 @@ sources:
             read_csv(
               '../data/raw/transfermarkt-api/*/market_values.json',
               header=False,
-              columns=struct_pack(value := 'VARCHAR'), delim='\1', quote='\0',
+              columns=struct_pack(value := 'VARCHAR'), delim='', quote='', strict_mode=false,
               filename=True
             )
       - name: transfers
@@ -18,6 +18,6 @@ sources:
             read_csv(
               '../data/raw/transfermarkt-api/*/transfers.json',
               header=False,
-              columns=struct_pack(value := 'VARCHAR'), delim='\1', quote='\0',
+              columns=struct_pack(value := 'VARCHAR'), delim='', quote='', strict_mode=false,
               filename=True
             )

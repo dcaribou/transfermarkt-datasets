@@ -20,7 +20,7 @@ select
         str_split(json_extract_string(json_row, '$.parent.href'), '/')[5]
     ) as domestic_competition_id,
     case
-        when json_row -> 'total_market_value' is not null
+        when (json_row -> 'total_market_value') is not null
         then (json_row ->> '$.total_market_value')::float
         else null
     end as total_market_value,

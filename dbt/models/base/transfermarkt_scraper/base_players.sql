@@ -27,7 +27,7 @@ select
     trim(coalesce(first_name, '') || ' ' || coalesce(last_name, '')) as name,
     season as last_season,
     coalesce(
-        str_split(json_extract_string(json_row, '$.parent.href'), '/')[5], -1
+        str_split(json_extract_string(json_row, '$.parent.href'), '/')[5], '-1'
     ) as current_club_id,
     json_extract_string(json_row, '$.code') as player_code,
     trim(json_extract_string(json_row, '$.place_of_birth.country')) as country_of_birth,

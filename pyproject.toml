@@ -5,16 +5,17 @@ description = "Extract, prepare, publish and update Transfermarkt datasets."
 authors = ["dcaribou <davidcereijo@live.com>"]
 
 [tool.poetry.dependencies]
-python = "^3.10, <3.11"
-pandas = "^1.4.2"
-frictionless = "4.40.8"
+python = "^3.12, <3.13"
+pandas = "^2.1.1"
+frictionless = "^5.0"
 pytest = "^7.1.2"
-scipy = "^1.8.0"
-streamlit = "1.25.0"
+scipy = "^1.11"
+streamlit = "^1.29"
 plotly = "^5.11.0"
-transfermarkt-scraper = {git = "https://github.com/dcaribou/transfermarkt-scraper.git", branch = "crawlee"}
-dbt-duckdb = "1.7.0"
-duckdb-engine = "^0.7.3"
+transfermarkt-scraper = {git = "https://github.com/dcaribou/transfermarkt-scraper.git", branch = "main"}
+dbt-duckdb = "^1.9"
+duckdb-engine = "^0.9"
+boto3 = "^1.28"
 dvc = {extras = ["s3"], version = "^3.22.0"}
 watchdog = "^3.0.0"
 kaggle = "^1.6.11"
@@ -22,7 +23,7 @@ kaggle = "^1.6.11"
 [tool.poetry.group.dev.dependencies]
 jupyter = "^1.0.0"
 autopep8 = "^1.7.0"
-datacompy = "^0.9.0"
+datacompy = "^0.11"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

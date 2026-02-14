@@ -33,7 +33,7 @@ with
             case
                 when len(json_extract_string(json_row, '$.minutes_played')) = 0
                 then 0
-                else (json_extract_string(json_row, '$.minutes_played')[:-1])::integer
+                else replace(json_extract_string(json_row, '$.minutes_played'), '''', '')::integer
             end as minutes_played,
             (
                 (len(json_extract_string(json_row, '$.yellow_cards')) > 0)::integer + (
@@ -66,5 +66,5 @@ from with_n
 where
     n = 1 and
     game_id in (
-        select game_id from base_games_cte
+        select game_id::integer from base_games_cte
     ) -- exclude appearances if we don't have the corresponding game in order to avoid inconsistencies

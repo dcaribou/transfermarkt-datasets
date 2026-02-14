@@ -1,4 +1,4 @@
-FROM python:3.10
+FROM python:3.12
 
 WORKDIR /app
 
@@ -14,9 +14,7 @@ ENV PYTHONPATH=${PYTHONPATH}:${PWD}
 
 RUN pip3 install poetry
 RUN poetry config virtualenvs.create false
-RUN poetry install --without dev
-
-RUN /bin/bash -c "poetry shell"
+RUN poetry install --without dev --no-root
 
 RUN git config --global user.email "transfermarkt-datasets-ci@transfermark-datasets.dev" && \
     git config --global user.name "CI Job" && \
