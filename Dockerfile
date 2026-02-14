@@ -5,7 +5,8 @@ WORKDIR /app
 RUN apt-get update && \
     apt-get -y install \
     gcc python3-dev jq awscli nodejs \
-    python3-launchpadlib tree
+    python3-launchpadlib tree && \
+    curl --proto '=https' --tlsv1.2 -sSf https://just.systems/install.sh | bash -s -- --to /usr/local/bin
 
 COPY pyproject.toml /app
 COPY poetry.lock /app
@@ -24,4 +25,4 @@ RUN git config --global user.email "transfermarkt-datasets-ci@transfermark-datas
 COPY scripts/bootstrap.sh /app/
 
 ENTRYPOINT ["/bin/bash", "bootstrap.sh"]
-CMD ["master", "make", "streamlit_local"]
+CMD ["master", "just", "streamlit_local"]

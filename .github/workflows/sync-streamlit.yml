@@ -22,6 +22,8 @@ jobs:
         run: |
           curl -L https://fly.io/install.sh | sh
 
+      - uses: extractions/setup-just@v2
+
       - name: deploy
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
@@ -30,4 +32,4 @@ jobs:
         run: |
           export PATH="$FLYCTL_INSTALL/bin:$PATH"
 
-          make streamlit_deploy PLATFORM=linux/amd64 TAG=master
+          just --set platform "linux/amd64" --set tag master streamlit_deploy

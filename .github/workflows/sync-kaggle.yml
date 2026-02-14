@@ -37,6 +37,6 @@ jobs:
           KAGGLE_USERNAME: ${{ secrets.KAGGLE_USERNAME }}
           KAGGLE_KEY: ${{ secrets.KAGGLE_KEY }}
         run: |
-          make \
-            sync \
-              SYNCER=sync-kaggle
+          just \
+            --set syncer sync-kaggle \
+            sync

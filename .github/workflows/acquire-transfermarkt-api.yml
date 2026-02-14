@@ -35,10 +35,10 @@ jobs:
           dvc pull data/raw/transfermarkt-scraper/${{ env.SEASON }}/players.json.gz
       - name: run acquire
         run: |
-          make \
-            acquire_local \
-              ACQUIRER=transfermarkt-api \
-              ARGS="--seasons $SEASON"
+          just \
+            --set acquirer transfermarkt-api \
+            --set args "--seasons $SEASON" \
+            acquire_local
       - uses: actions/upload-artifact@v4
         with:
           name: market_values

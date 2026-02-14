@@ -69,7 +69,7 @@ class appearances {
 
 - [transfermarkt-datasets](#transfermarkt-datasets)
   - [📥 setup](#-setup)
-    - [make](#make)
+    - [just](#just)
   - [💾 data storage](#-data-storage)
   - [🕸️ data acquisition](#️-data-acquisition)
     - [acquirers](#acquirers)
@@ -101,8 +101,8 @@ poetry install
 ```
 Remember to activate the virtual environment once poetry has finished installing the dependencies by running `poetry shell`.
 
-### make
-The `Makefile` in the root defines a set of useful targets that will help you run the different parts of the project. Some examples are
+### just
+The `justfile` in the root defines a set of useful recipes that will help you run the different parts of the project. Some examples are
 ```console
 dvc_pull                       pull data from the cloud
 docker_build                   build the project docker image and tag accordingly
@@ -111,7 +111,7 @@ prepare_local                  run the prep process locally (refreshes data/prep
 sync                           run the sync process (refreshes data frontends)
 streamlit_local                run streamlit app locally
 ```
-Run `make help` to see the full list. Once you've completed the setup, you should be able to run most of these from your machine.
+Run `just --list` to see the full list. Once you've completed the setup, you should be able to run most of these from your machine.
 
 ## 💾 data storage
 All project data assets are kept inside the [`data`](data) folder. This is a [DVC](https://dvc.org/) repository, so all files can be pulled from remote storage by running `dvc pull`. Data is stored in [Cloudflare R2](https://developers.cloudflare.com/r2/) and served via a public URL, so no credentials are needed for pulling.
@@ -132,10 +132,10 @@ This stores credentials in `.dvc/config.local` (gitignored) without conflicting 
 In the scope of this project, "acquiring" is the process of collecting data from a specific source and via an acquiring script. Acquired data lives in the `data/raw` folder.
 
 ### acquirers
-An acquirer is just a script that collect data from somewhere and puts it in `data/raw`. They are defined in the [`scripts/acquiring`](scripts/acquiring) folder and run using the `acquire_local` make target.
+An acquirer is a script that collects data from somewhere and puts it in `data/raw`. They are defined in the [`scripts/acquiring`](scripts/acquiring) folder and run using the `acquire_local` recipe.
 For example, to run the `transfermarkt-api` acquirer with a set of parameters, you can run
 ```console
-make acquire_local ACQUIRER=transfermarkt-api ARGS="--season 2024"
+just --set acquirer transfermarkt-api --set args "--season 2024" acquire_local
 ```
 which will populate `data/raw/transfermarkt-api` with the data it collected. Obviously, you can also run [the script](scripts/acquiring/transfermarkt-api.py) directly if you prefer.
 ```console
@@ -146,7 +146,7 @@ cd scripts/acquiring && python transfermarkt-api.py --season 2024
 ## 🔨 data preparation
 In the scope of this project, "preparing" is the process of transforming raw data to create a high quality dataset that can be conveniently consumed by analysts of all kinds.
 
-Data prepartion is done in SQL using [dbt](https://docs.getdbt.com/) and [DuckDB](https://duckdb.org/). You can trigger a run of the preparation task using the `prepare_local` make target or work with the dbt CLI directly if you prefer.
+Data prepartion is done in SQL using [dbt](https://docs.getdbt.com/) and [DuckDB](https://duckdb.org/). You can trigger a run of the preparation task using the `prepare_local` recipe or work with the dbt CLI directly if you prefer.
 
 * `cd dbt` &rarr; The [dbt](dbt) folder contains the dbt project for data preparation
 * `dbt deps` &rarr; Install dbt packages. This is only required the first time you run dbt.
@@ -195,7 +195,7 @@ The module code lives in the `transfermark_datasets` folder with the structure b
 For more examples on using `transfermark_datasets`, checkout the sample [notebooks](notebooks).
 
 ## 👁️ frontends
-Prepared data is published to a couple of popular dataset websites. This is done running `make sync`, which runs weekly as part of the [data pipeline](#-orchestration).
+Prepared data is published to a couple of popular dataset websites. This is done running `just sync`, which runs weekly as part of the [data pipeline](#-orchestration).
 
 * [Kaggle](https://www.kaggle.com/datasets/davidcariboo/player-scores)
 * [data.world](https://data.world/dcereijo/player-scores)
@@ -205,7 +205,7 @@ There is a [streamlit](https://streamlit.io/) app for the project with documenta
 
 For local development, you can also run the app in your machine. Provided you've done the [setup](#-setup), run the following to spin up a local instance of the app
 ```console
-make streamlit_local
+just streamlit_local
 ```
 > :warning: Note that the app expects prepared data to exist in `data/prep`. Check out [data storage](#-data-storage) for instructions about how to populate that folder.
 

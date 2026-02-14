@@ -26,7 +26,7 @@ jobs:
       - name: Run tests
         run: |
           set -e
-          make dvc_pull test prepare_local DBT_TARGET=prod
+          just --set dbt_target prod dvc_pull test prepare_local
           dvc commit -f
           git config --global --add safe.directory '*'
 
@@ -65,11 +65,13 @@ jobs:
         with:
           files: |
             data/**/*.dvc
+      - uses: extractions/setup-just@v2
+
       - name: image build
         env:
           DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
         # only run the build if the changed files are not only dvc files
-        if: ${{ steps.changed-files.outputs.only_changed == 'false' }} 
+        if: ${{ steps.changed-files.outputs.only_changed == 'false' }}
         run: |
           # set image tag accordingly
 
@@ -82,4 +84,4 @@ jobs:
           fi
 
           # build and push
-          make docker_build docker_push_dockerhub TAG=$TAG PLATFORM=linux/amd64
+          just --set tag "$TAG" --set platform "linux/amd64" docker_build docker_push_dockerhub

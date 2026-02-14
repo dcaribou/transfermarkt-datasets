@@ -27,9 +27,11 @@ jobs:
       - name: Install library
         run: poetry install --no-interaction
 
+      - uses: extractions/setup-just@v2
+
       - name: Run tests
         run: |
           set -e
           source .venv/bin/activate
 
-          make dvc_pull test prepare_local DBT_TARGET=prod
+          just --set dbt_target prod dvc_pull test prepare_local
