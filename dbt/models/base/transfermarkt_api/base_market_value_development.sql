@@ -34,7 +34,7 @@ with
             select
                 *,
                 json_row ->> 'datum_mw' as datetime_str,
-                strptime(datetime_str, '%b %d, %Y') as "datetime",
+                coalesce(try_strptime(datetime_str, '%b %d, %Y'), try_strptime(datetime_str, '%m/%d/%Y')) as "datetime",
                 row_number() over (partition by player_id, "datetime"::date order by "datetime" desc) as n
 
             from unnested
