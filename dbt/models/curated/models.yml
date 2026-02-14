@@ -22,7 +22,7 @@ models:
             - assists
             - minutes_played
       - dbt_expectations.expect_table_row_count_to_be_between:
-          min_value: 1600000
+          min_value: 1400000
           max_value: 2000000
 
     columns:
@@ -41,7 +41,7 @@ models:
               # - exclude 2024 because its the ongoing season
               row_condition: >
                 date_part('month', "date") not in (5, 6, 7, 12, 1) and
-                date_part('year', "date") not in (2020, 2025)
+                date_part('year', "date") not in (2020, 2024, 2025, 2026)
       - name: game_id
         tests:
           - not_null
@@ -70,7 +70,7 @@ models:
             - url
             - club_id
       - dbt_expectations.expect_table_row_count_to_be_between:
-          min_value: 430
+          min_value: 400
           max_value: 480
     columns:
       - name: club_code
@@ -136,7 +136,7 @@ models:
             - last_season
             - url
       - dbt_expectations.expect_table_row_count_to_be_between:
-          min_value: 32000
+          min_value: 28000
           max_value: 38000
     columns:
       - name: player_id

@@ -1,6 +1,7 @@
 [core]
     remote = http
-['remote "s3"']
-    url = s3://transfermarkt-datasets/dvc
+['remote "r2"']
+    endpointurl = https://44d7733f7a3f81262349d33c6d569749.r2.cloudflarestorage.com
+    url = s3://transfermarkt-datasets-public/dvc
 ['remote "http"']
-    url = https://d1mj0i4rr3evqd.cloudfront.net/dvc/
+    url = https://pub-e682421888d945d684bcae8890b0ec20.r2.dev/dvc/

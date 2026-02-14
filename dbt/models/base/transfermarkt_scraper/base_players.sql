@@ -40,7 +40,10 @@ select
             case
                 when length(json_extract_string(json_row, '$.date_of_birth')) = 4
                 then cast(json_extract_string(json_row, '$.date_of_birth') || '-01-01' as date)  -- Assume first day of the year if only year is given
-                else strptime(json_extract_string(json_row, '$.date_of_birth'), '%b %d, %Y')  -- Handles full date like "Jan 01, 2000"
+                else coalesce(
+                    try_strptime(json_extract_string(json_row, '$.date_of_birth'), '%b %d, %Y'),
+                    try_strptime(json_extract_string(json_row, '$.date_of_birth'), '%d/%m/%Y')
+                )  -- Handles "Jan 01, 2000" (old) and "05/08/2002" (new crawlee)
             end
         else null
     end as date_of_birth,
