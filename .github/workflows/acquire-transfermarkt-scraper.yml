@@ -1,6 +1,8 @@
 name: acquire-transfermarkt-scraper
 
 on:
+  schedule:
+    - cron: '0 4 * * TUE,FRI'
   workflow_dispatch:
     inputs:
       season:
