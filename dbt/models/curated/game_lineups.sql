@@ -1,8 +1,3 @@
-{{
-  config(
-    enabled = false,
-    )
-}}
 with game_lineups_cte as (
 
     select * from {{ ref('base_game_lineups') }}
@@ -35,6 +30,6 @@ select
 
 from game_lineups_cte
 
-left join games_cte on game_lineups_cte.game_id = games_cte.game_id
+inner join games_cte on game_lineups_cte.game_id = games_cte.game_id
 
 order by game_lineups_cte.game_id, player_id, position, "number", team_captain, "type"

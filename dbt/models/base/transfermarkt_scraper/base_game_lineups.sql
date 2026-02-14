@@ -74,7 +74,7 @@ select
     game_id,
     club_id,
     "type",
-    (json_row ->> 'number') as "number",
+    trim(json_row ->> 'number') as "number",
     (str_split((json_row ->> 'href'), '/')[5])::integer as player_id,
     (json_row ->> 'name') as "player_name",
     (json_row ->> 'team_captain')::integer as "team_captain",
