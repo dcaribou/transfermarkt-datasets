@@ -24,6 +24,7 @@ kaggle = "^1.6.11"
 jupyter = "^1.0.0"
 autopep8 = "^1.7.0"
 datacompy = "^0.11"
+pre-commit = "^4.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

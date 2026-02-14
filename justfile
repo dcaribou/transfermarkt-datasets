@@ -103,6 +103,10 @@ streamlit_deploy: docker_push_flyio
 test:
     pytest transfermarkt_datasets/tests
 
+# run pre-commit hooks on all files
+lint:
+    .venv/bin/pre-commit run --all-files
+
 act:
     act \
         "workflow_dispatch" \
