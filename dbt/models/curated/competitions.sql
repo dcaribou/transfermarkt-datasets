@@ -6,3 +6,5 @@ select
     else false
     end as is_major_national_league
 from {{ ref('base_competitions') }}
+
+order by competition_id

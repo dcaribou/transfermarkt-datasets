@@ -45,3 +45,5 @@ select
         else 0
     end as is_win
 from unioned
+
+order by game_id, club_id

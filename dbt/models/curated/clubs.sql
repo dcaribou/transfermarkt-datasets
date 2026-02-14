@@ -7,3 +7,5 @@ with clubs_cte as (
 select *
 
 from clubs_cte
+
+order by club_id

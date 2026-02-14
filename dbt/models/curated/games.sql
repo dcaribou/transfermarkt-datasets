@@ -30,3 +30,5 @@ left join clubs_cte home_clubs_cte
 
 left join clubs_cte away_clubs_cte
     on games_cte.away_club_id = away_clubs_cte.club_id
+
+order by games_cte.game_id
