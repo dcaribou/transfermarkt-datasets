@@ -240,6 +240,14 @@ models:
       - name: date
         tests:
           - not_null
+      - name: home_club_name
+        tests:
+          - too_many_missings:
+              tolerance: 0.005
+      - name: away_club_name
+        tests:
+          - too_many_missings:
+              tolerance: 0.005
       - name: home_club_manager_name
         tests:
           - too_many_missings:
