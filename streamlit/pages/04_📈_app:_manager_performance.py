@@ -159,7 +159,7 @@ st.subheader(
 managers_win_pct_perf_by_season = (
     managers_win_pct_per_season.groupby(
         ["season", "own_manager_name", "club_name"]
-    )["total_games", "total_wins"].sum()
+    )[["total_games", "total_wins"]].sum()
     .reset_index()
 )
 
