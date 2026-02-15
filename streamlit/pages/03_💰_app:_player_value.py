@@ -52,12 +52,14 @@ with st.expander("Baseline Filters"):
 
 # create a data mart with all required measures and dimensions
 # for the base mart we use a "player valuation" granularity
-
 mart = player_valuations.merge(
     players[["player_id", "name"]],
     how="left",
     on="player_id"
 )
+
+# rows with invalid dates exist in the source data and should not define "latest" value
+mart["date"] = pd.to_datetime(mart["date"], errors="coerce")
 
 baselined_mart = mart[
     (mart["name"].isin(player_names))
@@ -69,9 +71,9 @@ st.header("Most valued Players")
 
 
 most_valued_players = (
-    baselined_mart
+    baselined_mart[baselined_mart["date"].notna()]
         .sort_values(by="date")
-        .groupby("name")
+        .groupby(["player_id", "name"], as_index=False)
         .tail(1)
         .sort_values(by="market_value_in_eur", ascending=False)
         .head(top_n)

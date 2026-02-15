@@ -44,6 +44,7 @@ with
         )
         where 
             n = 1 and
+            "datetime" is not null and
             -- since we are at it, let's remove the rows with no market value information as well
             (json_row ->> 'mw' != '-')
     )
