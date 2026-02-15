@@ -21,6 +21,7 @@ class CurPlayerValuationsAsset(Asset):
       fields=[
         Field(name='date', type='date'),
         Field(name='player_id', type='integer'),
+        Field(name='current_club_name', type='string'),
         Field(name='current_club_id', type='integer'),
         Field(name='market_value_in_eur', type='number'),
         Field(

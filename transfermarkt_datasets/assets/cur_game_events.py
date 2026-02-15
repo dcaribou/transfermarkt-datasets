@@ -26,6 +26,7 @@ class CurGameEventsAsset(Asset):
         Field(name='game_id', type='integer'),
         Field(name='player_id', type='integer'),
         Field(name='club_id', type='integer'),
+        Field(name='club_name', type='string'),
         Field(name='type', type='string'),
         Field(name='minute', type='integer'),
         Field(name='description', type='string'),
