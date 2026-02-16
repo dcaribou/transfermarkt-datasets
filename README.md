@@ -5,17 +5,33 @@
 
 # transfermarkt-datasets
 
-In an nutshell, this project aims for three things:
+Clean, structured and **automatically updated** football (soccer) dataset built from [Transfermarkt](https://www.transfermarkt.co.uk/) data -- 68,000+ games, 30,000+ players, 1,500,000+ appearances and more, refreshed weekly.
 
-1. Acquiring data from the transfermarkt website using the [trasfermarkt-scraper](https://github.com/dcaribou/transfermarkt-scraper).
-2. Building a **clean, public football (soccer) dataset** using data in 1.
-3. Automating 1 and 2 to **keep assets up to date** and publicly available on some well-known data catalogs.
+## What's in it
 
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/dcaribou/transfermarkt-datasets/tree/master?quickstart=1)
-[![Kaggle](https://kaggle.com/static/images/open-in-kaggle.svg)](https://www.kaggle.com/datasets/davidcariboo/player-scores)
-[![data.world](https://img.shields.io/badge/-Open%20in%20data.world-blue?style=appveyor)](https://data.world/dcereijo/player-scores)
+The dataset is composed of **10 tables** covering competitions, games, clubs, players, appearances, player valuations, club games, game events, game lineups and transfers. Each table contains the attributes of the entity and IDs that can be used to join them together.
 
-------
+| Table | Description | Scale |
+| --- | --- | --- |
+| `competitions` | Leagues and tournaments | 40+ |
+| `clubs` | Club details, squad size, market value | 400+ |
+| `players` | Player profiles, positions, market values | 30,000+ |
+| `games` | Match results, lineups, attendance | 68,000+ |
+| `appearances` | One row per player per game played | 1,500,000+ |
+| `player_valuations` | Historical market value records | 450,000+ |
+| `club_games` | Per-club view of each game | 136,000+ |
+| `game_events` | Goals, cards, substitutions | 950,000+ |
+| `game_lineups` | Starting and bench lineups | 81,000+ |
+| `transfers` | Player transfers between clubs | -- |
+
+<a href="https://pub-e682421888d945d684bcae8890b0ec20.r2.dev/data/transfermarkt-datasets.zip"><img src="https://img.shields.io/badge/-Download%20Dataset-brightgreen?style=for-the-badge&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJ3aGl0ZSI+PHBhdGggZD0iTTEyIDNhMSAxIDAgMCAxIDEgMXY5LjU5bDIuMy0yLjNhMSAxIDAgMSAxIDEuNDEgMS40MmwtNCA0YTEgMSAwIDAgMS0xLjQyIDBsLTQtNGExIDEgMCAxIDEgMS40Mi0xLjQybDIuMyAyLjNWNGExIDEgMCAwIDEgMS0xem0tNyAxNGEyIDIgMCAwIDAtMiAydjFhMiAyIDAgMCAwIDIgMmgxNGEyIDIgMCAwIDAgMi0ydi0xYTIgMiAwIDAgMC0yLTJINXoiLz48L3N2Zz4=" alt="Download Dataset" height="28"></a>
+<a href="https://codespaces.new/dcaribou/transfermarkt-datasets/tree/master?quickstart=1"><img src="https://github.com/codespaces/badge.svg" alt="Open in GitHub Codespaces" height="28"></a>
+<a href="https://www.kaggle.com/datasets/davidcariboo/player-scores"><img src="https://kaggle.com/static/images/open-in-kaggle.svg" alt="Kaggle" height="28"></a>
+<a href="https://data.world/dcereijo/player-scores"><img src="https://img.shields.io/badge/-Open%20in%20data.world-blue?style=for-the-badge" alt="data.world" height="28"></a>
+
+<details>
+<summary><strong>ER diagram</strong></summary>
+
 ```mermaid
 classDiagram
 direction LR
@@ -65,28 +81,56 @@ class appearances {
     game_id
 }
 ```
-------
 
-- [transfermarkt-datasets](#transfermarkt-datasets)
-  - [📥 setup](#-setup)
-    - [just](#just)
-  - [💾 data storage](#-data-storage)
-  - [🕸️ data acquisition](#️-data-acquisition)
-    - [acquirers](#acquirers)
-  - [🔨 data preparation](#-data-preparation)
-    - [python api](#python-api)
-  - [👁️ frontends](#️-frontends)
-    - [🎈 streamlit](#-streamlit)
-  - [🏗️ infra](#️-infra)
-  - [🎼 orchestration](#-orchestration)
-  - [💬 community](#-community)
-    - [📞 getting in touch](#-getting-in-touch)
-    - [🫶 sponsoring](#-sponsoring)
-    - [👨‍💻 contributing](#-contributing)
+</details>
 
-------
+## Querying the data
 
-## 📥 setup
+Use any of the options above to get the data -- download the zip, grab it from Kaggle or data.world, or load individual tables into your tool of choice.
+
+> **Pro-tip:** You can also query any table remotely with [DuckDB](https://duckdb.org/docs/installation/) -- no download required!
+
+```sql
+INSTALL httpfs; LOAD httpfs;
+
+SELECT player_id, name, position, market_value_in_eur
+FROM read_csv_auto('https://pub-e682421888d945d684bcae8890b0ec20.r2.dev/data/players.csv.gz')
+WHERE position = 'Attack'
+ORDER BY market_value_in_eur DESC
+LIMIT 10;
+
+-- player_id | name             | position | market_value_in_eur
+-- 581678    | Florian Wirtz    | Attack   | 200000000
+-- 342229    | Kylian Mbappe    | Attack   | 180000000
+-- 418560    | Erling Haaland   | Attack   | 180000000
+-- 401923    | Lamine Yamal     | Attack   | 150000000
+-- ...
+```
+
+## Community
+
+### Getting in touch
+In order to keep things tidy, there are two simple guidelines
+* Keep the conversation centralised and public by getting in touch via the [Discussions](https://github.com/dcaribou/transfermarkt-datasets/discussions) tab.
+* Avoid topic duplication by having a quick look at the [FAQs](https://github.com/dcaribou/transfermarkt-datasets/discussions/175)
+
+### Sponsoring
+Maintenance of this project is made possible by <a href="https://github.com/sponsors/dcaribou">sponsors</a>. If you'd like to sponsor this project you can use the `Sponsor` button at the top.
+
+## Contributing
+Contributions to `transfermarkt-datasets` are most welcome. If you want to contribute new fields or assets to this dataset, the instructions are quite simple:
+1. [Fork the repo](https://github.com/dcaribou/transfermarkt-datasets/fork)
+2. Set up your [local environment](#setup)
+3. [Populate `data/raw` directory](#data-storage)
+4. Start modifying assets or creating new ones in [the dbt project](#data-preparation)
+5. If it's all looking good, create a pull request with your changes :rocket:
+
+> In case you face any issue following the instructions above please [get in touch](#getting-in-touch)
+
+<details>
+<summary><strong>Developer guide</strong></summary>
+
+### Setup
 
 > Thanks to [Github codespaces](https://github.com/features/codespaces) you can spin up a working dev environment in your browser with just a click, **no local setup required**.
 >
@@ -101,7 +145,7 @@ poetry install
 ```
 Remember to activate the virtual environment once poetry has finished installing the dependencies by running `poetry shell`.
 
-### just
+#### just
 The `justfile` in the root defines a set of useful recipes that will help you run the different parts of the project. Some examples are
 ```console
 dvc_pull                       pull data from the cloud
@@ -113,7 +157,7 @@ streamlit_local                run streamlit app locally
 ```
 Run `just --list` to see the full list. Once you've completed the setup, you should be able to run most of these from your machine.
 
-## 💾 data storage
+### Data storage
 All project data assets are kept inside the [`data`](data) folder. This is a [DVC](https://dvc.org/) repository, so all files can be pulled from remote storage by running `dvc pull`. Data is stored in [Cloudflare R2](https://developers.cloudflare.com/r2/) and served via a public URL, so no credentials are needed for pulling.
 
 To **push** data to the remote, you need R2 credentials configured as per-remote DVC config:
@@ -126,27 +170,26 @@ This stores credentials in `.dvc/config.local` (gitignored) without conflicting 
 | path        | description                                                                                                                                                                     |
 | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `data/raw`  | contains raw data for [different acquirers](https://github.com/dcaribou/transfermarkt-datasets/discussions/202#discussioncomment-7142557) (check the data acquisition section below) |
-| `data/prep` | contains prepared datasets as produced by dbt (check [data preparation](#-data-preparation))                                                                                             |
+| `data/prep` | contains prepared datasets as produced by dbt (check [data preparation](#data-preparation))                                                                                             |
 
-## 🕸️ data acquisition
+### Data acquisition
 In the scope of this project, "acquiring" is the process of collecting data from a specific source and via an acquiring script. Acquired data lives in the `data/raw` folder.
 
-### acquirers
+#### Acquirers
 An acquirer is a script that collects data from somewhere and puts it in `data/raw`. They are defined in the [`scripts/acquiring`](scripts/acquiring) folder and run using the `acquire_local` recipe.
 For example, to run the `transfermarkt-api` acquirer with a set of parameters, you can run
 ```console
 just --set acquirer transfermarkt-api --set args "--season 2024" acquire_local
 ```
-which will populate `data/raw/transfermarkt-api` with the data it collected. Obviously, you can also run [the script](scripts/acquiring/transfermarkt-api.py) directly if you prefer.
+which will populate `data/raw/transfermarkt-api` with the data it collected. You can also run [the script](scripts/acquiring/transfermarkt-api.py) directly if you prefer.
 ```console
 cd scripts/acquiring && python transfermarkt-api.py --season 2024
 ```
 
-
-## 🔨 data preparation
+### Data preparation
 In the scope of this project, "preparing" is the process of transforming raw data to create a high quality dataset that can be conveniently consumed by analysts of all kinds.
 
-Data prepartion is done in SQL using [dbt](https://docs.getdbt.com/) and [DuckDB](https://duckdb.org/). You can trigger a run of the preparation task using the `prepare_local` recipe or work with the dbt CLI directly if you prefer.
+Data preparation is done in SQL using [dbt](https://docs.getdbt.com/) and [DuckDB](https://duckdb.org/). You can trigger a run of the preparation task using the `prepare_local` recipe or work with the dbt CLI directly if you prefer.
 
 * `cd dbt` &rarr; The [dbt](dbt) folder contains the dbt project for data preparation
 * `dbt deps` &rarr; Install dbt packages. This is only required the first time you run dbt.
@@ -159,88 +202,34 @@ duckdb dbt/duck.db -c 'select * from dev.games'
 
 ![dbt](resources/dbt.png)
 
-> :warning: Make sure that you are using a DukcDB version that matches that [that is used in the project](.devcontainer/devcontainer.json).
+> :warning: Make sure that you are using a DuckDB version that matches [that which is used in the project](.devcontainer/devcontainer.json).
 
-
-### python api
-A thin python wrapper is provided as a convenience utility to help with loading and inspecting the dataset (for example, from a notebook).
-
-```python
-# import the module
-from transfermarkt_datasets.core.dataset import Dataset
-
-# instantiate the datasets handler
-td = Dataset()
-
-# load all assets into memory as pandas dataframes
-td.load_assets()
-
-# inspect assets
-td.asset_names # ["games", "players", ...]
-td.assets["games"].prep_df # get the built asset in a dataframe
-
-# get raw data in a dataframe
-td.assets["games"].load_raw()
-td.assets["games"].raw_df 
-```
-
-The module code lives in the `transfermark_datasets` folder with the structure below.
-
-| path                           | description                                                   |
-| ------------------------------ | ------------------------------------------------------------- |
-| `transfermark_datasets/core`   | core classes and utils that are used to work with the dataset |
-| `transfermark_datasets/tests`  | unit tests for core classes                                   |
-| `transfermark_datasets/assets` | perpared asset definitions: one python file per asset         |
-
-## 👁️ frontends
-Prepared data is published to a couple of popular dataset websites. This is done running `just sync`, which runs weekly as part of the [data pipeline](#-orchestration).
+### Frontends
+Prepared data is published to a couple of popular dataset websites. This is done running `just sync`, which runs weekly as part of the [data pipeline](#orchestration).
 
 * [Kaggle](https://www.kaggle.com/datasets/davidcariboo/player-scores)
 * [data.world](https://data.world/dcereijo/player-scores)
 
-### 🎈 streamlit
-There is a [streamlit](https://streamlit.io/) app for the project with documentation, a data catalog and sample analyisis. The app ~~is currently hosted in fly.io, you can check it out [here](https://transfermarkt-datasets.fly.dev/)~~ deployment is currently disabled until [this](https://github.com/dcaribou/transfermarkt-datasets/issues/297) is resolved.
-
-For local development, you can also run the app in your machine. Provided you've done the [setup](#-setup), run the following to spin up a local instance of the app
+There is a [streamlit](https://streamlit.io/) app for the project with documentation, a data catalog and sample analysis. For local development, run the following to spin up a local instance of the app:
 ```console
 just streamlit_local
 ```
-> :warning: Note that the app expects prepared data to exist in `data/prep`. Check out [data storage](#-data-storage) for instructions about how to populate that folder.
+> :warning: Note that the app expects prepared data to exist in `data/prep`. Check out [data storage](#data-storage) for instructions about how to populate that folder.
 
-## 🏗️ [infra](infra)
+### [Infra](infra)
 Define all the necessary infrastructure for the project in the cloud with Terraform.
 
-## 🎼 orchestration
+### Orchestration
 The data pipeline is orchestrated as a series of Github Actions workflows. They are defined in the [`.github/workflows`](.github/workflows) folder and are triggered by different events.
 
 | workflow name            | triggers on                                                  | description                                                                                                   |
 | ------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------- |
-| `build`*                  | Every push to the `master` branch or to an open pull request | It runs the [data preparation](#-data-preparation) step, and tests and commits a new version of the prepared data if there are any changes |
+| `build`*                  | Every push to the `master` branch or to an open pull request | It runs the [data preparation](#data-preparation) step, and tests and commits a new version of the prepared data if there are any changes |
 | `acquire-<acquirer>.yml` | Schedule                                                     | It runs the acquirer and commits the acquired data to the corresponding raw location                                                                      |
 | `sync-<frontend>.yml`    | Every change on prepared data                                | It syncs the prepared data to the corresponding frontend                                                                                |
 
-*`build-contribution` is the same as `build` but without commiting any data.
+*`build-contribution` is the same as `build` but without committing any data.
 
-> 💡 Debugging workflows remotelly is a pain. I recommend using [act](https://github.com/nektos/act) to run them locally to the extent that is possible.
+> Debugging workflows remotely is a pain. I recommend using [act](https://github.com/nektos/act) to run them locally to the extent that is possible.
 
-## 💬 community
-
-### 📞 getting in touch
-In order to keep things tidy, there are two simple guidelines
-* Keep the conversation centralised and public by getting in touch via the [Discussions](https://github.com/dcaribou/transfermarkt-datasets/discussions) tab.
-* Avoid topic duplication by having a quick look at the [FAQs](https://github.com/dcaribou/transfermarkt-datasets/discussions/175)
-
-### 🫶 sponsoring
-Maintenance of this project is made possible by <a href="https://github.com/sponsors/dcaribou">sponsors</a>. If you'd like to sponsor this project you can use the `Sponsor` button at the top.
-
-&rarr; I would like to express my grattitude to [@mortgad](https://github.com/mortgad) for becoming the first sponsor of this project.
-
-### 👨‍💻 contributing
-Contributions to `transfermarkt-datasets` are most welcome. If you want to contribute new fields or assets to this dataset, the instructions are quite simple:
-1. [Fork the repo](https://github.com/dcaribou/transfermarkt-datasets/fork)
-2. Set up your [local environment](#-setup)
-3. [Populate `data/raw` directory](#-data-storage)
-4. Start modifying assets or creating new ones in [the dbt project](#-data-preparation)
-5. If it's all looking good, create a pull request with your changes :rocket:
-
-> ℹ️ In case you face any issue following the instructions above please [get in touch](#-getting-in-touch)
+</details>

@@ -20,35 +20,19 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@v3
-        with:
-          token: ${{ secrets.PA_GITHUB_TOKEN }}
 
       - name: Run tests
         run: |
           set -e
           just --set dbt_target prod dvc_pull test prepare_local
-          dvc commit -f
-          git config --global --add safe.directory '*'
 
-      - name: Get branch name
-        id: branch-name
-        uses: tj-actions/branch-names@v7
-      
-      - uses: EndBug/add-and-commit@v9
-        if: ${{ !contains(github.event.head_commit.message, 'updated prepared dataset files') }}
-        with:
-          add: 'data/prep.dvc'
-          message: '🤖 updated prepared dataset files'
-          default_author: github_actions
-          new_branch: ${{ steps.branch-name.outputs.current_branch }}
-          pull: '--no-rebase'
-
-      - name: Push to dvc
+      - name: Upload prepared data to R2
+        if: github.ref == 'refs/heads/master' && github.event_name == 'push'
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
         run: |
-          dvc push --remote r2
+          python scripts/synching/sync-r2.py
 
   build-image:
     runs-on: ubuntu-latest

@@ -60,6 +60,7 @@ acquire_docker:
 
 # run the prep process locally (refreshes data/prep)
 prepare_local:
+    mkdir -p data/prep
     cd dbt && dbt deps && dbt build --threads 4 --target {{dbt_target}}
 
 # run the prep process in a local docker
