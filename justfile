@@ -107,6 +107,14 @@ streamlit_deploy: docker_push_flyio
 test:
     pytest transfermarkt_datasets/tests
 
+# run data profiling and drift checks against baselines
+profile db_path="dbt/duck.db":
+    python scripts/profiling/profile_models.py --db {{db_path}} --schema {{dbt_target}}
+
+# update profiling baselines from current build
+profile_update_baseline db_path="dbt/duck.db":
+    python scripts/profiling/profile_models.py --db {{db_path}} --schema {{dbt_target}} --update-baseline
+
 # run pre-commit hooks on all files
 lint:
     .venv/bin/pre-commit run --all-files
