@@ -8,29 +8,8 @@ Usage:
 import json
 import os
 import requests
-import yaml
 
-R2_PUBLIC_URL = "https://pub-e682421888d945d684bcae8890b0ec20.r2.dev/dvc"
-
-
-def get_dvc_file_urls():
-  """Read the DVC manifest and return a mapping of relpath -> public R2 URL."""
-
-  with open('data/prep.dvc') as f:
-    dvc_meta = yaml.safe_load(f)
-
-  dir_md5 = dvc_meta['outs'][0]['md5'].replace('.dir', '')
-
-  cache_path = f'.dvc/cache/files/md5/{dir_md5[:2]}/{dir_md5[2:]}.dir'
-  with open(cache_path) as f:
-    manifest = json.load(f)
-
-  urls = {}
-  for entry in manifest:
-    md5 = entry['md5']
-    urls[entry['relpath']] = f'{R2_PUBLIC_URL}/{md5[:2]}/{md5[2:]}'
-
-  return urls
+R2_PUBLIC_URL = "https://pub-e682421888d945d684bcae8890b0ec20.r2.dev/data"
 
 
 def publish_to_dataworld(folder):
@@ -41,19 +20,13 @@ def publish_to_dataworld(folder):
   with open(folder + '/dataset-metadata.json') as metadata_file:
     metadata = json.load(metadata_file)
 
-  file_urls = get_dvc_file_urls()
-
   dw_files = []
   for resource in metadata['resources']:
-    # metadata references .csv but DVC stores .csv.gz
-    dvc_path = resource['path']
-    if not dvc_path.endswith('.gz'):
-      dvc_path += '.gz'
+    filename = resource['path']
+    if not filename.endswith('.gz'):
+      filename += '.gz'
 
-    url = file_urls.get(dvc_path)
-    if url is None:
-      print(f"Warning: no DVC entry found for {dvc_path}, skipping")
-      continue
+    url = f'{R2_PUBLIC_URL}/{filename}'
 
     dw_files.append(
       {

@@ -18,21 +18,14 @@ jobs:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
       - uses: actions/checkout@v4
-      # see https://github.com/dcaribou/transfermarkt-datasets/issues/256
-      - run: |
-          git config --global --add safe.directory /__w/transfermarkt-datasets/transfermarkt-datasets
-      - name: Get changed files
-        id: changed-files
-        uses: tj-actions/changed-files@v40
-        with:
-          files: |
-            data/prep.dvc
-      - name: pull data
-        if: ${{ steps.changed-files.outputs.any_changed == 'true' }}
+      - name: Download prepared data from R2
         run: |
-          dvc pull
+          mkdir -p data/prep
+          for file in appearances.csv.gz club_games.csv.gz clubs.csv.gz competitions.csv.gz game_events.csv.gz game_lineups.csv.gz games.csv.gz player_valuations.csv.gz players.csv.gz transfers.csv.gz; do
+            curl -sf -o "data/prep/$file" "https://pub-e682421888d945d684bcae8890b0ec20.r2.dev/data/$file"
+            echo "Downloaded $file"
+          done
       - name: sync
-        if: ${{ steps.changed-files.outputs.any_changed == 'true' }}
         env:
           KAGGLE_USERNAME: ${{ secrets.KAGGLE_USERNAME }}
           KAGGLE_KEY: ${{ secrets.KAGGLE_KEY }}

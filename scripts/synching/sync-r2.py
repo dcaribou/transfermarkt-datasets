@@ -32,6 +32,12 @@ def sync_to_r2(prep_dir):
         print(f"  {filename} -> s3://{R2_BUCKET}/{key}")
         s3.upload_file(filepath, R2_BUCKET, key)
 
+    metadata_path = os.path.join(prep_dir, "dataset-metadata.json")
+    if os.path.exists(metadata_path):
+        key = f"{R2_PREFIX}/dataset-metadata.json"
+        print(f"  dataset-metadata.json -> s3://{R2_BUCKET}/{key}")
+        s3.upload_file(metadata_path, R2_BUCKET, key)
+
 
 print("--> Sync to R2 stable path")
 sync_to_r2("data/prep")
