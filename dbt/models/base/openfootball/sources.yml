@@ -1,0 +1,12 @@
+version: 2
+
+sources:
+  - name: openfootball
+    tables:
+      - name: matches
+        meta:
+          external_location: >
+            read_json_auto(
+              '../data/raw/openfootball/*/*.json',
+              filename=True
+            )
