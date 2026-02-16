@@ -18,11 +18,14 @@ from typing import List
 
 from transfermarkt_datasets.core.utils import (
   read_config,
-  seasons_list
+  seasons_list,
+  raw_data_path
 )
 
 import logging
 import logging.config
+
+SOURCE_NAME = "transfermarkt-scraper"
 
 acquire_config = read_config()["acquire"]
 
@@ -57,7 +60,7 @@ class Asset():
     if self.name == 'competitions':
       return pathlib.Path(f"data/competitions.json")
     else:
-      return pathlib.Path(f"data/raw/transfermarkt-scraper/{season}/{self.name}.json.gz")
+      return raw_data_path(SOURCE_NAME, season, self.name)
 
   def file_full_path(self, season):
     return str(self.file_path(season).absolute())
@@ -103,7 +106,7 @@ def run_tfmkt(crawler, season=None, parents_file=None):
 
 def acquire_asset(asset, season):
   """Acquire a single asset for a given season using the tfmkt CLI."""
-  season_dir = pathlib.Path(f"data/raw/transfermarkt-scraper/{season}")
+  season_dir = raw_data_path(SOURCE_NAME, season)
   season_dir.mkdir(parents=True, exist_ok=True)
 
   parent_file = asset.parent.file_full_path(season) if asset.parent else None
