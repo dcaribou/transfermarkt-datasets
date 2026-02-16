@@ -69,19 +69,28 @@ models:
             - coach_name
             - url
             - club_id
+            - source_system
+            - source_record_id
+            - ingested_at
       - dbt_expectations.expect_table_row_count_to_be_between:
           min_value: 400
-          max_value: 480
+          max_value: 700
     columns:
       - name: club_code
         tests:
-          - unique
-          - not_null
+          - unique:
+              config:
+                where: "club_code is not null"
       - name: name
         tests:
           - not_null
           - dbt_expectations.expect_column_values_to_not_be_in_set:
               value_set: ["null"]
+      - name: source_system
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['transfermarkt', 'openfootball']
 
   - name: competitions
     tests:
@@ -97,9 +106,12 @@ models:
             - domestic_league_code
             - confederation
             - url
+            - source_system
+            - source_record_id
+            - ingested_at
       - dbt_expectations.expect_table_row_count_to_be_between:
           min_value: 43
-          max_value: 45
+          max_value: 65
     columns:
       - name: competition_id
         tests:
@@ -107,6 +119,11 @@ models:
       - name: name
         tests:
           - not_null
+      - name: source_system
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['transfermarkt', 'openfootball']
 
   - name: players
     tests:
@@ -229,9 +246,12 @@ models:
             - attendance
             - referee
             - url
+            - source_system
+            - source_record_id
+            - ingested_at
       - dbt_expectations.expect_table_row_count_to_be_between:
           min_value: 67000
-          max_value: 82000
+          max_value: 95000
     columns:
       - name: game_id
         tests:
@@ -251,11 +271,16 @@ models:
       - name: home_club_manager_name
         tests:
           - too_many_missings:
-              tolerance: 0.012
+              tolerance: 0.05
       - name: away_club_manager_name
         tests:
           - too_many_missings:
-              tolerance: 0.012
+              tolerance: 0.05
+      - name: source_system
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['transfermarkt', 'openfootball']
 
   - name: club_games
     tests:
