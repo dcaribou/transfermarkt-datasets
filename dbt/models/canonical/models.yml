@@ -1,0 +1,53 @@
+version: 2
+
+models:
+  - name: map_competition_ids
+    description: >
+      Canonical competition ID mapping. Maps source-native competition identifiers
+      to a canonical ID. Includes confidence score and resolution method.
+    columns:
+      - name: canonical_competition_id
+        tests:
+          - not_null
+      - name: source_system
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['transfermarkt', 'openfootball']
+      - name: confidence
+        tests:
+          - not_null
+
+  - name: map_club_ids
+    description: >
+      Canonical club ID mapping. Uses name matching within the same competition
+      to reconcile clubs across sources. Includes confidence and resolution method.
+    columns:
+      - name: canonical_club_id
+        tests:
+          - not_null
+      - name: source_system
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['transfermarkt', 'openfootball']
+      - name: confidence
+        tests:
+          - not_null
+
+  - name: map_match_ids
+    description: >
+      Canonical match/game ID mapping. Matches games by date and canonical club IDs.
+      Includes confidence and resolution method.
+    columns:
+      - name: canonical_game_id
+        tests:
+          - not_null
+      - name: source_system
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['transfermarkt', 'openfootball']
+      - name: confidence
+        tests:
+          - not_null
