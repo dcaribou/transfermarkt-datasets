@@ -95,25 +95,21 @@ class appearances {
 
 ## Quick start
 
-**Download and query with DuckDB:**
-```python
-# pip install kagglehub duckdb
-import kagglehub, duckdb
+**Query directly with DuckDB** -- no download required:
+```sql
+-- pip install duckdb
+INSTALL httpfs; LOAD httpfs;
 
-# download the dataset (cached locally after first run)
-path = kagglehub.dataset_download("davidcariboo/player-scores")
-
-# query with DuckDB
-duckdb.sql(f"""
-    SELECT player_id, name, position, market_value_in_eur
-    FROM read_csv_auto('{path}/players.csv.gz')
-    WHERE position = 'Attack'
-    ORDER BY market_value_in_eur DESC
-    LIMIT 10
-""").show()
+SELECT player_id, name, position, market_value_in_eur
+FROM read_csv_auto('https://pub-e682421888d945d684bcae8890b0ec20.r2.dev/data/players.csv.gz')
+WHERE position = 'Attack'
+ORDER BY market_value_in_eur DESC
+LIMIT 10;
 ```
 
-You can also browse and download the data directly on [Kaggle](https://www.kaggle.com/datasets/davidcariboo/player-scores) or [data.world](https://data.world/dcereijo/player-scores).
+All tables are available at `https://pub-e682421888d945d684bcae8890b0ec20.r2.dev/data/<table>.csv.gz`.
+
+The data is also available on [Kaggle](https://www.kaggle.com/datasets/davidcariboo/player-scores) and [data.world](https://data.world/dcereijo/player-scores).
 
 ## Community
 
