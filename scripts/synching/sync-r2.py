@@ -10,6 +10,7 @@ Usage:
 
 import glob
 import os
+import zipfile
 
 import boto3
 
@@ -32,13 +33,24 @@ def sync_to_r2(prep_dir):
         print(f"  {filename} -> s3://{R2_BUCKET}/{key}")
         s3.upload_file(filepath, R2_BUCKET, key)
 
-    metadata_path = os.path.join(prep_dir, "dataset-metadata.json")
-    if os.path.exists(metadata_path):
-        key = f"{R2_PREFIX}/dataset-metadata.json"
-        print(f"  dataset-metadata.json -> s3://{R2_BUCKET}/{key}")
-        s3.upload_file(metadata_path, R2_BUCKET, key)
+    for extra in ["dataset-metadata.json", "transfermarkt-datasets.zip"]:
+        path = os.path.join(prep_dir, extra)
+        if os.path.exists(path):
+            key = f"{R2_PREFIX}/{extra}"
+            print(f"  {extra} -> s3://{R2_BUCKET}/{key}")
+            s3.upload_file(path, R2_BUCKET, key)
+
+
+def build_zip(prep_dir, zip_path):
+    with zipfile.ZipFile(zip_path, "w") as zf:
+        for filepath in sorted(glob.glob(os.path.join(prep_dir, "*.csv.gz"))):
+            zf.write(filepath, os.path.basename(filepath))
+    print(f"  Created {zip_path}")
 
 
 print("--> Sync to R2 stable path")
-sync_to_r2("data/prep")
+prep_dir = "data/prep"
+zip_path = os.path.join(prep_dir, "transfermarkt-datasets.zip")
+build_zip(prep_dir, zip_path)
+sync_to_r2(prep_dir)
 print("Done")

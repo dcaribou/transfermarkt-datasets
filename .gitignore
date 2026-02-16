@@ -63,3 +63,6 @@ logs
 
 # crawlee
 storage
+
+# generated zip archive
+*.zip
