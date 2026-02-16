@@ -1,0 +1,74 @@
+name: acquire-openfootball
+
+on:
+  schedule:
+    - cron: '0 6 * * MON'
+  workflow_dispatch:
+    inputs:
+      season:
+        required: false
+        default: "2024"
+        description: Season to acquire data for
+
+env:
+  SEASON: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.season || '2024' }}
+
+jobs:
+  acquire:
+    runs-on: ubuntu-latest
+    container:
+      image: dcaribou/transfermarkt-datasets:linux-amd64-master
+    defaults:
+      run:
+        shell: bash -l {0}
+    steps:
+      - uses: actions/checkout@v4
+      - name: run acquire
+        run: |
+          just acquire_openfootball $SEASON
+      - uses: actions/upload-artifact@v4
+        with:
+          name: openfootball-raw
+          path: data/raw/openfootball/${{ env.SEASON }}/
+
+  dvc-push:
+    runs-on: ubuntu-latest
+    container:
+      image: dcaribou/transfermarkt-datasets:linux-amd64-master
+    defaults:
+      run:
+        shell: bash -l {0}
+    needs:
+      - acquire
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PA_GITHUB_TOKEN }}
+      - name: pull existing data
+        run: |
+          dvc pull data/raw/openfootball || true
+      - uses: actions/download-artifact@v4
+        with:
+          name: openfootball-raw
+          path: data/raw/openfootball/${{ env.SEASON }}
+      - name: validate non-empty
+        run: |
+          FILE_COUNT=$(find data/raw/openfootball/${{ env.SEASON }} -name '*.json' | wc -l)
+          if [ "$FILE_COUNT" -eq 0 ]; then
+            echo "ERROR: No files downloaded for season ${{ env.SEASON }}"
+            exit 1
+          fi
+          echo "Downloaded $FILE_COUNT files for season ${{ env.SEASON }}"
+      - name: dvc commit and push
+        run: |
+          dvc commit -f data/raw/openfootball && dvc push --remote r2
+          git config --global --add safe.directory '*'
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+      - uses: EndBug/add-and-commit@v9
+        with:
+          add: 'data/raw/openfootball.dvc'
+          message: '🤖 updated `openfootball` raw data'
+          default_author: github_actions
+          pull: '--no-rebase'
