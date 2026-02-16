@@ -38,6 +38,9 @@ The dataset is composed of **10 tables** covering competitions, games, clubs, pl
 | 418560 | Erling Haaland | Manchester City | Attack | 180000000 | Norway | 2000-07-21 |
 | 401923 | Lamine Yamal | FC Barcelona | Attack | 150000000 | Spain | 2007-07-13 |
 
+<details>
+<summary><strong>ER diagram</strong></summary>
+
 ```mermaid
 classDiagram
 direction LR
@@ -88,23 +91,26 @@ class appearances {
 }
 ```
 
+</details>
+
 ## Quick start
 
-**Download from Kaggle with Python:**
+**Download and query with DuckDB:**
 ```python
-import kagglehub
-path = kagglehub.dataset_download("davidcariboo/player-scores")
-print(path)
-```
+# pip install kagglehub duckdb
+import kagglehub, duckdb
 
-**Query the CSV files directly with DuckDB:**
-```sql
--- pip install duckdb
-SELECT player_id, name, position, market_value_in_eur
-FROM read_csv_auto('players.csv.gz')
-WHERE position = 'Attack'
-ORDER BY market_value_in_eur DESC
-LIMIT 10;
+# download the dataset (cached locally after first run)
+path = kagglehub.dataset_download("davidcariboo/player-scores")
+
+# query with DuckDB
+duckdb.sql(f"""
+    SELECT player_id, name, position, market_value_in_eur
+    FROM read_csv_auto('{path}/players.csv.gz')
+    WHERE position = 'Attack'
+    ORDER BY market_value_in_eur DESC
+    LIMIT 10
+""").show()
 ```
 
 You can also browse and download the data directly on [Kaggle](https://www.kaggle.com/datasets/davidcariboo/player-scores) or [data.world](https://data.world/dcereijo/player-scores).
