@@ -49,6 +49,10 @@ docker_push_flyio: docker_login_flyio
 acquire_local:
     scripts/runner.sh scripts/acquiring {{acquirer}} {{args}}
 
+# run the openfootball acquirer locally
+acquire_openfootball seasons="2024":
+    python scripts/acquiring/openfootball.py --seasons {{seasons}}
+
 # run the acquiring process in a local docker
 acquire_docker:
     docker run -ti \
