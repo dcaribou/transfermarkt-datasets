@@ -1,2 +1,5 @@
-/transfermarkt-scraper
-/transfermarkt-api
+# Ignore all raw source data directories (pulled via DVC)
+# Convention: data/raw/<source>/<season>/<asset>.<ext>
+*
+!.gitignore
+!*.dvc

@@ -1,11 +1,37 @@
 """A generic set of util functions used across the project.
 """
+import pathlib
 from pandas import DataFrame
 import yaml
 from typing import Dict, List
 
 import boto3
 from time import sleep
+
+# Raw data layout convention: data/raw/<source>/<season>/<asset>.<ext>
+RAW_DATA_ROOT = pathlib.Path("data/raw")
+
+
+def raw_data_path(source: str, season: int = None, asset: str = None, ext: str = "json.gz") -> pathlib.Path:
+	"""Build a raw data path following the source-agnostic convention.
+
+	Convention: data/raw/<source>/<season>/<asset>.<ext>
+
+	Args:
+		source: Source identifier (e.g. 'transfermarkt-scraper', 'openfootball').
+		season: Season year. If None, returns the source root.
+		asset: Asset name (e.g. 'games', 'clubs'). If None, returns the season dir.
+		ext: File extension. Defaults to 'json.gz'.
+
+	Returns:
+		pathlib.Path to the requested location.
+	"""
+	path = RAW_DATA_ROOT / source
+	if season is not None:
+		path = path / str(season)
+	if asset is not None:
+		path = path / f"{asset}.{ext}"
+	return path
 
 
 def read_config(config_file="config.yml") -> Dict:

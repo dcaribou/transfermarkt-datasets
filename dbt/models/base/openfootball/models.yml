@@ -1,0 +1,38 @@
+version: 2
+
+models:
+  - name: stg_openfootball_competitions
+    description: Distinct competitions extracted from OpenFootball match files.
+    columns:
+      - name: competition_id
+        tests:
+          - unique
+          - not_null
+      - name: name
+        tests:
+          - not_null
+
+  - name: stg_openfootball_clubs
+    description: Distinct clubs extracted from OpenFootball match data.
+    columns:
+      - name: name
+        tests:
+          - unique
+          - not_null
+
+  - name: stg_openfootball_games
+    description: Match results from OpenFootball, one row per game.
+    columns:
+      - name: game_id
+        tests:
+          - unique
+          - not_null
+      - name: date
+        tests:
+          - not_null
+      - name: home_club_name
+        tests:
+          - not_null
+      - name: away_club_name
+        tests:
+          - not_null

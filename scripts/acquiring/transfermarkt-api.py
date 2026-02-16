@@ -20,11 +20,15 @@ import asyncio
 
 from transfermarkt_datasets.core.utils import (
   read_config,
-  seasons_list
+  seasons_list,
+  raw_data_path
 )
 
 import logging
 import logging.config
+
+SOURCE_NAME = "transfermarkt-api"
+SCRAPER_SOURCE_NAME = "transfermarkt-scraper"
 
 acquire_config = read_config()["acquire"]
 
@@ -45,10 +49,10 @@ def get_player_ids(season: int) -> List[int]:
         List[int]: List of player ids
     """
 
-    players_asset_path = f"data/raw/transfermarkt-scraper/{season}/players.json.gz"
+    players_asset_path = raw_data_path(SCRAPER_SOURCE_NAME, season, "players")
 
     # read lines from a zipped file
-    with gzip.open(players_asset_path, mode="r") as z:
+    with gzip.open(str(players_asset_path), mode="r") as z:
         players = [json.loads(line) for line in z.readlines()]
 
     player_ids = [
@@ -142,14 +146,13 @@ def run_for_season(season: int) -> None:
     Args:
         season (int): The season to process
     """
-    target_market_values_path = f"data/raw/transfermarkt-api/{season}/market_values.json"
-    target_transfers_path = f"data/raw/transfermarkt-api/{season}/transfers.json"
+    target_market_values_path = raw_data_path(SOURCE_NAME, season, "market_values", ext="json")
+    target_transfers_path = raw_data_path(SOURCE_NAME, season, "transfers", ext="json")
 
     logging.info(f"Starting player data acquisition for season {season}")
 
     # create target directories if they do not exist
-    pathlib.Path(target_market_values_path).parent.mkdir(parents=True, exist_ok=True)
-    pathlib.Path(target_transfers_path).parent.mkdir(parents=True, exist_ok=True)
+    target_market_values_path.parent.mkdir(parents=True, exist_ok=True)
 
     # get player IDs for the season
     player_ids = get_player_ids(season)
@@ -164,8 +167,8 @@ def run_for_season(season: int) -> None:
     logging.info(f"Persisting market values and transfers for season {season}")
 
     # persist market values and transfers to files
-    persist_data(market_values, target_market_values_path)
-    persist_data(transfers, target_transfers_path)
+    persist_data(market_values, str(target_market_values_path))
+    persist_data(transfers, str(target_transfers_path))
 
 parser = argparse.ArgumentParser()
 parser.add_argument(

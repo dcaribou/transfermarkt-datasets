@@ -5,15 +5,53 @@
 
 # transfermarkt-datasets
 
-In an nutshell, this project aims for three things:
+A **canonical open football (soccer) dataset** built from multiple sources. The project standardizes data from Transfermarkt, OpenFootball, and other sources into a single coherent schema with full source lineage and provenance tracking.
 
-1. Acquiring data from the transfermarkt website using the [trasfermarkt-scraper](https://github.com/dcaribou/transfermarkt-scraper).
-2. Building a **clean, public football (soccer) dataset** using data in 1.
-3. Automating 1 and 2 to **keep assets up to date** and publicly available on some well-known data catalogs.
+> **Vision:** Become the most trusted open dataset for professional football analysis by evolving from a Transfermarkt-first pipeline into a multi-source, canonical data platform. See [docs/vision.md](docs/vision.md) for the full roadmap.
+
+### What this project does
+
+1. **Acquires** raw data from multiple sources (Transfermarkt scraper/API, OpenFootball, and more to come).
+2. **Standardizes** data through canonical mapping and staging layers using dbt + DuckDB.
+3. **Publishes** a clean, versioned dataset with source lineage on popular data platforms.
+4. **Automates** acquisition, transformation, quality checks, and publishing via CI/CD.
 
 [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/dcaribou/transfermarkt-datasets/tree/master?quickstart=1)
 [![Kaggle](https://kaggle.com/static/images/open-in-kaggle.svg)](https://www.kaggle.com/datasets/davidcariboo/player-scores)
 [![data.world](https://img.shields.io/badge/-Open%20in%20data.world-blue?style=appveyor)](https://data.world/dcereijo/player-scores)
+
+------
+
+## Architecture
+
+```
+                   Sources                     Staging              Canonical        Curated
+              +-----------------+         +---------------+     +-------------+   +----------+
+              | Transfermarkt   |-------->| base_*        |---->|             |   |          |
+              | (scraper + API) |         | models        |     | map_*_ids   |-->| competi- |
+              +-----------------+         +---------------+     | (canonical  |   | tions    |
+                                                                |  mappings)  |   | clubs    |
+              +-----------------+         +---------------+     |             |   | games    |
+              | OpenFootball    |-------->| stg_openfb_*  |---->|             |   | ...      |
+              | (football.json) |         | models        |     +-------------+   +----------+
+              +-----------------+         +---------------+           |               |
+                                                                     v               v
+                                                              Source lineage   source_system
+                                                              & provenance     source_record_id
+                                                              metadata         ingested_at
+```
+
+### Source lineage
+
+Every curated row includes provenance columns:
+
+| Column | Description |
+|---|---|
+| `source_system` | Which source produced this row (`transfermarkt` or `openfootball`) |
+| `source_record_id` | The source-native identifier for traceability |
+| `ingested_at` | Timestamp of when the row was ingested |
+
+Field-level provenance metadata is documented in [docs/field-level-provenance.md](docs/field-level-provenance.md) and the machine-readable artifact at [dbt/field_provenance.yml](dbt/field_provenance.yml).
 
 ------
 ```mermaid
@@ -68,25 +106,18 @@ class appearances {
 ------
 
 - [transfermarkt-datasets](#transfermarkt-datasets)
-  - [📥 setup](#-setup)
-    - [just](#just)
-  - [💾 data storage](#-data-storage)
-  - [🕸️ data acquisition](#️-data-acquisition)
-    - [acquirers](#acquirers)
-  - [🔨 data preparation](#-data-preparation)
-    - [python api](#python-api)
-  - [👁️ frontends](#️-frontends)
-    - [🎈 streamlit](#-streamlit)
-  - [🏗️ infra](#️-infra)
-  - [🎼 orchestration](#-orchestration)
-  - [💬 community](#-community)
-    - [📞 getting in touch](#-getting-in-touch)
-    - [🫶 sponsoring](#-sponsoring)
-    - [👨‍💻 contributing](#-contributing)
+  - [Setup](#setup)
+  - [Data storage](#data-storage)
+  - [Data acquisition](#data-acquisition)
+  - [Data preparation](#data-preparation)
+  - [Quality and profiling](#quality-and-profiling)
+  - [Frontends](#frontends)
+  - [Orchestration](#orchestration)
+  - [Community](#community)
 
 ------
 
-## 📥 setup
+## Setup
 
 > Thanks to [Github codespaces](https://github.com/features/codespaces) you can spin up a working dev environment in your browser with just a click, **no local setup required**.
 >
@@ -107,140 +138,95 @@ The `justfile` in the root defines a set of useful recipes that will help you ru
 dvc_pull                       pull data from the cloud
 docker_build                   build the project docker image and tag accordingly
 acquire_local                  run the acquiring process locally (refreshes data/raw/<acquirer>)
+acquire_openfootball           run the openfootball acquirer locally
 prepare_local                  run the prep process locally (refreshes data/prep)
+profile                        run data profiling and drift checks
 sync                           run the sync process (refreshes data frontends)
 streamlit_local                run streamlit app locally
 ```
 Run `just --list` to see the full list. Once you've completed the setup, you should be able to run most of these from your machine.
 
-## 💾 data storage
+## Data storage
 All project data assets are kept inside the [`data`](data) folder. This is a [DVC](https://dvc.org/) repository, so all files can be pulled from remote storage by running `dvc pull`. Data is stored in [Cloudflare R2](https://developers.cloudflare.com/r2/) and served via a public URL, so no credentials are needed for pulling.
 
-To **push** data to the remote, you need R2 credentials configured as per-remote DVC config:
+Raw data follows the source-agnostic convention: `data/raw/<source>/<season>/<asset>.<ext>`.
+
+| path        | description |
+| ----------- | ----------- |
+| `data/raw/transfermarkt-scraper/` | Raw data from the Transfermarkt scraper |
+| `data/raw/transfermarkt-api/` | Raw data from the Transfermarkt API |
+| `data/raw/openfootball/` | Raw data from OpenFootball (football.json) |
+| `data/prep` | Prepared datasets as produced by dbt |
+
+## Data acquisition
+"Acquiring" is the process of collecting data from a specific source via an acquiring script. Acquired data lives in the `data/raw` folder.
+
+### Acquirers
+An acquirer is a script that collects data from somewhere and puts it in `data/raw/<source>/`. They are defined in the [`scripts/acquiring`](scripts/acquiring) folder.
+
+| Acquirer | Source | Command |
+|---|---|---|
+| `transfermarkt-scraper` | Transfermarkt website | `just acquire_local` |
+| `transfermarkt-api` | Transfermarkt REST API | `just --set acquirer transfermarkt-api acquire_local` |
+| `openfootball` | OpenFootball GitHub repo | `just acquire_openfootball` |
+
+## Data preparation
+"Preparing" is the process of transforming raw data into a high quality dataset. The transformation pipeline has three layers:
+
+1. **Base/staging models** (`dbt/models/base/`): Parse source-specific raw data into normalized tables.
+2. **Canonical mapping models** (`dbt/models/canonical/`): Reconcile entity IDs across sources (competitions, clubs, matches).
+3. **Curated models** (`dbt/models/curated/`): Join and enrich data into final consumer-facing tables with provenance columns.
+
+Data preparation is done in SQL using [dbt](https://docs.getdbt.com/) and [DuckDB](https://duckdb.org/).
+
 ```console
-dvc remote modify --local r2 access_key_id <R2_ACCESS_KEY_ID>
-dvc remote modify --local r2 secret_access_key <R2_SECRET_ACCESS_KEY>
-```
-This stores credentials in `.dvc/config.local` (gitignored) without conflicting with AWS credentials.
-
-| path        | description                                                                                                                                                                     |
-| ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `data/raw`  | contains raw data for [different acquirers](https://github.com/dcaribou/transfermarkt-datasets/discussions/202#discussioncomment-7142557) (check the data acquisition section below) |
-| `data/prep` | contains prepared datasets as produced by dbt (check [data preparation](#-data-preparation))                                                                                             |
-
-## 🕸️ data acquisition
-In the scope of this project, "acquiring" is the process of collecting data from a specific source and via an acquiring script. Acquired data lives in the `data/raw` folder.
-
-### acquirers
-An acquirer is a script that collects data from somewhere and puts it in `data/raw`. They are defined in the [`scripts/acquiring`](scripts/acquiring) folder and run using the `acquire_local` recipe.
-For example, to run the `transfermarkt-api` acquirer with a set of parameters, you can run
-```console
-just --set acquirer transfermarkt-api --set args "--season 2024" acquire_local
-```
-which will populate `data/raw/transfermarkt-api` with the data it collected. Obviously, you can also run [the script](scripts/acquiring/transfermarkt-api.py) directly if you prefer.
-```console
-cd scripts/acquiring && python transfermarkt-api.py --season 2024
-```
-
-
-## 🔨 data preparation
-In the scope of this project, "preparing" is the process of transforming raw data to create a high quality dataset that can be conveniently consumed by analysts of all kinds.
-
-Data prepartion is done in SQL using [dbt](https://docs.getdbt.com/) and [DuckDB](https://duckdb.org/). You can trigger a run of the preparation task using the `prepare_local` recipe or work with the dbt CLI directly if you prefer.
-
-* `cd dbt` &rarr; The [dbt](dbt) folder contains the dbt project for data preparation
-* `dbt deps` &rarr; Install dbt packages. This is only required the first time you run dbt.
-* `dbt run -m +appearances` &rarr; Refresh the assets by running the corresponding model in dbt.
-
-dbt runs will populate a `dbt/duck.db` file in your local, which you can "connect to" using the DuckDB CLI and query the data using SQL.
-```console
-duckdb dbt/duck.db -c 'select * from dev.games'
+cd dbt && dbt deps && dbt build --target dev
 ```
 
 ![dbt](resources/dbt.png)
 
-> :warning: Make sure that you are using a DukcDB version that matches that [that is used in the project](.devcontainer/devcontainer.json).
+## Quality and profiling
+Automated quality checks run at multiple levels:
 
+- **dbt tests**: Schema tests (uniqueness, not-null, accepted values, row count ranges) on every model.
+- **Provenance validation**: CI checks that `source_system`, `source_record_id`, and `ingested_at` are present and populated.
+- **Dynamic profiling**: `scripts/profiling/profile_models.py` computes row counts, null ratios, cardinality, and value ranges per source/model, and flags drift against stored baselines.
 
-### python api
-A thin python wrapper is provided as a convenience utility to help with loading and inspecting the dataset (for example, from a notebook).
-
-```python
-# import the module
-from transfermarkt_datasets.core.dataset import Dataset
-
-# instantiate the datasets handler
-td = Dataset()
-
-# load all assets into memory as pandas dataframes
-td.load_assets()
-
-# inspect assets
-td.asset_names # ["games", "players", ...]
-td.assets["games"].prep_df # get the built asset in a dataframe
-
-# get raw data in a dataframe
-td.assets["games"].load_raw()
-td.assets["games"].raw_df 
+```console
+just profile              # run drift checks against baselines
+just profile_update_baseline  # update baselines from current build
 ```
 
-The module code lives in the `transfermark_datasets` folder with the structure below.
-
-| path                           | description                                                   |
-| ------------------------------ | ------------------------------------------------------------- |
-| `transfermark_datasets/core`   | core classes and utils that are used to work with the dataset |
-| `transfermark_datasets/tests`  | unit tests for core classes                                   |
-| `transfermark_datasets/assets` | perpared asset definitions: one python file per asset         |
-
-## 👁️ frontends
-Prepared data is published to a couple of popular dataset websites. This is done running `just sync`, which runs weekly as part of the [data pipeline](#-orchestration).
+## Frontends
+Prepared data is published to a couple of popular dataset websites. This is done running `just sync`, which runs weekly as part of the data pipeline.
 
 * [Kaggle](https://www.kaggle.com/datasets/davidcariboo/player-scores)
 * [data.world](https://data.world/dcereijo/player-scores)
 
-### 🎈 streamlit
-There is a [streamlit](https://streamlit.io/) app for the project with documentation, a data catalog and sample analyisis. The app ~~is currently hosted in fly.io, you can check it out [here](https://transfermarkt-datasets.fly.dev/)~~ deployment is currently disabled until [this](https://github.com/dcaribou/transfermarkt-datasets/issues/297) is resolved.
+## Orchestration
+The data pipeline is orchestrated as a series of Github Actions workflows defined in [`.github/workflows`](.github/workflows).
 
-For local development, you can also run the app in your machine. Provided you've done the [setup](#-setup), run the following to spin up a local instance of the app
-```console
-just streamlit_local
-```
-> :warning: Note that the app expects prepared data to exist in `data/prep`. Check out [data storage](#-data-storage) for instructions about how to populate that folder.
+| workflow name | triggers on | description |
+| --- | --- | --- |
+| `build` | Push to `master` or open PR | Runs data preparation, tests, provenance validation, and profiling checks. Commits prepared data if changed. |
+| `acquire-transfermarkt-scraper` | Schedule (Tue/Fri) | Scrapes Transfermarkt and commits raw data via DVC |
+| `acquire-transfermarkt-api` | After scraper completes | Collects API data (market values, transfers) |
+| `acquire-openfootball` | Schedule (Monday) / Manual | Downloads OpenFootball match data |
+| `sync-<frontend>` | On prepared data changes | Syncs to Kaggle / data.world |
 
-## 🏗️ [infra](infra)
-Define all the necessary infrastructure for the project in the cloud with Terraform.
+## Community
 
-## 🎼 orchestration
-The data pipeline is orchestrated as a series of Github Actions workflows. They are defined in the [`.github/workflows`](.github/workflows) folder and are triggered by different events.
+### Getting in touch
+* Keep the conversation centralised and public via [Discussions](https://github.com/dcaribou/transfermarkt-datasets/discussions).
+* Check the [FAQs](https://github.com/dcaribou/transfermarkt-datasets/discussions/175) before posting.
 
-| workflow name            | triggers on                                                  | description                                                                                                   |
-| ------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------- |
-| `build`*                  | Every push to the `master` branch or to an open pull request | It runs the [data preparation](#-data-preparation) step, and tests and commits a new version of the prepared data if there are any changes |
-| `acquire-<acquirer>.yml` | Schedule                                                     | It runs the acquirer and commits the acquired data to the corresponding raw location                                                                      |
-| `sync-<frontend>.yml`    | Every change on prepared data                                | It syncs the prepared data to the corresponding frontend                                                                                |
+### Sponsoring
+Maintenance of this project is made possible by [sponsors](https://github.com/sponsors/dcaribou). If you'd like to sponsor this project you can use the `Sponsor` button at the top.
 
-*`build-contribution` is the same as `build` but without commiting any data.
-
-> 💡 Debugging workflows remotelly is a pain. I recommend using [act](https://github.com/nektos/act) to run them locally to the extent that is possible.
-
-## 💬 community
-
-### 📞 getting in touch
-In order to keep things tidy, there are two simple guidelines
-* Keep the conversation centralised and public by getting in touch via the [Discussions](https://github.com/dcaribou/transfermarkt-datasets/discussions) tab.
-* Avoid topic duplication by having a quick look at the [FAQs](https://github.com/dcaribou/transfermarkt-datasets/discussions/175)
-
-### 🫶 sponsoring
-Maintenance of this project is made possible by <a href="https://github.com/sponsors/dcaribou">sponsors</a>. If you'd like to sponsor this project you can use the `Sponsor` button at the top.
-
-&rarr; I would like to express my grattitude to [@mortgad](https://github.com/mortgad) for becoming the first sponsor of this project.
-
-### 👨‍💻 contributing
-Contributions to `transfermarkt-datasets` are most welcome. If you want to contribute new fields or assets to this dataset, the instructions are quite simple:
+### Contributing
+Contributions are most welcome. To contribute:
 1. [Fork the repo](https://github.com/dcaribou/transfermarkt-datasets/fork)
-2. Set up your [local environment](#-setup)
-3. [Populate `data/raw` directory](#-data-storage)
-4. Start modifying assets or creating new ones in [the dbt project](#-data-preparation)
-5. If it's all looking good, create a pull request with your changes :rocket:
-
-> ℹ️ In case you face any issue following the instructions above please [get in touch](#-getting-in-touch)
+2. Set up your [local environment](#setup)
+3. [Populate `data/raw`](#data-storage)
+4. Start modifying or creating models in [the dbt project](#data-preparation)
+5. Create a pull request with your changes

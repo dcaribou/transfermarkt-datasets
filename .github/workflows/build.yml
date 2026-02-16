@@ -23,17 +23,46 @@ jobs:
         with:
           token: ${{ secrets.PA_GITHUB_TOKEN }}
 
-      - name: Run tests
+      - name: Run tests and build
         run: |
           set -e
           just --set dbt_target prod dvc_pull test prepare_local
           dvc commit -f
           git config --global --add safe.directory '*'
 
+      - name: Validate provenance columns
+        run: |
+          set -e
+          python -c "
+          import duckdb
+          conn = duckdb.connect('dbt/duck.db', read_only=True)
+          errors = []
+          for model in ['competitions', 'clubs', 'games']:
+              cols = [r[0] for r in conn.sql(f\"SELECT column_name FROM information_schema.columns WHERE table_schema='prod' AND table_name='{model}'\").fetchall()]
+              for required in ['source_system', 'source_record_id', 'ingested_at']:
+                  if required not in cols:
+                      errors.append(f'{model} missing provenance column: {required}')
+              # Check source_system is populated
+              nulls = conn.sql(f\"SELECT count(*) FROM prod.{model} WHERE source_system IS NULL\").fetchone()[0]
+              if nulls > 0:
+                  errors.append(f'{model} has {nulls} rows with NULL source_system')
+          conn.close()
+          if errors:
+              for e in errors:
+                  print(f'ERROR: {e}')
+              exit(1)
+          else:
+              print('All provenance columns validated successfully')
+          "
+
+      - name: Run profiling drift checks
+        run: |
+          python scripts/profiling/profile_models.py --db dbt/duck.db --schema prod
+
       - name: Get branch name
         id: branch-name
         uses: tj-actions/branch-names@v7
-      
+
       - uses: EndBug/add-and-commit@v9
         if: ${{ !contains(github.event.head_commit.message, 'updated prepared dataset files') }}
         with:
