@@ -17,7 +17,7 @@ games_cte as (
 -- get game IDs and club IDs from appearances and ensure that
 -- for each game ID, the clubs ID in appearances is either the home or away club ID from games
 
-select * 
+select *
 from appearances_cte
-left join games_cte on appearances_cte.game_id = games_cte.game_id
+left join games_cte on appearances_cte.game_id::varchar = games_cte.game_id
 where appearances_cte.player_club_id not in (games_cte.home_club_id, games_cte.away_club_id)

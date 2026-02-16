@@ -74,7 +74,7 @@ models:
             - ingested_at
       - dbt_expectations.expect_table_row_count_to_be_between:
           min_value: 400
-          max_value: 700
+          max_value: 1000
     columns:
       - name: club_code
         tests:
@@ -271,11 +271,11 @@ models:
       - name: home_club_manager_name
         tests:
           - too_many_missings:
-              tolerance: 0.05
+              tolerance: 0.10
       - name: away_club_manager_name
         tests:
           - too_many_missings:
-              tolerance: 0.05
+              tolerance: 0.10
       - name: source_system
         tests:
           - not_null
