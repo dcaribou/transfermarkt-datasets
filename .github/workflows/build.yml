@@ -55,6 +55,12 @@ jobs:
               print('All provenance columns validated successfully')
           "
 
+      - name: Trace field-level provenance
+        run: |
+          cd dbt && dbt compile --target prod
+          cd ..
+          python scripts/provenance/trace_field_lineage.py --db dbt/duck.db --manifest dbt/target/manifest.json
+
       - name: Run profiling drift checks
         run: |
           python scripts/profiling/profile_models.py --db dbt/duck.db --schema prod

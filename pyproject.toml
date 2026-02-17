@@ -17,6 +17,7 @@ dbt-duckdb = "^1.9"
 duckdb-engine = "^0.9"
 boto3 = "^1.28"
 dvc = {extras = ["s3"], version = "^3.22.0"}
+sqlglot = "^28.0"
 watchdog = "^3.0.0"
 kaggle = "^1.6.11"
 

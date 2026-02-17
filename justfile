@@ -107,6 +107,10 @@ streamlit_deploy: docker_push_flyio
 test:
     pytest transfermarkt_datasets/tests
 
+# trace field-level provenance and write to DuckDB (requires dbt compile first)
+provenance db_path="dbt/duck.db" manifest_path="dbt/target/manifest.json":
+    python scripts/provenance/trace_field_lineage.py --db {{db_path}} --manifest {{manifest_path}}
+
 # run data profiling and drift checks against baselines
 profile db_path="dbt/duck.db":
     python scripts/profiling/profile_models.py --db {{db_path}} --schema {{dbt_target}}
