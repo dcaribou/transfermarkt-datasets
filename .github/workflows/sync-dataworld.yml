@@ -18,14 +18,8 @@ jobs:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
       - uses: actions/checkout@v4
-      - name: Download metadata from R2
-        run: |
-          mkdir -p data/prep
-          curl -sf -o data/prep/dataset-metadata.json "https://pub-e682421888d945d684bcae8890b0ec20.r2.dev/data/dataset-metadata.json"
       - name: sync
         env:
           DW_AUTH_TOKEN: ${{ secrets.DW_AUTH_TOKEN }}
         run: |
-          just \
-            --set syncer sync-dataworld \
-            sync
+          python scripts/synching/sync-dataworld.py
