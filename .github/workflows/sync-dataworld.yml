@@ -26,6 +26,4 @@ jobs:
         env:
           DW_AUTH_TOKEN: ${{ secrets.DW_AUTH_TOKEN }}
         run: |
-          just \
-            --set syncer sync-dataworld \
-            sync
+          python scripts/synching/sync-dataworld.py

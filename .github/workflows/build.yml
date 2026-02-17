@@ -26,6 +26,11 @@ jobs:
           set -e
           just --set dbt_target prod dvc_pull test prepare_local
 
+      - name: Generate dataset metadata
+        if: github.ref == 'refs/heads/master' && github.event_name == 'push'
+        run: |
+          python -c "from transfermarkt_datasets.core.dataset import Dataset; Dataset().write_datapackage()"
+
       - name: Upload prepared data to R2
         if: github.ref == 'refs/heads/master' && github.event_name == 'push'
         env:
