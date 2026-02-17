@@ -8,7 +8,7 @@ players_cte as (
     select
         player_id,
         name as player_name
-    from {{ ref('players') }}
+    from {{ ref('base_players') }}
 
 )
 
@@ -26,6 +26,6 @@ select
 
 from transfers_cte
 
-left join players_cte on transfers_cte.player_id = players_cte.player_id
+join players_cte on transfers_cte.player_id = players_cte.player_id
 
 order by transfers_cte.transfer_date desc, transfers_cte.player_id
