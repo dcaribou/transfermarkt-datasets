@@ -26,9 +26,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: run acquire
         run: |
-          just \
-            --set args "--asset clubs --seasons $SEASON" \
-            acquire_local
+          just acquire_local --asset clubs --seasons $SEASON
       - uses: actions/upload-artifact@v4
         with:
           name: clubs
@@ -50,9 +48,7 @@ jobs:
           path: ${{ env.DATA_DIR }}
       - name: run acquire
         run: |
-          just \
-            --set args "--asset players --seasons $SEASON" \
-            acquire_local
+          just acquire_local --asset players --seasons $SEASON
       - uses: actions/upload-artifact@v4
         with:
           name: players
@@ -69,9 +65,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: run acquire
         run: |
-          just \
-            --set args "--asset games --seasons $SEASON" \
-            acquire_local
+          just acquire_local --asset games --seasons $SEASON
       - uses: actions/upload-artifact@v4
         with:
           name: games
@@ -93,9 +87,7 @@ jobs:
           path: ${{ env.DATA_DIR }}
       - name: run acquire
         run: |
-          just \
-            --set args "--asset game_lineups --seasons $SEASON" \
-            acquire_local
+          just acquire_local --asset game_lineups --seasons $SEASON
       - uses: actions/upload-artifact@v4
         with:
           name: game_lineups
@@ -117,9 +109,7 @@ jobs:
           path: ${{ env.DATA_DIR }}
       - name: run acquire
         run: |
-          just \
-            --set args "--asset appearances --seasons $SEASON" \
-            acquire_local
+          just acquire_local --asset appearances --seasons $SEASON
       - uses: actions/upload-artifact@v4
         with:
           name: appearances

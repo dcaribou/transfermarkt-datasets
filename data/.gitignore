@@ -1,2 +1,3 @@
 /raw/20*
-/prep
+/prep/*
+!/prep/dataset-metadata.json

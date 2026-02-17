@@ -2,7 +2,6 @@
 platform := "linux/arm64"
 branch := `git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "HEAD"`
 job_name := "on-cli"
-args := "--asset all --seasons 2025"
 tag := "dev"
 dbt_target := "dev"
 dvc_remote := "http"
@@ -46,8 +45,8 @@ docker_push_flyio: docker_login_flyio
     docker push registry.fly.io/transfermarkt-datasets:{{image_tag}}
 
 # run the acquiring process locally (refreshes data/raw)
-acquire_local:
-    scripts/runner.sh scripts/acquiring {{acquirer}} {{args}}
+acquire_local *ARGS:
+    scripts/runner.sh scripts/acquiring {{acquirer}} {{ARGS}}
 
 # run the acquiring process in a local docker
 acquire_docker:
@@ -56,7 +55,7 @@ acquire_docker:
         -v `pwd`/.:/app/transfermarkt-datasets/ \
         --memory=4g \
         dcaribou/transfermarkt-datasets:dev \
-            HEAD just prepare_local {{args}}
+            HEAD just prepare_local
 
 # run the prep process locally (refreshes data/prep)
 prepare_local:

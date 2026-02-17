@@ -21,7 +21,7 @@ jobs:
       - name: Download prepared data from R2
         run: |
           mkdir -p data/prep
-          for file in appearances.csv.gz club_games.csv.gz clubs.csv.gz competitions.csv.gz game_events.csv.gz game_lineups.csv.gz games.csv.gz player_valuations.csv.gz players.csv.gz transfers.csv.gz; do
+          for file in appearances.csv.gz club_games.csv.gz clubs.csv.gz competitions.csv.gz game_events.csv.gz game_lineups.csv.gz games.csv.gz player_valuations.csv.gz players.csv.gz transfers.csv.gz dataset-metadata.json; do
             curl -sf -o "data/prep/$file" "https://pub-e682421888d945d684bcae8890b0ec20.r2.dev/data/$file"
             echo "Downloaded $file"
           done
