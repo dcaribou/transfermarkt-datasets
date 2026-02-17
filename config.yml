@@ -5,16 +5,8 @@ defintions:
     level: INFO
     stream: ext://sys.stdout
     formatter: console
-  file_handler: &file_handler
-    class: logging.FileHandler
-    level: DEBUG
-    filename: logs/run.log
-    mode: w
-    formatter: file
   console_formatter: &console_formatter
     format: '%(asctime)s [%(levelname)s]: %(message)s'
-  file_formatter: &file_formatter
-    format: '%(asctime)s [%(levelname)s] %(pathname)s: %(message)s'
 
 acquire:
   logging:
@@ -22,13 +14,9 @@ acquire:
     disable_existing_loggers: False
     loggers:
       "": # root logger
-        handlers: [console, file]
+        handlers: [console]
         level: DEBUG
     handlers:
       console: *console_handler
-      file:
-        <<: *file_handler
-        filename: logs/acquire.log
     formatters:
       console: *console_formatter
-      file: *file_formatter
