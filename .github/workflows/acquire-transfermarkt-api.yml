@@ -73,6 +73,7 @@ jobs:
           path: ${{ env.DATA_DIR }}
       - name: dvc commit and push
         run: |
+          set -e
           dvc commit -f data/raw/transfermarkt-api && dvc push --remote r2
           git config --global --add safe.directory '*'
         env:
