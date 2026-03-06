@@ -7,9 +7,13 @@ with
             json_extract_string(json_row, '$.player_id')::integer as player_id,
             row_number() over (partition by player_id order by season desc) as n,
             filename
-        
+
         from {{ source("transfermarkt_api", "market_value_development") }}
-        
+
+        -- filter out null API responses before ranking so that
+        -- the latest season with actual data is selected
+        where json_extract(json(value), '$.response') is not null
+          and json_extract_string(json(value), '$.response') != 'null'
 
     ),
     unnested as (
@@ -34,7 +38,7 @@ with
             select
                 *,
                 json_row ->> 'datum_mw' as datetime_str,
-                coalesce(try_strptime(datetime_str, '%b %d, %Y'), try_strptime(datetime_str, '%m/%d/%Y')) as "datetime",
+                coalesce(try_strptime(datetime_str, '%b %d, %Y'), try_strptime(datetime_str, '%d/%m/%Y')) as "datetime",
                 row_number() over (partition by player_id, "datetime"::date order by "datetime" desc) as n
 
             from unnested
