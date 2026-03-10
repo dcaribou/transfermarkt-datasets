@@ -59,9 +59,14 @@ def get_player_ids(season: int) -> List[int]:
 
     return player_ids
 
+MAX_RETRIES = 3
+RETRY_BACKOFF_BASE = 1  # seconds
+REQUEST_TIMEOUT = aiohttp.ClientTimeout(total=30)
+
 # helper function to fetch data from API
 async def fetch_data(session, url, player_id):
     """Fetch data from the API for a given URL and player ID.
+    Retries up to MAX_RETRIES times with exponential backoff on transient errors.
 
     Args:
         session (aiohttp.ClientSession): The aiohttp session
@@ -76,13 +81,34 @@ async def fetch_data(session, url, player_id):
         'User-Agent': USER_AGENT
     }
 
-    async with session.get(url=url, headers=headers, ssl=False) as response:
+    for attempt in range(MAX_RETRIES):
         try:
-            json = await response.json()
-            return {"response": json, "player_id": player_id}
-        except aiohttp.ContentTypeError as e:
-            logging.error(f"Failed to fetch data for player {player_id}: {e}")
-            return {"response": None, "player_id": player_id}
+            async with session.get(url=url, headers=headers, ssl=False) as response:
+                if 400 <= response.status < 500:
+                    logging.warning(f"HTTP {response.status} for player {player_id}, not retrying")
+                    return {"response": None, "player_id": player_id}
+                if response.status >= 500:
+                    logging.warning(f"HTTP {response.status} for player {player_id}, attempt {attempt + 1}/{MAX_RETRIES}")
+                    if attempt < MAX_RETRIES - 1:
+                        await asyncio.sleep(RETRY_BACKOFF_BASE * (2 ** attempt))
+                        continue
+                    return {"response": None, "player_id": player_id}
+                try:
+                    body = await response.json()
+                except aiohttp.ContentTypeError as e:
+                    logging.error(f"Failed to parse response for player {player_id}: {e}")
+                    body = None
+                if body is None and attempt < MAX_RETRIES - 1:
+                    logging.warning(f"Null response for player {player_id}, attempt {attempt + 1}/{MAX_RETRIES}, retrying")
+                    await asyncio.sleep(RETRY_BACKOFF_BASE * (2 ** attempt))
+                    continue
+                return {"response": body, "player_id": player_id}
+        except (aiohttp.ClientError, asyncio.TimeoutError) as e:
+            logging.warning(f"Request error for player {player_id}, attempt {attempt + 1}/{MAX_RETRIES}: {e}")
+            if attempt < MAX_RETRIES - 1:
+                await asyncio.sleep(RETRY_BACKOFF_BASE * (2 ** attempt))
+            else:
+                return {"response": None, "player_id": player_id}
 
 # for each player id, get the market value data from the API
 async def get_market_values(player_ids: List[int]) -> List[dict]:
@@ -97,7 +123,7 @@ async def get_market_values(player_ids: List[int]) -> List[dict]:
 
     logging.info(f"Requesting market values for {len(player_ids)} players")
 
-    async with aiohttp.ClientSession() as session:
+    async with aiohttp.ClientSession(timeout=REQUEST_TIMEOUT) as session:
         tasks = [fetch_data(session, MARKET_VALUES_API + str(player_id), player_id) for player_id in player_ids]
 
         # Use asyncio.gather to execute the tasks concurrently
@@ -118,7 +144,7 @@ async def get_transfers(player_ids: List[int]) -> List[dict]:
 
     logging.info(f"Requesting transfer history for {len(player_ids)} players")
 
-    async with aiohttp.ClientSession() as session:
+    async with aiohttp.ClientSession(timeout=REQUEST_TIMEOUT) as session:
         tasks = [fetch_data(session, TRANSFERS_API + str(player_id), player_id) for player_id in player_ids]
 
         # Use asyncio.gather to execute the tasks concurrently
@@ -156,6 +182,26 @@ def run_for_season(season: int) -> None:
 
     # collect market values and transfers for players in SEASON
     market_values = asyncio.run(get_market_values(player_ids))
+
+    # batch-level retry for null market value responses
+    max_batch_retries = 2
+    for batch_attempt in range(max_batch_retries):
+        null_ids = [item["player_id"] for item in market_values if item["response"] is None]
+        if not null_ids:
+            break
+        logging.warning(f"Batch retry {batch_attempt + 1}/{max_batch_retries}: {len(null_ids)} players with null market value responses")
+        retry_results = asyncio.run(get_market_values(null_ids))
+        # build lookup of retry results
+        retry_lookup = {item["player_id"]: item for item in retry_results}
+        # replace null responses with retry results
+        market_values = [
+            retry_lookup.get(item["player_id"], item) if item["response"] is None else item
+            for item in market_values
+        ]
+
+    final_null_count = sum(1 for item in market_values if item["response"] is None)
+    logging.info(f"Market values complete for season {season}: {len(market_values)} total, {final_null_count} null responses remaining")
+
     transfers = asyncio.run(get_transfers(player_ids))
 
     # filter out player ids in responses that are not in the original list
