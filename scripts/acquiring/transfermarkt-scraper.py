@@ -14,7 +14,10 @@ import os
 import pathlib
 import argparse
 import subprocess
+import tempfile
 from typing import List
+
+import duckdb
 
 from transfermarkt_datasets.core.utils import (
   read_config,
@@ -73,16 +76,38 @@ class Asset():
       asset.set_parent()
     return assets
 
-def run_tfmkt(crawler, season=None, parents_file=None):
-  """Run a tfmkt CLI command and return its stdout output.
+# Scalar fields that DuckDB infers as JSON when null but are actually VARCHAR.
+# Explicit casts prevent type-mismatch errors in UNION ALL BY NAME when
+# an existing file has all-null values and a new scrape has actual strings.
+VARCHAR_CASTS = {
+  'clubs': ['coach_name', 'total_market_value', 'league_position'],
+  'players': ['day_of_last_contract_extension', 'current_market_value', 'highest_market_value'],
+}
 
-  Args:
-      crawler (str): The crawler to run (e.g. 'clubs', 'players', 'confederations').
-      season (int, optional): The season year.
-      parents_file (str, optional): Path to the parents JSONL file.
+# Struct/complex fields whose internal schema may change between scrapes (e.g. because
+# a nested field like parent.coach_name changed from JSON to VARCHAR in a child asset).
+# Casting to JSON normalises the type and avoids UNION ALL BY NAME conflicts.
+# Safe to do because base models only ever access these via json_extract_string().
+JSON_CASTS = {
+  'players': ['parent'],
+  'games': ['parent'],
+  'game_lineups': ['parent'],
+  'appearances': ['parent'],
+}
 
-  Returns:
-      str: The stdout output (JSONL).
+KEY_EXPRS = {
+  'clubs': 'href',
+  'players': 'href',
+  'games': 'href',
+  'game_lineups': 'href',
+  'appearances': "(parent.href || '|' || competition_code || '|' || matchday || '|' || date)",
+}
+
+
+def run_tfmkt(crawler, output_file, season=None, parents_file=None):
+  """Run tfmkt, piping stdout directly to a gzipped file.
+  Returns (record_count, returncode). Partial output is preserved
+  even on non-zero exit, since tfmkt flushes records as they're scraped.
   """
   cmd = ["tfmkt", crawler]
   if season is not None:
@@ -90,36 +115,104 @@ def run_tfmkt(crawler, season=None, parents_file=None):
   if parents_file is not None:
     cmd.extend(["-p", str(parents_file)])
 
-  logging.info(f"Running: {' '.join(cmd)}")
-  result = subprocess.run(cmd, capture_output=True, text=True)
+  # Pipe: tfmkt ... | grep JSON lines only | gzip > output_file
+  # Use pipefail so we get tfmkt's exit code, not gzip's.
+  # grep for lines starting with '{' to filter out any non-JSON stdout noise from tfmkt.
+  shell_cmd = f"set -o pipefail; {' '.join(cmd)} | grep '^{{' | gzip > '{output_file}'"
+  logging.info(f"Running: {' '.join(cmd)} | gzip > '{output_file}'")
+  result = subprocess.run(shell_cmd, shell=True, executable='/bin/bash', capture_output=False, stderr=subprocess.PIPE, text=True)
 
   if result.returncode != 0:
-    logging.error(f"tfmkt failed with return code {result.returncode}")
+    logging.warning(f"tfmkt exited with code {result.returncode}")
     if result.stderr:
-      logging.error(f"stderr: {result.stderr}")
-    raise subprocess.CalledProcessError(result.returncode, cmd, result.stdout, result.stderr)
+      logging.warning(f"stderr (tail): ...{result.stderr[-500:]}")
 
-  return result.stdout
+  # Count records from the written file
+  record_count = 0
+  if os.path.exists(output_file) and os.path.getsize(output_file) > 0:
+    try:
+      with gzip.open(output_file, 'rt') as f:
+        record_count = sum(1 for _ in f)
+    except gzip.BadGzipFile:
+      pass
+
+  return record_count, result.returncode
+
+
+def merge_output(existing_file, new_file, asset_name):
+  """Merge new gzipped JSONL file into existing gzipped JSONL file using DuckDB.
+  New records take precedence over existing ones (fresher data).
+  Returns the total number of records after merge.
+  """
+  key_expr = KEY_EXPRS[asset_name]
+  varchar_fields = VARCHAR_CASTS.get(asset_name, [])
+  json_fields = JSON_CASTS.get(asset_name, [])
+
+  conn = duckdb.connect()
+  try:
+    def read_expr(filepath):
+      """SELECT expression for one file, with explicit type casts for known fields."""
+      cols = {row[0] for row in conn.sql(
+        f"DESCRIBE SELECT * FROM read_json_auto('{filepath}', sample_size=10)"
+      ).fetchall()}
+      casts = (
+        [f"{c}::VARCHAR AS {c}" for c in varchar_fields if c in cols] +
+        [f"to_json({c}) AS {c}" for c in json_fields if c in cols]
+      )
+      replace = f" REPLACE ({', '.join(casts)})" if casts else ""
+      return f"SELECT *{replace} FROM read_json_auto('{filepath}', sample_size=-1, union_by_name=true)"
+
+    if existing_file.exists():
+      merge_query = f"""
+        WITH all_records AS (
+          SELECT *, {key_expr} AS _key, 1 AS _priority FROM ({read_expr(str(new_file))})
+          UNION ALL BY NAME
+          SELECT *, {key_expr} AS _key, 0 AS _priority FROM ({read_expr(str(existing_file))})
+        ),
+        deduped AS (
+          SELECT *, ROW_NUMBER() OVER (PARTITION BY _key ORDER BY _priority DESC) AS _rn
+          FROM all_records
+        )
+        SELECT * EXCLUDE (_key, _priority, _rn) FROM deduped WHERE _rn = 1
+      """
+    else:
+      merge_query = read_expr(str(new_file))
+
+    conn.sql(f"CREATE TEMP TABLE merged AS {merge_query}")
+    record_count = conn.sql("SELECT count(*) FROM merged").fetchone()[0]
+    conn.sql(f"COPY merged TO '{str(existing_file)}' (FORMAT JSON, ARRAY false, COMPRESSION gzip)")
+    return record_count
+  finally:
+    conn.close()
 
 def acquire_asset(asset, season):
-  """Acquire a single asset for a given season using the tfmkt CLI."""
+  """Acquire a single asset for a given season, merging with existing data."""
   season_dir = pathlib.Path(f"data/raw/transfermarkt-scraper/{season}")
   season_dir.mkdir(parents=True, exist_ok=True)
 
   parent_file = asset.parent.file_full_path(season) if asset.parent else None
   output_file = asset.file_path(season)
 
-  logging.info(f"Acquiring {asset.name} for season {season}")
-  output = run_tfmkt(asset.name, season=season, parents_file=parent_file)
+  # Scrape into a temp file, then merge into the output file
+  with tempfile.NamedTemporaryFile(suffix='.jsonl.gz', delete=False) as tmp:
+    tmp_path = tmp.name
 
-  # Remove existing file if present
-  if output_file.exists():
-    os.remove(str(output_file))
+  try:
+    logging.info(f"Acquiring {asset.name} for season {season}")
+    new_count, returncode = run_tfmkt(asset.name, tmp_path, season=season, parents_file=parent_file)
+    logging.info(f"Scraped {new_count} new records for {asset.name}")
 
-  # Gzip and write output
-  with gzip.open(str(output_file), 'wt') as f:
-    f.write(output)
-  logging.info(f"Wrote {output_file}")
+    if new_count == 0 and returncode != 0:
+      raise RuntimeError(f"tfmkt failed with no output for {asset.name}")
+
+    merged_count = merge_output(output_file, tmp_path, asset.name)
+    logging.info(f"Merged result: {merged_count} total records")
+  finally:
+    if os.path.exists(tmp_path):
+      os.unlink(tmp_path)
+
+  if returncode != 0:
+    logging.warning(f"Completed with partial failures")
 
 def acquire_on_local(asset, seasons):
 
