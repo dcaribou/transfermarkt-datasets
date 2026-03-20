@@ -49,6 +49,7 @@ vars:
       'RUSS', 'GRP', 'SFA', 'CIT', 'DKP', 'FRCH', 'UKRS',
       'SCI', 'CL', 'EL', 'KLUB', 'ECLQ', 'CLQ', 'ELQ', 'USC',
       'FAC',
+      'FIWC', 'EURO', 'COPA', 'AFCN', 'AFAC',
     ]
   data_diff:
     prod_database: duck # default database for the prod target

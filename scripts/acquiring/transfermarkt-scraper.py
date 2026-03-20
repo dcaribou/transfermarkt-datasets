@@ -43,8 +43,17 @@ class Asset():
       'clubs': 'competitions',
       'players': 'clubs',
       'appearances': 'players',
-      'game_lineups': 'games'
+      'game_lineups': 'games',
+      'countries': None,
+      'national_teams': 'countries',
+      'national_team_players': 'national_teams',
     }
+
+  # Some assets reuse another asset's crawler and output file.
+  # Maps asset name -> (crawler_name, output_asset_name)
+  asset_aliases = {
+      'national_team_players': ('players', 'players'),
+  }
 
   def __init__(self, name) -> None:
 
@@ -56,11 +65,19 @@ class Asset():
 
     self.parent = Asset(self.asset_parents[self.name])
 
+  def crawler_name(self):
+    """The tfmkt CLI crawler to invoke (may differ from asset name for aliases)."""
+    return self.asset_aliases.get(self.name, (self.name,))[0]
+
+  def output_name(self):
+    """The output file asset name (may differ for aliases that share a file)."""
+    return self.asset_aliases.get(self.name, (None, self.name))[1]
+
   def file_path(self, season):
-    if self.name == 'competitions':
-      return pathlib.Path(f"data/competitions.json")
+    if self.name in ('competitions', 'countries'):
+      return pathlib.Path(f"data/{self.name}.json")
     else:
-      return pathlib.Path(f"data/raw/transfermarkt-scraper/{season}/{self.name}.json.gz")
+      return pathlib.Path(f"data/raw/transfermarkt-scraper/{season}/{self.output_name()}.json.gz")
 
   def file_full_path(self, season):
     return str(self.file_path(season).absolute())
@@ -71,7 +88,7 @@ class Asset():
     Asset acquisition have dependecies between each other. This list returns the right order for asset
     acquisition steps to run.
     """
-    assets = [Asset(name) for name in cls.asset_parents if name != 'competitions']
+    assets = [Asset(name) for name in cls.asset_parents if name not in ('competitions', 'countries')]
     for asset in assets:
       asset.set_parent()
     return assets
@@ -82,6 +99,7 @@ class Asset():
 VARCHAR_CASTS = {
   'clubs': ['coach_name', 'total_market_value', 'league_position'],
   'players': ['day_of_last_contract_extension', 'current_market_value', 'highest_market_value'],
+  'national_team_players': ['day_of_last_contract_extension', 'current_market_value', 'highest_market_value'],
 }
 
 # Struct/complex fields whose internal schema may change between scrapes (e.g. because
@@ -93,6 +111,7 @@ JSON_CASTS = {
   'games': ['parent'],
   'game_lineups': ['parent'],
   'appearances': ['parent'],
+  'national_team_players': ['parent'],
 }
 
 KEY_EXPRS = {
@@ -101,6 +120,8 @@ KEY_EXPRS = {
   'games': 'href',
   'game_lineups': 'href',
   'appearances': "(parent.href || '|' || competition_code || '|' || matchday || '|' || date)",
+  'national_teams': 'href',
+  'national_team_players': 'href',
 }
 
 
@@ -162,7 +183,11 @@ def merge_output(existing_file, new_file, asset_name):
       replace = f" REPLACE ({', '.join(casts)})" if casts else ""
       return f"SELECT *{replace} FROM read_json_auto('{filepath}', sample_size=-1, union_by_name=true)"
 
-    if existing_file.exists():
+    existing_has_data = existing_file.exists() and conn.sql(
+      f"SELECT count(*) FROM read_json_auto('{str(existing_file)}', sample_size=1)"
+    ).fetchone()[0] > 0
+
+    if existing_has_data:
       merge_query = f"""
         WITH all_records AS (
           SELECT *, {key_expr} AS _key, 1 AS _priority FROM ({read_expr(str(new_file))})
@@ -185,6 +210,48 @@ def merge_output(existing_file, new_file, asset_name):
   finally:
     conn.close()
 
+def acquire_countries():
+  """Acquire the countries asset (non-seasonal, plain JSONL, no gzip).
+  Requires confederation parents discovered from tfmkt confederations.
+  """
+  output_file = pathlib.Path("data/countries.json")
+
+  # Step 1: get confederations as parents for the countries crawler
+  logging.info("Running: tfmkt confederations")
+  conf_result = subprocess.run(["tfmkt", "confederations"], capture_output=True, text=True)
+  if conf_result.returncode != 0:
+    logging.warning(f"tfmkt confederations exited with {conf_result.returncode}")
+  conf_lines = [l for l in conf_result.stdout.splitlines() if l.startswith('{')]
+  if not conf_lines:
+    raise RuntimeError("tfmkt confederations produced no output")
+  logging.info(f"Found {len(conf_lines)} confederations")
+
+  # Step 2: write confederations to a temp file and run countries
+  with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as tmp:
+    tmp.write('\n'.join(conf_lines))
+    tmp_path = tmp.name
+
+  try:
+    cmd = ["tfmkt", "countries", "-p", tmp_path]
+    logging.info(f"Running: {' '.join(cmd)}")
+    result = subprocess.run(cmd, capture_output=True, text=True)
+
+    if result.returncode != 0:
+      logging.warning(f"tfmkt countries exited with code {result.returncode}")
+      if result.stderr:
+        logging.warning(f"stderr (tail): ...{result.stderr[-500:]}")
+
+    lines = [l for l in result.stdout.splitlines() if l.startswith('{')]
+    if not lines and result.returncode != 0:
+      raise RuntimeError("tfmkt countries failed with no output")
+
+    with open(str(output_file), 'w') as f:
+      f.write('\n'.join(lines))
+    logging.info(f"Wrote {len(lines)} countries to {output_file}")
+  finally:
+    os.unlink(tmp_path)
+
+
 def acquire_asset(asset, season):
   """Acquire a single asset for a given season, merging with existing data."""
   season_dir = pathlib.Path(f"data/raw/transfermarkt-scraper/{season}")
@@ -199,7 +266,7 @@ def acquire_asset(asset, season):
 
   try:
     logging.info(f"Acquiring {asset.name} for season {season}")
-    new_count, returncode = run_tfmkt(asset.name, tmp_path, season=season, parents_file=parent_file)
+    new_count, returncode = run_tfmkt(asset.crawler_name(), tmp_path, season=season, parents_file=parent_file)
     logging.info(f"Scraped {new_count} new records for {asset.name}")
 
     if new_count == 0 and returncode != 0:
@@ -226,6 +293,11 @@ def acquire_on_local(asset, seasons):
 
     return assets
 
+  # countries is non-seasonal: acquire once regardless of seasons arg
+  if asset == 'countries':
+    acquire_countries()
+    return
+
   expanded_seasons = seasons_list(seasons)
   expanded_assets = assets_list(asset)
 
@@ -238,7 +310,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument(
   '--asset',
   help="Name of the asset to be acquired",
-  choices=['clubs', 'players', 'games', 'game_lineups', 'appearances', 'all'],
+  choices=['clubs', 'players', 'games', 'game_lineups', 'appearances', 'countries', 'national_teams', 'national_team_players', 'all'],
   required=True
 )
 parser.add_argument(

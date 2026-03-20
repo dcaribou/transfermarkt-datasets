@@ -24,6 +24,9 @@ select
             'uefa_champions_league_qualifying', 'europa_league_qualifying', 'uefa_europa_conference_league',
             'uefa_super_cup'
         ) then 'international_cup'
+        when sub_type in (
+            'world_cup', 'uefa_euro', 'copa_america', 'africa_cup_of_nations', 'afc_asian_cup'
+        ) then 'national_team_competition'
         else 'other'
     end as "type",
     coalesce((json_row ->> 'country_id')::integer, -1) as country_id,

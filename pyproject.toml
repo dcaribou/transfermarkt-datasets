@@ -12,7 +12,7 @@ pytest = "^7.1.2"
 scipy = "^1.11"
 streamlit = "^1.29"
 plotly = "^5.11.0"
-transfermarkt-scraper = {git = "https://github.com/dcaribou/transfermarkt-scraper.git", branch = "main"}
+transfermarkt-scraper = {git = "https://github.com/dcaribou/transfermarkt-scraper.git", branch = "add-countries-national-teams"}
 dbt-duckdb = "^1.9"
 duckdb-engine = "^0.9"
 boto3 = "^1.28"

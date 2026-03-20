@@ -9,13 +9,13 @@ Clean, structured and **automatically updated** football (soccer) dataset built 
 
 ## What's in it
 
-The dataset is composed of **10 tables** covering competitions, games, clubs, players, appearances, player valuations, club games, game events, game lineups and transfers. Each table contains the attributes of the entity and IDs that can be used to join them together.
+The dataset is composed of **12 tables** covering competitions, games, clubs, players, appearances, player valuations, club games, game events, game lineups, transfers, countries and national teams. Each table contains the attributes of the entity and IDs that can be used to join them together.
 
 | Table | Description | Scale |
 | --- | --- | --- |
-| `competitions` | Leagues and tournaments | 40+ |
+| `competitions` | Leagues, tournaments and national team competitions | 40+ |
 | `clubs` | Club details, squad size, market value | 400+ |
-| `players` | Player profiles, positions, market values | 30,000+ |
+| `players` | Player profiles, positions, market values, international caps | 30,000+ |
 | `games` | Match results, lineups, attendance | 68,000+ |
 | `appearances` | One row per player per game played | 1,500,000+ |
 | `player_valuations` | Historical market value records | 450,000+ |
@@ -23,6 +23,8 @@ The dataset is composed of **10 tables** covering competitions, games, clubs, pl
 | `game_events` | Goals, cards, substitutions | 950,000+ |
 | `game_lineups` | Starting and bench lineups | 81,000+ |
 | `transfers` | Player transfers between clubs | -- |
+| `countries` | Country details and confederation membership | 200+ |
+| `national_teams` | National team profiles, squad size, FIFA ranking | 200+ |
 
 <a href="https://pub-e682421888d945d684bcae8890b0ec20.r2.dev/data/transfermarkt-datasets.zip"><img src="https://img.shields.io/badge/-Download%20Dataset-brightgreen?style=for-the-badge&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJ3aGl0ZSI+PHBhdGggZD0iTTEyIDNhMSAxIDAgMCAxIDEgMXY5LjU5bDIuMy0yLjNhMSAxIDAgMSAxIDEuNDEgMS40MmwtNCA0YTEgMSAwIDAgMS0xLjQyIDBsLTQtNGExIDEgMCAxIDEgMS40Mi0xLjQybDIuMyAyLjNWNGExIDEgMCAwIDEgMS0xem0tNyAxNGEyIDIgMCAwIDAtMiAydjFhMiAyIDAgMCAwIDIgMmgxNGEyIDIgMCAwIDAgMi0ydi0xYTIgMiAwIDAgMC0yLTJINXoiLz48L3N2Zz4=" alt="Download Dataset" height="28"></a>
 <a href="https://codespaces.new/dcaribou/transfermarkt-datasets/tree/master?quickstart=1"><img src="https://github.com/codespaces/badge.svg" alt="Open in GitHub Codespaces" height="28"></a>
@@ -47,8 +49,11 @@ games --|> appearances : game_id
 games --|> game_events : game_id
 games --|> clubs : home/away_club_id
 games --|> club_games : game_id
+countries --|> national_teams : country_id
+national_teams --|> players : current_national_team_id
 class competitions {
- competition_id
+    competition_id
+    type
 }
 class games {
     game_id
@@ -71,6 +76,9 @@ class club_games {
 class players {
     player_id
     current_club_id
+    current_national_team_id
+    international_caps
+    international_goals
 }
 class player_valuations{
     player_id
@@ -79,6 +87,17 @@ class appearances {
     appearance_id
     player_id
     game_id
+}
+class countries {
+    country_id
+    country_name
+    confederation
+}
+class national_teams {
+    national_team_id
+    country_id
+    confederation
+    fifa_ranking
 }
 ```
 

@@ -1,0 +1,122 @@
+name: acquire-national-teams
+
+on:
+  schedule:
+    - cron: '0 6 * * TUE,FRI'
+  workflow_dispatch:
+    inputs:
+      season:
+        required: false
+        default: "2025"
+        description: Season to acquire data for
+
+env:
+  SEASON: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.season || '2025' }}
+  DATA_DIR: data/raw/transfermarkt-scraper/${{ github.event_name == 'workflow_dispatch' && github.event.inputs.season || '2025' }}
+
+jobs:
+  acquire-countries:
+    runs-on: ubuntu-latest
+    container:
+      image: dcaribou/transfermarkt-datasets:linux-amd64-master
+    defaults:
+      run:
+        shell: bash -l {0}
+    steps:
+      - uses: actions/checkout@v4
+      - name: run acquire
+        run: |
+          just acquire_local --asset countries --seasons $SEASON
+      - uses: actions/upload-artifact@v4
+        with:
+          name: countries
+          path: data/countries.json
+
+  acquire-national-teams:
+    runs-on: ubuntu-latest
+    container:
+      image: dcaribou/transfermarkt-datasets:linux-amd64-master
+    defaults:
+      run:
+        shell: bash -l {0}
+    needs: acquire-countries
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: countries
+          path: data
+      - name: run acquire
+        run: |
+          just acquire_local --asset national_teams --seasons $SEASON
+      - uses: actions/upload-artifact@v4
+        with:
+          name: national_teams
+          path: ${{ env.DATA_DIR }}/national_teams.json.gz
+
+  acquire-national-team-players:
+    runs-on: ubuntu-latest
+    container:
+      image: dcaribou/transfermarkt-datasets:linux-amd64-master
+    defaults:
+      run:
+        shell: bash -l {0}
+    needs: acquire-national-teams
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: national_teams
+          path: ${{ env.DATA_DIR }}
+      - name: run acquire
+        run: |
+          just acquire_local --asset national_team_players --seasons $SEASON
+      - uses: actions/upload-artifact@v4
+        with:
+          name: national_team_players
+          path: ${{ env.DATA_DIR }}/players.json.gz
+
+  dvc-push:
+    runs-on: ubuntu-latest
+    container:
+      image: dcaribou/transfermarkt-datasets:linux-amd64-master
+    defaults:
+      run:
+        shell: bash -l {0}
+    needs:
+      - acquire-countries
+      - acquire-national-teams
+      - acquire-national-team-players
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PA_GITHUB_TOKEN }}
+      - name: pull data
+        run: |
+          dvc pull
+      - uses: actions/download-artifact@v4
+        with:
+          name: countries
+          path: data
+      - uses: actions/download-artifact@v4
+        with:
+          name: national_teams
+          path: ${{ env.DATA_DIR }}
+      - uses: actions/download-artifact@v4
+        with:
+          name: national_team_players
+          path: ${{ env.DATA_DIR }}
+      - name: dvc commit and push
+        run: |
+          set -e
+          dvc commit -f && dvc push --remote r2
+          git config --global --add safe.directory '*'
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+      - uses: EndBug/add-and-commit@v9
+        with:
+          add: 'data/raw/transfermarkt-scraper.dvc data/countries.json'
+          message: '🤖 updated national teams raw data'
+          default_author: github_actions
+          pull: '--no-rebase'

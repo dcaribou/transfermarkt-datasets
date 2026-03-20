@@ -20,3 +20,17 @@ models:
       - name: player_id
         tests:
           - unique
+
+  - name: base_countries
+    columns:
+      - name: country_id
+        tests:
+          - unique
+          - not_null
+
+  - name: base_national_teams
+    columns:
+      - name: national_team_id
+        tests:
+          - unique
+          - not_null
