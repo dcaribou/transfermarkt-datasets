@@ -5,7 +5,9 @@
 
 # transfermarkt-datasets
 
-Clean, structured and **automatically updated** football (soccer) dataset built from [Transfermarkt](https://www.transfermarkt.co.uk/) data -- 68,000+ games, 30,000+ players, 1,500,000+ appearances and more, refreshed weekly.
+Clean, structured and **automatically updated** football (soccer) dataset built from [Transfermarkt](https://www.transfermarkt.co.uk/) data -- 79,000+ games, 37,000+ players, 1,800,000+ appearances and more, refreshed weekly.
+
+> 🌍 **New: International football data** — The dataset now includes `countries`, `national_teams`, national team competition games (🏆 World Cup, UEFA Euro, Copa América, AFCON, AFC Asian Cup), and `international_caps` / `international_goals` / `current_national_team_id` on every player profile.
 
 ## What's in it
 
@@ -15,16 +17,16 @@ The dataset is composed of **12 tables** covering competitions, games, clubs, pl
 | --- | --- | --- |
 | `competitions` | Leagues, tournaments and national team competitions | 40+ |
 | `clubs` | Club details, squad size, market value | 400+ |
-| `players` | Player profiles, positions, market values, international caps | 30,000+ |
-| `games` | Match results, lineups, attendance | 68,000+ |
-| `appearances` | One row per player per game played | 1,500,000+ |
-| `player_valuations` | Historical market value records | 450,000+ |
-| `club_games` | Per-club view of each game | 136,000+ |
-| `game_events` | Goals, cards, substitutions | 950,000+ |
-| `game_lineups` | Starting and bench lineups | 81,000+ |
-| `transfers` | Player transfers between clubs | -- |
-| `countries` | Country details and confederation membership | 200+ |
-| `national_teams` | National team profiles, squad size, FIFA ranking | 200+ |
+| `players` | Player profiles, positions, market values, international caps | 37,000+ |
+| `games` | Match results, lineups, attendance | 79,000+ |
+| `appearances` | One row per player per game played | 1,800,000+ |
+| `player_valuations` | Historical market value records | 500,000+ |
+| `club_games` | Per-club view of each game | 150,000+ |
+| `game_events` | Goals, cards, substitutions | 1,100,000+ |
+| `game_lineups` | Starting and bench lineups | 2,800,000+ |
+| `transfers` | Player transfers between clubs | 87,000+ |
+| `countries` | Country details and confederation membership | 100+ |
+| `national_teams` | National team profiles, squad size, FIFA ranking | 100+ |
 
 <a href="https://pub-e682421888d945d684bcae8890b0ec20.r2.dev/data/transfermarkt-datasets.zip"><img src="https://img.shields.io/badge/-Download%20Dataset-brightgreen?style=for-the-badge&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJ3aGl0ZSI+PHBhdGggZD0iTTEyIDNhMSAxIDAgMCAxIDEgMXY5LjU5bDIuMy0yLjNhMSAxIDAgMSAxIDEuNDEgMS40MmwtNCA0YTEgMSAwIDAgMS0xLjQyIDBsLTQtNGExIDEgMCAxIDEgMS40Mi0xLjQybDIuMyAyLjNWNGExIDEgMCAwIDEgMS0xem0tNyAxNGEyIDIgMCAwIDAtMiAydjFhMiAyIDAgMCAwIDIgMmgxNGEyIDIgMCAwIDAgMi0ydi0xYTIgMiAwIDAgMC0yLTJINXoiLz48L3N2Zz4=" alt="Download Dataset" height="28"></a>
 <a href="https://codespaces.new/dcaribou/transfermarkt-datasets/tree/master?quickstart=1"><img src="https://github.com/codespaces/badge.svg" alt="Open in GitHub Codespaces" height="28"></a>
