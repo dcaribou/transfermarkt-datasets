@@ -1115,14 +1115,14 @@ files = [
 
 [[package]]
 name = "crawlee"
-version = "1.3.2"
+version = "1.6.0"
 description = "Crawlee for Python"
 optional = false
 python-versions = ">=3.10"
 groups = ["main"]
 files = [
-    {file = "crawlee-1.3.2-py3-none-any.whl", hash = "sha256:c2d734568c6d7f1d349b50a6eefdc0cd5ea1980a918303692ee9fb5dcf4b8aff"},
-    {file = "crawlee-1.3.2.tar.gz", hash = "sha256:ecb8f891631e85e50fcba41a93b27901ef12d52cb17b30e2be76607d9483f9d4"},
+    {file = "crawlee-1.6.0-py3-none-any.whl", hash = "sha256:91a25ba2a4da0a0a7252b6dd1d7b4c7b59552c82fbab6f9fec31e15d86cbc772"},
+    {file = "crawlee-1.6.0.tar.gz", hash = "sha256:788026ed1ff39418abad9361282e64f285de4b3f84867a05630132cd7864f116"},
 ]
 
 [package.dependencies]
@@ -1152,6 +1152,7 @@ otel = ["opentelemetry-api (>=1.34.1)", "opentelemetry-distro[otlp] (>=0.54)", "
 parsel = ["parsel (>=1.10.0)"]
 playwright = ["apify-fingerprint-datapoints (>=0.0.2)", "browserforge (>=1.2.3)", "playwright (>=1.27.0)"]
 redis = ["redis[hiredis] (>=7.0.0)"]
+sql-mysql = ["aiomysql (>=0.3.2)", "cryptography (>=46.0.5)", "sqlalchemy[asyncio] (>=2.0.0,<3.0.0)"]
 sql-postgres = ["asyncpg (>=0.24.0)", "sqlalchemy[asyncio] (>=2.0.0,<3.0.0)"]
 sql-sqlite = ["aiosqlite (>=0.21.0)", "sqlalchemy[asyncio] (>=2.0.0,<3.0.0)"]
 
@@ -6795,7 +6796,7 @@ files = []
 develop = false
 
 [package.dependencies]
-crawlee = {version = "^1.0", extras = ["parsel"]}
+crawlee = {version = "^1.6.0", extras = ["parsel"]}
 inflection = "^0.5.1"
 python-dateutil = "^2.8.2"
 
@@ -6803,7 +6804,7 @@ python-dateutil = "^2.8.2"
 type = "git"
 url = "https://github.com/dcaribou/transfermarkt-scraper.git"
 reference = "add-countries-national-teams"
-resolved_reference = "04f1b20ac4c0855d825e1544ba2c781505ea97c6"
+resolved_reference = "a00db7ec8ae3d2d12c63cf0d2a94642d6ebad56e"
 
 [[package]]
 name = "triad"

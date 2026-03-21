@@ -98,6 +98,7 @@ class Asset():
 # an existing file has all-null values and a new scrape has actual strings.
 VARCHAR_CASTS = {
   'clubs': ['coach_name', 'total_market_value', 'league_position'],
+  'games': ['home_club_position', 'away_club_position'],
   'players': ['day_of_last_contract_extension', 'current_market_value', 'highest_market_value'],
   'national_team_players': ['day_of_last_contract_extension', 'current_market_value', 'highest_market_value'],
 }
@@ -281,6 +282,45 @@ def acquire_asset(asset, season):
   if returncode != 0:
     logging.warning(f"Completed with partial failures")
 
+def acquire_tournament_games():
+  """Acquire games for each tournament edition listed in data/tournament_editions.json."""
+  import json
+
+  editions_file = pathlib.Path("data/tournament_editions.json")
+  with open(str(editions_file)) as f:
+    editions = [json.loads(line) for line in f if line.strip()]
+
+  for edition in editions:
+    season = edition['season']
+    season_dir = pathlib.Path(f"data/raw/transfermarkt-scraper/{season}")
+    season_dir.mkdir(parents=True, exist_ok=True)
+
+    output_file = pathlib.Path(f"data/raw/transfermarkt-scraper/{season}/games.json.gz")
+
+    with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as tmp_edition:
+      tmp_edition.write(json.dumps(edition))
+      tmp_edition_path = tmp_edition.name
+
+    with tempfile.NamedTemporaryFile(suffix='.jsonl.gz', delete=False) as tmp_out:
+      tmp_out_path = tmp_out.name
+
+    try:
+      logging.info(f"Acquiring tournament games for season {season} (year {edition['year']})")
+      new_count, returncode = run_tfmkt('games', tmp_out_path, season=season, parents_file=tmp_edition_path)
+      logging.info(f"Scraped {new_count} new records for tournament games season {season}")
+
+      if new_count == 0 and returncode != 0:
+        raise RuntimeError(f"tfmkt failed with no output for tournament games season {season}")
+
+      merged_count = merge_output(output_file, tmp_out_path, 'games')
+      logging.info(f"Merged result: {merged_count} total records in {output_file}")
+    finally:
+      if os.path.exists(tmp_edition_path):
+        os.unlink(tmp_edition_path)
+      if os.path.exists(tmp_out_path):
+        os.unlink(tmp_out_path)
+
+
 def acquire_on_local(asset, seasons):
 
   def assets_list(asset: str) -> List[Asset]:
@@ -298,6 +338,11 @@ def acquire_on_local(asset, seasons):
     acquire_countries()
     return
 
+  # tournament_games is non-seasonal: driven by data/tournament_editions.json
+  if asset == 'tournament_games':
+    acquire_tournament_games()
+    return
+
   expanded_seasons = seasons_list(seasons)
   expanded_assets = assets_list(asset)
 
@@ -310,7 +355,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument(
   '--asset',
   help="Name of the asset to be acquired",
-  choices=['clubs', 'players', 'games', 'game_lineups', 'appearances', 'countries', 'national_teams', 'national_team_players', 'all'],
+  choices=['clubs', 'players', 'games', 'game_lineups', 'appearances', 'countries', 'national_teams', 'national_team_players', 'tournament_games', 'all'],
   required=True
 )
 parser.add_argument(
