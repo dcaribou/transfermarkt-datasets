@@ -27,7 +27,12 @@ select
     trim(coalesce(first_name, '') || ' ' || coalesce(last_name, '')) as name,
     season as last_season,
     coalesce(
-        str_split(json_extract_string(json_row, '$.parent.href'), '/')[5], '-1'
+        case
+            when json_extract_string(json_row, '$.parent.type') = 'national_team'
+            then str_split(json_extract_string(json_row, '$.current_club.href'), '/')[5]
+            else str_split(json_extract_string(json_row, '$.parent.href'), '/')[5]
+        end,
+        '-1'
     ) as current_club_id,
     json_extract_string(json_row, '$.code') as player_code,
     trim(json_extract_string(json_row, '$.place_of_birth.country')) as country_of_birth,
@@ -86,12 +91,27 @@ select
         else json_extract_string(json_row, '$.foot')
     end as foot,
     case when json_row ->> 'height' != 'null'
-    then trim(regexp_replace((json_row ->> 'height')[:4], '[,\s´]', ''))::integer
+    then trim(regexp_replace((json_row ->> 'height')[:4], '[,‚\s´]', ''))::integer
     else null
     end as height_in_cm,
     {{ parse_contract_expiration_date("json_row ->> 'contract_expires'")}} as contract_expiration_date,
     json_row -> 'player_agent' ->> 'name' as agent_name,
     json_extract_string(json_row, '$.image_url') as image_url,
+    case
+        when len(json_extract_string(json_row, '$.international_caps')) > 0
+        then json_extract_string(json_row, '$.international_caps')::integer
+        else null
+    end as international_caps,
+    case
+        when len(json_extract_string(json_row, '$.international_goals')) > 0
+        then json_extract_string(json_row, '$.international_goals')::integer
+        else null
+    end as international_goals,
+    case
+        when json_extract_string(json_row, '$.parent.type') = 'national_team'
+        then str_split(json_extract_string(json_row, '$.parent.href'), '/')[5]
+        else null
+    end as current_national_team_id,
     'https://www.transfermarkt.co.uk' || json_extract_string(json_row, '$.href') as url
 
 from json_players

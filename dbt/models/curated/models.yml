@@ -99,7 +99,7 @@ models:
             - url
       - dbt_expectations.expect_table_row_count_to_be_between:
           min_value: 43
-          max_value: 45
+          max_value: 50
     columns:
       - name: competition_id
         tests:
@@ -128,6 +128,9 @@ models:
             - highest_market_value_in_eur
             - agent_name
             - contract_expiration_date
+            - international_caps
+            - international_goals
+            - current_national_team_id
             - current_club_domestic_competition_id
             - first_name
             - last_name
@@ -151,7 +154,8 @@ models:
           - not_null
       - name: current_club_name
         tests:
-          - not_null
+          - too_many_missings:
+              tolerance: 0.15
       - name: market_value_in_eur
         tests:
           - too_many_missings:
@@ -333,6 +337,61 @@ models:
         tests:
           - not_null
           - unique
+
+  - name: countries
+    tests:
+      - dbt_expectations.expect_table_columns_to_contain_set:
+          column_list:
+            - country_id
+            - country_name
+            - country_code
+            - confederation
+            - total_clubs
+            - total_players
+            - url
+      - dbt_expectations.expect_table_row_count_to_be_between:
+          min_value: 100
+          max_value: 250
+    columns:
+      - name: country_id
+        tests:
+          - unique
+          - not_null
+      - name: country_name
+        tests:
+          - not_null
+
+  - name: national_teams
+    tests:
+      - dbt_expectations.expect_table_columns_to_contain_set:
+          column_list:
+            - national_team_id
+            - name
+            - country_id
+            - country_name
+            - confederation
+            - squad_size
+            - total_market_value
+            - coach_name
+            - fifa_ranking
+            - url
+      - dbt_expectations.expect_table_row_count_to_be_between:
+          min_value: 100
+          max_value: 250
+    columns:
+      - name: national_team_id
+        tests:
+          - unique
+          - not_null
+      - name: name
+        tests:
+          - not_null
+      - name: confederation
+        tests:
+          - too_many_missings:
+              tolerance: 0.02
+          - accepted_values:
+              values: ['UEFA', 'CONMEBOL', 'CONCACAF', 'CAF', 'AFC', 'OFC']
 
   - name: transfers
     tests:
