@@ -6803,8 +6803,8 @@ python-dateutil = "^2.8.2"
 [package.source]
 type = "git"
 url = "https://github.com/dcaribou/transfermarkt-scraper.git"
-reference = "add-countries-national-teams"
-resolved_reference = "a00db7ec8ae3d2d12c63cf0d2a94642d6ebad56e"
+reference = "main"
+resolved_reference = "b3970b03e6a68553b6041c1415fb3e31dc7c9878"
 
 [[package]]
 name = "triad"
@@ -7386,4 +7386,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.12, <3.13"
-content-hash = "835ba1f7b13e13f01fe6580697a669142b6a7d122eed2e2c16a1a9ff9e6a00cd"
+content-hash = "f803105aaf1fc2b2f008717ebaba33c3732ab8015114626d12b57fa89223e522"
