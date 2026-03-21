@@ -45,8 +45,12 @@ select
     case
         when json_extract_string(json_row, '$.date') != 'null' then
         case
-            -- raw data switched from m/d/y to d/m/y format starting in the 2024 season
-            when season::integer >= 2024 then coalesce(
+            -- raw data switched from m/d/y to d/m/y format starting in the 2024 season.
+            -- tournament games (parent href contains '/saison_id/') are always freshly
+            -- scraped with d/m/y regardless of season.
+            when season::integer >= 2024
+                or json_extract_string(json_row, '$.parent.href') like '%/saison_id/%'
+            then coalesce(
                 try_strptime(json_extract_string(json_row, '$.date'), '%a, %d/%m/%y'),
                 try_strptime(json_extract_string(json_row, '$.date'), '%a, %m/%d/%y')
             )
