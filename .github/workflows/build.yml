@@ -26,6 +26,11 @@ jobs:
           set -e
           just --set dbt_target prod dvc_pull test prepare_local
 
+      - name: Export clean DuckDB file
+        if: github.ref == 'refs/heads/master' && github.event_name == 'push'
+        run: |
+          python scripts/synching/export-duckdb.py --schema prod --commit $GITHUB_SHA
+
       - name: Upload prepared data to R2
         if: github.ref == 'refs/heads/master' && github.event_name == 'push'
         env:

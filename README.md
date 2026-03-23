@@ -105,28 +105,49 @@ class national_teams {
 
 </details>
 
-## Querying the data
+## Getting started
 
-Use any of the options above to get the data -- download the zip, grab it from Kaggle or data.world, or load individual tables into your tool of choice.
+The fastest way to explore the dataset is to download the DuckDB database file -- a single file containing all 12 tables, ready to query.
 
-> **Pro-tip:** You can also query any table remotely with [DuckDB](https://duckdb.org/docs/installation/) -- no download required!
+### 1. Download the database
+
+<a href="https://pub-e682421888d945d684bcae8890b0ec20.r2.dev/data/transfermarkt-datasets.duckdb"><img src="https://img.shields.io/badge/-Download%20DuckDB%20Database-ff9900?style=for-the-badge&logo=duckdb&logoColor=white" alt="Download DuckDB Database" height="28"></a>
+
+Or via the command line:
+
+```bash
+curl -LO https://pub-e682421888d945d684bcae8890b0ec20.r2.dev/data/transfermarkt-datasets.duckdb
+```
+
+### 2. Query with any DuckDB client
+
+Open the file with the [DuckDB CLI](https://duckdb.org/docs/installation/), Python, R, or any compatible client:
 
 ```sql
-INSTALL httpfs; LOAD httpfs;
+-- DuckDB CLI
+-- $ duckdb transfermarkt-datasets.duckdb
+
+SHOW TABLES;
 
 SELECT player_id, name, position, market_value_in_eur
-FROM read_csv_auto('https://pub-e682421888d945d684bcae8890b0ec20.r2.dev/data/players.csv.gz')
+FROM players
 WHERE position = 'Attack'
 ORDER BY market_value_in_eur DESC
 LIMIT 10;
 
--- player_id | name             | position | market_value_in_eur
--- 581678    | Florian Wirtz    | Attack   | 200000000
--- 342229    | Kylian Mbappe    | Attack   | 180000000
--- 418560    | Erling Haaland   | Attack   | 180000000
--- 401923    | Lamine Yamal     | Attack   | 150000000
+-- player_id | name            | position | market_value_in_eur
+-- 418560    | Erling Haaland  | Attack   | 200000000
+-- 342229    | Kylian Mbappé   | Attack   | 180000000
+-- 371998    | Vinicius Junior | Attack   | 180000000
+-- 433177    | Bukayo Saka     | Attack   | 130000000
 -- ...
 ```
+
+> **Tip:** You can also query individual CSV files remotely with [DuckDB](https://duckdb.org/docs/installation/) -- no download required:
+> ```sql
+> INSTALL httpfs; LOAD httpfs;
+> SELECT * FROM read_csv_auto('https://pub-e682421888d945d684bcae8890b0ec20.r2.dev/data/players.csv.gz') LIMIT 10;
+> ```
 
 ## Community
 

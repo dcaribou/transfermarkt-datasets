@@ -33,7 +33,7 @@ def sync_to_r2(prep_dir):
         print(f"  {filename} -> s3://{R2_BUCKET}/{key}")
         s3.upload_file(filepath, R2_BUCKET, key)
 
-    for extra in ["dataset-metadata.json", "transfermarkt-datasets.zip"]:
+    for extra in ["dataset-metadata.json", "transfermarkt-datasets.zip", "transfermarkt-datasets.duckdb"]:
         path = os.path.join(prep_dir, extra)
         if os.path.exists(path):
             key = f"{R2_PREFIX}/{extra}"
