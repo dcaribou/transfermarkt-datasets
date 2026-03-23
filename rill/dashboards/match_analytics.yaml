@@ -1,0 +1,70 @@
+type: metrics_view
+title: "Match Analytics"
+description: "Game results, attendance, and scoring patterns across competitions"
+model: match_results
+timeseries: date
+smallest_time_grain: month
+default_time_range: ""
+
+dimensions:
+  - name: competition_name
+    label: "Competition"
+    column: competition_name
+  - name: competition_type
+    label: "Competition Type"
+    column: competition_type
+  - name: season
+    label: "Season"
+    column: season
+  - name: round
+    label: "Round"
+    column: round
+  - name: home_club_name
+    label: "Home Club"
+    column: home_club_name
+  - name: away_club_name
+    label: "Away Club"
+    column: away_club_name
+  - name: result
+    label: "Result"
+    column: result
+  - name: stadium
+    label: "Stadium"
+    column: stadium
+  - name: referee
+    label: "Referee"
+    column: referee
+  - name: home_club_formation
+    label: "Home Formation"
+    column: home_club_formation
+  - name: away_club_formation
+    label: "Away Formation"
+    column: away_club_formation
+
+measures:
+  - name: total_matches
+    label: "Matches"
+    expression: "COUNT(*)"
+  - name: total_goals
+    label: "Total Goals"
+    expression: "SUM(total_goals)"
+  - name: avg_goals_per_match
+    label: "Avg Goals/Match"
+    expression: "AVG(total_goals)"
+    format_d3: ".2f"
+  - name: avg_attendance
+    label: "Avg Attendance"
+    expression: "AVG(attendance)"
+    format_preset: humanize
+  - name: max_attendance
+    label: "Max Attendance"
+    expression: "MAX(attendance)"
+    format_preset: humanize
+  - name: home_win_pct
+    label: "Home Win %"
+    expression: "SUM(CASE WHEN result = 'Home Win' THEN 1 ELSE 0 END) * 100.0 / COUNT(*)"
+    format_d3: ".1f"
+  - name: draw_pct
+    label: "Draw %"
+    expression: "SUM(CASE WHEN result = 'Draw' THEN 1 ELSE 0 END) * 100.0 / COUNT(*)"
+    format_d3: ".1f"

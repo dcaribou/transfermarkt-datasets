@@ -25,4 +25,4 @@ RUN git config --global user.email "transfermarkt-datasets-ci@transfermark-datas
 COPY scripts/bootstrap.sh /app/
 
 ENTRYPOINT ["/bin/bash", "bootstrap.sh"]
-CMD ["master", "just", "streamlit_local"]
+CMD ["master", "just", "rill_start"]

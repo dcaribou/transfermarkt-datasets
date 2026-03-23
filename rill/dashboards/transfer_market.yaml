@@ -1,0 +1,54 @@
+type: metrics_view
+title: "Transfer Market"
+description: "Transfer fees, market values, and player movement trends"
+model: transfer_activity
+timeseries: transfer_date
+smallest_time_grain: month
+default_time_range: ""
+
+dimensions:
+  - name: transfer_season
+    label: "Season"
+    column: transfer_season
+  - name: player_name
+    label: "Player"
+    column: player_name
+  - name: from_club_name
+    label: "Selling Club"
+    column: from_club_name
+  - name: to_club_name
+    label: "Buying Club"
+    column: to_club_name
+  - name: position
+    label: "Position"
+    column: position
+  - name: country_of_citizenship
+    label: "Nationality"
+    column: country_of_citizenship
+  - name: from_league
+    label: "From League"
+    column: from_league
+  - name: to_league
+    label: "To League"
+    column: to_league
+
+measures:
+  - name: total_transfer_fees
+    label: "Total Transfer Fees"
+    expression: "SUM(transfer_fee)"
+    format_preset: humanize
+  - name: avg_transfer_fee
+    label: "Avg Transfer Fee"
+    expression: "AVG(transfer_fee)"
+    format_preset: humanize
+  - name: max_transfer_fee
+    label: "Record Transfer Fee"
+    expression: "MAX(transfer_fee)"
+    format_preset: humanize
+  - name: transfer_count
+    label: "Number of Transfers"
+    expression: "COUNT(*)"
+  - name: avg_market_value
+    label: "Avg Market Value"
+    expression: "AVG(market_value_in_eur)"
+    format_preset: humanize

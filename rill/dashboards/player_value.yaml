@@ -1,0 +1,47 @@
+type: metrics_view
+title: "Player Value"
+description: "Market values and valuation trends for football players"
+model: player_value_history
+timeseries: date
+smallest_time_grain: month
+default_time_range: ""
+
+dimensions:
+  - name: player_name
+    label: "Player"
+    column: player_name
+  - name: position
+    label: "Position"
+    column: position
+  - name: sub_position
+    label: "Sub-Position"
+    column: sub_position
+  - name: country_of_citizenship
+    label: "Nationality"
+    column: country_of_citizenship
+  - name: current_club_name
+    label: "Club"
+    column: current_club_name
+  - name: domestic_competition_id
+    label: "League"
+    column: domestic_competition_id
+
+measures:
+  - name: max_market_value
+    label: "Max Market Value"
+    expression: "MAX(market_value_in_eur)"
+    format_preset: humanize
+  - name: avg_market_value
+    label: "Avg Market Value"
+    expression: "AVG(market_value_in_eur)"
+    format_preset: humanize
+  - name: total_market_value
+    label: "Total Market Value"
+    expression: "SUM(market_value_in_eur)"
+    format_preset: humanize
+  - name: unique_players
+    label: "Unique Players"
+    expression: "COUNT(DISTINCT player_id)"
+  - name: valuation_count
+    label: "Valuations"
+    expression: "COUNT(*)"

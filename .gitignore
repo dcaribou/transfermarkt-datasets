@@ -66,3 +66,6 @@ storage
 
 # generated zip archive
 *.zip
+
+# Rill Developer
+rill/.rill/

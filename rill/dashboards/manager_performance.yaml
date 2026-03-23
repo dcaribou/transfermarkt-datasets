@@ -1,0 +1,51 @@
+type: metrics_view
+title: "Manager Performance"
+description: "Win rates and match results by manager across competitions and seasons"
+model: manager_performance
+timeseries: date
+smallest_time_grain: month
+default_time_range: ""
+
+dimensions:
+  - name: own_manager_name
+    label: "Manager"
+    column: own_manager_name
+  - name: club_name
+    label: "Club"
+    column: club_name
+  - name: competition_type
+    label: "Competition Type"
+    column: competition_type
+  - name: competition_name
+    label: "Competition"
+    column: competition_name
+  - name: season
+    label: "Season"
+    column: season
+  - name: domestic_competition_id
+    label: "Domestic League"
+    column: domestic_competition_id
+  - name: hosting
+    label: "Home/Away"
+    column: hosting
+
+measures:
+  - name: total_games
+    label: "Games Played"
+    expression: "COUNT(*)"
+  - name: total_wins
+    label: "Wins"
+    expression: "SUM(is_win)"
+  - name: win_rate
+    label: "Win Rate %"
+    expression: "SUM(is_win) * 100.0 / COUNT(*)"
+    format_d3: ".1f"
+  - name: goals_scored
+    label: "Goals Scored"
+    expression: "SUM(own_goals)"
+  - name: goals_conceded
+    label: "Goals Conceded"
+    expression: "SUM(opponent_goals)"
+  - name: goal_difference
+    label: "Goal Difference"
+    expression: "SUM(own_goals) - SUM(opponent_goals)"

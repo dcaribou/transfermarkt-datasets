@@ -84,20 +84,9 @@ sync:
     scripts/runner.sh scripts/synching {{syncer}} && \
     gzip -r data/prep/*.csv
 
-# run streamlit app locally
-streamlit_local:
-    streamlit run streamlit/01_👋_about.py --server.port 8501 --browser.serverPort 8501
-
-# run streamlit app in a local docker
-streamlit_docker:
-    docker run -ti \
-        --env-file .env \
-        dcaribou/transfermarkt-datasets:linux-amd64-{{tag}} \
-        {{branch}} just streamlit_local
-
-# deploy streamlit to app hosting service (fly.io)
-streamlit_deploy: docker_push_flyio
-    flyctl deploy
+# start Rill Developer dashboards
+rill_start:
+    cd rill && rill start
 
 # run unit tests for core python module
 test:

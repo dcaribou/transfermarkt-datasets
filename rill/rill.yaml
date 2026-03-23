@@ -1,0 +1,10 @@
+compiler: rill-beta
+title: "Transfermarkt Football Datasets"
+
+connectors:
+  - name: duckdb
+    type: duckdb
+    defaults:
+      path: ../dbt/duck.db
+      schema_name: dev
+      mode: readwrite
