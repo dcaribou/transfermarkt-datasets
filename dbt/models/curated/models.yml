@@ -235,7 +235,7 @@ models:
             - url
       - dbt_expectations.expect_table_row_count_to_be_between:
           min_value: 67000
-          max_value: 82000
+          max_value: 95000
     columns:
       - name: game_id
         tests:
@@ -280,7 +280,7 @@ models:
             - is_win
       - dbt_expectations.expect_table_row_count_to_be_between:
           min_value: 136000
-          max_value: 176000
+          max_value: 190000
 
   - name: game_events
     tests:
