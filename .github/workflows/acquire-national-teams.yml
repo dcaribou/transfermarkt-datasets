@@ -94,6 +94,11 @@ jobs:
       - name: pull data
         run: |
           dvc pull
+      - name: backup existing players before artifact download
+        run: |
+          if [ -f "$DATA_DIR/players.json.gz" ]; then
+            cp "$DATA_DIR/players.json.gz" /tmp/players.json.gz.existing
+          fi
       - uses: actions/download-artifact@v4
         with:
           name: countries
@@ -106,6 +111,20 @@ jobs:
         with:
           name: national_team_players
           path: ${{ env.DATA_DIR }}
+      - name: merge national team players with existing club players
+        run: |
+          if [ -f /tmp/players.json.gz.existing ]; then
+            python -c "
+          import importlib.util, pathlib
+          spec = importlib.util.spec_from_file_location('ts', 'scripts/acquiring/transfermarkt-scraper.py')
+          mod = importlib.util.module_from_spec(spec)
+          spec.loader.exec_module(mod)
+          existing = pathlib.Path('/tmp/players.json.gz.existing')
+          new_file = pathlib.Path('${{ env.DATA_DIR }}/players.json.gz')
+          mod.merge_output(existing, new_file, 'national_team_players')
+          existing.rename(new_file)
+          "
+          fi
       - name: dvc commit and push
         run: |
           set -e

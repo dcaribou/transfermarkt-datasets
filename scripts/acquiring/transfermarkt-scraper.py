@@ -350,20 +350,21 @@ def acquire_on_local(asset, seasons):
     for asset_obj in expanded_assets:
       acquire_asset(asset_obj, season)
 
-parser = argparse.ArgumentParser()
+if __name__ == '__main__':
+  parser = argparse.ArgumentParser()
 
-parser.add_argument(
-  '--asset',
-  help="Name of the asset to be acquired",
-  choices=['clubs', 'players', 'games', 'game_lineups', 'appearances', 'countries', 'national_teams', 'national_team_players', 'tournament_games', 'all'],
-  required=True
-)
-parser.add_argument(
-  '--seasons',
-  help="Season to be acquired. This is passed to the scraper as the SEASON argument",
-  default="2024",
-  type=str
-)
+  parser.add_argument(
+    '--asset',
+    help="Name of the asset to be acquired",
+    choices=['clubs', 'players', 'games', 'game_lineups', 'appearances', 'countries', 'national_teams', 'national_team_players', 'tournament_games', 'all'],
+    required=True
+  )
+  parser.add_argument(
+    '--seasons',
+    help="Season to be acquired. This is passed to the scraper as the SEASON argument",
+    default="2024",
+    type=str
+  )
 
-arguments = parser.parse_args()
-acquire_on_local(**vars(arguments))
+  arguments = parser.parse_args()
+  acquire_on_local(**vars(arguments))
