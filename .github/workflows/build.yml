@@ -21,10 +21,23 @@ jobs:
       - name: checkout
         uses: actions/checkout@v3
 
-      - name: Run tests
+      - name: Pull data
+        run: just dvc_pull
+
+      - name: Run unit tests
+        run: just test
+
+      - name: Run dbt build
         run: |
-          set -e
-          just --set dbt_target prod dvc_pull test prepare_local
+          just --set dbt_target prod prepare_local 2>&1 | tee /tmp/dbt_output.log
+
+      - name: Show dbt test results on failure
+        if: failure()
+        run: |
+          echo '## dbt build output (last 80 lines)' >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          tail -80 /tmp/dbt_output.log >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
 
       - name: Export clean DuckDB file
         if: github.ref == 'refs/heads/master' && github.event_name == 'push'
