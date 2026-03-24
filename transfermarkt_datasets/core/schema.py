@@ -22,14 +22,22 @@ class Field:
         return self.name == __o.name
 
     def as_frictionless_field(self) -> frictionless.Field:
-        fl_field = frictionless.Field(
-            name=self.name,
-            type=self.type,
-            description=self.description,
-            format=self.form
-        )
-
-        return fl_field
+        type_map = {
+            "string": frictionless.fields.StringField,
+            "integer": frictionless.fields.IntegerField,
+            "number": frictionless.fields.NumberField,
+            "date": frictionless.fields.DateField,
+            "datetime": frictionless.fields.DatetimeField,
+            "boolean": frictionless.fields.BooleanField,
+            "array": frictionless.fields.ArrayField,
+        }
+        field_class = type_map.get(self.type, frictionless.fields.StringField)
+        kwargs = {"name": self.name}
+        if self.description:
+            kwargs["description"] = self.description
+        if self.form:
+            kwargs["format"] = self.form
+        return field_class(**kwargs)
 
     def has_tag(self, tag: str) -> bool:
         if tag in self.tags:
