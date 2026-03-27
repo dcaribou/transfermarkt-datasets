@@ -91,7 +91,7 @@ select
         else json_extract_string(json_row, '$.foot')
     end as foot,
     case when json_row ->> 'height' != 'null'
-    then trim(regexp_replace((json_row ->> 'height')[:4], '[,‚\s´]', ''))::integer
+    then trim(regexp_replace((json_row ->> 'height')[:4], '[,‚''\s´]', ''))::integer
     else null
     end as height_in_cm,
     {{ parse_contract_expiration_date("json_row ->> 'contract_expires'")}} as contract_expiration_date,

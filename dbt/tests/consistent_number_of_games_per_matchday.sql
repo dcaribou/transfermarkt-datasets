@@ -21,7 +21,7 @@ select
 from games_cte
 left join competitions_cte using(competition_id)
 
-where competitions_cte.is_major_national_league
+where competitions_cte.type = 'first_tier'
 and season not in (2025)
 
 group by 1,2,3

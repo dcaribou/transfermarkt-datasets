@@ -1,5 +1,80 @@
 defintions:
   seasons: [2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025]
+  competition_ids:
+    # European first-tier leagues
+    - L1    # Germany - Bundesliga
+    - ES1   # Spain - LaLiga
+    - GB1   # England - Premier League
+    - IT1   # Italy - Serie A
+    - FR1   # France - Ligue 1
+    - NL1   # Netherlands - Eredivisie
+    - PO1   # Portugal - Liga Portugal
+    - BE1   # Belgium - Jupiler Pro League
+    - TR1   # Turkey - Super Lig
+    - GR1   # Greece - Super League 1
+    - SC1   # Scotland - Scottish Premiership
+    - RU1   # Russia - Premier Liga
+    - UKR1  # Ukraine - Premier Liga
+    - DK1   # Denmark - Superligaen
+    - A1    # Austria - Bundesliga
+    - C1    # Switzerland - Super League
+    - PL1   # Poland - Ekstraklasa
+    - SE1   # Sweden - Allsvenskan
+    - NO1   # Norway - Eliteserien
+    - TS1   # Czech Republic - Chance Liga
+    - KR1   # Croatia - SuperSport HNL
+    - SER1  # Serbia - Super Liga
+    - RO1   # Romania - Superliga
+    # Americas
+    - BRA1  # Brazil - Serie A
+    - ARG1  # Argentina - Torneo Inicial
+    - MLS1  # United States - MLS
+    - MEX1  # Mexico - Liga MX
+    - COL1  # Colombia - Liga BetPlay
+    # Asia / Oceania
+    - SA1   # Saudi Arabia - Saudi Pro League
+    - JAP1  # Japan - J1 League
+    - RSK1  # South Korea - K League 1
+    - AUS1  # Australia - A-League
+    # Domestic cups
+    - DFB   # Germany - DFB-Pokal
+    - CDR   # Spain - Copa del Rey
+    - FAC   # England - FA Cup
+    - CGB   # England - EFL Cup
+    - CIT   # Italy - Coppa Italia
+    - NLP   # Netherlands - KNVB Beker
+    - POCP  # Portugal - Allianz Cup
+    - RUP   # Russia - Russian Cup
+    - UKRP  # Ukraine - Ukrainian Cup
+    - SFA   # Scotland - SFA Cup
+    - GRP   # Greece - Kypello Elladas
+    - DKP   # Denmark - Sydbank Pokalen
+    # Domestic super cups
+    - DFL   # Germany - DFL-Supercup
+    - SUC   # Spain - Supercopa
+    - GBCS  # England - Community Shield
+    - SCI   # Italy - Supercoppa Italiana
+    - NLSC  # Netherlands - Johan Cruijff Schaal
+    - POSU  # Portugal - Supertaca
+    - FRCH  # France - Trophee des Champions
+    - BESC  # Belgium - Belgian Supercup
+    - RUSS  # Russia - Russian Super Cup
+    - UKRS  # Ukraine - Ukrainian Super Cup
+    # European club competitions
+    - CL    # UEFA Champions League
+    - CLQ   # UEFA Champions League Qualifying
+    - EL    # UEFA Europa League
+    - ELQ   # UEFA Europa League Qualifying
+    - UCOL  # UEFA Europa Conference League
+    - ECLQ  # UEFA Europa Conference League Qualifying
+    - USC   # UEFA Super Cup
+    - KLUB  # FIFA Club World Cup
+    # National team competitions
+    - FIWC  # FIFA World Cup
+    - EURO  # UEFA Euro
+    - COPA  # Copa America
+    - AFCN  # Africa Cup of Nations
+    - AFAC  # AFC Asian Cup
   console_handler: &console_handler
     class: logging.StreamHandler
     level: INFO

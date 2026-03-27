@@ -211,13 +211,8 @@ def merge_output(existing_file, new_file, asset_name):
   finally:
     conn.close()
 
-def acquire_countries():
-  """Acquire the countries asset (non-seasonal, plain JSONL, no gzip).
-  Requires confederation parents discovered from tfmkt confederations.
-  """
-  output_file = pathlib.Path("data/countries.json")
-
-  # Step 1: get confederations as parents for the countries crawler
+def _get_confederations():
+  """Discover confederations from tfmkt. Returns list of JSON lines."""
   logging.info("Running: tfmkt confederations")
   conf_result = subprocess.run(["tfmkt", "confederations"], capture_output=True, text=True)
   if conf_result.returncode != 0:
@@ -226,6 +221,72 @@ def acquire_countries():
   if not conf_lines:
     raise RuntimeError("tfmkt confederations produced no output")
   logging.info(f"Found {len(conf_lines)} confederations")
+  return conf_lines
+
+
+def _competition_id_from_href(href):
+  """Extract competition ID from a transfermarkt href path."""
+  parts = href.rstrip('/').split('/')
+  return parts[-1] if parts else None
+
+
+def acquire_competitions():
+  """Acquire the competitions asset (non-seasonal, plain JSONL, no gzip).
+  Requires confederation parents discovered from tfmkt confederations.
+  Only keeps competitions whose ID is listed in config.yml competition_ids.
+  """
+  import json
+
+  output_file = pathlib.Path("data/competitions.json")
+
+  config = read_config()
+  allowed_ids = set(config["defintions"]["competition_ids"])
+  logging.info(f"Filtering to {len(allowed_ids)} competition IDs from config.yml")
+
+  conf_lines = _get_confederations()
+
+  with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as tmp:
+    tmp.write('\n'.join(conf_lines))
+    tmp_path = tmp.name
+
+  try:
+    cmd = ["tfmkt", "competitions", "-p", tmp_path]
+    logging.info(f"Running: {' '.join(cmd)}")
+    result = subprocess.run(cmd, capture_output=True, text=True)
+
+    if result.returncode != 0:
+      logging.warning(f"tfmkt competitions exited with code {result.returncode}")
+      if result.stderr:
+        logging.warning(f"stderr (tail): ...{result.stderr[-500:]}")
+
+    lines = [l for l in result.stdout.splitlines() if l.startswith('{')]
+    if not lines and result.returncode != 0:
+      raise RuntimeError("tfmkt competitions failed with no output")
+
+    # Filter to only competitions listed in config.yml
+    filtered = []
+    for line in lines:
+      record = json.loads(line)
+      comp_id = _competition_id_from_href(record.get('href', ''))
+      if comp_id in allowed_ids:
+        filtered.append(line)
+
+    logging.info(f"Scraped {len(lines)} competitions, kept {len(filtered)} matching existing config")
+
+    with open(str(output_file), 'w') as f:
+      f.write('\n'.join(filtered))
+    logging.info(f"Wrote {len(filtered)} competitions to {output_file}")
+  finally:
+    os.unlink(tmp_path)
+
+
+def acquire_countries():
+  """Acquire the countries asset (non-seasonal, plain JSONL, no gzip).
+  Requires confederation parents discovered from tfmkt confederations.
+  """
+  output_file = pathlib.Path("data/countries.json")
+
+  conf_lines = _get_confederations()
 
   # Step 2: write confederations to a temp file and run countries
   with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as tmp:
@@ -333,6 +394,11 @@ def acquire_on_local(asset, seasons):
 
     return assets
 
+  # competitions is non-seasonal: acquire once regardless of seasons arg
+  if asset == 'competitions':
+    acquire_competitions()
+    return
+
   # countries is non-seasonal: acquire once regardless of seasons arg
   if asset == 'countries':
     acquire_countries()
@@ -356,7 +422,7 @@ if __name__ == '__main__':
   parser.add_argument(
     '--asset',
     help="Name of the asset to be acquired",
-    choices=['clubs', 'players', 'games', 'game_lineups', 'appearances', 'countries', 'national_teams', 'national_team_players', 'tournament_games', 'all'],
+    choices=['competitions', 'clubs', 'players', 'games', 'game_lineups', 'appearances', 'countries', 'national_teams', 'national_team_players', 'tournament_games', 'all'],
     required=True
   )
   parser.add_argument(

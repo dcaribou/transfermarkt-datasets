@@ -33,6 +33,7 @@ select
     (json_row ->> 'country_name') as country_name,
     (json_row ->> 'country_code') as domestic_league_code,
     str_split((json_row -> 'parent' ->> 'href'), '/')[3] as confederation,
+    (json_row ->> 'total_clubs')::integer as total_clubs,
     'https://www.transfermarkt.co.uk' || (json_row ->> 'href') as url,
 
 from json_competitions

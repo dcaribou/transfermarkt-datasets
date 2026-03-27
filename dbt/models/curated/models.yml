@@ -70,8 +70,8 @@ models:
             - url
             - club_id
       - dbt_expectations.expect_table_row_count_to_be_between:
-          min_value: 400
-          max_value: 480
+          min_value: 650
+          max_value: 850
     columns:
       - name: club_code
         tests:
@@ -96,10 +96,11 @@ models:
             - country_name
             - domestic_league_code
             - confederation
+            - total_clubs
             - url
       - dbt_expectations.expect_table_row_count_to_be_between:
-          min_value: 43
-          max_value: 50
+          min_value: 55
+          max_value: 75
     columns:
       - name: competition_id
         tests:
@@ -139,8 +140,8 @@ models:
             - last_season
             - url
       - dbt_expectations.expect_table_row_count_to_be_between:
-          min_value: 28000
-          max_value: 38000
+          min_value: 35000
+          max_value: 80000
     columns:
       - name: player_id
         tests:
@@ -234,8 +235,8 @@ models:
             - referee
             - url
       - dbt_expectations.expect_table_row_count_to_be_between:
-          min_value: 67000
-          max_value: 82000
+          min_value: 80000
+          max_value: 110000
     columns:
       - name: game_id
         tests:
@@ -279,8 +280,8 @@ models:
             - hosting
             - is_win
       - dbt_expectations.expect_table_row_count_to_be_between:
-          min_value: 136000
-          max_value: 176000
+          min_value: 160000
+          max_value: 230000
 
   - name: game_events
     tests:
