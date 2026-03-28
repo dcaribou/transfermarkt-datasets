@@ -22,7 +22,23 @@ non_standard_format_leagues as (
         -- Scotland: plays 3 rounds (33 matchdays) then splits into top/bottom 6 for 5 more
         ('SC1'),
         -- Denmark: plays 3 rounds then splits into championship/relegation groups
-        ('DK1')
+        ('DK1'),
+        -- Austria: splits into top/bottom 6 after regular season
+        ('A1'),
+        -- Switzerland: same split format as Austria
+        ('C1'),
+        -- Croatia: split format with playoff rounds
+        ('KR1'),
+        -- South Korea: split after 33 rounds into championship/relegation
+        ('RSK1'),
+        -- Argentina: apertura/clausura single round-robin format
+        ('ARG1'),
+        -- MLS: unbalanced conference-based schedule
+        ('MLS1'),
+        -- Mexico: clausura short tournament format
+        ('MEX1'),
+        -- Colombia: apertura/clausura format
+        ('COL1')
     ) as t(competition_id)
 ),
 
@@ -41,7 +57,14 @@ known_exceptions as (
         ('UKR1', '2014'),  -- transition season after league restructuring
         ('UKR1', '2016'),  -- 12 teams with championship round (extra games)
         -- Greece: 1 abandoned/cancelled match
-        ('GR1',  '2014')
+        ('GR1',  '2014'),
+        -- Incomplete initial scrape for newly added leagues (https://github.com/dcaribou/transfermarkt-datasets/issues/368)
+        ('BRA1', '2024'),
+        ('SA1',  '2024'),
+        ('PL1',  '2024'),
+        ('SER1', '2024'),
+        ('TS1',  '2024'),
+        ('AUS1', '2024')
     ) as t(competition_id, season)
 ),
 
