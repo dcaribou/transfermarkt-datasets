@@ -3,7 +3,7 @@ https://www.transfermarkt.com/ceapi/marketValueDevelopment/graph/{player_id}
 https://www.transfermarkt.co.uk/ceapi/transferHistory/list/{player_id}
 
 Usage:
-    python transfermarkt-api.py --seasons=<seasons>
+    python transfermarkt-api.py --seasons=<seasons> [--players=<ids>] [--clubs=<ids>] [--competitions=<ids>]
 
 Note that the will look for the players asset from the transfermarkt-scraper acquirer under
     data/raw/transfermarkt-scraper/{season}/players.json.gz
@@ -38,8 +38,14 @@ USER_AGENT = "transfermarkt-datasets/1.0 (https://github.com/dcaribou/transferma
 
 
 # get the player ids from the players asset from transfermarkt-scraper source
-def get_player_ids(season: int) -> List[int]:
+def get_player_ids(season: int, player_filter=None, club_filter=None, competition_filter=None) -> List[int]:
     """Get the player ids from the players asset from transfermarkt-scraper source.
+
+    Args:
+        season: The season year.
+        player_filter: Optional set of player IDs to include (as strings).
+        club_filter: Optional set of club IDs to include (as strings).
+        competition_filter: Optional set of competition IDs to include (as strings).
 
     Returns:
         List[int]: List of player ids
@@ -50,6 +56,24 @@ def get_player_ids(season: int) -> List[int]:
     # read lines from a zipped file
     with gzip.open(players_asset_path, mode="r") as z:
         players = [json.loads(line) for line in z.readlines()]
+
+    if player_filter:
+        players = [p for p in players if p["href"].split("/")[-1] in player_filter]
+    elif club_filter:
+        players = [p for p in players
+                   if p.get("parent", {}).get("href", "").split("/")[-1] in club_filter]
+    elif competition_filter:
+        # Resolve competition IDs → club IDs from the clubs file, then filter players by club
+        clubs_path = f"data/raw/transfermarkt-scraper/{season}/clubs.json.gz"
+        with gzip.open(clubs_path, mode="r") as z:
+            clubs = [json.loads(line) for line in z.readlines()]
+        club_ids = {
+            c["href"].split("/")[-1] for c in clubs
+            if c.get("parent", {}).get("href", "").rstrip("/").split("/")[-1] in competition_filter
+        }
+        logging.info(f"Competition filter resolved to {len(club_ids)} club IDs")
+        players = [p for p in players
+                   if p.get("parent", {}).get("href", "").split("/")[-1] in club_ids]
 
     player_ids = [
         int(player["href"].split("/")[-1])
@@ -162,11 +186,14 @@ def persist_data(data: List[dict], path: str) -> None:
     with open(path, "w") as f:
         f.writelines(json.dumps(item) + "\n" for item in data)
 
-def run_for_season(season: int) -> None:
+def run_for_season(season: int, player_filter=None, club_filter=None, competition_filter=None) -> None:
     """Run all steps for a given season.
 
     Args:
         season (int): The season to process
+        player_filter: Optional set of player IDs to filter.
+        club_filter: Optional set of club IDs to filter.
+        competition_filter: Optional set of competition IDs to filter.
     """
     target_market_values_path = f"data/raw/transfermarkt-api/{season}/market_values.json"
     target_transfers_path = f"data/raw/transfermarkt-api/{season}/transfers.json"
@@ -178,7 +205,8 @@ def run_for_season(season: int) -> None:
     pathlib.Path(target_transfers_path).parent.mkdir(parents=True, exist_ok=True)
 
     # get player IDs for the season
-    player_ids = get_player_ids(season)
+    player_ids = get_player_ids(season, player_filter=player_filter,
+                                club_filter=club_filter, competition_filter=competition_filter)
 
     # collect market values and transfers for players in SEASON
     market_values = asyncio.run(get_market_values(player_ids))
@@ -220,10 +248,35 @@ parser.add_argument(
   default="2024",
   type=str
 )
+parser.add_argument(
+  '--competitions',
+  help="Comma-separated competition IDs to filter (e.g., GB1,ES1). Only fetches data for players in these competitions.",
+  default=None
+)
+parser.add_argument(
+  '--clubs',
+  help="Comma-separated club IDs to filter (e.g., 131,583). Only fetches data for players in these clubs.",
+  default=None
+)
+parser.add_argument(
+  '--players',
+  help="Comma-separated player IDs to filter (e.g., 28003,1122196). Only fetches data for these players.",
+  default=None
+)
 
 parsed = parser.parse_args()
+
+# Validate mutual exclusivity
+active_filters = sum(1 for f in [parsed.competitions, parsed.clubs, parsed.players] if f is not None)
+if active_filters > 1:
+    parser.error("Only one filter (--competitions, --clubs, or --players) can be used at a time")
+
+player_filter = set(parsed.players.split(',')) if parsed.players else None
+club_filter = set(parsed.clubs.split(',')) if parsed.clubs else None
+competition_filter = set(parsed.competitions.split(',')) if parsed.competitions else None
 
 expanded_seasons = seasons_list(parsed.seasons)
 
 for season in expanded_seasons:
-    run_for_season(season)
+    run_for_season(season, player_filter=player_filter, club_filter=club_filter,
+                   competition_filter=competition_filter)

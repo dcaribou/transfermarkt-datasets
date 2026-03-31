@@ -10,12 +10,13 @@ optional arguments:
 """
 
 import gzip
+import json
 import os
 import pathlib
 import argparse
 import subprocess
 import tempfile
-from typing import List
+from typing import List, Optional
 
 import duckdb
 
@@ -123,6 +124,82 @@ KEY_EXPRS = {
   'appearances': "(parent.href || '|' || competition_code || '|' || matchday || '|' || date)",
   'national_teams': 'href',
   'national_team_players': 'href',
+}
+
+
+# --- Partial acquisition helpers ---
+
+def _competition_id_from_record(record):
+  """Extract competition ID from a competition record's href."""
+  return record.get('href', '').rstrip('/').split('/')[-1]
+
+def _club_id_from_record(record):
+  """Extract numeric club ID from a club record's href."""
+  return record.get('href', '').rstrip('/').split('/')[-1]
+
+def _player_id_from_record(record):
+  """Extract numeric player ID from a player record's href."""
+  return record.get('href', '').rstrip('/').split('/')[-1]
+
+def _read_jsonl(filepath):
+  """Read JSONL file (gzipped or plain) and return list of parsed records."""
+  path = pathlib.Path(filepath)
+  if path.suffix == '.gz':
+    with gzip.open(str(path), 'rt') as f:
+      return [json.loads(line) for line in f if line.strip()]
+  else:
+    with open(str(path)) as f:
+      return [json.loads(line) for line in f if line.strip()]
+
+def _write_jsonl(records, filepath):
+  """Write records as JSONL to a file (gzipped if .gz suffix)."""
+  path = pathlib.Path(filepath)
+  if path.suffix == '.gz':
+    with gzip.open(str(path), 'wt') as f:
+      for record in records:
+        f.write(json.dumps(record) + '\n')
+  else:
+    with open(str(path), 'w') as f:
+      for record in records:
+        f.write(json.dumps(record) + '\n')
+
+def filter_parent_file(source_file, filter_ids, id_extractor):
+  """Filter a JSONL parent file to only include records matching filter_ids.
+  Returns path to a temp file containing the filtered records.
+  Caller is responsible for cleaning up the temp file.
+  """
+  records = _read_jsonl(source_file)
+  filtered = [r for r in records if id_extractor(r) in filter_ids]
+  logging.info(f"Filtered {source_file}: {len(filtered)}/{len(records)} records match filter")
+  if not filtered:
+    raise RuntimeError(f"Filter matched 0 records in {source_file}")
+
+  suffix = '.json.gz' if str(source_file).endswith('.gz') else '.json'
+  tmp = tempfile.NamedTemporaryFile(suffix=suffix, delete=False)
+  tmp.close()
+  _write_jsonl(filtered, tmp.name)
+  return tmp.name
+
+# --- Filter level definitions ---
+# Maps filter name -> (id_extractor, assets to run with --asset all, parent asset name)
+
+FILTER_ASSETS = {
+  'competitions': ['clubs', 'players', 'appearances', 'games', 'game_lineups'],
+  'clubs': ['players', 'appearances'],
+  'players': ['appearances'],
+}
+
+FILTER_ID_EXTRACTORS = {
+  'competitions': _competition_id_from_record,
+  'clubs': _club_id_from_record,
+  'players': _player_id_from_record,
+}
+
+# Which parent asset each filter level targets
+FILTER_PARENT_ASSET = {
+  'competitions': 'competitions',
+  'clubs': 'clubs',
+  'players': 'players',
 }
 
 
@@ -314,12 +391,23 @@ def acquire_countries():
     os.unlink(tmp_path)
 
 
-def acquire_asset(asset, season):
-  """Acquire a single asset for a given season, merging with existing data."""
+def acquire_asset(asset, season, parent_override=None):
+  """Acquire a single asset for a given season, merging with existing data.
+
+  Args:
+    asset: The Asset to acquire.
+    season: The season year.
+    parent_override: Optional path to a filtered parent file (for partial runs).
+
+  Returns:
+    Path to the raw scrape output (before merge), for use as downstream parent
+    in filtered chains. Caller is responsible for cleanup. Returns None if
+    no scrape output was produced.
+  """
   season_dir = pathlib.Path(f"data/raw/transfermarkt-scraper/{season}")
   season_dir.mkdir(parents=True, exist_ok=True)
 
-  parent_file = asset.parent.file_full_path(season) if asset.parent else None
+  parent_file = parent_override or (asset.parent.file_full_path(season) if asset.parent else None)
   output_file = asset.file_path(season)
 
   # Scrape into a temp file, then merge into the output file
@@ -336,12 +424,15 @@ def acquire_asset(asset, season):
 
     merged_count = merge_output(output_file, tmp_path, asset.name)
     logging.info(f"Merged result: {merged_count} total records")
-  finally:
+  except Exception:
     if os.path.exists(tmp_path):
       os.unlink(tmp_path)
+    raise
 
   if returncode != 0:
     logging.warning(f"Completed with partial failures")
+
+  return tmp_path
 
 def acquire_tournament_games():
   """Acquire games for each tournament edition listed in data/tournament_editions.json."""
@@ -382,10 +473,93 @@ def acquire_tournament_games():
         os.unlink(tmp_out_path)
 
 
-def acquire_on_local(asset, seasons):
+def _resolve_filter(competitions, clubs, players):
+  """Parse filter arguments. Returns (filter_level, filter_ids) or (None, None)."""
+  active = [(name, val) for name, val in
+            [('competitions', competitions), ('clubs', clubs), ('players', players)]
+            if val is not None]
+  if len(active) > 1:
+    raise ValueError("Only one filter (--competitions, --clubs, or --players) can be used at a time")
+  if not active:
+    return None, None
+  name, val = active[0]
+  return name, set(val.split(','))
+
+
+def _acquire_filtered_chain(asset_names, season, filter_level, filter_ids):
+  """Run a chain of assets for one season, using filtered parents.
+
+  The first asset in the chain gets a filtered parent file. Each subsequent
+  asset uses the raw scrape output of the previous asset as its parent,
+  ensuring the filter scope propagates through the chain.
+  """
+  # Build the ordered chain respecting dependencies
+  # Two independent sub-chains from competitions: clubs→players→appearances and games→game_lineups
+  chains = [
+    ['clubs', 'players', 'appearances'],
+    ['games', 'game_lineups'],
+  ]
+
+  # For club-level filter, only the clubs→players→appearances chain applies
+  if filter_level == 'clubs':
+    chains = [['players', 'appearances']]
+  elif filter_level == 'players':
+    chains = [['appearances']]
+
+  # Track temp files for cleanup
+  temp_files = []
+
+  try:
+    for chain in chains:
+      # Filter the relevant assets from this chain
+      chain_assets = [name for name in chain if name in asset_names]
+      if not chain_assets:
+        continue
+
+      # Create filtered parent for the first asset in the chain
+      first_asset = Asset(chain_assets[0])
+      first_asset.set_parent()
+      parent_asset_name = first_asset.parent.name if first_asset.parent else None
+
+      # Determine the parent file to filter
+      if parent_asset_name:
+        parent_path = first_asset.parent.file_full_path(season)
+      else:
+        continue
+
+      id_extractor = FILTER_ID_EXTRACTORS[filter_level]
+
+      # The filter level always matches the first asset's parent in our chain definitions:
+      # - competitions filter → chains start with clubs (parent=competitions) or games (parent=competitions)
+      # - clubs filter → chain starts with players (parent=clubs)
+      # - players filter → chain starts with appearances (parent=players)
+      filtered_parent = filter_parent_file(parent_path, filter_ids, id_extractor)
+      temp_files.append(filtered_parent)
+
+      # Run each asset in the chain, passing scrape output as next parent
+      current_parent = filtered_parent
+      for asset_name in chain_assets:
+        asset_obj = Asset(asset_name)
+        asset_obj.set_parent()
+        scrape_output = acquire_asset(asset_obj, season, parent_override=current_parent)
+        if scrape_output:
+          temp_files.append(scrape_output)
+          current_parent = scrape_output
+  finally:
+    for tmp in temp_files:
+      if os.path.exists(tmp):
+        os.unlink(tmp)
+
+
+def acquire_on_local(asset, seasons, competitions=None, clubs=None, players=None):
+
+  filter_level, filter_ids = _resolve_filter(competitions, clubs, players)
 
   def assets_list(asset: str) -> List[Asset]:
     if asset == 'all':
+      if filter_level:
+        # When filtering, only run the assets relevant to the filter level
+        return [Asset(name) for name in FILTER_ASSETS[filter_level]]
       assets = Asset.all()
     else:
       asset_obj = Asset(name=asset)
@@ -412,9 +586,39 @@ def acquire_on_local(asset, seasons):
   expanded_seasons = seasons_list(seasons)
   expanded_assets = assets_list(asset)
 
-  for season in expanded_seasons:
-    for asset_obj in expanded_assets:
-      acquire_asset(asset_obj, season)
+  if filter_level:
+    asset_names = {a.name for a in expanded_assets}
+    logging.info(f"Partial acquisition: {filter_level}={filter_ids}, assets={asset_names}")
+    for season in expanded_seasons:
+      if asset == 'all':
+        _acquire_filtered_chain(asset_names, season, filter_level, filter_ids)
+      else:
+        # Single asset with filter: filter its parent directly
+        asset_obj = expanded_assets[0]
+        parent_asset_name = Asset.asset_parents.get(asset_obj.name)
+        if parent_asset_name and parent_asset_name == FILTER_PARENT_ASSET.get(filter_level):
+          parent_path = asset_obj.parent.file_full_path(season)
+          id_extractor = FILTER_ID_EXTRACTORS[filter_level]
+          filtered_parent = filter_parent_file(parent_path, filter_ids, id_extractor)
+          try:
+            scrape_output = acquire_asset(asset_obj, season, parent_override=filtered_parent)
+            if scrape_output and os.path.exists(scrape_output):
+              os.unlink(scrape_output)
+          finally:
+            if os.path.exists(filtered_parent):
+              os.unlink(filtered_parent)
+        else:
+          logging.warning(f"Filter --{filter_level} does not directly apply to asset '{asset_obj.name}' "
+                          f"(parent is '{parent_asset_name}'). Running unfiltered.")
+          scrape_output = acquire_asset(asset_obj, season)
+          if scrape_output and os.path.exists(scrape_output):
+            os.unlink(scrape_output)
+  else:
+    for season in expanded_seasons:
+      for asset_obj in expanded_assets:
+        scrape_output = acquire_asset(asset_obj, season)
+        if scrape_output and os.path.exists(scrape_output):
+          os.unlink(scrape_output)
 
 if __name__ == '__main__':
   parser = argparse.ArgumentParser()
@@ -430,6 +634,21 @@ if __name__ == '__main__':
     help="Season to be acquired. This is passed to the scraper as the SEASON argument",
     default="2024",
     type=str
+  )
+  parser.add_argument(
+    '--competitions',
+    help="Comma-separated competition IDs to filter (e.g., GB1,ES1). Only scrapes data for these competitions.",
+    default=None
+  )
+  parser.add_argument(
+    '--clubs',
+    help="Comma-separated club IDs to filter (e.g., 131,583). Only scrapes data for these clubs.",
+    default=None
+  )
+  parser.add_argument(
+    '--players',
+    help="Comma-separated player IDs to filter (e.g., 28003,1122196). Only scrapes data for these players.",
+    default=None
   )
 
   arguments = parser.parse_args()
