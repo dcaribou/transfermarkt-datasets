@@ -38,7 +38,9 @@ non_standard_format_leagues as (
         -- Mexico: clausura short tournament format
         ('MEX1'),
         -- Colombia: apertura/clausura format
-        ('COL1')
+        ('COL1'),
+        -- Australia: regular season + finals series (extra playoff games)
+        ('AUS1')
     ) as t(competition_id)
 ),
 
@@ -57,14 +59,7 @@ known_exceptions as (
         ('UKR1', '2014'),  -- transition season after league restructuring
         ('UKR1', '2016'),  -- 12 teams with championship round (extra games)
         -- Greece: 1 abandoned/cancelled match
-        ('GR1',  '2014'),
-        -- Incomplete initial scrape for newly added leagues (https://github.com/dcaribou/transfermarkt-datasets/issues/368)
-        ('BRA1', '2024'),
-        ('SA1',  '2024'),
-        ('PL1',  '2024'),
-        ('SER1', '2024'),
-        ('TS1',  '2024'),
-        ('AUS1', '2024')
+        ('GR1',  '2014')
     ) as t(competition_id, season)
 ),
 
