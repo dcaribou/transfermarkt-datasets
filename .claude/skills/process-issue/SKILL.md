@@ -60,7 +60,93 @@ Based on the issue title, body, labels, and comments:
   ```
 - Understand the root cause thoroughly before proposing changes
 
-### 1.4 Create the plan document
+### 1.4 Determine fix location
+
+After analyzing the codebase, determine whether the fix belongs in **this repo** (dbt models, scripts, config) or in the **upstream scraper** (`dcaribou/transfermarkt-scraper`).
+
+The fix belongs in the scraper when:
+
+- The root cause is missing or incorrect data in the raw JSON that the scraper produces
+- A simpler/cleaner fix would be to extend the scraper's extraction logic rather than work around it in dbt
+- The issue explicitly mentions scraper behavior or raw data fields that don't exist yet
+
+If the fix belongs in this repo, continue to **1.5 Create the plan document**.
+
+If the fix belongs in the scraper, follow **1.4a Upstream fix workflow** instead.
+
+### 1.4a Upstream fix workflow (scraper-side fixes)
+
+When the fix requires changes in the scraper:
+
+**1. Create an issue on the scraper repo**
+
+```sh
+gh issue create --repo dcaribou/transfermarkt-scraper \
+  --title "<concise description of the scraper change needed>" \
+  --body "$(cat <<'EOF'
+## Context
+
+Downstream issue: dcaribou/transfermarkt-datasets#<issue_number>
+
+<Explain what the scraper should change: which asset/page is affected, what data is missing or incorrect, and what the scraper should extract instead.>
+
+## Expected outcome
+
+<Describe the expected shape of the raw data after the fix — new fields, corrected values, etc.>
+EOF
+)"
+```
+
+Capture the new issue URL from the command output.
+
+**2. Label the datasets issue as blocked**
+
+```sh
+gh label create "blocked:upstream" --description "Blocked by a required change in an upstream dependency" --color FBCA04 --force
+gh issue edit <issue_number> --add-label "blocked:upstream"
+```
+
+**3. Comment on the datasets issue**
+
+```sh
+gh issue comment <issue_number> --body "This issue requires an upstream change in the scraper. Created <scraper_issue_url> to track the required work. Marking as blocked until the scraper change is available."
+```
+
+**4. Create a plan document recording the decision**
+
+Write a plan document at `docs/plans/<issue_number>-<slug>.md` with this structure:
+
+```markdown
+# Fix #<issue_number>: <issue title>
+
+## Context
+
+<What is the problem and why it requires a scraper-side fix rather than a dbt workaround.>
+
+## Upstream issue
+
+<scraper_issue_url>
+
+## What needs to happen
+
+1. The scraper change described in the upstream issue is implemented and released
+2. Raw data is re-acquired with the updated scraper
+3. Any necessary dbt model changes are made in this repo to consume the new/changed fields
+```
+
+Do NOT commit the plan automatically.
+
+**5. Report to the user**
+
+Print:
+- The scraper issue URL
+- The blocked label applied to the datasets issue
+- The plan document path
+- Remind the user that once the scraper fix is available, they can update the plan and run `/process-issue execute <issue_number>`
+
+Then **stop** — do not continue to step 1.5.
+
+### 1.5 Create the plan document
 
 Generate a slug from the issue title: lowercase, replace spaces and special characters with hyphens, truncate to ~50 characters. Write the plan to:
 
@@ -97,7 +183,7 @@ For data fixes, include a query that confirms the data is correct.>
 
 The Verification section is the heart of the plan — it defines "done". Each verification step should be a concrete command with an expected result. Keep it proportional to the complexity of the change: a one-model fix might just need `dbt build -s model_name --target dev` to succeed, while a data quality fix should include a query proving the data is correct.
 
-### 1.5 Present the plan for review
+### 1.6 Present the plan for review
 
 Print the plan file path and a summary of the proposed changes. Tell the user to review the plan, edit it if needed, and run `/process-issue execute <issue_number>` when ready.
 
@@ -179,6 +265,7 @@ Remind the user they can push the branch and create a PR when ready. Do NOT push
 | Verification fails after changes | Do NOT commit; report expected vs. actual |
 | Plan references a nonexistent file | Stop and report |
 | Unexpected obstacle during execution | Stop and explain rather than improvising |
+| Fix belongs in the upstream scraper | Create scraper issue, label as blocked, stop |
 
 ## Environment Notes
 
