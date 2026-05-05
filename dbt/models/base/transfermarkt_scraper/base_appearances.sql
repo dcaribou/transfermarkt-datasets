@@ -11,14 +11,13 @@ with
             (str_split(json_extract_string(json_row, '$.href'), '/')[5])::integer
             as player_id,
             coalesce(
-                (
-                    str_split(json_extract_string(json_row, '$.result.href'), '/')[5]
-                )::integer,
+                try_cast(json_extract(json_row, '$.game_id') as integer),
+                try_cast(str_split(json_extract_string(json_row, '$.result.href'), '/')[5] as integer),
                 -1
             ) as game_id,
             (game_id || '_' || player_id) as appearance_id,
             json_extract_string(json_row, '$.competition_code') as competition_id,
-            (str_split(json_extract_string(json_row, '$.for.href'), '/')[5])::integer
+            regexp_extract(json_extract_string(json_row, '$.for.href'), '/verein/(\d+)', 1)::integer
             as player_club_id,
             case
                 when len(json_extract_string(json_row, '$.goals')) = 0
