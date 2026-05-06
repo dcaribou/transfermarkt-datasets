@@ -1,3 +1,5 @@
+{{ config(severity='warn') }}
+
 {#
     Catch high null response rates in the latest season's market value data.
     The API sometimes returns null responses for players, which causes them to

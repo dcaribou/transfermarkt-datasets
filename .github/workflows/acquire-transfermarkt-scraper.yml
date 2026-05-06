@@ -24,6 +24,11 @@ jobs:
         shell: bash -l {0}
     steps:
       - uses: actions/checkout@v4
+      - name: pull existing raw data for this asset
+        run: dvc pull "${DATA_DIR}/clubs.json.gz"
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
       - name: run acquire
         run: |
           just acquire_local --asset clubs --seasons $SEASON
@@ -42,6 +47,11 @@ jobs:
     needs: acquire-clubs
     steps:
       - uses: actions/checkout@v4
+      - name: pull existing raw data for this asset
+        run: dvc pull "${DATA_DIR}/players.json.gz"
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
       - uses: actions/download-artifact@v4
         with:
           name: clubs
@@ -63,6 +73,11 @@ jobs:
         shell: bash -l {0}
     steps:
       - uses: actions/checkout@v4
+      - name: pull existing raw data for this asset
+        run: dvc pull "${DATA_DIR}/games.json.gz"
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
       - name: run acquire
         run: |
           just acquire_local --asset games --seasons $SEASON
@@ -81,6 +96,11 @@ jobs:
     needs: acquire-games
     steps:
       - uses: actions/checkout@v4
+      - name: pull existing raw data for this asset
+        run: dvc pull "${DATA_DIR}/game_lineups.json.gz"
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
       - uses: actions/download-artifact@v4
         with:
           name: games
@@ -103,6 +123,11 @@ jobs:
     needs: acquire-players
     steps:
       - uses: actions/checkout@v4
+      - name: pull existing raw data for this asset
+        run: dvc pull "${DATA_DIR}/appearances.json.gz"
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
       - uses: actions/download-artifact@v4
         with:
           name: players

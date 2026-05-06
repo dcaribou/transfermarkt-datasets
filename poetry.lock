@@ -6804,7 +6804,7 @@ python-dateutil = "^2.8.2"
 type = "git"
 url = "https://github.com/dcaribou/transfermarkt-scraper.git"
 reference = "main"
-resolved_reference = "b3970b03e6a68553b6041c1415fb3e31dc7c9878"
+resolved_reference = "b151a22add811fef909e88edf42389b318cf88df"
 
 [[package]]
 name = "triad"
