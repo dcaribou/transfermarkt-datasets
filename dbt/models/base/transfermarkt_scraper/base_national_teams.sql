@@ -14,7 +14,10 @@ with
 
 select
     national_team_id,
-    json_extract_string(json_row, '$.name') as name,
+    coalesce(
+        nullif(json_extract_string(json_row, '$.name'), ''),
+        json_extract_string(json_row, '$.parent.country_name')
+    ) as name,
     json_extract_string(json_row, '$.code') as team_code,
     json_extract_string(json_row, '$.parent.country_id') as country_id,
     case

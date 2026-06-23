@@ -98,7 +98,7 @@ class Asset():
 # Explicit casts prevent type-mismatch errors in UNION ALL BY NAME when
 # an existing file has all-null values and a new scrape has actual strings.
 VARCHAR_CASTS = {
-  'clubs': ['coach_name', 'total_market_value', 'league_position'],
+  'clubs': ['coach_name', 'coach_href', 'total_market_value', 'league_position'],
   'games': ['home_club_position', 'away_club_position'],
   'players': ['day_of_last_contract_extension', 'current_market_value', 'highest_market_value'],
   'national_team_players': ['day_of_last_contract_extension', 'current_market_value', 'highest_market_value'],
