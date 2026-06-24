@@ -98,7 +98,7 @@ class Asset():
 # Explicit casts prevent type-mismatch errors in UNION ALL BY NAME when
 # an existing file has all-null values and a new scrape has actual strings.
 VARCHAR_CASTS = {
-  'clubs': ['coach_name', 'total_market_value', 'league_position'],
+  'clubs': ['coach_name', 'coach_href', 'total_market_value', 'league_position'],
   'games': ['home_club_position', 'away_club_position'],
   'players': ['day_of_last_contract_extension', 'current_market_value', 'highest_market_value'],
   'national_team_players': ['day_of_last_contract_extension', 'current_market_value', 'highest_market_value'],
@@ -349,6 +349,23 @@ def acquire_competitions():
         filtered.append(line)
 
     logging.info(f"Scraped {len(lines)} competitions, kept {len(filtered)} matching existing config")
+
+    # Merge supplemental competitions (play-offs etc. not in Transfermarkt's confederation hierarchy)
+    supp_file = pathlib.Path("data/supplemental_competitions.json")
+    if supp_file.exists():
+      supp_ids_seen = set()
+      existing_ids = {_competition_id_from_href(json.loads(l).get('href', '')) for l in filtered}
+      with open(str(supp_file)) as sf:
+        for line in sf:
+          line = line.strip()
+          if not line:
+            continue
+          record = json.loads(line)
+          comp_id = _competition_id_from_href(record.get('href', ''))
+          if comp_id in allowed_ids and comp_id not in existing_ids and comp_id not in supp_ids_seen:
+            filtered.append(line)
+            supp_ids_seen.add(comp_id)
+      logging.info(f"Merged {len(supp_ids_seen)} supplemental competitions")
 
     with open(str(output_file), 'w') as f:
       f.write('\n'.join(filtered))

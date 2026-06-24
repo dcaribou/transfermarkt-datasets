@@ -1,6 +1,9 @@
 defintions:
   seasons: [2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025]
   competition_ids:
+    # Allowlist for acquisition. Competitions not in Transfermarkt's confederation hierarchy
+    # (e.g. play-offs) won't be scraped by tfmkt competitions even if listed here —
+    # add those to data/supplemental_competitions.json instead.
     # European first-tier leagues
     - L1    # Germany - Bundesliga
     - ES1   # Spain - LaLiga
@@ -10,6 +13,9 @@ defintions:
     - NL1   # Netherlands - Eredivisie
     - PO1   # Portugal - Liga Portugal
     - BE1   # Belgium - Jupiler Pro League
+    - EJPL  # Belgium - Jupiler Pro League Champions' Play-Offs
+    - POBE  # Belgium - Jupiler Pro League Europe Play-Offs
+    - BPO4  # Belgium - Jupiler Pro League Relegation Play-offs
     - TR1   # Turkey - Super Lig
     - GR1   # Greece - Super League 1
     - SC1   # Scotland - Scottish Premiership

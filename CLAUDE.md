@@ -9,6 +9,8 @@ Football (soccer) dataset built from transfermarkt.com data. Raw data is acquire
 - `data/raw/transfermarkt-scraper/` - raw JSON data from the scraper
 - `data/raw/transfermarkt-api/` - raw JSON data from the API
 - `data/prep/` - prepared dataset CSV files (gzipped)
+- `data/competitions.json` - generated list of competitions (overwritten on every `acquire_local --asset competitions` run)
+- `data/supplemental_competitions.json` - hand-crafted competition records merged into `data/competitions.json` on each run; use this for competitions that don't appear in Transfermarkt's confederation hierarchy (e.g. play-offs); see [docs/developer-guide.md](docs/developer-guide.md) for details
 - `dbt/` - dbt project root (models, profiles, packages)
 - `dbt/models/base/` - base models that parse raw JSON into tables (one per source)
 - `dbt/models/curated/` - curated models that join/transform base models into final datasets
