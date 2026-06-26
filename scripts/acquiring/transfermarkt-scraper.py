@@ -398,8 +398,16 @@ def acquire_countries():
         logging.warning(f"stderr (tail): ...{result.stderr[-500:]}")
 
     lines = [l for l in result.stdout.splitlines() if l.startswith('{')]
-    if not lines and result.returncode != 0:
-      raise RuntimeError("tfmkt countries failed with no output")
+    # tfmkt can exit 0 while returning empty/stripped pages (e.g. anti-bot
+    # blocking serves a 200 with no items table). There is always at least one
+    # country, so treat any empty output as a failure rather than silently
+    # overwriting data/countries.json with an empty file, which breaks every
+    # downstream job (national_teams, etc.) with a confusing error elsewhere.
+    if not lines:
+      raise RuntimeError(
+        f"tfmkt countries returned no records (exit code {result.returncode}); "
+        f"refusing to overwrite {output_file} with empty data"
+      )
 
     with open(str(output_file), 'w') as f:
       f.write('\n'.join(lines))
