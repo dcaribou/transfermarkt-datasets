@@ -7,7 +7,25 @@
 
 Clean, structured and **automatically updated** football (soccer) dataset built from [Transfermarkt](https://www.transfermarkt.co.uk/) data -- 79,000+ games, 37,000+ players, 1,800,000+ appearances and more, refreshed weekly.
 
-> 🌍 **New: International football data** — The dataset now includes `countries`, `national_teams`, national team competition games (🏆 World Cup, UEFA Euro, Copa América, AFCON, AFC Asian Cup), and `international_caps` / `international_goals` / `current_national_team_id` on every player profile.
+> [!IMPORTANT]
+> ⚽ **World Cup 2026 data is live — updated as the tournament plays out.**
+>
+> Group stage results and player appearances for all 48 nations are already in the dataset. Query them right now:
+>
+> ```sql
+> -- Who scored in Brazil's last group game?
+> SELECT player_name, goals
+> FROM appearances
+> JOIN games USING (game_id)
+> WHERE competition_id = 'FIWC'
+>   AND (home_club_name = 'Brazil' OR away_club_name = 'Brazil')
+>   AND goals > 0
+> ORDER BY date DESC;
+> -- Vinicius Junior  2
+> -- Matheus Cunha    1
+> ```
+>
+> The dataset covers all major national team tournaments (🏆 World Cup, UEFA Euro, Copa América, AFCON, AFC Asian Cup) plus `international_caps`, `international_goals`, and `current_national_team_id` on every player profile.
 
 ## What's in it
 
