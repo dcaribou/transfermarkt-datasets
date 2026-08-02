@@ -36,6 +36,13 @@ MARKET_VALUES_API = "https://www.transfermarkt.com/ceapi/marketValueDevelopment/
 TRANSFERS_API = "https://www.transfermarkt.co.uk/ceapi/transferHistory/list/"
 USER_AGENT = "transfermarkt-datasets/1.0 (https://github.com/dcaribou/transfermarkt-datasets)"
 
+# how many times to re-request the players that came back with a null response
+MAX_BATCH_RETRIES = 2
+
+# a run with a higher share of null responses than this is treated as failed,
+# and is never written over the raw data already on disk
+MAX_NULL_RESPONSE_RATE = 0.2
+
 
 # get the player ids from the players asset from transfermarkt-scraper source
 def get_player_ids(season: int, player_filter=None, club_filter=None, competition_filter=None) -> List[int]:
@@ -176,13 +183,96 @@ async def get_transfers(player_ids: List[int]) -> List[dict]:
 
     return responses
 
-def persist_data(data: List[dict], path: str) -> None:
-    """Persist the data to a file.
+def fetch_with_retries(fetch_all, player_ids: List, label: str) -> List[dict]:
+    """Fetch responses for `player_ids`, re-requesting the ones that come back null.
+
+    The API intermittently returns null for individual players, and rejects
+    whole runs when it decides to block us. Retrying only the failed players
+    keeps a partial failure from turning into a lost season.
+
+    Args:
+        fetch_all: Coroutine function taking a list of player ids
+        player_ids (List): The players to request
+        label (str): Name of the asset, used for logging
+
+    Returns:
+        List[dict]: One response per requested player, in the original order
+    """
+    results = asyncio.run(fetch_all(player_ids))
+
+    for attempt in range(MAX_BATCH_RETRIES):
+        null_ids = [item["player_id"] for item in results if item["response"] is None]
+        if not null_ids:
+            break
+        logging.warning(
+            f"Batch retry {attempt + 1}/{MAX_BATCH_RETRIES}: "
+            f"{len(null_ids)} players with null {label} responses"
+        )
+        retry_lookup = {item["player_id"]: item for item in asyncio.run(fetch_all(null_ids))}
+        results = [
+            retry_lookup.get(item["player_id"], item) if item["response"] is None else item
+            for item in results
+        ]
+
+    null_count = sum(1 for item in results if item["response"] is None)
+    logging.info(
+        f"{label} complete: {len(results)} total, {null_count} null responses remaining"
+    )
+
+    return results
+
+def validate_responses(data: List[dict], path: str, label: str) -> None:
+    """Check that an acquisition result is good enough to overwrite raw data.
+
+    A blocked run still returns a well-formed response per player, just with a
+    null payload, so without this check it overwrites good raw data with
+    nothing. That is what happened on 2026-07-11: 22,324 null responses were
+    written over season 2025, erasing 242MB of transfer history and removing
+    players from the published dataset.
+
+    Args:
+        data (List[dict]): List of dicts with data to persist
+        path (str): Path the data would be written to, used in error messages
+        label (str): Name of the asset, used in log and error messages
+
+    Raises:
+        RuntimeError: If the result is empty or too many responses are null.
+    """
+    if not data:
+        raise RuntimeError(
+            f"{label} acquisition returned no records; refusing to overwrite {path}"
+        )
+
+    null_count = sum(1 for item in data if item["response"] is None)
+    null_rate = null_count / len(data)
+
+    if null_rate > MAX_NULL_RESPONSE_RATE:
+        raise RuntimeError(
+            f"{label} acquisition returned {null_count}/{len(data)} "
+            f"({null_rate:.1%}) null responses, above the "
+            f"{MAX_NULL_RESPONSE_RATE:.0%} threshold; refusing to overwrite {path}. "
+            "This usually means the API blocked the run."
+        )
+
+    if null_count:
+        logging.warning(
+            f"Persisting {label} with {null_count}/{len(data)} null responses "
+            f"({null_rate:.1%})"
+        )
+
+def persist_data(data: List[dict], path: str, label: str) -> None:
+    """Persist the data to a file, unless the run looks like it failed.
 
     Args:
         data (List[dict]): List of dicts with data to persist
         path (str): Path where to store the data
+        label (str): Name of the asset, used in log and error messages
+
+    Raises:
+        RuntimeError: If the result would not pass validate_responses.
     """
+    validate_responses(data, path, label)
+
     with open(path, "w") as f:
         f.writelines(json.dumps(item) + "\n" for item in data)
 
@@ -209,37 +299,23 @@ def run_for_season(season: int, player_filter=None, club_filter=None, competitio
                                 club_filter=club_filter, competition_filter=competition_filter)
 
     # collect market values and transfers for players in SEASON
-    market_values = asyncio.run(get_market_values(player_ids))
+    market_values = fetch_with_retries(get_market_values, player_ids, "market values")
 
-    # batch-level retry for null market value responses
-    max_batch_retries = 2
-    for batch_attempt in range(max_batch_retries):
-        null_ids = [item["player_id"] for item in market_values if item["response"] is None]
-        if not null_ids:
-            break
-        logging.warning(f"Batch retry {batch_attempt + 1}/{max_batch_retries}: {len(null_ids)} players with null market value responses")
-        retry_results = asyncio.run(get_market_values(null_ids))
-        # build lookup of retry results
-        retry_lookup = {item["player_id"]: item for item in retry_results}
-        # replace null responses with retry results
-        market_values = [
-            retry_lookup.get(item["player_id"], item) if item["response"] is None else item
-            for item in market_values
-        ]
-
-    final_null_count = sum(1 for item in market_values if item["response"] is None)
-    logging.info(f"Market values complete for season {season}: {len(market_values)} total, {final_null_count} null responses remaining")
-
-    transfers = asyncio.run(get_transfers(player_ids))
+    transfers = fetch_with_retries(get_transfers, player_ids, "transfers")
 
     # filter out player ids in responses that are not in the original list
     transfers = [item for item in transfers if item["player_id"] in player_ids]
 
     logging.info(f"Persisting market values and transfers for season {season}")
 
+    # check both before writing either, so a failed run cannot leave one file
+    # updated and the other stale
+    validate_responses(market_values, target_market_values_path, "market values")
+    validate_responses(transfers, target_transfers_path, "transfers")
+
     # persist market values and transfers to files
-    persist_data(market_values, target_market_values_path)
-    persist_data(transfers, target_transfers_path)
+    persist_data(market_values, target_market_values_path, "market values")
+    persist_data(transfers, target_transfers_path, "transfers")
 
 def main():
     """Parse arguments and run the acquisition for every requested season."""
