@@ -241,42 +241,49 @@ def run_for_season(season: int, player_filter=None, club_filter=None, competitio
     persist_data(market_values, target_market_values_path)
     persist_data(transfers, target_transfers_path)
 
-parser = argparse.ArgumentParser()
-parser.add_argument(
-  '--seasons',
-  help="Season to be acquired. This is passed to the scraper as the SEASON argument",
-  default="2024",
-  type=str
-)
-parser.add_argument(
-  '--competitions',
-  help="Comma-separated competition IDs to filter (e.g., GB1,ES1). Only fetches data for players in these competitions.",
-  default=None
-)
-parser.add_argument(
-  '--clubs',
-  help="Comma-separated club IDs to filter (e.g., 131,583). Only fetches data for players in these clubs.",
-  default=None
-)
-parser.add_argument(
-  '--players',
-  help="Comma-separated player IDs to filter (e.g., 28003,1122196). Only fetches data for these players.",
-  default=None
-)
+def main():
+    """Parse arguments and run the acquisition for every requested season."""
 
-parsed = parser.parse_args()
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+      '--seasons',
+      help="Season to be acquired. This is passed to the scraper as the SEASON argument",
+      default="2024",
+      type=str
+    )
+    parser.add_argument(
+      '--competitions',
+      help="Comma-separated competition IDs to filter (e.g., GB1,ES1). Only fetches data for players in these competitions.",
+      default=None
+    )
+    parser.add_argument(
+      '--clubs',
+      help="Comma-separated club IDs to filter (e.g., 131,583). Only fetches data for players in these clubs.",
+      default=None
+    )
+    parser.add_argument(
+      '--players',
+      help="Comma-separated player IDs to filter (e.g., 28003,1122196). Only fetches data for these players.",
+      default=None
+    )
 
-# Validate mutual exclusivity
-active_filters = sum(1 for f in [parsed.competitions, parsed.clubs, parsed.players] if f is not None)
-if active_filters > 1:
-    parser.error("Only one filter (--competitions, --clubs, or --players) can be used at a time")
+    parsed = parser.parse_args()
 
-player_filter = set(parsed.players.split(',')) if parsed.players else None
-club_filter = set(parsed.clubs.split(',')) if parsed.clubs else None
-competition_filter = set(parsed.competitions.split(',')) if parsed.competitions else None
+    # Validate mutual exclusivity
+    active_filters = sum(1 for f in [parsed.competitions, parsed.clubs, parsed.players] if f is not None)
+    if active_filters > 1:
+        parser.error("Only one filter (--competitions, --clubs, or --players) can be used at a time")
 
-expanded_seasons = seasons_list(parsed.seasons)
+    player_filter = set(parsed.players.split(',')) if parsed.players else None
+    club_filter = set(parsed.clubs.split(',')) if parsed.clubs else None
+    competition_filter = set(parsed.competitions.split(',')) if parsed.competitions else None
 
-for season in expanded_seasons:
-    run_for_season(season, player_filter=player_filter, club_filter=club_filter,
-                   competition_filter=competition_filter)
+    expanded_seasons = seasons_list(parsed.seasons)
+
+    for season in expanded_seasons:
+        run_for_season(season, player_filter=player_filter, club_filter=club_filter,
+                       competition_filter=competition_filter)
+
+
+if __name__ == "__main__":
+    main()
