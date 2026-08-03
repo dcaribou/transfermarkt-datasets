@@ -7,6 +7,14 @@ with
             row_number() over (partition by player_id order by season desc) as n,
             filename
         from {{ source("transfermarkt_api", "transfers") }}
+
+        -- filter out null API responses before ranking so that
+        -- the latest season with actual data is selected. Without this, a
+        -- failed acquisition run (which still persists {"response": null}
+        -- rows) shadows every earlier season and erases the player's entire
+        -- transfer history from the dataset.
+        where json_extract(json(value), '$.response') is not null
+          and json_extract_string(json(value), '$.response') != 'null'
     ),
     unnested as (
         select
