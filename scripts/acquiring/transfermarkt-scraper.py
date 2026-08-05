@@ -224,11 +224,6 @@ def run_tfmkt(crawler, output_file, season=None, parents_file=None):
   logging.info(f"Running: {' '.join(cmd)} | gzip > '{output_file}'")
   result = subprocess.run(shell_cmd, shell=True, executable='/bin/bash', capture_output=False, stderr=subprocess.PIPE, text=True)
 
-  if result.returncode != 0:
-    logging.warning(f"tfmkt exited with code {result.returncode}")
-    if result.stderr:
-      logging.warning(f"stderr (tail): ...{result.stderr[-2000:]}")
-
   # Count records from the written file
   record_count = 0
   if os.path.exists(output_file) and os.path.getsize(output_file) > 0:
@@ -237,6 +232,20 @@ def run_tfmkt(crawler, output_file, season=None, parents_file=None):
         record_count = sum(1 for _ in f)
     except gzip.BadGzipFile:
       pass
+
+  if result.returncode != 0:
+    logging.warning(f"tfmkt exited with code {result.returncode}")
+  # A clean exit with nothing scraped is the hardest case to diagnose after the
+  # fact: an anti-bot challenge page is served as a 200, so tfmkt makes its
+  # requests, extracts nothing, records no failures and exits 0. Log stderr here
+  # too, not just on a non-zero exit, so the crawlee statistics (requests
+  # finished vs items produced, and the runtime) are in the log to tell that
+  # apart from a competition that genuinely has no fixtures.
+  elif record_count == 0:
+    logging.warning("tfmkt exited cleanly but wrote no records")
+
+  if (result.returncode != 0 or record_count == 0) and result.stderr:
+    logging.warning(f"stderr (tail): ...{result.stderr[-2000:]}")
 
   return record_count, result.returncode
 
