@@ -109,6 +109,7 @@ VARCHAR_CASTS = {
 # Casting to JSON normalises the type and avoids UNION ALL BY NAME conflicts.
 # Safe to do because base models only ever access these via json_extract_string().
 JSON_CASTS = {
+  'clubs': ['parent'],
   'players': ['parent'],
   'games': ['parent'],
   'game_lineups': ['parent'],
