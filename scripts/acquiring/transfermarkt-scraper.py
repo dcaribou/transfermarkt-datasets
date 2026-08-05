@@ -216,16 +216,18 @@ def run_tfmkt(crawler, output_file, season=None, parents_file=None):
     cmd.extend(["-p", str(parents_file)])
 
   # Pipe: tfmkt ... | grep JSON lines only | gzip > output_file
-  # Use pipefail so we get tfmkt's exit code, not gzip's.
   # grep for lines starting with '{' to filter out any non-JSON stdout noise from tfmkt.
-  shell_cmd = f"set -o pipefail; {' '.join(cmd)} | grep '^{{' | gzip > '{output_file}'"
+  # Report tfmkt's own exit code via PIPESTATUS rather than the pipeline's: grep
+  # exits 1 when it matches nothing, so pipefail would report a clean run that
+  # happened to scrape zero records as a tfmkt crash, hiding the real cause.
+  shell_cmd = f"{' '.join(cmd)} | grep '^{{' | gzip > '{output_file}'; exit ${{PIPESTATUS[0]}}"
   logging.info(f"Running: {' '.join(cmd)} | gzip > '{output_file}'")
   result = subprocess.run(shell_cmd, shell=True, executable='/bin/bash', capture_output=False, stderr=subprocess.PIPE, text=True)
 
   if result.returncode != 0:
     logging.warning(f"tfmkt exited with code {result.returncode}")
     if result.stderr:
-      logging.warning(f"stderr (tail): ...{result.stderr[-500:]}")
+      logging.warning(f"stderr (tail): ...{result.stderr[-2000:]}")
 
   # Count records from the written file
   record_count = 0
@@ -445,8 +447,21 @@ def acquire_asset(asset, season, parent_override=None):
     new_count, returncode = run_tfmkt(asset.crawler_name(), tmp_path, season=season, parents_file=parent_file)
     logging.info(f"Scraped {new_count} new records for {asset.name}")
 
-    if new_count == 0 and returncode != 0:
-      raise RuntimeError(f"tfmkt failed with no output for {asset.name}")
+    # A scrape that yields nothing is always a failure, whatever tfmkt's exit
+    # code says. When Transfermarkt blocks the client it answers 200 with a
+    # stripped page, so every request "succeeds", nothing is extracted, and
+    # tfmkt exits 0. Merging that is a silent no-op, so fail here rather than
+    # report a green run that acquired no data.
+    if new_count == 0:
+      if returncode != 0:
+        raise RuntimeError(
+          f"tfmkt failed with no output for {asset.name} (exit code {returncode})"
+        )
+      raise RuntimeError(
+        f"tfmkt exited cleanly but scraped no records for {asset.name}. "
+        f"Every request succeeded, so the pages were served without the "
+        f"expected content - Transfermarkt is most likely blocking this client"
+      )
 
     merged_count = merge_output(output_file, tmp_path, asset.name)
     logging.info(f"Merged result: {merged_count} total records")
