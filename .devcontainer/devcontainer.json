@@ -5,7 +5,7 @@
 	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
 	"image": "mcr.microsoft.com/devcontainers/base:bullseye",
 	"features": {
-		"ghcr.io/devcontainers-contrib/features/poetry:2": {},
+		"ghcr.io/devcontainers-extra/features/poetry:2": {},
 		"ghcr.io/eitsupi/devcontainer-features/duckdb-cli:1": {
 			"version": "0.8.1"
 		}
