@@ -5,6 +5,6 @@ mmdc \
     -i diagram.mmd \
     --backgroundColor transparent \
     -o diagram.svg \
-    --width 1040 \ # the width and height actually have no effect in how kaggle and data.world displays it
+    --width 1040 \ # the width and height actually have no effect in how kaggle displays it
     --height 780
 ```

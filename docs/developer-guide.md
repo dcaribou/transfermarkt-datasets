@@ -116,7 +116,6 @@ python -c "import duckdb; print(duckdb.connect('dbt/duck.db').sql('SELECT * FROM
 Prepared data is published to popular dataset platforms by running `just sync`, which runs weekly as part of the data pipeline.
 
 - [Kaggle](https://www.kaggle.com/datasets/davidcariboo/player-scores)
-- [data.world](https://data.world/dcereijo/player-scores)
 
 There is also a [streamlit](https://streamlit.io/) app with documentation, a data catalog, and sample analysis. Run it locally with:
 

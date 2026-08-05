@@ -111,8 +111,8 @@ act:
     act \
         "workflow_dispatch" \
         -s GITHUB_TOKEN \
-        -j sync-dataworld \
+        -j {{workflow}} \
         --pull=true \
         --no-skip-checkout \
-        -W .github/workflows/sync-dataworld.yml \
+        -W .github/workflows/{{workflow}}.yml \
         --container-architecture linux/amd64

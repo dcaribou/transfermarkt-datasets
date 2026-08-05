@@ -49,7 +49,6 @@ The dataset is composed of **12 tables** covering competitions, games, clubs, pl
 <a href="https://pub-e682421888d945d684bcae8890b0ec20.r2.dev/data/transfermarkt-datasets.zip"><img src="https://img.shields.io/badge/-Download%20Dataset-brightgreen?style=for-the-badge&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJ3aGl0ZSI+PHBhdGggZD0iTTEyIDNhMSAxIDAgMCAxIDEgMXY5LjU5bDIuMy0yLjNhMSAxIDAgMSAxIDEuNDEgMS40MmwtNCA0YTEgMSAwIDAgMS0xLjQyIDBsLTQtNGExIDEgMCAxIDEgMS40Mi0xLjQybDIuMyAyLjNWNGExIDEgMCAwIDEgMS0xem0tNyAxNGEyIDIgMCAwIDAtMiAydjFhMiAyIDAgMCAwIDIgMmgxNGEyIDIgMCAwIDAgMi0ydi0xYTIgMiAwIDAgMC0yLTJINXoiLz48L3N2Zz4=" alt="Download Dataset" height="28"></a>
 <a href="https://codespaces.new/dcaribou/transfermarkt-datasets/tree/master?quickstart=1"><img src="https://github.com/codespaces/badge.svg" alt="Open in GitHub Codespaces" height="28"></a>
 <a href="https://www.kaggle.com/datasets/davidcariboo/player-scores"><img src="https://kaggle.com/static/images/open-in-kaggle.svg" alt="Kaggle" height="28"></a>
-<a href="https://data.world/dcereijo/player-scores"><img src="https://img.shields.io/badge/-Open%20in%20data.world-blue?style=for-the-badge" alt="data.world" height="28"></a>
 
 <details>
 <summary><strong>ER diagram</strong></summary>

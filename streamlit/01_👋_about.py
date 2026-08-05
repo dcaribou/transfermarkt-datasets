@@ -15,8 +15,6 @@ col1, col2 = st.columns([2, 1])
 col2.markdown("""
 [![GitHub Repo stars](https://img.shields.io/github/stars/dcaribou/transfermarkt-datasets?style=social)](https://github.com/dcaribou/transfermarkt-datasets)
 [![Kaggle](https://kaggle.com/static/images/open-in-kaggle.svg)](https://www.kaggle.com/datasets/davidcariboo/player-scores)
-[<img src="https://assets.data.world/assets/logo-sparkle-noscircle.befdc9e044ded0c2756c24b3bff43b1c.png" alt="drawing" width="19"/>
-[data.world](https://data.world/dcereijo/player-scores)]
 """,
 unsafe_allow_html=True
 )
