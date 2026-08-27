@@ -59,6 +59,8 @@ This stores credentials in `.dvc/config.local` (gitignored).
 
 "Acquiring" is the process of collecting data from a specific source via an acquiring script. Acquired data lives in the `data/raw` folder.
 
+GitHub-hosted runners are blocked by Transfermarkt (empty `tfmkt` scrapes). The scraper already retries those responses through Bright Data Web Unlocker when `BRIGHTDATA_API_KEY` is set — the same secret used by [transfermarkt-scraper CI](https://github.com/dcaribou/transfermarkt-scraper/blob/main/.github/workflows/build-checks.yml). Acquire workflows in this repo must pass that secret through, or scheduled jobs fail in about a minute with 0 records.
+
 ### Acquirers
 
 An acquirer is a script that collects data from somewhere and puts it in `data/raw`. They are defined in the [`scripts/acquiring`](../scripts/acquiring) folder and run using the `acquire_local` recipe. For example:

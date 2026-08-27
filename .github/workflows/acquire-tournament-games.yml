@@ -3,6 +3,10 @@ name: acquire-tournament-games
 on:
   workflow_dispatch:
 
+env:
+  BRIGHTDATA_API_KEY: ${{ secrets.BRIGHTDATA_API_KEY }}
+  BRIGHTDATA_ZONE: ${{ secrets.BRIGHTDATA_ZONE }}
+
 jobs:
   acquire-tournament-games:
     runs-on: ubuntu-latest
@@ -13,6 +17,12 @@ jobs:
         shell: bash -l {0}
     steps:
       - uses: actions/checkout@v4
+      - name: Require Bright Data for GitHub-hosted acquire
+        run: |
+          if [ -z "$BRIGHTDATA_API_KEY" ]; then
+            echo "::error::BRIGHTDATA_API_KEY is not set. GitHub-hosted runners are blocked by Transfermarkt. Add the same secret used by dcaribou/transfermarkt-scraper."
+            exit 1
+          fi
       - name: run acquire
         run: |
           just acquire_local --asset tournament_games

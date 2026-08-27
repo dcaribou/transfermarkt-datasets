@@ -7,16 +7,29 @@ on:
     inputs:
       season:
         required: false
-        default: "2025"
+        default: "2026"
         description: Season to acquire data for
 
 env:
-  SEASON: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.season || '2025' }}
-  DATA_DIR: data/raw/transfermarkt-scraper/${{ github.event_name == 'workflow_dispatch' && github.event.inputs.season || '2025' }}
+  SEASON: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.season || '2026' }}
+  DATA_DIR: data/raw/transfermarkt-scraper/${{ github.event_name == 'workflow_dispatch' && github.event.inputs.season || '2026' }}
+  BRIGHTDATA_API_KEY: ${{ secrets.BRIGHTDATA_API_KEY }}
+  BRIGHTDATA_ZONE: ${{ secrets.BRIGHTDATA_ZONE }}
 
 jobs:
+  check-unlocker:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require Bright Data for GitHub-hosted acquire
+        run: |
+          if [ -z "$BRIGHTDATA_API_KEY" ]; then
+            echo "::error::BRIGHTDATA_API_KEY is not set. GitHub-hosted runners are blocked by Transfermarkt. Add the same secret used by dcaribou/transfermarkt-scraper."
+            exit 1
+          fi
+
   acquire-countries:
     runs-on: ubuntu-latest
+    needs: check-unlocker
     container:
       image: dcaribou/transfermarkt-datasets:linux-amd64-master
     defaults:
